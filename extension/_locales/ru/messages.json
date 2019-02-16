@@ -1,0 +1,14 @@
+{
+  "description": {
+    "message": "",
+    "description": "Description of the extension"
+  },
+  "name": {
+    "message": "",
+    "description": "Name of the extension"
+  },
+  "extension_title": {
+    "message": "",
+    "description": "Extension title"
+  }
+}
