@@ -5,3 +5,4 @@ node_modules
 scripts/config.js
 web-ext-artifacts
 extension/bundles/
+coverage/

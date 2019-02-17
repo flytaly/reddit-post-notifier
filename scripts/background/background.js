@@ -1,8 +1,7 @@
 import auth from './auth';
 import storage from '../storage';
 
-
-async function update() {
+export async function update() {
     try {
         // todo 1: update information
         // todo 2: set update every 'x' seconds
@@ -14,7 +13,7 @@ async function update() {
     }
 }
 
-window.requestIdleCallback(async () => {
+export async function startExtension() {
     const { accessToken } = await storage.getAuthData();
 
     if (!accessToken) {
@@ -22,4 +21,6 @@ window.requestIdleCallback(async () => {
     }
 
     await update();
-});
+}
+
+window.requestIdleCallback(startExtension);

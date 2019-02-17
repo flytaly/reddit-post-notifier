@@ -102,9 +102,9 @@ const auth = {
     },
 
     async login() {
-        const authState = this.generateAuthState();
-        const code = await this.getAuthCode(authState);
-        if (!code) throw new Error('Couldn\'t get auth code');
+        this.authState = this.generateAuthState();
+        const code = await this.getAuthCode(this.authState);
+        if (!code) throw new AuthError('Couldn\'t get auth code');
 
         const authData = await this.getTokens(code);
         await storage.saveAuthData(authData);

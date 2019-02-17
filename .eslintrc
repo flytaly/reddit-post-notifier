@@ -7,7 +7,8 @@
     "env": {
         "browser": true,
         "es6": true,
-        "webextensions": true
+        "webextensions": true,
+        "jest": true
     },
     "rules": {
         "indent": ["error", 4, {"SwitchCase": 1}],
