@@ -1,4 +1,6 @@
-import { clientId, clientSecret, redirectUri } from '../config';
+import {
+    clientId, clientSecret, redirectUri, userAgent,
+} from '../config';
 import { AuthError } from './errors';
 import scopes from '../reddit-scopes';
 import storage from '../storage';
@@ -24,7 +26,7 @@ const auth = {
             response_type: 'code',
             redirect_uri: encodeURIComponent(redirectUri),
             client_id: clientId,
-            scope: scopes.mysubreddits.id,
+            scope: scopes.read.id,
             state: authState,
             duration: 'permanent',
         };
@@ -55,6 +57,7 @@ const auth = {
                 Accept: 'application/json',
                 Authorization: `Basic ${base64Credentials}`,
                 'Content-Type': 'application/x-www-form-urlencoded',
+                'User-Agent': userAgent,
             },
             body: mapObjToQueryStr(params),
         };
@@ -124,6 +127,7 @@ const auth = {
                     await this.login();
                     browser.browserAction.setPopup({ popup: browser.extension.getURL('popup/popup.html') });
                     browser.browserAction.onClicked.removeListener(listener);
+                    browser.browserAction.setBadgeText({ text: '' });
                     resolve();
                 } catch (e) {
                     console.error(`${e.name}: ${e.message}`);
