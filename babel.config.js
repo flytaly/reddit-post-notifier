@@ -1,15 +1,11 @@
-const targets = {};
-
-if (process.env.NODE_ENV === 'test') {
-    targets.node = 'current';
-}
+const isTest = String(process.env.NODE_ENV) === 'test';
 
 module.exports = {
     presets: [
         [
             '@babel/preset-env',
             {
-                targets,
+                targets: isTest ? { node: 'current' } : {},
             },
         ],
     ],

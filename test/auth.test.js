@@ -82,8 +82,9 @@ describe('Token Retrieval', () => {
             return redirectUri;
         });
 
-        await auth.login();
+        const token = await auth.login();
         expect(storage.saveAuthData).toHaveBeenCalledWith(authSuccessBody);
+        expect(token).toBe(authSuccessBody.access_token);
     });
 
     test('should throw AuthError when retrieving tokens', async () => {
@@ -137,8 +138,9 @@ describe('Token Refreshing', () => {
             });
         });
 
-        await auth.refreshToken(refreshToken);
+        const token = await auth.renewAccessToken(refreshToken);
         expect(storage.saveAuthData).toHaveBeenCalledWith(refreshSuccessBody);
+        expect(token).toBe(refreshSuccessBody.access_token);
     });
 
     test('should launch setAuth if error happend during refreshing', async () => {
@@ -151,7 +153,7 @@ describe('Token Refreshing', () => {
         global.fetch = jest.fn(async () => ({
             status: 400,
         }));
-        await auth.refreshToken();
+        await auth.renewAccessToken();
         expect(auth.setAuth).toBeCalledTimes(1);
         expect(console.error).toBeCalledTimes(1);
 
@@ -161,11 +163,68 @@ describe('Token Refreshing', () => {
             status: 200,
             json: async () => ({ error: 'error' }),
         }));
-        await auth.refreshToken();
+        await auth.renewAccessToken();
         expect(auth.setAuth).toBeCalledTimes(1);
         expect(console.error).toBeCalledTimes(1);
 
         auth.setAuth = $setAuth;
         auth.error = $error;
+    });
+});
+
+describe('getAccessToken', () => {
+    let setAuth;
+    let renewAccessToken;
+    const renewedToken = 'renewedToken';
+    const authData = {
+        accessToken: 'oldAccessToken',
+        refreshToken: 'refreshToken',
+    };
+
+    beforeAll(() => {
+        setAuth = jest.spyOn(auth, 'setAuth').mockImplementation(async () => renewedToken);
+        renewAccessToken = jest.spyOn(auth, 'renewAccessToken').mockImplementation(async () => renewedToken);
+    });
+
+    afterEach(() => {
+        jest.clearAllMocks();
+    });
+
+    afterAll(() => {
+        setAuth.mockRestore();
+        renewAccessToken.mockRestore();
+    });
+
+    test('should return old access token', async () => {
+        storage.getAuthData = jest.fn(async () => ({
+            ...authData,
+            expiresIn: new Date().getTime() + 1000 * 3600,
+        }));
+        const token = await auth.getAccessToken();
+        expect(storage.getAuthData).toHaveBeenCalled();
+        expect(token).toBe(authData.accessToken);
+    });
+
+    test('should return renewed accessToken', async () => {
+        storage.getAuthData = jest.fn(async () => ({
+            ...authData,
+            expiresIn: new Date().getTime(),
+        }));
+
+        const token = await auth.getAccessToken();
+        expect(storage.getAuthData).toHaveBeenCalled();
+        expect(auth.renewAccessToken).toHaveBeenCalledWith(authData.refreshToken);
+        expect(token).toBe(renewedToken);
+    });
+
+    test('should return renewed accessToken if there is no token in storage', async () => {
+        storage.getAuthData = jest.fn(async () => ({
+            expiresIn: new Date().getTime() + 1000 * 3600,
+        }));
+
+        const token = await auth.getAccessToken();
+        expect(storage.getAuthData).toHaveBeenCalled();
+        expect(auth.setAuth).toHaveBeenCalledWith();
+        expect(token).toBe(renewedToken);
     });
 });

@@ -4,17 +4,31 @@ import {
 import { AuthError } from './errors';
 import scopes from '../reddit-scopes';
 import storage from '../storage';
+import { mapObjToQueryStr } from '../utils';
 
-const mapObjToQueryStr = params => Object.entries(params).map(pair => pair.join('=')).join('&');
-
-/*
-    reddit OAuth2 code flow:  https://github.com/reddit-archive/reddit/wiki/OAuth2#token-retrieval-code-flow
-*/
+/**
+ * Reddit OAuth2 code flow: https://github.com/reddit-archive/reddit/wiki/OAuth2#token-retrieval-code-flow
+ */
 const auth = {
     baseURL: 'https://www.reddit.com/api/v1',
 
     get accessTokenURL() {
         return `${this.baseURL}/access_token`;
+    },
+
+    /**
+     * Get accessToken from storage. If there is no token
+     * or current token is outdated retrieve new one from OAUTH server.
+     * @return {Promise<string>} accessToken
+     */
+    async getAccessToken() {
+        const { accessToken, expiresIn, refreshToken } = await storage.getAuthData();
+        if (!refreshToken) return this.setAuth();
+        const now = new Date();
+        const expires = new Date(expiresIn - 60000 * 2); // 2 mins before expire
+
+        const token = expires > now ? accessToken : await this.renewAccessToken(refreshToken);
+        return token;
     },
 
     generateAuthState() {
@@ -63,6 +77,16 @@ const auth = {
         };
     },
 
+    /**
+     * @param {string} code
+     * @typedef {Object} response_body
+     * @property {string} access_token
+     * @property {string} refresh_token
+     * @property {string} expires_in
+     * @property {string} scope
+     * @property {string} token_type
+     * @returns {Promise<response_body>}
+     */
     async getTokens(code) {
         const params = {
             grant_type: 'authorization_code',
@@ -82,11 +106,15 @@ const auth = {
         return body;
     },
 
-    async refreshToken(token) {
+    /**
+     * @param {string} refreshToken
+     * @return {Promise<string>} accessToken
+     */
+    async renewAccessToken(refreshToken) {
         try {
             const params = {
                 grant_type: 'refresh_token',
-                refresh_token: token,
+                refresh_token: refreshToken,
             };
             const response = await fetch(this.accessTokenURL, this.fetchAuthInit(params));
 
@@ -98,12 +126,18 @@ const auth = {
                 throw new AuthError(`Couldn't refresh access token. Error: ${body.error}`);
             }
             await storage.saveAuthData(body);
+
+            return body.access_token;
         } catch (e) {
             console.error(e);
-            await this.setAuth();
+            return this.setAuth();
         }
     },
 
+    /**
+     * Start OAUTH2 authorization flow
+     * @return {Promise<string>} accessToken
+     */
     async login() {
         this.authState = this.generateAuthState();
         const code = await this.getAuthCode(this.authState);
@@ -111,11 +145,14 @@ const auth = {
 
         const authData = await this.getTokens(code);
         await storage.saveAuthData(authData);
+
+        return authData.access_token;
     },
 
-    /*
+    /**
         Initiate authentication next time user click badge.
         Returns promise that will be fulfilled only after a successful login
+        @return {Promise<string>} accessToken
     */
     setAuth() {
         browser.browserAction.setPopup({ popup: '' });
@@ -124,11 +161,11 @@ const auth = {
         return new Promise((resolve) => {
             const listener = async () => {
                 try {
-                    await this.login();
-                    browser.browserAction.setPopup({ popup: browser.extension.getURL('popup/popup.html') });
+                    const token = await this.login();
+                    browser.browserAction.setPopup({ popup: browser.extension.getURL('popup.html') });
                     browser.browserAction.onClicked.removeListener(listener);
                     browser.browserAction.setBadgeText({ text: '' });
-                    resolve();
+                    resolve(token);
                 } catch (e) {
                     console.error(`${e.name}: ${e.message}`);
                 }
