@@ -1,0 +1,20 @@
+
+section {
+    margin: 10px 0;
+}
+section.watch-subreddits {
+    display: flex;
+    flex-direction: column;
+}
+
+.watch-subreddits input {
+    width: 100%
+}
+.input-description{
+    font-size: 0.9em;
+}
+
+.invalid{
+    border: 1px solid rgba(255, 0, 0, 0.35);
+    box-shadow: 0 0 0 2px rgba(255, 0, 0, 0.35);
+}

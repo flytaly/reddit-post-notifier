@@ -3,6 +3,14 @@ const storage = {
         return browser.storage.local.get(keys);
     },
 
+    async getOptions() {
+        const { options } = await browser.storage.local.get('options');
+        return options;
+    },
+
+    /**
+     * @param {Object} data
+     */
     async saveAuthData(data) {
         const {
             access_token: accessToken,
@@ -19,6 +27,14 @@ const storage = {
             ...(refreshToken && { refreshToken }),
             ...(expiresInRelative && { expiresIn: expiresInRelative }),
         });
+    },
+
+    /**
+     * @param {Object} data
+     */
+    async saveOptions(data) {
+        const optionsPrev = await this.getOptions();
+        return browser.storage.local.set({ options: { ...optionsPrev, ...data } });
     },
 };
 

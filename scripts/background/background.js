@@ -1,7 +1,8 @@
 import auth from './auth';
 import storage from '../storage';
+import optionsDefault from '../options-default';
 
-export async function update() {
+async function update() {
     try {
         // todo 1: update information
         // todo 2: set update every 'x' seconds
@@ -13,7 +14,13 @@ export async function update() {
     }
 }
 
-export async function startExtension() {
+async function setOptions() {
+    const options = await storage.getOptions();
+    if (!options) await storage.saveOptions(optionsDefault);
+}
+
+async function startExtension() {
+    setOptions();
     const { accessToken } = await storage.getAuthData();
 
     if (!accessToken) {
@@ -24,3 +31,7 @@ export async function startExtension() {
 }
 
 window.requestIdleCallback(startExtension);
+
+export default {
+    update, setOptions, startExtension,
+};

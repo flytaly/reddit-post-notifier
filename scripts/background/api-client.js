@@ -1,3 +1,5 @@
+// https://www.reddit.com/dev/api/
+
 import { userAgent } from '../config';
 import auth from './auth';
 import { mapObjToQueryStr } from '../utils';
@@ -27,6 +29,7 @@ export default class RedditApiClient {
 
     getSubreddit(subreddit) {
         return {
+            /** @param {Object} listing */
             new: async listing => this.GET(`/r/${subreddit}/new`, listing),
         };
     }

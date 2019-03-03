@@ -43,3 +43,25 @@ describe('authorization data', () => {
         expect(browser.storage.local.get.calledOnceWith(keys)).toBeTruthy();
     });
 });
+
+describe('options', () => {
+    const options = { option1: 1, option2: 2 };
+    beforeAll(() => {
+        browser.storage.local.get.callsFake(async (key) => {
+            expect(key).toBe('options');
+            return { options };
+        });
+    });
+    test('should return options', async () => {
+        const result = await storage.getOptions();
+        expect(result).toEqual(options);
+    });
+    test('should save options', async () => {
+        const newOptions = { newOption1: 'value1', newOption2: 'value2' };
+        browser.storage.local.set.callsFake(async (opts) => {
+            expect(opts.options).toEqual({ ...options, ...newOptions });
+            return null;
+        });
+        await storage.saveOptions(newOptions);
+    });
+});
