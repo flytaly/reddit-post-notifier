@@ -6,11 +6,16 @@ import bgScripts from '../scripts/background/background';
 import optionsDefault from '../scripts/options-default';
 
 jest.mock('../scripts/background/auth.js');
+jest.mock('../scripts/background/app.js');
 jest.mock('../scripts/storage.js');
 
-window.browser = browser;
+global.browser = browser;
 
 const { startExtension } = bgScripts;
+
+beforeAll(() => {
+    storage.getOptions = jest.fn(async () => optionsDefault);
+});
 
 afterEach(() => { jest.clearAllMocks(); });
 

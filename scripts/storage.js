@@ -8,24 +8,29 @@ const storage = {
         return options;
     },
 
+    async getSubredditData() {
+        const { subreddits } = await browser.storage.local.get({ subreddits: {} });
+        return subreddits;
+    },
+
     /**
      * @param {Object} data
      */
     async saveAuthData(data) {
         const {
             access_token: accessToken,
-            expires_in: expiresIn,
+            expires_in: expiresInRelative,
             refresh_token: refreshToken,
             // token_type: tokenType,
             // scope,
         } = data;
 
-        const expiresInRelative = expiresIn && (new Date().getTime() + expiresIn * 1000);
+        const expiresIn = expiresInRelative && (new Date().getTime() + expiresInRelative * 1000);
 
         return browser.storage.local.set({
             ...(accessToken && { accessToken }),
             ...(refreshToken && { refreshToken }),
-            ...(expiresInRelative && { expiresIn: expiresInRelative }),
+            ...(expiresIn && { expiresIn }),
         });
     },
 
@@ -35,6 +40,27 @@ const storage = {
     async saveOptions(data) {
         const optionsPrev = await this.getOptions();
         return browser.storage.local.set({ options: { ...optionsPrev, ...data } });
+    },
+
+    async saveSubredditData(subreddit, { posts, error }) {
+        const data = await storage.getSubredditData();
+        const current = data[subreddit] || {};
+
+        if (posts) {
+            const savedPosts = current.posts || [];
+            current.posts = [...posts, ...savedPosts];
+            current.error = null;
+            if (posts[0] && posts[0].data.name) {
+                current.lastPost = posts[0].data.name;
+            }
+        }
+        if (error) {
+            current.error = error;
+        }
+
+        current.lastUpdate = Date.now();
+
+        return browser.storage.local.set({ subreddits: { ...data, [subreddit]: current } });
     },
 };
 

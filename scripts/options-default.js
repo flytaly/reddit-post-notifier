@@ -1,3 +1,3 @@
 export default {
-    updateInterval: 5,
+    updateInterval: 5, // seconds
 };

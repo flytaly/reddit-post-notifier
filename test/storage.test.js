@@ -1,4 +1,5 @@
 import browser from 'sinon-chrome/webextensions';
+import cloneDeep from 'lodash.clonedeep';
 import storage from '../scripts/storage';
 
 window.browser = browser;
@@ -63,5 +64,54 @@ describe('options', () => {
             return null;
         });
         await storage.saveOptions(newOptions);
+    });
+});
+
+describe('subreddits', () => {
+    const subreddits = {
+        sub1: { posts: [{ data: { name: 'postId_11' } }], lastPost: 'postId_11' },
+        sub2: { posts: [{ data: { name: 'postId_21' } }], lastPost: 'postId_21' },
+    };
+
+    beforeAll(() => {
+        browser.storage.local.get.callsFake(async (param) => {
+            expect(param).toEqual({ subreddits: {} });
+            return { subreddits: cloneDeep(subreddits) };
+        });
+    });
+
+    test('should return posts of all subreddits', async () => {
+        const response = await storage.getSubredditData();
+        expect(response).toEqual(subreddits);
+    });
+
+    test('should save subreddit\'s posts', async () => {
+        const newPosts = [
+            { data: { name: 'postId_13' } },
+            { data: { name: 'postId_12' } },
+        ];
+
+        browser.storage.local.set.callsFake(async (param) => {
+            const subR = param.subreddits;
+            expect(subR.sub2).toEqual(subreddits.sub2);
+
+            const oldPosts = subreddits.sub1.posts;
+            expect(subR.sub1.posts).toEqual([...newPosts, ...oldPosts]);
+            expect(subR.sub1.lastPost).toBe(newPosts[0].data.name);
+        });
+
+        await storage.saveSubredditData('sub1', { posts: newPosts });
+    });
+
+    test('should save error', async () => {
+        const error = { message: 'some error' };
+        browser.storage.local.set.callsFake(async (param) => {
+            const subR = param.subreddits;
+            expect(subR.sub1).toEqual(subreddits.sub1);
+            expect(subR.sub2).toEqual(subreddits.sub2);
+            expect(subR.sub3.error).toEqual(error);
+        });
+
+        await storage.saveSubredditData('sub3', { error });
     });
 });
