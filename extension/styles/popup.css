@@ -102,6 +102,10 @@ button.arrow-left{
     height: 100%;
 }
 
+button.arrow-left[hidden]{
+    display: none;
+}
+
 .check-mark:hover svg {
     fill: grey;
 }
