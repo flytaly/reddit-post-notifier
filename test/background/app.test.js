@@ -16,12 +16,33 @@ const options = {
     updateInterval: 1,
 };
 
+const created = 1551733803;
 const subredditsData = {
-    sub1: { lastPost: 'postId_1' },
-    sub2: { lastPost: 'postId_2' },
-    sub3: { lastPost: 'postId_3' },
+    sub1: {
+        lastPost: 'postId_1',
+        lastPostCreated: created,
+    },
+    sub2: {
+        lastPost: 'postId_2',
+        lastPostCreated: created,
+    },
+    sub3: {
+        lastPost: 'postId_3',
+        lastPostCreated: created,
+    },
 };
-const newPosts = [{ name: 'postId_4' }, { name: 'postId_5' }];
+const newPosts = [{
+    data: {
+        name: 'postId_4',
+        created: created + 10,
+    },
+}, {
+    data: {
+        name: 'postId_5',
+        created: created - 10,
+    },
+}];
+
 let reddit;
 
 beforeAll(() => {
@@ -36,7 +57,7 @@ describe('update', () => {
     test('should update and save new posts', async () => {
         storage.saveSubredditData = jest.fn(async (sub, data) => {
             expect(options.watchSubreddits.includes(sub)).toBeTruthy();
-            expect(data).toEqual({ posts: newPosts });
+            expect(data).toEqual({ posts: newPosts.slice(0, 1) });
         });
 
         const getNewPost = jest.fn(async () => ({ kind: 'Listing', data: { children: newPosts } }));
@@ -48,7 +69,7 @@ describe('update', () => {
         expect(storage.getSubredditData).toHaveBeenCalled();
         expect(reddit.getSubreddit).toHaveBeenCalledTimes(options.watchSubreddits.length);
         for (const [index, value] of options.watchSubreddits.entries()) {
-            expect(getNewPost).toHaveBeenNthCalledWith(index + 1, { before: subredditsData[value].lastPost });
+            expect(getNewPost).toHaveBeenNthCalledWith(index + 1, { limit: 10 });
         }
         expect(wait).toHaveBeenCalledTimes(options.watchSubreddits.length);
     });

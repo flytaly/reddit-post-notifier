@@ -5,14 +5,17 @@ import app from './app';
 import types from '../types';
 
 async function update() {
+    const { updateInterval } = await storage.getOptions();
     try {
-        const { updateInterval } = await storage.getOptions();
         await app.update();
         browser.alarms.create(types.ALARM_UPDATE, { delayInMinutes: updateInterval / 60 });
     } catch (e) {
         console.error(`${e.name}: ${e.message}`);
         if (e.name === 'AuthError') {
             await auth.setAuth();
+            await update();
+        } else {
+            browser.alarms.create(types.ALARM_UPDATE, { delayInMinutes: updateInterval / 60 });
         }
     }
 }

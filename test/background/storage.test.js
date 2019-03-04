@@ -87,8 +87,8 @@ describe('subreddits', () => {
 
     test('should save subreddit\'s posts', async () => {
         const newPosts = [
-            { data: { name: 'postId_13' } },
-            { data: { name: 'postId_12' } },
+            { data: { name: 'postId_13', created: '1551734739' } },
+            { data: { name: 'postId_12', created: '1551734740' } },
         ];
 
         browser.storage.local.set.callsFake(async (param) => {
@@ -98,6 +98,7 @@ describe('subreddits', () => {
             const oldPosts = subreddits.sub1.posts;
             expect(subR.sub1.posts).toEqual([...newPosts, ...oldPosts]);
             expect(subR.sub1.lastPost).toBe(newPosts[0].data.name);
+            expect(subR.sub1.lastPostCreated).toBe(newPosts[0].data.created);
         });
 
         await storage.saveSubredditData('sub1', { posts: newPosts });

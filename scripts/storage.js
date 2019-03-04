@@ -50,8 +50,9 @@ const storage = {
             const savedPosts = current.posts || [];
             current.posts = [...posts, ...savedPosts];
             current.error = null;
-            if (posts[0] && posts[0].data.name) {
+            if (posts[0]) {
                 current.lastPost = posts[0].data.name;
+                current.lastPostCreated = posts[0].data.created;
             }
         }
         if (error) {

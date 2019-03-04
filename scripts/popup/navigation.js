@@ -30,8 +30,8 @@ const nav = {
                     // eslint-disable-next-line prefer-destructuring
                     posts = data.subrData[id].posts;
                     updateHeader(location, {
-                        name: `r/${id}`,
-                        href: `https://reddit.com/r/${id}`,
+                        name: `r/${id}/new`,
+                        href: `https://reddit.com/r/${id}/new`,
                     });
                 }
                 elements.mainContainer.innerHTML = '';
