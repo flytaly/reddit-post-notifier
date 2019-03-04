@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+  <meta charset="utf-8">
+  <link rel="stylesheet" href="styles/popup.css">
+  <script src="bundles/popup.js"></script>
+</head>
+
+<body>
+  <!-- CHECK ICON -->
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16" style="display: none;">
+    <path id="check-mark-path"
+      d="M6 14a1 1 0 0 1-.707-.293l-3-3a1 1 0 0 1 1.414-1.414l2.157 2.157 6.316-9.023a1 1 0 0 1 1.639 1.146l-7 10a1 1 0 0 1-.732.427A.863.863 0 0 1 6 14z">
+    </path>
+  </svg>
+
+  <header></header>
+
+  <main>
+    <!-- List of subreddits and queries -->
+    <template id="query-list-tmp">
+      <ul class="query-list">
+      </ul>
+    </template>
+    <template id="query-list-row-tmp">
+      <li>
+        <button class="check-mark">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16">
+            <use href="#check-mark-path">
+          </svg>
+        </button>
+        <div class="query-name"></div>
+        <button class="arrow-right"><img src="images/arrowhead-right.svg"></img></button>
+      </li>
+    </template>
+
+    <!-- List of posts  -->
+    <template id="post-list-tmp">
+      <ul class="post-list"></ul>
+    </template>
+    <template id="post-list-row-tmp">
+      <li></li>
+    </template>
+
+  </main>
+
+  <footer>
+    <button class="footer-button">Mark all as read</button>
+  </footer>
+
+</body>
+
+</html>

@@ -1,13 +1,13 @@
 import browser from 'sinon-chrome/webextensions';
 import requestIdleCallback from './mocks/requestIdleCallback.mock';
-import storage from '../scripts/storage';
-import auth from '../scripts/background/auth';
-import bgScripts from '../scripts/background/background';
-import optionsDefault from '../scripts/options-default';
+import storage from '../../scripts/storage';
+import auth from '../../scripts/background/auth';
+import bgScripts from '../../scripts/background/background';
+import optionsDefault from '../../scripts/options-default';
 
-jest.mock('../scripts/background/auth.js');
-jest.mock('../scripts/background/app.js');
-jest.mock('../scripts/storage.js');
+jest.mock('../../scripts/background/auth.js');
+jest.mock('../../scripts/background/app.js');
+jest.mock('../../scripts/storage.js');
 
 global.browser = browser;
 

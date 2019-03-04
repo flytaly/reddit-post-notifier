@@ -1,15 +1,15 @@
-import storage from '../scripts/storage';
-import app from '../scripts/background/app';
-import { wait } from '../scripts/utils';
+import storage from '../../scripts/storage';
+import app from '../../scripts/background/app';
+import { wait } from '../../scripts/utils';
 
-jest.mock('../scripts/background/api-client.js', () => class RedditApiClient {
+jest.mock('../../scripts/background/api-client.js', () => class RedditApiClient {
     constructor() {
         global.redditClientInstance = this;
         return this;
     }
 });
-jest.mock('../scripts/utils.js', () => ({ wait: jest.fn() }));
-jest.mock('../scripts/storage.js');
+jest.mock('../../scripts/utils.js', () => ({ wait: jest.fn() }));
+jest.mock('../../scripts/storage.js');
 
 const options = {
     watchSubreddits: ['sub1', 'sub2', 'sub3'],

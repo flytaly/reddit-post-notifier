@@ -1,6 +1,6 @@
 import browser from 'sinon-chrome/webextensions';
 import cloneDeep from 'lodash.clonedeep';
-import storage from '../scripts/storage';
+import storage from '../../scripts/storage';
 
 window.browser = browser;
 

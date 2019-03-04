@@ -3,12 +3,124 @@
 }
 
 html {
-    font-size: 62.5%; /* ==10px if default font size is 16px */
+    /* font-size: 62.5%; ==10px if default font size is 16px */
     /* font-family: "PT Sans", "Trebuchet MS", Arial, sans-serif; */
+    --main-bg-color: #FFFFFF;
+    --hover-bg-color: rgba(0, 0, 0, 0.06);
+    --hover-border-color: rgba(0, 0, 0, 0.1);
 }
 
 body {
     min-width: 200px;
-    /* max-width: 800px; */
-    /* max-height: 600px; */
+    max-width: 500px;
+    display: flex;
+    flex-direction: column;
+    background-color: var(--main-bg-color);
+    overflow: hidden auto;
 }
+
+header {
+    display: flex;
+    flex-direction: row;
+    padding: 2px 4px;
+    min-height: 20px;
+    border-bottom: 1px solid var(--hover-border-color);
+}
+
+ul {
+    display: flex;
+    flex-direction: column;
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+ul > li {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    column-gap: 4px;
+    padding: 2px 4px;
+    border-top: 1px solid var(--main-bg-color);
+    border-bottom: 1px solid var(--main-bg-color);
+}
+
+ul > li:hover {
+    background-color: var(--hover-bg-color);
+    border-top: 1px solid var(--hover-border-color);
+    border-bottom: 1px solid var(--hover-border-color);
+}
+
+li img{
+    width: 14px;
+    height: 14px;
+}
+
+li svg {
+    width: 14px;
+    height: 14px;
+}
+
+ul.query-list .query-name {
+    flex-grow: 1;
+}
+
+ul.query-list button.check-mark,
+ul.query-list button.arrow-right {
+    width: 16px;
+    height: 16px;
+    margin: 0;
+    padding: 0;
+    border: none;
+    background: none;
+}
+
+.check-mark:hover svg {
+    fill: grey;
+}
+
+.check-mark:hover svg {
+    fill: green;
+    transform: scale(1.1);
+}
+
+footer {
+    background-color: var(--hover-bg-color);
+    border-top: 1px solid var(--hover-border-color);
+    color: #1a1a1a;
+    display: flex;
+    flex-direction: row;
+    padding: 0;
+}
+
+.footer-button {
+    flex: 1 1 auto;
+    padding: 5px;
+    border: none;
+    margin: 0;
+    text-align: center;
+}
+
+.footer-button:hover {
+    background-color: var(--hover-bg-color);
+  }
+
+.footer-button:hover:active {
+    background-color: var(--hover-border-color);
+  }
+
+.run-animation {
+    position: relative;
+    animation: slide-animation-left 0.10s ease;
+}
+
+@keyframes slide-animation-left {
+    from {
+      opacity : 0;
+      left : 100%;
+    }
+    to {
+      opacity : 1;
+      left : 0;
+    }
+  }

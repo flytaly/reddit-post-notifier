@@ -1,11 +1,11 @@
 import browser from 'sinon-chrome/webextensions';
-import auth from '../scripts/background/auth';
-import * as config from '../scripts/config';
-import scopes from '../scripts/reddit-scopes';
-import storage from '../scripts/storage';
-import { AuthError } from '../scripts/background/errors';
+import auth from '../../scripts/background/auth';
+import * as config from '../../scripts/config';
+import scopes from '../../scripts/reddit-scopes';
+import storage from '../../scripts/storage';
+import { AuthError } from '../../scripts/background/errors';
 
-jest.mock('../scripts/storage.js');
+jest.mock('../../scripts/storage.js');
 
 window.browser = browser;
 

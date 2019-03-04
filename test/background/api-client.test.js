@@ -1,8 +1,8 @@
-import { userAgent } from '../scripts/config';
-import RedditApiClient from '../scripts/background/api-client';
-import auth from '../scripts/background/auth';
+import { userAgent } from '../../scripts/config';
+import RedditApiClient from '../../scripts/background/api-client';
+import auth from '../../scripts/background/auth';
 
-jest.mock('../scripts/background/auth.js');
+jest.mock('../../scripts/background/auth.js');
 const reddit = new RedditApiClient();
 
 afterEach(() => jest.clearAllMocks());
