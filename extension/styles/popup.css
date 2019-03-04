@@ -19,12 +19,29 @@ body {
     overflow: hidden auto;
 }
 
+a {
+    text-decoration: none;
+    color: #016ED8;
+}
+
 header {
     display: flex;
     flex-direction: row;
+    align-items: center;
+    column-gap: 6px;
     padding: 2px 4px;
     min-height: 20px;
     border-bottom: 1px solid var(--hover-border-color);
+}
+
+header.posts{
+    background-color: var(--hover-bg-color);
+}
+
+header a.subreddit-name{
+    font-weight: bold;
+    font-size: 1.1em;
+    color: black;
 }
 
 ul {
@@ -51,28 +68,38 @@ ul > li:hover {
     border-bottom: 1px solid var(--hover-border-color);
 }
 
+header img,
 li img{
-    width: 14px;
-    height: 14px;
+    width: 16px;
+    height: 16px;
 }
 
 li svg {
-    width: 14px;
-    height: 14px;
+    width: 16px;
+    height: 16px;
 }
 
 ul.query-list .query-name {
     flex-grow: 1;
 }
 
-ul.query-list button.check-mark,
-ul.query-list button.arrow-right {
+button.arrow-left,
+button.check-mark,
+button.arrow-right {
+    display: flex;
+    align-items: center;
+    align-content: center;
     width: 16px;
     height: 16px;
     margin: 0;
     padding: 0;
     border: none;
     background: none;
+}
+
+button.arrow-left{
+    width: 20px;
+    height: 100%;
 }
 
 .check-mark:hover svg {

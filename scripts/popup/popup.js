@@ -5,8 +5,10 @@ import nav from './navigation';
 
 async function init() {
     getTemplates();
-    getElements();
     getOptions();
+    const elements = getElements();
+
+    elements.headerBackBtn.addEventListener('click', () => nav.navigate(nav.locations.queriesList));
 }
 
 async function start() {

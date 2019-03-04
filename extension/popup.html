@@ -16,7 +16,10 @@
     </path>
   </svg>
 
-  <header></header>
+  <header>
+    <button class="arrow-left" hidden><img src="images/arrowhead-left.svg"></img></button>
+    <a class="subreddit-name" href="reddit.com"></a>
+  </header>
 
   <main>
     <!-- List of subreddits and queries -->
@@ -41,7 +44,14 @@
       <ul class="post-list"></ul>
     </template>
     <template id="post-list-row-tmp">
-      <li></li>
+      <li>
+        <button class="check-mark">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16">
+            <use href="#check-mark-path">
+          </svg>
+        </button>
+        <a href="#"></a>
+      </li>
     </template>
 
   </main>

@@ -20,14 +20,13 @@ async function renderQueryListBlock(nav) {
     const queryList = queryListTmp.querySelector('ul');
 
     queryList.addEventListener('click', ({ target }) => {
-        if (target.classList.contains('query-name') || target.classList.contains('arrow-right')) {
-            const { id } = target.parentElement.dataset;
-            if (id) {
-                nav.navigate(nav.locations.postList, {
-                    id: id.slice(2),
-                    type: id.slice(0, 1),
-                });
-            }
+        if (target.classList.contains('check-mark')) return;
+        const { id } = target.parentElement.dataset;
+        if (id) {
+            nav.navigate(nav.locations.postList, {
+                id: id.slice(2),
+                type: id.slice(0, 1),
+            });
         }
     });
 

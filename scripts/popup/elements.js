@@ -7,6 +7,8 @@ function getElements() {
         elements = {
             mainContainer: $('main'),
             header: $('header'),
+            headerBackBtn: $('header button.arrow-left'),
+            headerSubredditLink: $('header a.subreddit-name'),
             footer: $('footer'),
         };
     }
