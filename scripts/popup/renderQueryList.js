@@ -6,7 +6,7 @@ function renderQueryListRow(queryListRowTmp, { queryName, newPosts }) {
     const queryListRow = queryListRowTmp.querySelector('li');
     const queryNameElem = queryListRowTmp.querySelector('.query-name');
     queryListRow.dataset.id = `r_${queryName}`;
-    queryNameElem.textContent = `${queryName} (${newPosts})`;
+    queryNameElem.textContent = `r/${queryName} (${newPosts})`;
 
     return queryListRow;
 }

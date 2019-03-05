@@ -21,7 +21,8 @@ body {
 
 a {
     text-decoration: none;
-    color: #016ED8;
+    /* color: #016ED8; */
+    /* color: black; */
 }
 
 header {
@@ -40,7 +41,7 @@ header.posts{
 
 header a.subreddit-name{
     font-weight: bold;
-    font-size: 1.1em;
+    font-size: 1.05em;
     color: black;
 }
 
@@ -68,7 +69,11 @@ ul > li:hover {
     border-bottom: 1px solid var(--hover-border-color);
 }
 
-header img,
+header img {
+    width: 18px;
+    height: 18px;
+}
+
 li img{
     width: 16px;
     height: 16px;
@@ -88,7 +93,7 @@ button.check-mark,
 button.arrow-right {
     display: flex;
     align-items: center;
-    align-content: center;
+    justify-content: center;
     width: 16px;
     height: 16px;
     margin: 0;
@@ -97,16 +102,26 @@ button.arrow-right {
     background: none;
 }
 
+
 button.arrow-left{
     width: 20px;
     height: 100%;
+    padding: 2px;
+}
+
+button.arrow-left:hover{
+    background-color: var(--hover-bg-color);
+}
+
+button.arrow-left:hover:active{
+    background-color: var(--hover-border-color);
 }
 
 button.arrow-left[hidden]{
     display: none;
 }
 
-.check-mark:hover svg {
+.check-mark svg {
     fill: grey;
 }
 

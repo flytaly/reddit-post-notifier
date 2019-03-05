@@ -19,7 +19,7 @@ export const filterNewPosts = (timestamp, posts) => {
 
 const app = {
     update: async () => {
-        const { watchSubreddits, updateInterval } = await storage.getOptions();
+        const { watchSubreddits, waitTimeout } = await storage.getOptions();
         const subData = await storage.getSubredditData();
         for (const subreddit of watchSubreddits) {
             /*
@@ -48,7 +48,7 @@ const app = {
                 await storage.saveSubredditData(subreddit, { error: response });
             }
 
-            await wait(updateInterval * 1000);
+            await wait(waitTimeout * 1000);
         }
     },
 
