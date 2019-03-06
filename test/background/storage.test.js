@@ -132,4 +132,22 @@ describe('subreddits', () => {
         });
         await storage.removePost({ id: subreddits[subreddit].posts[deletePostIndex].data.id, subreddit });
     });
+
+    test('should remove all posts in subreddit', async () => {
+        const subreddit = 'sub2';
+        browser.storage.local.set.callsFake(async (param) => {
+            const { posts } = param.subreddits[subreddit];
+            expect(posts).toEqual([]);
+        });
+        await storage.removePostsFrom({ subreddit });
+    });
+
+    test('should remove all posts in all subreddits', async () => {
+        browser.storage.local.set.callsFake(async (param) => {
+            Object
+                .keys(param.subreddits)
+                .forEach(subreddit => expect(param.subreddits[subreddit].posts).toEqual([]));
+        });
+        await storage.removeAllPosts();
+    });
 });

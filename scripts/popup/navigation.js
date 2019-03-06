@@ -2,6 +2,7 @@ import getElements from './elements';
 import renderQueryListBlock from './renderQueryList';
 import renderPostListBlock from './renderPostList';
 import updateHeader from './updateHeader';
+import updateFooter from './updateFooter';
 import { updateData, getData } from './data';
 
 const nav = {
@@ -17,6 +18,7 @@ const nav = {
         switch (location) {
             case this.locations.queriesList: {
                 updateHeader(location);
+                updateFooter(location);
                 elements.mainContainer.innerHTML = '';
                 elements.mainContainer.appendChild(
                     await renderQueryListBlock(nav),
@@ -33,6 +35,9 @@ const nav = {
                     updateHeader(location, {
                         name: `r/${id}/new`,
                         href: `https://reddit.com/r/${id}/new`,
+                    });
+                    updateFooter(location, {
+                        subreddit: id,
                     });
                 }
                 elements.mainContainer.innerHTML = '';

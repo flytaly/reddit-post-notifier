@@ -10,6 +10,7 @@ function getElements() {
             headerBackBtn: $('header button.arrow-left'),
             headerSubredditLink: $('header a.subreddit-name'),
             footer: $('footer'),
+            footerBtn: $('footer .footer-button'),
         };
     }
     return elements;

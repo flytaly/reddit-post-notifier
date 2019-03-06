@@ -54,6 +54,14 @@ function connectListener(port) {
                 await storage.removePost(payload);
                 break;
             }
+            case types.READ_POSTS: {
+                await storage.removePostsFrom(payload);
+                break;
+            }
+            case types.READ_ALL: {
+                await storage.removeAllPosts();
+                break;
+            }
             default:
         }
     });

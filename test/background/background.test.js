@@ -69,15 +69,29 @@ describe('popup messages listener', () => {
         expect(browser.runtime.onConnect.addListener.calledOnceWith(connectListener)).toBeTruthy();
     });
 
-    test('should call removing post from storage after receiving READ_POST', () => {
-        storage.removePost = jest.fn();
-
+    test('should add message listener', () => {
         connectListener(port);
         expect(port.onMessage.addListener).toHaveBeenCalled();
         expect(messageListener).toBeInstanceOf(Function);
+    });
 
+    test('should call removing post from storage after receiving READ_POST', () => {
+        storage.removePost = jest.fn();
         const payload = { id: 'id', subreddit: 'subreddit' };
         messageListener({ type: types.READ_POST, payload });
         expect(storage.removePost).toHaveBeenCalledWith(payload);
+    });
+
+    test('should call removing posts from subreddit after receiving READ_POSTS', () => {
+        storage.removePostsFrom = jest.fn();
+        const payload = { subreddit: 'subreddit' };
+        messageListener({ type: types.READ_POSTS, payload });
+        expect(storage.removePostsFrom).toHaveBeenCalledWith(payload);
+    });
+
+    test('should call removing all posts after receiving READ_ALL', () => {
+        storage.removeAllPosts = jest.fn();
+        messageListener({ type: types.READ_ALL });
+        expect(storage.removeAllPosts).toHaveBeenCalled();
     });
 });

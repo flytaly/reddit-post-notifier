@@ -77,6 +77,22 @@ const storage = {
 
         return false;
     },
+
+    async removePostsFrom({ subreddit }) {
+        if (subreddit) {
+            const subreddits = await storage.getSubredditData();
+            subreddits[subreddit].posts = [];
+            await browser.storage.local.set({ subreddits });
+        }
+    },
+
+    async removeAllPosts() {
+        const subreddits = await storage.getSubredditData();
+        Object.keys(subreddits).forEach((subr) => {
+            subreddits[subr].posts = [];
+        });
+        await browser.storage.local.set({ subreddits });
+    },
 };
 
 export default storage;
