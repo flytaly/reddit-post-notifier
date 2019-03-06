@@ -6,6 +6,7 @@ import auth from '../../scripts/background/auth';
 import bgScripts from '../../scripts/background/background';
 import optionsDefault from '../../scripts/options-default';
 import types from '../../scripts/types';
+import popupPort from '../../scripts/background/popupPort';
 
 jest.mock('../../scripts/background/auth.js');
 jest.mock('../../scripts/background/app.js');
@@ -57,10 +58,16 @@ describe('set options', () => {
 
 describe('popup messages listener', () => {
     let messageListener = null;
+    let onDisconnectListener = null;
     const port = {
         onMessage: {
             addListener: jest.fn((f) => {
                 messageListener = f;
+            }),
+        },
+        onDisconnect: {
+            addListener: jest.fn((f) => {
+                onDisconnectListener = f;
             }),
         },
     };
@@ -71,9 +78,20 @@ describe('popup messages listener', () => {
 
     test('should add message listener', () => {
         connectListener(port);
+
         expect(port.onMessage.addListener).toHaveBeenCalled();
         expect(messageListener).toBeInstanceOf(Function);
+        expect(port.onDisconnect.addListener).toHaveBeenCalled();
+        expect(onDisconnectListener).toBeInstanceOf(Function);
+        expect(popupPort.port).toBe(port);
     });
+
+    test('should set port as null after disconnect', () => {
+        expect(popupPort.port).toBe(port);
+        onDisconnectListener();
+        expect(popupPort.port).toBe(null);
+    });
+
 
     test('should call removing post from storage after receiving READ_POST', () => {
         storage.removePost = jest.fn();

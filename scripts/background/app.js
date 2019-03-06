@@ -2,6 +2,8 @@
 import RedditApiClient from './api-client';
 import storage from '../storage';
 import { wait } from '../utils';
+import popupPort from './popupPort';
+import types from '../types';
 
 const reddit = new RedditApiClient();
 
@@ -42,7 +44,13 @@ const app = {
             if (response.data && response.kind === 'Listing') {
                 const posts = response.data.children;
                 const newPosts = info.lastPostCreated ? filterNewPosts(info.lastPostCreated, posts) : posts;
-                await storage.saveSubredditData(subreddit, { posts: newPosts });
+                if (newPosts.length !== 0) {
+                    await storage.saveSubredditData(subreddit, { posts: newPosts });
+                    popupPort.postMessage({
+                        type: types.NEW_POSTS,
+                        payload: { subreddit, posts: newPosts },
+                    });
+                }
             } else {
                 console.error(`Error during fetching new posts from r/${subreddit}: `, response);
                 await storage.saveSubredditData(subreddit, { error: response });

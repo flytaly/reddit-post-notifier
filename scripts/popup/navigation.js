@@ -9,16 +9,18 @@ const nav = {
     locations: {
         queriesList: 'queriesList',
         postList: 'postList',
+        current: 'queriesList',
     },
 
     async navigate(location, params = {}) {
         const elements = getElements();
         if (params.forceUpdate) await updateData();
         const data = await getData();
+        nav.locations.current = location;
         switch (location) {
             case this.locations.queriesList: {
                 updateHeader(location);
-                updateFooter(location);
+                updateFooter(nav);
                 elements.mainContainer.innerHTML = '';
                 elements.mainContainer.appendChild(
                     await renderQueryListBlock(nav),
@@ -29,14 +31,13 @@ const nav = {
                 const { id, type } = params;
                 const info = {};
                 if (type === 'r') {
-                    // eslint-disable-next-line prefer-destructuring
                     info.posts = data.subrData[id].posts;
                     info.subreddit = id;
                     updateHeader(location, {
                         name: `r/${id}/new`,
                         href: `https://reddit.com/r/${id}/new`,
                     });
-                    updateFooter(location, {
+                    updateFooter(nav, {
                         subreddit: id,
                     });
                 }

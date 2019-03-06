@@ -1,19 +1,21 @@
 import getElements from './elements';
-import { postMessage } from './messages';
-import types from '../types';
+import storage from '../storage';
 
-async function updateFooter(location, payload) {
-    const { footerBtn } = getElements();
+async function updateFooter(nav, payload) {
+    const { footerBtn, mainContainer } = getElements();
 
-    if (location === 'queriesList') {
-        footerBtn.onclick = () => {
-            postMessage({ type: types.READ_ALL });
+    if (nav.locations.current === nav.locations.queriesList) {
+        footerBtn.onclick = async () => {
+            await storage.removeAllPosts();
+            nav.navigate(nav.locations.queriesList, { forceUpdate: true });
         };
     }
 
-    if (location === 'postList') {
-        footerBtn.onclick = () => {
-            postMessage({ type: types.READ_POSTS, payload });
+    if (nav.locations.current === nav.locations.postList) {
+        footerBtn.onclick = async () => {
+            await storage.removePost(payload);
+            const rows = mainContainer.querySelectorAll('ul.post-list li');
+            rows.forEach(row => row.classList.add('read'));
         };
     }
 }

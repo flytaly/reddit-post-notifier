@@ -13,10 +13,27 @@ function renderPostListRow(postListRowTmp, post) {
     return postListRow;
 }
 
+export function insertNewPosts({ posts, subreddit }) {
+    const { postListRow } = getTemplates();
+    const list = document.querySelector('.post-list');
+
+    if (!list || list.dataset.subreddit !== subreddit) return;
+
+    const postFragment = posts.reduce((fragment, post) => {
+        fragment.appendChild(renderPostListRow(
+            postListRow.cloneNode(true),
+            post.data,
+        ));
+        return fragment;
+    }, document.createDocumentFragment());
+    list.insertBefore(postFragment, list.firstChild);
+}
+
 function renderPostListBlock({ posts, subreddit }) {
     const templates = getTemplates();
     const postListTmp = templates.postList.cloneNode(true);
     const postList = postListTmp.querySelector('ul');
+    postList.dataset.subreddit = subreddit;
 
     if (posts && posts.length) {
         const postFragment = posts.reduce((fragment, post) => {
@@ -29,6 +46,7 @@ function renderPostListBlock({ posts, subreddit }) {
 
         postList.appendChild(postFragment);
     }
+
     postList.classList.add('run-animation');
 
     postList.addEventListener('click', ({ target }) => {

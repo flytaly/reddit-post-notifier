@@ -8,9 +8,9 @@ async function init() {
     getTemplates();
     getOptions();
     const elements = getElements();
-    connect();
+    connect(nav);
 
-    elements.headerBackBtn.addEventListener('click', () => nav.navigate(nav.locations.queriesList));
+    elements.headerBackBtn.addEventListener('click', () => nav.navigate(nav.locations.queriesList, { forceUpdate: true }));
 }
 
 async function start() {

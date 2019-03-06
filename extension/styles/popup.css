@@ -21,8 +21,7 @@ body {
 
 a {
     text-decoration: none;
-    /* color: #016ED8; */
-    /* color: black; */
+    color: #016ED8;
 }
 
 header {
@@ -88,6 +87,10 @@ ul.query-list .query-name {
     flex-grow: 1;
 }
 
+ul.query-list li.read .query-name {
+    color: grey;
+}
+
 button.arrow-left,
 button.check-mark,
 button.arrow-right {
@@ -128,6 +131,10 @@ button.arrow-left[hidden]{
 .check-mark:hover svg {
     fill: green;
     transform: scale(1.1);
+}
+
+.post-list li a{
+    transition: color 0.1s ease;
 }
 
 .post-list li.read a {

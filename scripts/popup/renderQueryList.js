@@ -1,6 +1,7 @@
 import getTemplates from './templates';
 import getOptions from './options';
 import { getData } from './data';
+import storage from '../storage';
 
 function renderQueryListRow(queryListRowTmp, { queryName, newPosts }) {
     const queryListRow = queryListRowTmp.querySelector('li');
@@ -19,14 +20,22 @@ async function renderQueryListBlock(nav) {
     const queryListTmp = templates.queryList.cloneNode(true);
     const queryList = queryListTmp.querySelector('ul');
 
-    queryList.addEventListener('click', ({ target }) => {
-        if (target.classList.contains('check-mark')) return;
-        const { id } = target.parentElement.dataset;
-        if (id) {
-            nav.navigate(nav.locations.postList, {
-                id: id.slice(2),
-                type: id.slice(0, 1),
-            });
+    queryList.addEventListener('click', async ({ target }) => {
+        const { id: fullId } = target.parentElement.dataset;
+        if (fullId) {
+            const [type, id] = [fullId.slice(0, 1), fullId.slice(2)];
+
+            if (target.classList.contains('check-mark')) {
+                const payload = {};
+
+                if (type === 'r') payload.subreddit = id;
+                await storage.removePostsFrom(payload);
+                nav.navigate(nav.locations.queriesList, { forceUpdate: true });
+
+                return;
+            }
+
+            nav.navigate(nav.locations.postList, { id, type });
         }
     });
 

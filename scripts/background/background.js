@@ -3,6 +3,7 @@ import storage from '../storage';
 import optionsDefault from '../options-default';
 import app from './app';
 import types from '../types';
+import popupPort from './popupPort';
 
 async function update() {
     const { updateInterval } = await storage.getOptions();
@@ -47,7 +48,8 @@ async function startExtension() {
 }
 
 function connectListener(port) {
-    port.onMessage.addListener(async (message) => {
+    popupPort.port = port;
+    popupPort.port.onMessage.addListener(async (message) => {
         const { type, payload } = message;
         switch (type) {
             case types.READ_POST: {
@@ -64,6 +66,9 @@ function connectListener(port) {
             }
             default:
         }
+    });
+    popupPort.port.onDisconnect.addListener(() => {
+        popupPort.port = null;
     });
 }
 browser.runtime.onConnect.addListener(connectListener);
