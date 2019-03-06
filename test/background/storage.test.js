@@ -69,8 +69,15 @@ describe('options', () => {
 
 describe('subreddits', () => {
     const subreddits = {
-        sub1: { posts: [{ data: { name: 'postId_11' } }], lastPost: 'postId_11' },
-        sub2: { posts: [{ data: { name: 'postId_21' } }], lastPost: 'postId_21' },
+        sub1: { posts: [{ data: { name: 'fullname_11', id: 'postId_11' } }], lastPost: 'fullname_11' },
+        sub2: {
+            posts: [
+                { data: { name: 'fullname_21', id: 'postId_21' } },
+                { data: { name: 'fullname_22', id: 'postId_22' } },
+                { data: { name: 'fullname_23', id: 'postId_23' } },
+            ],
+            lastPost: 'fullname_21',
+        },
     };
 
     beforeAll(() => {
@@ -87,8 +94,8 @@ describe('subreddits', () => {
 
     test('should save subreddit\'s posts', async () => {
         const newPosts = [
-            { data: { name: 'postId_13', created: '1551734739' } },
-            { data: { name: 'postId_12', created: '1551734740' } },
+            { data: { name: 'fullname_13', created: '1551734739' } },
+            { data: { name: 'fullname_12', created: '1551734740' } },
         ];
 
         browser.storage.local.set.callsFake(async (param) => {
@@ -114,5 +121,15 @@ describe('subreddits', () => {
         });
 
         await storage.saveSubredditData('sub3', { error });
+    });
+
+    test('should remove post', async () => {
+        const subreddit = 'sub2';
+        const deletePostIndex = 1;
+        browser.storage.local.set.callsFake(async (param) => {
+            const { posts } = param.subreddits[subreddit];
+            expect(posts).toEqual(subreddits[subreddit].posts.filter((value, idx) => idx !== deletePostIndex));
+        });
+        await storage.removePost({ id: subreddits[subreddit].posts[deletePostIndex].data.id, subreddit });
     });
 });

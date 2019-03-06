@@ -130,6 +130,10 @@ button.arrow-left[hidden]{
     transform: scale(1.1);
 }
 
+.post-list li.read a {
+    color: grey;
+}
+
 footer {
     background-color: var(--hover-bg-color);
     border-top: 1px solid var(--hover-border-color);

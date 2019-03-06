@@ -25,10 +25,11 @@ const nav = {
             }
             case this.locations.postList: {
                 const { id, type } = params;
-                let posts = [];
+                const info = {};
                 if (type === 'r') {
                     // eslint-disable-next-line prefer-destructuring
-                    posts = data.subrData[id].posts;
+                    info.posts = data.subrData[id].posts;
+                    info.subreddit = id;
                     updateHeader(location, {
                         name: `r/${id}/new`,
                         href: `https://reddit.com/r/${id}/new`,
@@ -36,7 +37,7 @@ const nav = {
                 }
                 elements.mainContainer.innerHTML = '';
                 elements.mainContainer.appendChild(
-                    renderPostListBlock(posts),
+                    renderPostListBlock(info),
                 );
 
                 break;

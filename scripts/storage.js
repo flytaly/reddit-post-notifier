@@ -63,6 +63,20 @@ const storage = {
 
         return browser.storage.local.set({ subreddits: { ...data, [subreddit]: current } });
     },
+
+    async removePost({ id, subreddit }) {
+        if (subreddit) {
+            const subreddits = await storage.getSubredditData();
+
+            subreddits[subreddit].posts = subreddits[subreddit]
+                .posts
+                .filter(({ data }) => data.id !== id);
+
+            return browser.storage.local.set({ subreddits });
+        }
+
+        return false;
+    },
 };
 
 export default storage;

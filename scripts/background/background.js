@@ -46,9 +46,22 @@ async function startExtension() {
     await update();
 }
 
+function connectListener(port) {
+    port.onMessage.addListener(async (message) => {
+        const { type, payload } = message;
+        switch (type) {
+            case types.READ_POST: {
+                await storage.removePost(payload);
+                break;
+            }
+            default:
+        }
+    });
+}
+browser.runtime.onConnect.addListener(connectListener);
+
 window.requestIdleCallback(startExtension);
 
-
 export default {
-    update, setOptions, startExtension,
+    update, setOptions, startExtension, connectListener,
 };

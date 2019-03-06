@@ -1,17 +1,17 @@
-import browser from 'sinon-chrome/webextensions';
+
+import browser from './mocks/browser.mock';
 import requestIdleCallback from './mocks/requestIdleCallback.mock';
 import storage from '../../scripts/storage';
 import auth from '../../scripts/background/auth';
 import bgScripts from '../../scripts/background/background';
 import optionsDefault from '../../scripts/options-default';
+import types from '../../scripts/types';
 
 jest.mock('../../scripts/background/auth.js');
 jest.mock('../../scripts/background/app.js');
 jest.mock('../../scripts/storage.js');
 
-global.browser = browser;
-
-const { startExtension } = bgScripts;
+const { startExtension, connectListener } = bgScripts;
 
 beforeAll(() => {
     storage.getOptions = jest.fn(async () => optionsDefault);
@@ -52,5 +52,32 @@ describe('set options', () => {
         storage.getOptions.mockImplementationOnce(async () => ({ option: 'value' }));
         await startExtension();
         expect(storage.saveOptions).not.toHaveBeenCalled();
+    });
+});
+
+describe('popup messages listener', () => {
+    let messageListener = null;
+    const port = {
+        onMessage: {
+            addListener: jest.fn((f) => {
+                messageListener = f;
+            }),
+        },
+    };
+
+    test('should add listener', () => {
+        expect(browser.runtime.onConnect.addListener.calledOnceWith(connectListener)).toBeTruthy();
+    });
+
+    test('should call removing post from storage after receiving READ_POST', () => {
+        storage.removePost = jest.fn();
+
+        connectListener(port);
+        expect(port.onMessage.addListener).toHaveBeenCalled();
+        expect(messageListener).toBeInstanceOf(Function);
+
+        const payload = { id: 'id', subreddit: 'subreddit' };
+        messageListener({ type: types.READ_POST, payload });
+        expect(storage.removePost).toHaveBeenCalledWith(payload);
     });
 });
