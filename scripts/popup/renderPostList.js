@@ -1,6 +1,5 @@
 import getTemplates from './templates';
-import types from '../types';
-import { postMessage } from './messages';
+import storage from '../storage';
 
 const baseUrl = 'https://reddit.com';
 
@@ -49,13 +48,12 @@ function renderPostListBlock({ posts, subreddit }) {
 
     postList.classList.add('run-animation');
 
-    postList.addEventListener('click', ({ target }) => {
-        if (target.classList.contains('check-mark')) {
-            const li = target.parentNode;
-            const { id } = li.dataset;
-            postMessage({ type: types.READ_POST, payload: { id, subreddit } });
-            li.classList.add('read');
-        }
+    postList.addEventListener('click', async ({ target }) => {
+        // if (target.classList.contains('check-mark')) {
+        const li = target.parentNode;
+        const { id } = li.dataset;
+        await storage.removePost({ id, subreddit });
+        li.classList.add('read');
     });
 
     return postList;
