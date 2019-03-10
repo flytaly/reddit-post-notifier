@@ -2,6 +2,19 @@ import storage from '../storage';
 
 const $ = document.querySelector.bind(document);
 
+function debounce(func, wait) {
+    let waiting = false;
+    let tmId;
+    return (...args) => {
+        if (waiting) clearTimeout(tmId);
+        waiting = true;
+        tmId = setTimeout(() => {
+            func(...args);
+            waiting = false;
+        }, wait);
+    };
+}
+
 const subredditNameRegExp = /^[A-Za-z0-9]\w{1,20}$/;
 
 async function restoreOptions() {
@@ -15,7 +28,7 @@ async function restoreOptions() {
 document.addEventListener('DOMContentLoaded', async () => {
     await restoreOptions();
     const subreddits = $('#subreddits');
-    subreddits.addEventListener('input', async () => {
+    const saveInput = async () => {
         const values = subreddits
             .value
             .trim()
@@ -32,7 +45,11 @@ document.addEventListener('DOMContentLoaded', async () => {
                 return acc;
             }, { valid: [], invalid: [] });
 
-        if (values.valid.length) await storage.saveOptions({ watchSubreddits: values.valid });
+        if (values.valid.length) {
+            const watchSubreddits = values.valid;
+            await storage.saveOptions({ watchSubreddits });
+            await storage.prune({ watchSubreddits });
+        }
         if (values.invalid.length) {
             subreddits.setCustomValidity(`Invalid subreddits names: ${values.invalid.join(' ')}`);
             subreddits.classList.add('invalid');
@@ -40,5 +57,7 @@ document.addEventListener('DOMContentLoaded', async () => {
             subreddits.setCustomValidity('');
             subreddits.classList.remove('invalid');
         }
-    });
+    };
+    const debouncedListener = debounce(saveInput, 200);
+    subreddits.addEventListener('input', debouncedListener);
 });

@@ -93,6 +93,28 @@ const storage = {
         });
         await browser.storage.local.set({ subreddits });
     },
+
+    /**
+     * Remove unused data
+     */
+    async prune(options) {
+        // eslint-disable-next-line no-param-reassign
+        if (!options) options = await this.getOptions();
+
+        const { watchSubreddits = [] } = options;
+        const subreddits = await storage.getSubredditData();
+        if (subreddits) {
+            const pruned = Object
+                .keys(subreddits)
+                .reduce((acc, sub) => {
+                    if (watchSubreddits.includes(sub)) {
+                        acc[sub] = subreddits[sub];
+                    }
+                    return acc;
+                }, {});
+            await browser.storage.local.set({ subreddits: pruned });
+        }
+    },
 };
 
 export default storage;

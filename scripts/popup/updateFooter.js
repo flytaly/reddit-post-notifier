@@ -13,7 +13,7 @@ async function updateFooter(nav, payload) {
 
     if (nav.locations.current === nav.locations.postList) {
         footerBtn.onclick = async () => {
-            await storage.removePost(payload);
+            await storage.removePostsFrom(payload);
             const rows = mainContainer.querySelectorAll('ul.post-list li');
             rows.forEach(row => row.classList.add('read'));
         };

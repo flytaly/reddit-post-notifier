@@ -48,7 +48,6 @@ function translateElementAttributes(element) {
 }
 
 function translateElement(element = document) {
-    //TODO follow the tranlsate attribute's instructions (yes/no/inherit)
     // Get all children that are marked as being translateable.
     const children = element.querySelectorAll('*[data-l10n-id]');
     for(const child of children) {

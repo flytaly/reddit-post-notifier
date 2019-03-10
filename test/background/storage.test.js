@@ -2,7 +2,7 @@ import browser from 'sinon-chrome/webextensions';
 import cloneDeep from 'lodash.clonedeep';
 import storage from '../../scripts/storage';
 
-window.browser = browser;
+global.browser = browser;
 
 describe('authorization data', () => {
     const RealDate = Date;
@@ -149,5 +149,22 @@ describe('subreddits', () => {
                 .forEach(subreddit => expect(param.subreddits[subreddit].posts).toEqual([]));
         });
         await storage.removeAllPosts();
+    });
+});
+
+describe('prune', () => {
+    const subInfo = {
+        sub1: { posts: [] },
+        sub2: { posts: [] },
+        sub3: { posts: [] },
+        sub4: { posts: [] },
+    };
+    test('should prune redundant subreddits', async () => {
+        storage.getSubredditData = jest.fn(async () => subInfo);
+        browser.storage.local.set.callsFake(async (arg) => {
+            expect(arg).toEqual({ subreddits: { sub1: subInfo.sub1, sub2: subInfo.sub2 } });
+        });
+        const watchSubreddits = ['sub1', 'sub2'];
+        await storage.prune({ watchSubreddits });
     });
 });

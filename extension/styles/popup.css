@@ -87,10 +87,6 @@ ul.query-list .query-name {
     flex-grow: 1;
 }
 
-ul.query-list li.read .query-name {
-    color: grey;
-}
-
 button.arrow-left,
 button.check-mark,
 button.arrow-right {
