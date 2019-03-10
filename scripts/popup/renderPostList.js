@@ -9,10 +9,12 @@ const baseUrl = 'https://reddit.com';
 function getPostImage(post) {
     const image = post.data.preview && post.data.preview.images && post.data.preview.images[0];
     if (!image || !image.resolutions) return null;
-    const { url } = image.resolutions[1];
+    const { url, width, height } = image.resolutions[1];
     if (!url) return null;
     const img = document.createElement('img');
     img.src = url;
+    img.height = height;
+    img.width = width;
 
     return img;
 }
