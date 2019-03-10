@@ -16,7 +16,8 @@
     "identity",
     "storage",
     "alarms",
-    "https://*.reddit.com/*"
+    "https://*.reddit.com/*",
+    "https://*.redd.it/*"
   ],
   "background": {
     "scripts": [

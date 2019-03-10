@@ -3,7 +3,7 @@ import renderQueryListBlock from './renderQueryList';
 import renderPostListBlock from './renderPostList';
 import updateHeader from './updateHeader';
 import updateFooter from './updateFooter';
-import { updateData, getData } from './data';
+import { updateData } from './data';
 
 const nav = {
     locations: {
@@ -15,12 +15,15 @@ const nav = {
     async navigate(location, params = {}) {
         const elements = getElements();
         if (params.forceUpdate) await updateData();
-        const data = await getData();
         nav.locations.current = location;
         switch (location) {
             case this.locations.queriesList: {
                 updateHeader(location);
                 updateFooter(nav);
+
+                document.body.style.minHeight = '';
+                document.body.style.minWidth = '';
+
                 elements.mainContainer.innerHTML = '';
                 elements.mainContainer.appendChild(
                     await renderQueryListBlock(nav),
@@ -30,8 +33,9 @@ const nav = {
             case this.locations.postList: {
                 const { id, type } = params;
                 const info = {};
+                document.body.style.minHeight = '300px';
+                document.body.style.minWidth = '400px';
                 if (type === 'r') {
-                    info.posts = data.subrData[id].posts;
                     info.subreddit = id;
                     updateHeader(location, {
                         name: `r/${id}/new`,
@@ -43,7 +47,7 @@ const nav = {
                 }
                 elements.mainContainer.innerHTML = '';
                 elements.mainContainer.appendChild(
-                    renderPostListBlock(info),
+                    await renderPostListBlock(info),
                 );
 
                 break;

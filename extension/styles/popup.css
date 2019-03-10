@@ -44,6 +44,10 @@ header a.subreddit-name{
     color: black;
 }
 
+main {
+    flex: 1 1;
+}
+
 ul {
     display: flex;
     flex-direction: column;
@@ -135,6 +139,28 @@ button.arrow-left[hidden]{
 
 .post-list li.read a {
     color: grey;
+}
+
+.post-list li{
+    position: relative;
+}
+
+#preview {
+    display: none;
+    position: absolute;
+    max-width: 300px;
+    max-height: 200px;
+    padding: 2px;
+    font-size: 0.9em;
+    word-wrap: break-word;
+    overflow: hidden;
+    background-color: white;
+    border: 1px solid var(--hover-border-color);
+    z-index: 100;
+}
+
+#preview.show{
+    display: block;
 }
 
 footer {

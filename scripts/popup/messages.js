@@ -1,5 +1,6 @@
 import types from '../types';
 import { insertNewPosts } from './renderPostList';
+import { updateData } from './data';
 
 let port = null;
 
@@ -14,6 +15,7 @@ export function connect(nav) {
                         nav.navigate(nav.locations.queriesList, { forceUpdate: true });
                     }
                     if (nav.locations.current === nav.locations.postList) {
+                        await updateData();
                         insertNewPosts(payload);
                     }
                     break;

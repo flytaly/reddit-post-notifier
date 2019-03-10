@@ -11,6 +11,7 @@ function getElements() {
             headerSubredditLink: $('header a.subreddit-name'),
             footer: $('footer'),
             footerBtn: $('footer .footer-button'),
+            preview: $('#preview'),
         };
     }
     return elements;
