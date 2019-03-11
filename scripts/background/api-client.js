@@ -31,6 +31,13 @@ export default class RedditApiClient {
         return {
             /** @param {Object} listing */
             new: async listing => this.GET(`/r/${subreddit}/new`, listing),
+            search: async listing => this.search(listing, subreddit),
         };
+    }
+
+    search(listing, subreddit = null) {
+        if (subreddit) return this.GET(`/r/${subreddit}/search`, listing);
+
+        return this.GET('/search', listing);
     }
 }

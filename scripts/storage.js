@@ -18,6 +18,11 @@ const storage = {
         return queriesList;
     },
 
+    async getQueriesData() {
+        const { queries } = await browser.storage.local.get({ queries: {} });
+        return queries;
+    },
+
     /**
      * @param {Object} data
      */
@@ -57,6 +62,26 @@ const storage = {
         });
         if (!wasUpdated) queriesUpdated.push(query);
         return browser.storage.local.set({ queriesList: queriesUpdated });
+    },
+
+    async saveQueryData(queryId, { posts, error }) {
+        const data = await storage.getQueriesData();
+        const current = data[queryId] || {};
+        if (posts) {
+            const savedPosts = current.posts || [];
+            current.posts = [...posts, ...savedPosts];
+            current.error = null;
+            if (posts[0]) {
+                current.lastPostCreated = posts[0].data.created;
+            }
+        }
+        if (error) {
+            current.error = error;
+        }
+
+        current.lastUpdate = Date.now();
+
+        return browser.storage.local.set({ queries: { ...data, [queryId]: current } });
     },
 
     async saveSubredditData(subreddit, { posts, error }) {
