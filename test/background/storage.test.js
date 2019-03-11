@@ -82,7 +82,7 @@ describe('subreddits', () => {
 
     beforeAll(() => {
         browser.storage.local.get.callsFake(async (param) => {
-            expect(param).toEqual({ subreddits: {} });
+            if (!param.queries) expect(param.subreddits).toEqual({});
             return { subreddits: cloneDeep(subreddits) };
         });
     });
@@ -169,13 +169,23 @@ describe('prune', () => {
     });
 });
 
-describe('search', () => {
+describe('search queries', () => {
     const queriesList = [{
         id: 'id1', name: 'name1', query: 'search_query1', subreddit: 'subreddit1',
     }, {
         id: 'id2', name: 'name2', query: 'search_query2', subreddit: 'subreddit2',
-    },
-    ];
+    }];
+    const queries = {
+        id1: { posts: [{ data: { id: 'postId_11' } }] },
+        id2: {
+            posts: [
+                { data: { id: 'postId_21' } },
+                { data: { id: 'postId_22' } },
+                { data: { id: 'postId_23' } },
+            ],
+        },
+    };
+
     test('should return queries list', async () => {
         browser.storage.local.get.callsFake(async (arg) => {
             expect(arg).toEqual({ queriesList: [] });
@@ -211,5 +221,57 @@ describe('search', () => {
             expect(arg).toEqual({ queriesList: [queriesList[1]] });
         });
         await storage.removeQueries([queriesList[0].id]);
+    });
+
+    test('should save search query data', async () => {
+        const queryId = 'id1';
+        const posts = [
+            { data: { id: 'postId6', created: '1552338638' } },
+            { data: { id: 'postId7', created: '1552338630' } },
+        ];
+
+        browser.storage.local.get.callsFake(async (arg) => {
+            expect(arg).toEqual({ queries: {} });
+            return { queries: cloneDeep(queries) };
+        });
+        browser.storage.local.set.callsFake(async (arg) => {
+            expect(arg.queries[queryId].lastPostCreated).toEqual('1552338638');
+            expect(arg.queries[queryId].posts).toEqual([...posts, ...queries[queryId].posts]);
+        });
+
+
+        await storage.saveQueryData(queryId, { posts });
+    });
+
+    test('should remove post', async () => {
+        browser.storage.local.get.callsFake(async (param) => {
+            expect(param).toEqual({ queries: {} });
+            return { queries: cloneDeep(queries) };
+        });
+        const searchId = 'id2';
+        const deletePostIndex = 1;
+        browser.storage.local.set.callsFake(async (param) => {
+            const { posts } = param.queries[searchId];
+            expect(posts).toEqual(queries[searchId].posts.filter((value, idx) => idx !== deletePostIndex));
+        });
+        await storage.removePost({ id: queries[searchId].posts[deletePostIndex].data.id, searchId });
+    });
+
+    test('should remove all posts in search query', async () => {
+        const searchId = 'id2';
+        browser.storage.local.set.callsFake(async (param) => {
+            const { posts } = param.queries[searchId];
+            expect(posts).toEqual([]);
+        });
+        await storage.removePostsFrom({ searchId });
+    });
+
+    test('should remove all posts in all search queries', async () => {
+        browser.storage.local.set.callsFake(async (param) => {
+            Object
+                .keys(param.queries)
+                .forEach(q => expect(param.queries[q].posts).toEqual([]));
+        });
+        await storage.removeAllPosts();
     });
 });

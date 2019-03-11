@@ -3,7 +3,7 @@ import renderQueryListBlock from './renderQueryList';
 import renderPostListBlock from './renderPostList';
 import updateHeader from './updateHeader';
 import updateFooter from './updateFooter';
-import { updateData } from './data';
+import { updateData, getData } from './data';
 
 const nav = {
     locations: {
@@ -15,6 +15,7 @@ const nav = {
     async navigate(location, params = {}) {
         const elements = getElements();
         if (params.forceUpdate) await updateData();
+        const data = await getData();
         nav.locations.current = location;
         switch (location) {
             case this.locations.queriesList: {
@@ -43,6 +44,22 @@ const nav = {
                     });
                     updateFooter(nav, {
                         subreddit: id,
+                    });
+                }
+                if (type === 's') {
+                    info.search = id;
+                    const { name, query, subreddit } = data.watchQueries.find(q => q.id === id);
+
+                    const endpoint = subreddit
+                        ? `/r/${subreddit}/search?q=${query}&sort=new&restrict_sr=on`
+                        : `/search?q=${query}&sort=new`;
+
+                    updateHeader(location, {
+                        name: name || query,
+                        href: `https://reddit.com${endpoint}`,
+                    });
+                    updateFooter(nav, {
+                        searchId: id,
                     });
                 }
                 elements.mainContainer.innerHTML = '';

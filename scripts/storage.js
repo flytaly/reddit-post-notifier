@@ -106,7 +106,7 @@ const storage = {
         return browser.storage.local.set({ subreddits: { ...data, [subreddit]: current } });
     },
 
-    async removePost({ id, subreddit }) {
+    async removePost({ id, subreddit, searchId }) {
         if (subreddit) {
             const subreddits = await storage.getSubredditData();
 
@@ -114,26 +114,47 @@ const storage = {
                 .posts
                 .filter(({ data }) => data.id !== id);
 
-            return browser.storage.local.set({ subreddits });
+            await browser.storage.local.set({ subreddits });
+            return;
         }
 
-        return false;
+        if (searchId) {
+            const queries = await storage.getQueriesData();
+            queries[searchId].posts = queries[searchId]
+                .posts
+                .filter(({ data }) => data.id !== id);
+
+            await browser.storage.local.set({ queries });
+        }
     },
 
-    async removePostsFrom({ subreddit }) {
+    async removePostsFrom({ subreddit, searchId }) {
         if (subreddit) {
             const subreddits = await storage.getSubredditData();
             subreddits[subreddit].posts = [];
             await browser.storage.local.set({ subreddits });
         }
+        if (searchId) {
+            const queries = await storage.getQueriesData();
+            queries[searchId].posts = [];
+            await browser.storage.local.set({ queries });
+        }
     },
 
     async removeAllPosts() {
-        const subreddits = await storage.getSubredditData();
+        const [subreddits = {}, queries = {}] = await Promise.all([
+            storage.getSubredditData(),
+            storage.getQueriesData(),
+        ]);
+
         Object.keys(subreddits).forEach((subr) => {
             subreddits[subr].posts = [];
         });
-        await browser.storage.local.set({ subreddits });
+        Object.keys(queries).forEach((q) => {
+            queries[q].posts = [];
+        });
+
+        await browser.storage.local.set({ subreddits, queries });
     },
 
     async removeQueries(ids = []) {

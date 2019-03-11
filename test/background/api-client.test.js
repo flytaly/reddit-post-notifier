@@ -66,4 +66,18 @@ describe('API', () => {
         expect(GET).toBeCalledWith('/r/test/new', listing);
         expect(result).toEqual(response);
     });
+
+    test('should request api "r/subreddit/search', async () => {
+        const listing = { limit: 10, q: 'query' };
+        const result = await reddit.getSubreddit('test').search(listing);
+        expect(GET).toBeCalledWith('/r/test/search', { sort: 'new', ...listing });
+        expect(result).toEqual(response);
+    });
+
+    test('should request api "/search"', async () => {
+        const listing = { limit: 10, q: 'query' };
+        const result = await reddit.search(listing);
+        expect(GET).toBeCalledWith('/search', { sort: 'new', ...listing });
+        expect(result).toEqual(response);
+    });
 });

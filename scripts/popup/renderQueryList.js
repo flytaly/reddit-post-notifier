@@ -3,18 +3,18 @@ import getOptions from './options';
 import { getData } from './data';
 import storage from '../storage';
 
-function renderQueryListRow(queryListRowTmp, { queryName, newPosts }) {
+function renderQueryListRow(queryListRowTmp, { name, id, postsCount }) {
     const queryListRow = queryListRowTmp.querySelector('li');
     const queryNameElem = queryListRowTmp.querySelector('.query-name');
-    queryListRow.dataset.id = `r_${queryName}`;
-    queryNameElem.textContent = `r/${queryName} (${newPosts})`;
+    queryListRow.dataset.id = id;
+    queryNameElem.textContent = `${name} (${postsCount})`;
 
     return queryListRow;
 }
 
 async function renderQueryListBlock(nav) {
     const templates = getTemplates();
-    const { subrData } = await getData();
+    const { subrData, watchQueries, queryData } = await getData();
     const { watchSubreddits = [] } = await getOptions();
 
     const queryListTmp = templates.queryList.cloneNode(true);
@@ -28,33 +28,52 @@ async function renderQueryListBlock(nav) {
             if (target.classList.contains('check-mark')) {
                 const payload = {};
 
-                if (type === 'r') payload.subreddit = id;
-                await storage.removePostsFrom(payload);
-                nav.navigate(nav.locations.queriesList, { forceUpdate: true });
+                if (type === 'r') {
+                    payload.subreddit = id;
+                    await storage.removePostsFrom(payload);
+                }
 
-                return;
+                if (type === 's') {
+                    payload.searchId = id;
+                    await storage.removePostsFrom(payload);
+                }
+
+                nav.navigate(nav.locations.queriesList, { forceUpdate: true });
             }
 
             nav.navigate(nav.locations.postList, { id, type });
         }
     });
 
-    const rowsFragment = watchSubreddits.reduce((fragment, subreddit) => {
-        if (!subrData[subreddit]) return fragment;
+    const rows = [
+        ...watchSubreddits.map((sub) => {
+            if (!subrData[sub]) return {};
+            const { posts } = subrData[sub];
+            return {
+                postsCount: posts ? posts.length : 0,
+                name: `r/${sub}`,
+                id: `r_${sub}`,
+            };
+        }),
+        ...watchQueries.map(({ id, name, query }) => {
+            if (!queryData[id]) return {};
+            const { posts } = queryData[id];
+            return {
+                postsCount: posts ? posts.length : 0,
+                name: name || query,
+                id: `s_${id}`,
+            };
+        }),
+    ];
 
-        const { posts } = subrData[subreddit];
-        if (posts && posts.length) {
-            const row = renderQueryListRow(templates.queryListRow.cloneNode(true), {
-                queryName: subreddit,
-                newPosts: posts.length,
-            });
-            fragment.appendChild(row);
-        }
+    const subredditRows = rows.reduce((fragment, rowInfo) => {
+        const rowEl = renderQueryListRow(templates.queryListRow.cloneNode(true), rowInfo);
+        fragment.appendChild(rowEl);
 
         return fragment;
     }, document.createDocumentFragment());
 
-    queryList.appendChild(rowsFragment);
+    queryList.appendChild(subredditRows);
 
     return queryList;
 }

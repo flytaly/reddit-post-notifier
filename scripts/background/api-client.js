@@ -36,8 +36,9 @@ export default class RedditApiClient {
     }
 
     search(listing, subreddit = null) {
-        if (subreddit) return this.GET(`/r/${subreddit}/search`, listing);
+        const listingSortByNew = { sort: 'new', ...listing };
+        if (subreddit) return this.GET(`/r/${subreddit}/search`, listingSortByNew);
 
-        return this.GET('/search', listing);
+        return this.GET('/search', listingSortByNew);
     }
 }

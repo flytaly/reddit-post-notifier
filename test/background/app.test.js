@@ -15,8 +15,9 @@ const options = {
     watchSubreddits: ['sub1', 'sub2', 'sub3'],
     updateInterval: 1,
 };
-
 const created = 1551733803;
+const queriesList = [{ id: 'id1', query: 'query1' }];
+const queriesData = { id1: { lastPostCreated: created } };
 const subredditsData = {
     sub1: {
         lastPost: 'postId_1',
@@ -48,6 +49,8 @@ let reddit;
 beforeAll(() => {
     storage.getOptions = jest.fn(async () => options);
     storage.getSubredditData = jest.fn(async () => subredditsData);
+    storage.getQueriesData = jest.fn(async () => queriesData);
+    storage.getQueriesList = jest.fn(async () => queriesList);
     reddit = global.redditClientInstance;
 });
 
@@ -60,9 +63,18 @@ describe('update', () => {
             expect(data).toEqual({ posts: newPosts.slice(0, 1) });
         });
 
-        const getNewPost = jest.fn(async () => ({ kind: 'Listing', data: { children: newPosts } }));
+        storage.saveQueryData = jest.fn(async (id, data) => {
+            expect(data).toEqual({ posts: newPosts.slice(0, 1) });
+        });
 
-        reddit.getSubreddit = jest.fn(() => ({ new: getNewPost }));
+        const getNewPost = jest.fn(async () => ({ kind: 'Listing', data: { children: newPosts } }));
+        const getSearchPost = jest.fn(async () => ({ kind: 'Listing', data: { children: newPosts } }));
+
+        reddit.getSubreddit = jest.fn(() => ({
+            new: getNewPost,
+            search: getSearchPost,
+        }));
+        reddit.search = getSearchPost;
 
         await app.update();
         expect(storage.getOptions).toHaveBeenCalled();
@@ -71,7 +83,8 @@ describe('update', () => {
         for (const [index, value] of options.watchSubreddits.entries()) {
             expect(getNewPost).toHaveBeenNthCalledWith(index + 1, { limit: 10 });
         }
-        expect(wait).toHaveBeenCalledTimes(options.watchSubreddits.length);
+        expect(wait).toHaveBeenCalledTimes(options.watchSubreddits.length
+            + queriesList.length);
     });
 
     test('should save subreddit\'s error', async () => {

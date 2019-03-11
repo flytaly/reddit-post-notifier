@@ -1,4 +1,5 @@
-/* eslint-disable no-param-reassign */
+/* eslint-disable prefer-destructuring, no-param-reassign */
+
 import getTemplates from './templates';
 import getElements from './elements';
 import storage from '../storage';
@@ -62,15 +63,19 @@ export function insertNewPosts({ posts, subreddit }) {
     list.insertBefore(postFragment, list.firstChild);
 }
 
-async function renderPostListBlock({ subreddit }) {
+async function renderPostListBlock({ subreddit, search }) {
     const templates = getTemplates();
     const data = await getData();
-    const posts = subreddit && data.subrData[subreddit].posts;
     const postListTmp = templates.postList.cloneNode(true);
     const postList = postListTmp.querySelector('ul');
     const { preview } = getElements();
     let windowHeight;
+    let posts;
+    if (subreddit) posts = data.subrData[subreddit].posts;
+    if (search) posts = data.queryData[search].posts;
+
     postList.dataset.subreddit = subreddit;
+    postList.dataset.search = search;
 
     if (posts && posts.length) {
         const postFragment = posts.reduce((fragment, post) => {
@@ -90,7 +95,7 @@ async function renderPostListBlock({ subreddit }) {
         // if (target.classList.contains('check-mark')) {
         const li = target.parentNode;
         const { id } = li.dataset;
-        await storage.removePost({ id, subreddit });
+        await storage.removePost({ id, subreddit, searchId: search });
         li.classList.add('read');
     };
 
@@ -110,8 +115,10 @@ async function renderPostListBlock({ subreddit }) {
     postList.onmouseover = async (event) => {
         let { target } = event;
         let id;
+        // eslint-disable-next-line no-shadow
+        let posts;
+
         while (target !== postList) {
-            // eslint-disable-next-line prefer-destructuring
             id = target.dataset.id;
             if (id) break;
             target = target.parentNode;
@@ -120,8 +127,11 @@ async function renderPostListBlock({ subreddit }) {
         if (id === previousPostId) return;
         previousPostId = id;
         windowHeight = document.documentElement.clientHeight;
-        // eslint-disable-next-line no-shadow
-        const posts = subreddit && (await getData()).subrData[subreddit].posts;
+
+        if (subreddit) { posts = (await getData()).subrData[subreddit].posts; }
+        if (search) { posts = (await getData()).queryData[search].posts; }
+
+        if (!posts) return;
         const post = posts.find(p => p.data.id === id);
         if (fillPreview(preview, post)) positionPreview(event);
         postList.onmousemove = positionPreview;
