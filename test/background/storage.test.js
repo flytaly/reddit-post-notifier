@@ -168,3 +168,48 @@ describe('prune', () => {
         await storage.prune({ watchSubreddits });
     });
 });
+
+describe('search', () => {
+    const queriesList = [{
+        id: 'id1', name: 'name1', query: 'search_query1', subreddit: 'subreddit1',
+    }, {
+        id: 'id2', name: 'name2', query: 'search_query2', subreddit: 'subreddit2',
+    },
+    ];
+    test('should return queries list', async () => {
+        browser.storage.local.get.callsFake(async (arg) => {
+            expect(arg).toEqual({ queriesList: [] });
+            return { queriesList };
+        });
+
+        const qList = await storage.getQueriesList();
+        expect(qList).toEqual(queriesList);
+    });
+
+    test('should save new query', async () => {
+        const newQuery = {
+            id: 'id3', name: 'name3', query: 'search_query3', subreddit: 'subreddit3',
+        };
+        browser.storage.local.set.callsFake(async (arg) => {
+            expect(arg).toEqual({ queriesList: [...queriesList, newQuery] });
+        });
+        await storage.saveQuery(newQuery);
+    });
+
+    test('should update query', async () => {
+        const updateQuery = {
+            id: 'id2', name: 'new_name2', query: 'new_search_query2', subreddit: 'subreddit2',
+        };
+        browser.storage.local.set.callsFake(async (arg) => {
+            expect(arg).toEqual({ queriesList: [queriesList[0], updateQuery] });
+        });
+        await storage.saveQuery(updateQuery);
+    });
+
+    test('should remove query', async () => {
+        browser.storage.local.set.callsFake(async (arg) => {
+            expect(arg).toEqual({ queriesList: [queriesList[1]] });
+        });
+        await storage.removeQueries([queriesList[0].id]);
+    });
+});

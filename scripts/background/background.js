@@ -11,7 +11,7 @@ async function update() {
         await app.update();
         browser.alarms.create(types.ALARM_UPDATE, { delayInMinutes: updateInterval / 60 });
     } catch (e) {
-        console.error(`${e.name}: ${e.message}`);
+        console.error(e);
         if (e.name === 'AuthError') {
             await auth.setAuth();
             await update();

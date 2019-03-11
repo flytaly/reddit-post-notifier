@@ -13,11 +13,41 @@
     <label for="subreddits">Watch for the new posts in following subreddits:</label>
     <input id="subreddits" type="text" name="url" placeholder="firefox learnprogramming" required />
     <!-- <div class="input-message">Error</div> -->
-    <div class="input-description">List of subreddits (without "r/") divided by spaces. Example: firefox
+    <i class="input-description">List of subreddits (without "r/") divided by spaces. Example: firefox
       learnprogramming
-    </div>
+    </i>
   </section>
-  <div class="panel-section-separator"></div>
+  <section class="watch-queries">
+    <div class="container">
+      <template id="search-tmp">
+        <fieldset class="browser-style search">
+          <legend>Watch for specific posts in the subreddit:</legend>
+          <ul id="search-queries">
+            <li class="name browser-style">
+              <label>Name</label>
+              <input type="text" name="name" placeholder="e.g.: dogs in r/aww" />
+            </li>
+
+            <li class="subreddit browser-style">
+              <label>Subreddit:</label>
+              <input type="text" name="subreddit" placeholder="e.g.: aww" />
+              </label>
+              <div class="info"></div>
+            </li>
+
+            <li class="query browser-style">
+              <label>Search query:</label>
+              <input type="text" name="query" maxlength="512" placeholder="e.g.: dog">
+              <div><a href="https://www.reddit.com/wiki/search#wiki_field_search">reddit search faq</a></div>
+            </li>
+          </ul>
+          <button class="browser-style delete">Delete the search</button>
+        </fieldset>
+      </template>
+    </div>
+    <button class="browser-style add-search">Add a search</button>
+  </section>
+  <!-- <div class="panel-section-separator"></div> -->
 </body>
 
 </html>

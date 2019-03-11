@@ -15,7 +15,7 @@ function renderQueryListRow(queryListRowTmp, { queryName, newPosts }) {
 async function renderQueryListBlock(nav) {
     const templates = getTemplates();
     const { subrData } = await getData();
-    const { watchSubreddits } = await getOptions();
+    const { watchSubreddits = [] } = await getOptions();
 
     const queryListTmp = templates.queryList.cloneNode(true);
     const queryList = queryListTmp.querySelector('ul');

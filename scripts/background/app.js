@@ -21,7 +21,7 @@ export const filterNewPosts = (timestamp, posts) => {
 
 const app = {
     update: async () => {
-        const { watchSubreddits, waitTimeout } = await storage.getOptions();
+        const { watchSubreddits = [], waitTimeout } = await storage.getOptions();
         const subData = await storage.getSubredditData();
         for (const subreddit of watchSubreddits) {
             /*

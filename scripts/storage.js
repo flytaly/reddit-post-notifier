@@ -13,6 +13,11 @@ const storage = {
         return subreddits;
     },
 
+    async getQueriesList() {
+        const { queriesList } = await browser.storage.local.get({ queriesList: [] });
+        return queriesList;
+    },
+
     /**
      * @param {Object} data
      */
@@ -40,6 +45,18 @@ const storage = {
     async saveOptions(data) {
         const optionsPrev = await this.getOptions();
         return browser.storage.local.set({ options: { ...optionsPrev, ...data } });
+    },
+
+    async saveQuery(query) {
+        const queriesList = await storage.getQueriesList();
+        let wasUpdated = false;
+        const queriesUpdated = queriesList.map((q) => {
+            if (q.id !== query.id) return q;
+            wasUpdated = true;
+            return query;
+        });
+        if (!wasUpdated) queriesUpdated.push(query);
+        return browser.storage.local.set({ queriesList: queriesUpdated });
     },
 
     async saveSubredditData(subreddit, { posts, error }) {
@@ -94,6 +111,12 @@ const storage = {
         await browser.storage.local.set({ subreddits });
     },
 
+    async removeQueries(ids = []) {
+        const queriesList = await storage.getQueriesList();
+        const queriesUpdated = queriesList.filter(q => !ids.includes(q.id));
+
+        return browser.storage.local.set({ queriesList: queriesUpdated });
+    },
     /**
      * Remove unused data
      */
