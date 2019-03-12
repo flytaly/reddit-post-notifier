@@ -20,6 +20,7 @@
             "ignoreTemplateLiterals": true
         }],
         "no-console": "off",
-        "no-restricted-syntax": ["error", "ForInStatement", "LabeledStatement", "WithStatement"]
+        "no-restricted-syntax": ["error", "ForInStatement", "LabeledStatement", "WithStatement"],
+        "global-require": "off"
     }
 }

@@ -1,6 +1,6 @@
 import storage from '../storage';
 
-const data = {
+export const data = {
     subrData: null,
     queryData: null,
     watchQueries: null,

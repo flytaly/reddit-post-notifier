@@ -1,0 +1,1292 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`mouseEvents should show popup 1`] = `
+<div
+  class="show"
+  id="preview"
+>
+  Can somebody please post their package.json for getting this working? I’ve got
+
+
+    ”eslintConfig”: {
+    “extends”: [
+      “react-app”,
+      “plugin:import/errors”,
+      “plugin:import/warnings”
+    ],
+    “plugins”: [
+      “prettier”,
+      “react”
+    ],
+    “rules”: {
+      “prettier/prettier”: “error”,
+      “react/prop-types”: [
+        2
+      ]
+    }
+    },
+
+
+But not getting any error...
+</div>
+`;
+
+exports[`render new posts should add new posts in search query view 1`] = `
+<ul
+  class="post-list run-animation"
+  data-search="judzi2k1"
+  data-subreddit="undefined"
+>
+  <li
+    data-id="newPostId1"
+  >
+    
+        
+    <button
+      class="check-mark"
+    >
+      
+          
+      <svg
+        viewBox="0 0 16 16"
+        xmlns="http://www.w3.org/2000/svg"
+      >
+        
+            
+        <use
+          href="#check-mark-path"
+        >
+          
+          
+        </use>
+      </svg>
+      
+        
+    </button>
+    
+        
+    <a
+      href="https://reddit.comnewPostPermalink1"
+    >
+      newPostTitle1
+    </a>
+    
+      
+  </li>
+  <li
+    data-id="newPostId2"
+  >
+    
+        
+    <button
+      class="check-mark"
+    >
+      
+          
+      <svg
+        viewBox="0 0 16 16"
+        xmlns="http://www.w3.org/2000/svg"
+      >
+        
+            
+        <use
+          href="#check-mark-path"
+        >
+          
+          
+        </use>
+      </svg>
+      
+        
+    </button>
+    
+        
+    <a
+      href="https://reddit.comnewPostPermalink2"
+    >
+      newPostTitle2
+    </a>
+    
+      
+  </li>
+  <li
+    data-id="b06z83"
+  >
+    
+        
+    <button
+      class="check-mark"
+    >
+      
+          
+      <svg
+        viewBox="0 0 16 16"
+        xmlns="http://www.w3.org/2000/svg"
+      >
+        
+            
+        <use
+          href="#check-mark-path"
+        >
+          
+          
+        </use>
+      </svg>
+      
+        
+    </button>
+    
+        
+    <a
+      href="https://reddit.com/r/aww/comments/b06z83/when_a_cat_and_dog_stops_fighting/"
+    >
+      When A Cat And Dog Stops Fighting
+    </a>
+    
+      
+  </li>
+  <li
+    data-id="b06wu2"
+  >
+    
+        
+    <button
+      class="check-mark"
+    >
+      
+          
+      <svg
+        viewBox="0 0 16 16"
+        xmlns="http://www.w3.org/2000/svg"
+      >
+        
+            
+        <use
+          href="#check-mark-path"
+        >
+          
+          
+        </use>
+      </svg>
+      
+        
+    </button>
+    
+        
+    <a
+      href="https://reddit.com/r/aww/comments/b06wu2/officer_gently_coaxing_a_dog_stranded_on_a_street/"
+    >
+      Officer gently coaxing a dog stranded on a street into his car
+    </a>
+    
+      
+  </li>
+  <li
+    data-id="b06uuz"
+  >
+    
+        
+    <button
+      class="check-mark"
+    >
+      
+          
+      <svg
+        viewBox="0 0 16 16"
+        xmlns="http://www.w3.org/2000/svg"
+      >
+        
+            
+        <use
+          href="#check-mark-path"
+        >
+          
+          
+        </use>
+      </svg>
+      
+        
+    </button>
+    
+        
+    <a
+      href="https://reddit.com/r/aww/comments/b06uuz/so_i_pretended_to_throw_a_ball_and_caught_the/"
+    >
+      "So I pretended to throw a ball and caught the exact moment my dog realised I had betrayed him..."
+    </a>
+    
+      
+  </li>
+  <li
+    data-id="b06u41"
+  >
+    
+        
+    <button
+      class="check-mark"
+    >
+      
+          
+      <svg
+        viewBox="0 0 16 16"
+        xmlns="http://www.w3.org/2000/svg"
+      >
+        
+            
+        <use
+          href="#check-mark-path"
+        >
+          
+          
+        </use>
+      </svg>
+      
+        
+    </button>
+    
+        
+    <a
+      href="https://reddit.com/r/aww/comments/b06u41/cute_cats_and_dogs_doing_funny_things_funny_cats/"
+    >
+      Cute Cats And Dogs Doing Funny Things 🐾 Funny Cats........😂😂😂😂😂😂😂😂😂
+    </a>
+    
+      
+  </li>
+  <li
+    data-id="b06t7k"
+  >
+    
+        
+    <button
+      class="check-mark"
+    >
+      
+          
+      <svg
+        viewBox="0 0 16 16"
+        xmlns="http://www.w3.org/2000/svg"
+      >
+        
+            
+        <use
+          href="#check-mark-path"
+        >
+          
+          
+        </use>
+      </svg>
+      
+        
+    </button>
+    
+        
+    <a
+      href="https://reddit.com/r/aww/comments/b06t7k/hmm_just_as_i_suspected_you_cant_afford_to_keep/"
+    >
+      Hmm, just as I suspected. You can't afford to keep the dog...
+    </a>
+    
+      
+  </li>
+  <li
+    data-id="b06s9m"
+  >
+    
+        
+    <button
+      class="check-mark"
+    >
+      
+          
+      <svg
+        viewBox="0 0 16 16"
+        xmlns="http://www.w3.org/2000/svg"
+      >
+        
+            
+        <use
+          href="#check-mark-path"
+        >
+          
+          
+        </use>
+      </svg>
+      
+        
+    </button>
+    
+        
+    <a
+      href="https://reddit.com/r/aww/comments/b06s9m/my_wet_dog_looks_like_a_jim_henson_character/"
+    >
+      My wet dog looks like a Jim Henson character
+    </a>
+    
+      
+  </li>
+  <li
+    data-id="b06r9m"
+  >
+    
+        
+    <button
+      class="check-mark"
+    >
+      
+          
+      <svg
+        viewBox="0 0 16 16"
+        xmlns="http://www.w3.org/2000/svg"
+      >
+        
+            
+        <use
+          href="#check-mark-path"
+        >
+          
+          
+        </use>
+      </svg>
+      
+        
+    </button>
+    
+        
+    <a
+      href="https://reddit.com/r/aww/comments/b06r9m/does_anyone_else_dog_love_whip_cream/"
+    >
+      Does anyone else dog love whip cream?
+    </a>
+    
+      
+  </li>
+  <li
+    data-id="b06lxm"
+  >
+    
+        
+    <button
+      class="check-mark"
+    >
+      
+          
+      <svg
+        viewBox="0 0 16 16"
+        xmlns="http://www.w3.org/2000/svg"
+      >
+        
+            
+        <use
+          href="#check-mark-path"
+        >
+          
+          
+        </use>
+      </svg>
+      
+        
+    </button>
+    
+        
+    <a
+      href="https://reddit.com/r/aww/comments/b06lxm/chloe_got_to_go_to_petsmart_yesterday_and_met/"
+    >
+      "Chloe got to go to PetSmart yesterday and met some dog friends! Now she’s struggling to chew this gigantic bone we bought her.
+    </a>
+    
+      
+  </li>
+  <li
+    data-id="b06le6"
+  >
+    
+        
+    <button
+      class="check-mark"
+    >
+      
+          
+      <svg
+        viewBox="0 0 16 16"
+        xmlns="http://www.w3.org/2000/svg"
+      >
+        
+            
+        <use
+          href="#check-mark-path"
+        >
+          
+          
+        </use>
+      </svg>
+      
+        
+    </button>
+    
+        
+    <a
+      href="https://reddit.com/r/aww/comments/b06le6/so_excited_for_this_ad_inspired_by_the_new_movie/"
+    >
+      😂 So excited for this!! “(#ad) Inspired by the new movie, Show Dogs, I’m doing my part to help solve the case - starting with working undercove
+    </a>
+    
+      
+  </li>
+  <li
+    data-id="b06f1r"
+  >
+    
+        
+    <button
+      class="check-mark"
+    >
+      
+          
+      <svg
+        viewBox="0 0 16 16"
+        xmlns="http://www.w3.org/2000/svg"
+      >
+        
+            
+        <use
+          href="#check-mark-path"
+        >
+          
+          
+        </use>
+      </svg>
+      
+        
+    </button>
+    
+        
+    <a
+      href="https://reddit.com/r/aww/comments/b06f1r/i_love_my_new_dog/"
+    >
+      I love my new dog.
+    </a>
+    
+      
+  </li>
+  <li
+    data-id="b067v5"
+  >
+    
+        
+    <button
+      class="check-mark"
+    >
+      
+          
+      <svg
+        viewBox="0 0 16 16"
+        xmlns="http://www.w3.org/2000/svg"
+      >
+        
+            
+        <use
+          href="#check-mark-path"
+        >
+          
+          
+        </use>
+      </svg>
+      
+        
+    </button>
+    
+        
+    <a
+      href="https://reddit.com/r/aww/comments/b067v5/bundle_of_dogs/"
+    >
+      Bundle of Dogs
+    </a>
+    
+      
+  </li>
+</ul>
+`;
+
+exports[`render new posts should add new posts in subreddit view 1`] = `
+<ul
+  class="post-list run-animation"
+  data-search="undefined"
+  data-subreddit="reactjs"
+>
+  <li
+    data-id="newPostId1"
+  >
+    
+        
+    <button
+      class="check-mark"
+    >
+      
+          
+      <svg
+        viewBox="0 0 16 16"
+        xmlns="http://www.w3.org/2000/svg"
+      >
+        
+            
+        <use
+          href="#check-mark-path"
+        >
+          
+          
+        </use>
+      </svg>
+      
+        
+    </button>
+    
+        
+    <a
+      href="https://reddit.comnewPostPermalink1"
+    >
+      newPostTitle1
+    </a>
+    
+      
+  </li>
+  <li
+    data-id="newPostId2"
+  >
+    
+        
+    <button
+      class="check-mark"
+    >
+      
+          
+      <svg
+        viewBox="0 0 16 16"
+        xmlns="http://www.w3.org/2000/svg"
+      >
+        
+            
+        <use
+          href="#check-mark-path"
+        >
+          
+          
+        </use>
+      </svg>
+      
+        
+    </button>
+    
+        
+    <a
+      href="https://reddit.comnewPostPermalink2"
+    >
+      newPostTitle2
+    </a>
+    
+      
+  </li>
+  <li
+    data-id="b05ufb"
+  >
+    
+        
+    <button
+      class="check-mark"
+    >
+      
+          
+      <svg
+        viewBox="0 0 16 16"
+        xmlns="http://www.w3.org/2000/svg"
+      >
+        
+            
+        <use
+          href="#check-mark-path"
+        >
+          
+          
+        </use>
+      </svg>
+      
+        
+    </button>
+    
+        
+    <a
+      href="https://reddit.com/r/reactjs/comments/b05ufb/createreactapp_eslint_config_with_proptypes_rules/"
+    >
+      create-react-app eslint config with prop-types rules?
+    </a>
+    
+      
+  </li>
+  <li
+    data-id="b05ldl"
+  >
+    
+        
+    <button
+      class="check-mark"
+    >
+      
+          
+      <svg
+        viewBox="0 0 16 16"
+        xmlns="http://www.w3.org/2000/svg"
+      >
+        
+            
+        <use
+          href="#check-mark-path"
+        >
+          
+          
+        </use>
+      </svg>
+      
+        
+    </button>
+    
+        
+    <a
+      href="https://reddit.com/r/reactjs/comments/b05ldl/trying_to_convert_a_form_into_hooks/"
+    >
+      Trying to convert a form into Hooks
+    </a>
+    
+      
+  </li>
+  <li
+    data-id="b04pdf"
+  >
+    
+        
+    <button
+      class="check-mark"
+    >
+      
+          
+      <svg
+        viewBox="0 0 16 16"
+        xmlns="http://www.w3.org/2000/svg"
+      >
+        
+            
+        <use
+          href="#check-mark-path"
+        >
+          
+          
+        </use>
+      </svg>
+      
+        
+    </button>
+    
+        
+    <a
+      href="https://reddit.com/r/reactjs/comments/b04pdf/setting_up_i18n_with_typescript_in_next_js_project/"
+    >
+      Setting up i18n with TypeScript in Next JS Project
+    </a>
+    
+      
+  </li>
+  <li
+    data-id="b04dyj"
+  >
+    
+        
+    <button
+      class="check-mark"
+    >
+      
+          
+      <svg
+        viewBox="0 0 16 16"
+        xmlns="http://www.w3.org/2000/svg"
+      >
+        
+            
+        <use
+          href="#check-mark-path"
+        >
+          
+          
+        </use>
+      </svg>
+      
+        
+    </button>
+    
+        
+    <a
+      href="https://reddit.com/r/reactjs/comments/b04dyj/my_first_react_app_complit/"
+    >
+      My First React App - Complit
+    </a>
+    
+      
+  </li>
+</ul>
+`;
+
+exports[`renderPostListBlock should render queries's posts 1`] = `
+<ul
+  class="post-list run-animation"
+  data-search="judzi2k1"
+  data-subreddit="undefined"
+>
+  <li
+    data-id="b06z83"
+  >
+    
+        
+    <button
+      class="check-mark"
+    >
+      
+          
+      <svg
+        viewBox="0 0 16 16"
+        xmlns="http://www.w3.org/2000/svg"
+      >
+        
+            
+        <use
+          href="#check-mark-path"
+        >
+          
+          
+        </use>
+      </svg>
+      
+        
+    </button>
+    
+        
+    <a
+      href="https://reddit.com/r/aww/comments/b06z83/when_a_cat_and_dog_stops_fighting/"
+    >
+      When A Cat And Dog Stops Fighting
+    </a>
+    
+      
+  </li>
+  <li
+    data-id="b06wu2"
+  >
+    
+        
+    <button
+      class="check-mark"
+    >
+      
+          
+      <svg
+        viewBox="0 0 16 16"
+        xmlns="http://www.w3.org/2000/svg"
+      >
+        
+            
+        <use
+          href="#check-mark-path"
+        >
+          
+          
+        </use>
+      </svg>
+      
+        
+    </button>
+    
+        
+    <a
+      href="https://reddit.com/r/aww/comments/b06wu2/officer_gently_coaxing_a_dog_stranded_on_a_street/"
+    >
+      Officer gently coaxing a dog stranded on a street into his car
+    </a>
+    
+      
+  </li>
+  <li
+    data-id="b06uuz"
+  >
+    
+        
+    <button
+      class="check-mark"
+    >
+      
+          
+      <svg
+        viewBox="0 0 16 16"
+        xmlns="http://www.w3.org/2000/svg"
+      >
+        
+            
+        <use
+          href="#check-mark-path"
+        >
+          
+          
+        </use>
+      </svg>
+      
+        
+    </button>
+    
+        
+    <a
+      href="https://reddit.com/r/aww/comments/b06uuz/so_i_pretended_to_throw_a_ball_and_caught_the/"
+    >
+      "So I pretended to throw a ball and caught the exact moment my dog realised I had betrayed him..."
+    </a>
+    
+      
+  </li>
+  <li
+    data-id="b06u41"
+  >
+    
+        
+    <button
+      class="check-mark"
+    >
+      
+          
+      <svg
+        viewBox="0 0 16 16"
+        xmlns="http://www.w3.org/2000/svg"
+      >
+        
+            
+        <use
+          href="#check-mark-path"
+        >
+          
+          
+        </use>
+      </svg>
+      
+        
+    </button>
+    
+        
+    <a
+      href="https://reddit.com/r/aww/comments/b06u41/cute_cats_and_dogs_doing_funny_things_funny_cats/"
+    >
+      Cute Cats And Dogs Doing Funny Things 🐾 Funny Cats........😂😂😂😂😂😂😂😂😂
+    </a>
+    
+      
+  </li>
+  <li
+    data-id="b06t7k"
+  >
+    
+        
+    <button
+      class="check-mark"
+    >
+      
+          
+      <svg
+        viewBox="0 0 16 16"
+        xmlns="http://www.w3.org/2000/svg"
+      >
+        
+            
+        <use
+          href="#check-mark-path"
+        >
+          
+          
+        </use>
+      </svg>
+      
+        
+    </button>
+    
+        
+    <a
+      href="https://reddit.com/r/aww/comments/b06t7k/hmm_just_as_i_suspected_you_cant_afford_to_keep/"
+    >
+      Hmm, just as I suspected. You can't afford to keep the dog...
+    </a>
+    
+      
+  </li>
+  <li
+    data-id="b06s9m"
+  >
+    
+        
+    <button
+      class="check-mark"
+    >
+      
+          
+      <svg
+        viewBox="0 0 16 16"
+        xmlns="http://www.w3.org/2000/svg"
+      >
+        
+            
+        <use
+          href="#check-mark-path"
+        >
+          
+          
+        </use>
+      </svg>
+      
+        
+    </button>
+    
+        
+    <a
+      href="https://reddit.com/r/aww/comments/b06s9m/my_wet_dog_looks_like_a_jim_henson_character/"
+    >
+      My wet dog looks like a Jim Henson character
+    </a>
+    
+      
+  </li>
+  <li
+    data-id="b06r9m"
+  >
+    
+        
+    <button
+      class="check-mark"
+    >
+      
+          
+      <svg
+        viewBox="0 0 16 16"
+        xmlns="http://www.w3.org/2000/svg"
+      >
+        
+            
+        <use
+          href="#check-mark-path"
+        >
+          
+          
+        </use>
+      </svg>
+      
+        
+    </button>
+    
+        
+    <a
+      href="https://reddit.com/r/aww/comments/b06r9m/does_anyone_else_dog_love_whip_cream/"
+    >
+      Does anyone else dog love whip cream?
+    </a>
+    
+      
+  </li>
+  <li
+    data-id="b06lxm"
+  >
+    
+        
+    <button
+      class="check-mark"
+    >
+      
+          
+      <svg
+        viewBox="0 0 16 16"
+        xmlns="http://www.w3.org/2000/svg"
+      >
+        
+            
+        <use
+          href="#check-mark-path"
+        >
+          
+          
+        </use>
+      </svg>
+      
+        
+    </button>
+    
+        
+    <a
+      href="https://reddit.com/r/aww/comments/b06lxm/chloe_got_to_go_to_petsmart_yesterday_and_met/"
+    >
+      "Chloe got to go to PetSmart yesterday and met some dog friends! Now she’s struggling to chew this gigantic bone we bought her.
+    </a>
+    
+      
+  </li>
+  <li
+    data-id="b06le6"
+  >
+    
+        
+    <button
+      class="check-mark"
+    >
+      
+          
+      <svg
+        viewBox="0 0 16 16"
+        xmlns="http://www.w3.org/2000/svg"
+      >
+        
+            
+        <use
+          href="#check-mark-path"
+        >
+          
+          
+        </use>
+      </svg>
+      
+        
+    </button>
+    
+        
+    <a
+      href="https://reddit.com/r/aww/comments/b06le6/so_excited_for_this_ad_inspired_by_the_new_movie/"
+    >
+      😂 So excited for this!! “(#ad) Inspired by the new movie, Show Dogs, I’m doing my part to help solve the case - starting with working undercove
+    </a>
+    
+      
+  </li>
+  <li
+    data-id="b06f1r"
+  >
+    
+        
+    <button
+      class="check-mark"
+    >
+      
+          
+      <svg
+        viewBox="0 0 16 16"
+        xmlns="http://www.w3.org/2000/svg"
+      >
+        
+            
+        <use
+          href="#check-mark-path"
+        >
+          
+          
+        </use>
+      </svg>
+      
+        
+    </button>
+    
+        
+    <a
+      href="https://reddit.com/r/aww/comments/b06f1r/i_love_my_new_dog/"
+    >
+      I love my new dog.
+    </a>
+    
+      
+  </li>
+  <li
+    data-id="b067v5"
+  >
+    
+        
+    <button
+      class="check-mark"
+    >
+      
+          
+      <svg
+        viewBox="0 0 16 16"
+        xmlns="http://www.w3.org/2000/svg"
+      >
+        
+            
+        <use
+          href="#check-mark-path"
+        >
+          
+          
+        </use>
+      </svg>
+      
+        
+    </button>
+    
+        
+    <a
+      href="https://reddit.com/r/aww/comments/b067v5/bundle_of_dogs/"
+    >
+      Bundle of Dogs
+    </a>
+    
+      
+  </li>
+</ul>
+`;
+
+exports[`renderPostListBlock should render subreddit's posts 1`] = `
+<ul
+  class="post-list run-animation"
+  data-search="undefined"
+  data-subreddit="reactjs"
+>
+  <li
+    data-id="b05ufb"
+  >
+    
+        
+    <button
+      class="check-mark"
+    >
+      
+          
+      <svg
+        viewBox="0 0 16 16"
+        xmlns="http://www.w3.org/2000/svg"
+      >
+        
+            
+        <use
+          href="#check-mark-path"
+        >
+          
+          
+        </use>
+      </svg>
+      
+        
+    </button>
+    
+        
+    <a
+      href="https://reddit.com/r/reactjs/comments/b05ufb/createreactapp_eslint_config_with_proptypes_rules/"
+    >
+      create-react-app eslint config with prop-types rules?
+    </a>
+    
+      
+  </li>
+  <li
+    data-id="b05ldl"
+  >
+    
+        
+    <button
+      class="check-mark"
+    >
+      
+          
+      <svg
+        viewBox="0 0 16 16"
+        xmlns="http://www.w3.org/2000/svg"
+      >
+        
+            
+        <use
+          href="#check-mark-path"
+        >
+          
+          
+        </use>
+      </svg>
+      
+        
+    </button>
+    
+        
+    <a
+      href="https://reddit.com/r/reactjs/comments/b05ldl/trying_to_convert_a_form_into_hooks/"
+    >
+      Trying to convert a form into Hooks
+    </a>
+    
+      
+  </li>
+  <li
+    data-id="b04pdf"
+  >
+    
+        
+    <button
+      class="check-mark"
+    >
+      
+          
+      <svg
+        viewBox="0 0 16 16"
+        xmlns="http://www.w3.org/2000/svg"
+      >
+        
+            
+        <use
+          href="#check-mark-path"
+        >
+          
+          
+        </use>
+      </svg>
+      
+        
+    </button>
+    
+        
+    <a
+      href="https://reddit.com/r/reactjs/comments/b04pdf/setting_up_i18n_with_typescript_in_next_js_project/"
+    >
+      Setting up i18n with TypeScript in Next JS Project
+    </a>
+    
+      
+  </li>
+  <li
+    data-id="b04dyj"
+  >
+    
+        
+    <button
+      class="check-mark"
+    >
+      
+          
+      <svg
+        viewBox="0 0 16 16"
+        xmlns="http://www.w3.org/2000/svg"
+      >
+        
+            
+        <use
+          href="#check-mark-path"
+        >
+          
+          
+        </use>
+      </svg>
+      
+        
+    </button>
+    
+        
+    <a
+      href="https://reddit.com/r/reactjs/comments/b04dyj/my_first_react_app_complit/"
+    >
+      My First React App - Complit
+    </a>
+    
+      
+  </li>
+</ul>
+`;

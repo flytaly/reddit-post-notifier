@@ -47,8 +47,7 @@ async function renderQueryListBlock(nav) {
 
     const rows = [
         ...watchSubreddits.map((sub) => {
-            if (!subrData[sub]) return {};
-            const { posts } = subrData[sub];
+            const { posts } = subrData[sub] || { posts: [] };
             return {
                 postsCount: posts ? posts.length : 0,
                 name: `r/${sub}`,
@@ -56,8 +55,7 @@ async function renderQueryListBlock(nav) {
             };
         }),
         ...watchQueries.map(({ id, name, query }) => {
-            if (!queryData[id]) return {};
-            const { posts } = queryData[id];
+            const { posts } = queryData[id] || { posts: [] };
             return {
                 postsCount: posts ? posts.length : 0,
                 name: name || query,

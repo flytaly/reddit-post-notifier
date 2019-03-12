@@ -1,0 +1,112 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`templates should match snapshot 1`] = `
+Object {
+  "postList": <DocumentFragment>
+    
+      
+    <ul
+      class="post-list"
+    />
+    
+    
+  </DocumentFragment>,
+  "postListRow": <DocumentFragment>
+    
+      
+    <li>
+      
+        
+      <button
+        class="check-mark"
+      >
+        
+          
+        <svg
+          viewBox="0 0 16 16"
+          xmlns="http://www.w3.org/2000/svg"
+        >
+          
+            
+          <use
+            href="#check-mark-path"
+          >
+            
+          
+          </use>
+        </svg>
+        
+        
+      </button>
+      
+        
+      <a
+        href="#"
+      />
+      
+      
+    </li>
+    
+    
+  </DocumentFragment>,
+  "queryList": <DocumentFragment>
+    
+      
+    <ul
+      class="query-list"
+    >
+      
+      
+    </ul>
+    
+    
+  </DocumentFragment>,
+  "queryListRow": <DocumentFragment>
+    
+      
+    <li>
+      
+        
+      <button
+        class="check-mark"
+      >
+        
+          
+        <svg
+          viewBox="0 0 16 16"
+          xmlns="http://www.w3.org/2000/svg"
+        >
+          
+            
+          <use
+            href="#check-mark-path"
+          >
+            
+          
+          </use>
+        </svg>
+        
+        
+      </button>
+      
+        
+      <div
+        class="query-name"
+      />
+      
+        
+      <button
+        class="arrow-right"
+      >
+        <img
+          src="arrowhead-right.svg"
+        />
+      </button>
+      
+      
+    </li>
+    
+    
+  </DocumentFragment>,
+}
+`;

@@ -47,11 +47,11 @@ function renderPostListRow(postListRowTmp, post) {
     return postListRow;
 }
 
-export function insertNewPosts({ posts, subreddit }) {
+export function insertNewPosts({ posts, subreddit, search }) {
     const { postListRow } = getTemplates();
     const list = document.querySelector('.post-list');
 
-    if (!list || list.dataset.subreddit !== subreddit) return;
+    if (!list || (list.dataset.subreddit !== subreddit && list.dataset.search !== search)) return;
 
     const postFragment = posts.reduce((fragment, post) => {
         fragment.appendChild(renderPostListRow(

@@ -12,7 +12,7 @@
     "build:webpack": "webpack --mode production",
     "build:webext": "web-ext build --source-dir extension",
     "build": "npm-run-all --sequential build:webpack build:webext",
-    "test": "jest",
+    "test": "jest --coverage",
     "test:watch": "jest --watch"
   },
   "author": "Vitaly Yerofeyevsky",
@@ -26,7 +26,11 @@
     "@babel/core": "^7.3.3",
     "@babel/preset-env": "^7.3.1",
     "babel-jest": "^24.1.0",
+    "dom-testing-library": "^3.17.0",
+    "html-loader": "^0.5.5",
     "jest": "^24.1.0",
+    "jest-dom": "^3.1.2",
+    "jsdom": "^14.0.0",
     "lodash.clonedeep": "^4.5.0",
     "npm-run-all": "^4.1.5",
     "sinon-chrome": "^2.3.2",
@@ -43,6 +47,16 @@
       "!<rootDir>/node_modules/",
       "!<rootDir>/scripts/l10n.js",
       "!<rootDir>/scripts/reddit-scopes.js"
-    ]
+    ],
+    "moduleFileExtensions": [
+      "js",
+      "html",
+      "svg"
+    ],
+    "transform": {
+      "^.+\\.js$": "babel-jest",
+      "^.+\\.html$": "<rootDir>/test/utils/htmlLoader.js",
+      "\\.(jpg|jpeg|png|gif|eot|otf|webp|svg|ttf|woff|woff2|mp4|webm|wav|mp3|m4a|aac|oga)$": "<rootDir>/test/utils/fileTransformer.js"
+    }
   }
 }
