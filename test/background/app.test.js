@@ -14,6 +14,7 @@ jest.mock('../../scripts/storage.js');
 const options = {
     watchSubreddits: ['sub1', 'sub2', 'sub3'],
     updateInterval: 1,
+    messages: false,
 };
 const created = 1551733803;
 const queriesList = [{ id: 'id1', query: 'query1' }];
@@ -56,7 +57,7 @@ beforeAll(() => {
 
 afterEach(() => jest.clearAllMocks());
 
-describe('update', () => {
+describe('update posts', () => {
     test('should update and save new posts', async () => {
         storage.saveSubredditData = jest.fn(async (sub, data) => {
             expect(options.watchSubreddits.includes(sub)).toBeTruthy();
@@ -96,5 +97,35 @@ describe('update', () => {
         const getNewPost = jest.fn(async () => error);
         reddit.getSubreddit = jest.fn(() => ({ new: getNewPost }));
         await app.update();
+    });
+});
+
+
+describe('update messages', () => {
+    const messageData = {
+        messages: [{ data: { created } }],
+        lastPostCreated: created,
+        count: 1,
+    };
+    const newMessages = [
+        { data: { created: created + 10 } },
+    ];
+    const response = {
+        kind: 'Listing',
+        data: {
+            children: [...newMessages, ...messageData.messages],
+        },
+    };
+
+    beforeAll(() => {
+        storage.getMessageData = jest.fn(async () => messageData);
+        storage.getOptions = jest.fn(async () => ({ ...options, messages: true }));
+        storage.saveMessageData = jest.fn();
+        reddit.messages = { unread: jest.fn(async () => response) };
+    });
+
+    test('should update and save new private messages', async () => {
+        await app.update();
+        expect(storage.saveMessageData).toHaveBeenCalledWith({ newMessages, count: messageData.count + newMessages.length });
     });
 });

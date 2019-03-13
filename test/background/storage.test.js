@@ -275,3 +275,34 @@ describe('search queries', () => {
         await storage.removeAllPosts();
     });
 });
+
+describe('messages', () => {
+    const oldMessages = [
+        { data: { created: '1552338638' } },
+        { data: { created: '1552338630' } },
+    ];
+    const newMessages = [
+        { data: { created: '1552339005' } },
+        { data: { created: '1552339000' } },
+    ];
+
+    test('should return information about unread messages', async () => {
+        browser.storage.local.get.callsFake(async (param) => {
+            expect(param).toEqual({ messages: {} });
+            return { messages: { messages: cloneDeep(oldMessages) } };
+        });
+        const messagesData = await storage.getMessageData();
+        expect(messagesData.messages).toEqual(oldMessages);
+    });
+
+    test('should save private messages and total number of unread messages', async () => {
+        // const messages =
+        browser.storage.local.set.callsFake(async ({ messages }) => {
+            expect(messages.count).toBe(4);
+            expect(messages.lastPostCreated).toBe(newMessages[0].data.created);
+            expect(messages.messages).toEqual([...newMessages, ...oldMessages]);
+        });
+
+        await storage.saveMessageData({ newMessages, count: 4 });
+    });
+});

@@ -49,7 +49,7 @@ describe('Token Retrieval', () => {
         expect(parsedUrl.searchParams.get('response_type')).toBe('code');
         expect(parsedUrl.searchParams.get('redirect_uri')).toBe('https://localhost/');
         expect(parsedUrl.searchParams.get('client_id')).toBe(config.clientId);
-        expect(parsedUrl.searchParams.get('scope')).toBe(scopes.read.id);
+        expect(parsedUrl.searchParams.get('scope')).toBe(`${scopes.read.id} ${scopes.privatemessages.id}`);
         expect(parsedUrl.searchParams.get('state')).toBe(auth.authState);
         expect(parsedUrl.searchParams.get('duration')).toBe('permanent');
     }

@@ -74,8 +74,14 @@ function createQueryFields(template, {
 }
 
 async function restoreOptions() {
-    const { watchSubreddits } = await storage.getOptions();
+    const { watchSubreddits, messages } = await storage.getOptions();
     const watchQueries = await storage.getQueriesList();
+
+    // ------- Show messages -------
+    const showMessages = $('#messages');
+    showMessages.checked = messages;
+
+
     // ------- Subreddits -------
     if (watchSubreddits && watchSubreddits.length) {
         const subreddits = $('#subreddits');
@@ -97,6 +103,11 @@ async function restoreOptions() {
 
 document.addEventListener('DOMContentLoaded', async () => {
     await restoreOptions();
+    const showMessages = $('#messages');
+    showMessages.addEventListener('change', async () => {
+        await storage.saveOptions({ messages: showMessages.checked });
+    });
+
     const subreddits = $('#subreddits');
     const saveInput = async () => {
         const values = subreddits

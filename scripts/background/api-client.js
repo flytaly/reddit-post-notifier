@@ -41,4 +41,10 @@ export default class RedditApiClient {
 
         return this.GET('/search', listingSortByNew);
     }
+
+    get messages() {
+        return {
+            unread: async listing => this.GET('/message/unread', listing),
+        };
+    }
 }

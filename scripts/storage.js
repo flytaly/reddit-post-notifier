@@ -3,6 +3,11 @@ const storage = {
         return browser.storage.local.get(keys);
     },
 
+    async getMessageData() {
+        const { messages } = await browser.storage.local.get({ messages: {} });
+        return messages;
+    },
+
     async getOptions() {
         const { options } = await browser.storage.local.get('options');
         return options;
@@ -42,6 +47,20 @@ const storage = {
             ...(refreshToken && { refreshToken }),
             ...(expiresIn && { expiresIn }),
         });
+    },
+
+    async saveMessageData({ newMessages, count }) {
+        const data = await storage.getMessageData() || {};
+        data.messages = data.messages || [];
+        if (count === 0) {
+            data.messages = [];
+        } else if (newMessages) data.messages.unshift(...newMessages);
+
+        if (newMessages && newMessages[0]) data.lastPostCreated = newMessages[0].data.created;
+
+        data.count = count;
+
+        await browser.storage.local.set({ messages: data });
     },
 
     /**

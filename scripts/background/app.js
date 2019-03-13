@@ -7,11 +7,11 @@ import types from '../types';
 
 const reddit = new RedditApiClient();
 
-export const filterNewPosts = (timestamp, posts) => {
+export const filterNewItems = (timestamp, items) => {
     const newPosts = [];
-    for (const post of posts) {
-        if (post.data.created > timestamp) {
-            newPosts.push(post);
+    for (const item of items) {
+        if (item.data.created > timestamp) {
+            newPosts.push(item);
         } else {
             return newPosts;
         }
@@ -21,12 +21,12 @@ export const filterNewPosts = (timestamp, posts) => {
 };
 
 const app = {
-    extractNewPosts: (response, info) => {
-        const posts = response.data.children;
-        const newPosts = info.lastPostCreated ? filterNewPosts(info.lastPostCreated, posts) : posts;
+    extractNewItems: (response, info) => {
+        const items = response.data.children;
+        const newItems = info.lastPostCreated ? filterNewItems(info.lastPostCreated, items) : items;
 
-        if (newPosts.length !== 0) {
-            return newPosts;
+        if (newItems.length !== 0) {
+            return newItems;
         }
         return null;
     },
@@ -45,7 +45,7 @@ const app = {
             return;
         }
 
-        const newPosts = app.extractNewPosts(response, info);
+        const newPosts = app.extractNewItems(response, info);
         if (newPosts) {
             await storage.saveSubredditData(subreddit, { posts: newPosts });
             popupPort.postMessage({
@@ -72,9 +72,10 @@ const app = {
         if (!response.data || response.kind !== 'Listing') {
             console.error(`Error during fetching posts query r/${query.query}: `, response);
             await storage.saveQueryData(query.id, { error: response });
+            return;
         }
 
-        const newPosts = app.extractNewPosts(response, data);
+        const newPosts = app.extractNewItems(response, data);
 
         if (newPosts) {
             await storage.saveQueryData(query.id, { posts: newPosts });
@@ -85,6 +86,20 @@ const app = {
         }
     },
 
+    updateUnreadMsg: async (msgData) => {
+        const response = await reddit.messages.unread();
+
+        if (!response.data || response.kind !== 'Listing') {
+            console.error('Error during fetching unread messages', response);
+            return;
+        }
+
+        const count = response.data.children ? response.data.children.length : 0;
+        const newMessages = app.extractNewItems(response, msgData);
+
+        await storage.saveMessageData({ newMessages, count });
+    },
+
     update: async () => {
         /*
             Sadly currently it's impossible to reliably fetch new posts by 'fullname':
@@ -93,11 +108,18 @@ const app = {
             Hence updates inevitably stop after a while.
             Instead, we ask some last posts and then save only new posts depending on their timestamp
             */
-        const { watchSubreddits = [], waitTimeout, limit = 10 } = await storage.getOptions();
+        const {
+            watchSubreddits = [], waitTimeout, messages, limit = 10,
+        } = await storage.getOptions();
         const watchQueries = await storage.getQueriesList();
         const subData = await storage.getSubredditData();
         const queryData = await storage.getQueriesData();
+        const messageData = await storage.getMessageData();
 
+        if (messages) {
+            await app.updateUnreadMsg(messageData);
+            await wait(waitTimeout * 1000);
+        }
 
         for (const subreddit of watchSubreddits) {
             await app.updateSubreddit({ subreddit, subData, listing: { limit } });

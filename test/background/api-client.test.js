@@ -80,4 +80,11 @@ describe('API', () => {
         expect(GET).toBeCalledWith('/search', { sort: 'new', ...listing });
         expect(result).toEqual(response);
     });
+
+    test('should request api "/message/unread"', async () => {
+        const listing = { limit: 25 };
+        const result = await reddit.messages.unread(listing);
+        expect(GET).toBeCalledWith('/message/unread', { ...listing });
+        expect(result).toEqual(response);
+    });
 });
