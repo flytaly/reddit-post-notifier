@@ -3,11 +3,13 @@ import './mocks/storage.mock';
 import { data } from '../../scripts/popup/data';
 import nav from './mocks/navigation.mock';
 import { insertNewPosts } from './mocks/render-post-list.mock';
-import { connect, postMessage } from '../../scripts/popup/messages';
 import types from '../../scripts/types';
 import subreddits from '../fixtures/subreddits';
+import updateHeader from '../../scripts/popup/updateHeader';
+import { connect, postMessage } from '../../scripts/popup/messages';
 
 let listener;
+jest.mock('../../scripts/popup/updateHeader', () => jest.fn());
 
 const port = {
     onMessage: {
@@ -49,6 +51,15 @@ describe('connect', () => {
         expect(nav.navigate).not.toHaveBeenCalled();
         expect(data.subrData).toEqual(subreddits);
         expect(insertNewPosts).toHaveBeenCalledWith(msg.payload);
+    });
+
+    test('should update header after receiving new messages', async () => {
+        jest.clearAllMocks();
+        const msg = { type: types.NEW_MESSAGES, payload: { count: 3 } };
+        nav.locations.current = nav.locations.queriesList;
+        await listener(msg);
+        expect(nav.navigate).not.toHaveBeenCalled();
+        expect(updateHeader).toHaveBeenCalledWith(nav.locations.queriesList, { unreadMsgCount: 3 });
     });
 });
 

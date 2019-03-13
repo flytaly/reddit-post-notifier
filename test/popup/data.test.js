@@ -4,6 +4,7 @@ import { getData } from '../../scripts/popup/data';
 const subreddits = require('../fixtures/subreddits');
 const queriesList = require('../fixtures/queries-list');
 const queries = require('../fixtures/queries');
+const messages = require('../fixtures/messages');
 
 describe('data', () => {
     let data;
@@ -15,10 +16,12 @@ describe('data', () => {
         expect(data.subrData).toEqual(subreddits);
         expect(data.queryData).toEqual(queries);
         expect(data.watchQueries).toEqual(queriesList);
+        expect(data.messageData).toEqual(messages);
 
         expect(storage.getSubredditData).toHaveBeenCalled();
         expect(storage.getQueriesData).toHaveBeenCalled();
         expect(storage.getQueriesList).toHaveBeenCalled();
+        expect(storage.getMessageData).toHaveBeenCalled();
     });
 
     test('should use cached data instead of storage', async () => {
@@ -30,5 +33,6 @@ describe('data', () => {
         expect(storage.getSubredditData).not.toHaveBeenCalled();
         expect(storage.getQueriesData).not.toHaveBeenCalled();
         expect(storage.getQueriesList).not.toHaveBeenCalled();
+        expect(storage.getMessageData).not.toHaveBeenCalled();
     });
 });

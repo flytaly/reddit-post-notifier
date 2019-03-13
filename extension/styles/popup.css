@@ -26,7 +26,7 @@ a {
 
 header {
     display: flex;
-    flex-direction: row;
+    flex-direction: row-reverse;
     align-items: center;
     column-gap: 6px;
     padding: 2px 4px;
@@ -36,6 +36,12 @@ header {
 
 header.posts{
     background-color: var(--hover-bg-color);
+    flex-direction: row;
+}
+header.query-list  button.arrow-left,
+header.query-list .subreddit-name,
+header.posts a.mail {
+    display: none;
 }
 
 header a.subreddit-name{
@@ -43,6 +49,7 @@ header a.subreddit-name{
     font-size: 1.05em;
     color: black;
 }
+
 
 main {
     flex: 1 1;
@@ -90,7 +97,7 @@ li svg {
 ul.query-list .query-name {
     flex-grow: 1;
 }
-
+a.mail,
 button.arrow-left,
 button.check-mark,
 button.arrow-right {
@@ -103,8 +110,30 @@ button.arrow-right {
     padding: 0;
     border: none;
     background: none;
+    transition: 150ms;
 }
 
+a.mail {
+    color: inherit;
+}
+a.mail.unread,
+a.mail.unread svg {
+    fill: darkred;
+    color: darkred;
+}
+
+a.mail {
+    column-gap: 3px;
+    width: auto;
+}
+
+a.mail:hover{
+    transform: scale(1.08);
+}
+
+a.mail:active{
+    transform: scale(0.92);
+}
 
 button.arrow-left{
     width: 20px;
@@ -130,7 +159,11 @@ button.arrow-left[hidden]{
 
 .check-mark:hover svg {
     fill: green;
-    transform: scale(1.1);
+    transform: scale(1.08);
+}
+
+.check-mark:active svg {
+    transform: scale(0.92);
 }
 
 .post-list li a{

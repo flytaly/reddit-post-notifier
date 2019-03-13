@@ -9,55 +9,27 @@ exports[`navigation should navigate to queriesList 1`] = `
 `;
 
 exports[`navigation should navigate to the list of the reddit search queries's posts 1`] = `
-Object {
-  "calls": Array [
-    Array [
-      "postList",
-      Object {
-        "href": "https://reddit.com/search?q=user_query&sort=new",
-        "name": "Query name",
-      },
-    ],
-  ],
-  "instances": Array [
-    undefined,
-  ],
-  "invocationCallOrder": Array [
-    14,
-  ],
-  "results": Array [
+Array [
+  Array [
+    "postList",
     Object {
-      "type": "return",
-      "value": undefined,
+      "href": "https://reddit.com/search?q=user_query&sort=new",
+      "name": "Query name",
     },
   ],
-}
+]
 `;
 
 exports[`navigation should navigate to the list of the subreddit search queries's posts 1`] = `
-Object {
-  "calls": Array [
-    Array [
-      "postList",
-      Object {
-        "href": "https://reddit.com/r/javascript/search?q=react&sort=new&restrict_sr=on",
-        "name": "react in r/javascript",
-      },
-    ],
-  ],
-  "instances": Array [
-    undefined,
-  ],
-  "invocationCallOrder": Array [
-    10,
-  ],
-  "results": Array [
+Array [
+  Array [
+    "postList",
     Object {
-      "type": "return",
-      "value": undefined,
+      "href": "https://reddit.com/r/javascript/search?q=react&sort=new&restrict_sr=on",
+      "name": "react in r/javascript",
     },
   ],
-}
+]
 `;
 
 exports[`navigation should navigate to the list of the subreddit search queries's posts 2`] = `

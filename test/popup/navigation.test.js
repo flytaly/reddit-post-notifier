@@ -8,10 +8,11 @@ import updateHeader from '../../scripts/popup/updateHeader';
 import updateFooter from '../../scripts/popup/updateFooter';
 import getElements from '../../scripts/popup/elements';
 import { data } from '../../scripts/popup/data';
+import getOptions from '../../scripts/popup/options';
 
 jest.mock('../../scripts/popup/updateFooter.js', () => jest.fn());
-
 jest.mock('../../scripts/popup/updateHeader.js', () => jest.fn());
+jest.mock('../../scripts/popup/options.js', () => jest.fn());
 
 const elements = getElements();
 
@@ -19,16 +20,24 @@ describe('navigation', () => {
     afterEach(() => jest.clearAllMocks());
 
     test('should navigate to queriesList', async () => {
+        getOptions.mockImplementation(() => ({ messages: true }));
         await nav.navigate(nav.locations.queriesList, { forceUpdate: true });
 
         expect(nav.locations.current).toBe(nav.locations.queriesList);
-        expect(updateHeader).toHaveBeenCalledWith(nav.locations.queriesList);
+        expect(updateHeader).toHaveBeenCalledWith(nav.locations.queriesList, { unreadMsgCount: data.messageData.count });
         expect(updateFooter).toHaveBeenCalledWith(nav);
         expect(document.body.style.minHeight).toBe('');
         expect(document.body.style.minWidth).toBe('');
         expect(renderQueryListBlock).toHaveBeenCalledTimes(1);
         expect(elements.mainContainer).toMatchSnapshot();
     });
+
+    test('should not give unread messages number if it is disabled in option', async () => {
+        getOptions.mockImplementation(() => ({ messages: false }));
+        await nav.navigate(nav.locations.queriesList);
+        expect(updateHeader).toHaveBeenCalledWith(nav.locations.queriesList, { unreadMsgCount: false });
+    });
+
 
     test('should navigate to the list of subreddit\'s posts', async () => {
         const id = 'subreddit';
@@ -59,7 +68,7 @@ describe('navigation', () => {
         expect(document.body.style.minHeight).toBe('300px');
         expect(document.body.style.minWidth).toBe('400px');
 
-        expect(updateHeader.mock).toMatchSnapshot();
+        expect(updateHeader.mock.calls).toMatchSnapshot();
         expect(updateFooter).toHaveBeenCalledWith(nav, { searchId: id });
         expect(renderPostListBlock).toHaveBeenCalledWith({ search: id });
         expect(elements.mainContainer).toMatchSnapshot();
@@ -74,7 +83,7 @@ describe('navigation', () => {
             subreddit: '',
         }));
         await nav.navigate(nav.locations.postList, params);
-        expect(updateHeader.mock).toMatchSnapshot();
+        expect(updateHeader.mock.calls).toMatchSnapshot();
         expect(updateFooter).toHaveBeenCalledWith(nav, { searchId: id });
         expect(renderPostListBlock).toHaveBeenCalledWith({ search: id });
     });

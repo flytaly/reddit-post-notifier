@@ -38,7 +38,8 @@ async function renderQueryListBlock(nav) {
                     await storage.removePostsFrom(payload);
                 }
 
-                nav.navigate(nav.locations.queriesList, { forceUpdate: true });
+                await nav.navigate(nav.locations.queriesList, { forceUpdate: true });
+                return;
             }
 
             nav.navigate(nav.locations.postList, { id, type });

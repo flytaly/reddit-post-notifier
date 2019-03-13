@@ -1,6 +1,7 @@
 import types from '../types';
 import { insertNewPosts } from './renderPostList';
 import { updateData } from './data';
+import updateHeader from './updateHeader';
 
 let port = null;
 
@@ -17,6 +18,12 @@ export function connect(nav) {
                     if (nav.locations.current === nav.locations.postList) {
                         await updateData();
                         insertNewPosts(payload);
+                    }
+                    break;
+                case types.NEW_MESSAGES:
+                    if (nav.locations.current === nav.locations.queriesList) {
+                        updateHeader(nav.locations.queriesList, { unreadMsgCount: payload.count });
+                        await updateData();
                     }
                     break;
                 default:

@@ -4,6 +4,7 @@ import renderPostListBlock from './renderPostList';
 import updateHeader from './updateHeader';
 import updateFooter from './updateFooter';
 import { updateData, getData } from './data';
+import getOptions from './options';
 
 const nav = {
     locations: {
@@ -16,10 +17,11 @@ const nav = {
         const elements = getElements();
         if (params.forceUpdate) await updateData();
         const data = await getData();
+        const { messages } = await getOptions();
         nav.locations.current = location;
         switch (location) {
             case this.locations.queriesList: {
-                updateHeader(location);
+                updateHeader(location, { unreadMsgCount: messages && data.messageData.count });
                 updateFooter(nav);
 
                 document.body.style.minHeight = '';

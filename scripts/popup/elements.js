@@ -12,6 +12,7 @@ function getElements() {
             footer: $('footer'),
             footerBtn: $('footer .footer-button'),
             preview: $('#preview'),
+            mail: $('a.mail'),
         };
     }
     return elements;

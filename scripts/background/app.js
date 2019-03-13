@@ -98,6 +98,10 @@ const app = {
         const newMessages = app.extractNewItems(response, msgData);
 
         await storage.saveMessageData({ newMessages, count });
+        popupPort.postMessage({
+            type: types.NEW_MESSAGES,
+            payload: { count },
+        });
     },
 
     update: async () => {

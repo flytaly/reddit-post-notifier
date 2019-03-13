@@ -60,6 +60,8 @@ const storage = {
 
         data.count = count;
 
+        data.lastUpdate = Date.now();
+
         await browser.storage.local.set({ messages: data });
     },
 
