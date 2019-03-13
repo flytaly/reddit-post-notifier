@@ -102,7 +102,7 @@ const storage = {
 
         current.lastUpdate = Date.now();
 
-        return browser.storage.local.set({ queries: { ...data, [queryId]: current } });
+        await browser.storage.local.set({ queries: { ...data, [queryId]: current } });
     },
 
     async saveSubredditData(subreddit, { posts, error }) {
@@ -141,7 +141,6 @@ const storage = {
                 .filter(({ data }) => data.id !== id);
 
             await browser.storage.local.set({ subreddits });
-            return;
         }
 
         if (searchId) {
@@ -210,6 +209,53 @@ const storage = {
             await browser.storage.local.set({ subreddits: pruned });
         }
     },
+
+    async countNumberOfUnreadItems() {
+        let count = 0;
+        const {
+            options, queriesList, queries, subreddits, messages,
+        } = await browser.storage.local.get();
+
+        if (options.watchSubreddits && options.watchSubreddits.length && subreddits) {
+            count += options.watchSubreddits.reduce((acc, curr) => {
+                if (subreddits[curr] && subreddits[curr].posts) return acc + subreddits[curr].posts.length;
+                return acc;
+            }, 0);
+        }
+
+        if (queriesList && queriesList.length && queries) {
+            count += queriesList.reduce((acc, curr) => {
+                if (queries[curr.id] && queries[curr.id].posts) return acc + queries[curr.id].posts.length;
+                return acc;
+            }, 0);
+        }
+
+        if (messages && messages.count) count += messages.count;
+
+        return count;
+    },
 };
 
-export default storage;
+/** Higher-order function that updates badge after every change in storage */
+const wrapper = func => async (...args) => {
+    const results = await func(...args);
+    (async () => {
+        const countItems = await storage.countNumberOfUnreadItems();
+        browser.browserAction.setBadgeText({ text: countItems ? String(countItems) : '' });
+    })();
+    return results;
+};
+
+const proxy = new Proxy(storage, {
+    get(target, prop) {
+        if (typeof prop !== 'string') return target[prop]; // prop could be Symbol.toStringTag
+
+        if (prop.startsWith('remove') || prop.startsWith('save')) {
+            return wrapper(target[prop].bind(target));
+        }
+
+        return target[prop];
+    },
+});
+
+export default proxy;

@@ -4,6 +4,8 @@ import storage from '../../scripts/storage';
 
 global.browser = browser;
 
+storage.countNumberOfUnreadItems = jest.fn();
+
 describe('authorization data', () => {
     const RealDate = Date;
     function mockDate(isoDate) {

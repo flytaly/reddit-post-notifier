@@ -7,6 +7,10 @@ import popupPort from './popupPort';
 
 async function update() {
     const { updateInterval } = await storage.getOptions();
+
+    const countItems = await storage.countNumberOfUnreadItems();
+    browser.browserAction.setBadgeText({ text: countItems ? String(countItems) : '' });
+
     try {
         await app.update();
         browser.alarms.create(types.ALARM_UPDATE, { delayInMinutes: updateInterval / 60 });
