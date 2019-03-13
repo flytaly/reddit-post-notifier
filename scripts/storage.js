@@ -127,6 +127,11 @@ const storage = {
         return browser.storage.local.set({ subreddits: { ...data, [subreddit]: current } });
     },
 
+    async removeMessages() {
+        const { messages } = await browser.storage.local.get({ messages: {} });
+        await browser.storage.local.set({ messages: { ...messages, messages: [], count: 0 } });
+    },
+
     async removePost({ id, subreddit, searchId }) {
         if (subreddit) {
             const subreddits = await storage.getSubredditData();

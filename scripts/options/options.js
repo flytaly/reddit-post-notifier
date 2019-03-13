@@ -106,6 +106,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     const showMessages = $('#messages');
     showMessages.addEventListener('change', async () => {
         await storage.saveOptions({ messages: showMessages.checked });
+        if (!showMessages.checked) await storage.removeMessages();
     });
 
     const subreddits = $('#subreddits');
