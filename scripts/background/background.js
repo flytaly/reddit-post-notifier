@@ -23,7 +23,11 @@ async function update() {
 
 async function setOptions() {
     const options = await storage.getOptions();
-    if (!options) await storage.saveOptions(optionsDefault);
+    if (!options) {
+        await storage.saveOptions(optionsDefault);
+    } else {
+        await storage.saveOptions({ ...optionsDefault, ...options });
+    }
 }
 
 function watchAlarms() {

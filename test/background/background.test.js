@@ -43,16 +43,17 @@ describe('set options', () => {
     beforeEach(() => {
         storage.getAuthData.mockImplementationOnce(() => ({ accessToken: 'validToken' }));
     });
-    test('should save default options if there is no options in storage', async () => {
+    test('should save default options if there are no options in storage', async () => {
         storage.getOptions.mockImplementationOnce(async () => null);
         await startExtension();
         expect(storage.saveOptions).toHaveBeenCalledWith(optionsDefault);
     });
 
-    test('should not call saving options if storage already have them', async () => {
-        storage.getOptions.mockImplementationOnce(async () => ({ option: 'value' }));
+    test('should add and save new default options to existing', async () => {
+        const opts = { option: 'value' };
+        storage.getOptions.mockImplementationOnce(async () => (opts));
         await startExtension();
-        expect(storage.saveOptions).not.toHaveBeenCalled();
+        expect(storage.saveOptions).toHaveBeenCalledWith({ ...optionsDefault, ...opts });
     });
 });
 
