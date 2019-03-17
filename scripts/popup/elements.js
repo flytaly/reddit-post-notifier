@@ -13,6 +13,7 @@ function getElements() {
             footerBtn: $('footer .footer-button'),
             preview: $('#preview'),
             mail: $('a.mail'),
+            options: $('button.options'),
         };
     }
     return elements;

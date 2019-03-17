@@ -40,7 +40,8 @@ header.posts{
 }
 header.query-list  button.arrow-left,
 header.query-list .subreddit-name,
-header.posts a.mail {
+header.posts a.mail,
+header.posts button.options{
     display: none;
 }
 
@@ -103,7 +104,9 @@ li svg {
 ul.query-list .query-name {
     flex-grow: 1;
 }
+
 a.mail,
+button.options,
 button.arrow-left,
 button.check-mark,
 button.arrow-right {
@@ -132,11 +135,11 @@ a.mail {
     column-gap: 3px;
     width: auto;
 }
-
+button.options:hover,
 a.mail:hover{
     transform: scale(1.08);
 }
-
+button.options:active,
 a.mail:active{
     transform: scale(0.92);
 }

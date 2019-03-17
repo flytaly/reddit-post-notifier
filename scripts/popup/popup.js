@@ -11,6 +11,10 @@ async function init() {
     connect(nav);
 
     elements.headerBackBtn.addEventListener('click', () => nav.navigate(nav.locations.queriesList, { forceUpdate: true }));
+    elements.options.addEventListener('click', async () => {
+        await browser.runtime.openOptionsPage();
+        window.close();
+    });
 }
 
 async function start() {
