@@ -1,4 +1,5 @@
 import storage from '../../scripts/storage';
+import './mocks/browser.mock';
 import app from '../../scripts/background/app';
 import { wait } from '../../scripts/utils';
 
