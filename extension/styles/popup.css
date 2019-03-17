@@ -79,6 +79,12 @@ ul > li:hover {
     border-bottom: 1px solid var(--hover-border-color);
 }
 
+.no-posts {
+    text-align: center;
+    padding: 5px 0;
+    color: grey;
+}
+
 header img {
     width: 18px;
     height: 18px;

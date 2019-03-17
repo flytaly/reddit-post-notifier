@@ -16,6 +16,7 @@ function getTemplates() {
             queryListRow: translateTemplate($('#query-list-row-tmp')),
             postList: translateTemplate($('#post-list-tmp')),
             postListRow: translateTemplate($('#post-list-row-tmp')),
+            noPosts: translateTemplate($('#no-posts')),
         };
     }
     return templates;

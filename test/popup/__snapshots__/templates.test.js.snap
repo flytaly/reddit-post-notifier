@@ -2,6 +2,17 @@
 
 exports[`templates should match snapshot 1`] = `
 Object {
+  "noPosts": <DocumentFragment>
+    
+      
+    <div
+      class="no-posts"
+    >
+      No unread posts
+    </div>
+    
+    
+  </DocumentFragment>,
   "postList": <DocumentFragment>
     
       

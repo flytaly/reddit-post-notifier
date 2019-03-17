@@ -52,51 +52,6 @@ exports[`renderQueryListBlock should render query list block  1`] = `
       
   </li>
   <li
-    data-id="s_jull4ekx"
-  >
-    
-        
-    <button
-      class="check-mark"
-    >
-      
-          
-      <svg
-        viewBox="0 0 16 16"
-        xmlns="http://www.w3.org/2000/svg"
-      >
-        
-            
-        <use
-          href="#check-mark-path"
-        >
-          
-          
-        </use>
-      </svg>
-      
-        
-    </button>
-    
-        
-    <div
-      class="query-name"
-    >
-      react in r/javascript (0)
-    </div>
-    
-        
-    <button
-      class="arrow-right"
-    >
-      <img
-        src="arrowhead-right.svg"
-      />
-    </button>
-    
-      
-  </li>
-  <li
     data-id="s_judzi2k1"
   >
     

@@ -18,6 +18,7 @@ async function renderQueryListBlock(nav) {
     const { watchSubreddits = [] } = await getOptions();
 
     const queryListTmp = templates.queryList.cloneNode(true);
+    const noPosts = templates.noPosts.cloneNode(true).querySelector('div');
     const queryList = queryListTmp.querySelector('ul');
 
     queryList.addEventListener('click', async ({ target }) => {
@@ -48,8 +49,9 @@ async function renderQueryListBlock(nav) {
 
     const rows = [
         ...watchSubreddits.map((sub) => {
-            const { posts } = subrData[sub] || { posts: [] };
+            const { posts, lastPostCreated } = subrData[sub] || { posts: [] };
             return {
+                lastPostCreated,
                 postsCount: posts ? posts.length : 0,
                 name: `r/${sub}`,
                 id: `r_${sub}`,
@@ -65,7 +67,13 @@ async function renderQueryListBlock(nav) {
         }),
     ];
 
-    const subredditRows = rows.reduce((fragment, rowInfo) => {
+    const rowsWithPosts = rows
+        .filter(row => row.postsCount)
+        .sort((a, b) => b.lastPostCreated - a.lastPostCreated);
+
+    if (!rowsWithPosts.length) return noPosts;
+
+    const subredditRows = rowsWithPosts.reduce((fragment, rowInfo) => {
         const rowEl = renderQueryListRow(templates.queryListRow.cloneNode(true), rowInfo);
         fragment.appendChild(rowEl);
 
