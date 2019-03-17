@@ -28,16 +28,19 @@ function getSearchTmp() {
 
 async function saveQueryFieldset(fieldset) {
     const inputs = Array.from(fieldset.getElementsByTagName('input'));
+
     const data = inputs
         .reduce((acc, currentInput) => {
-            const { name, value } = currentInput;
-            return { ...acc, [name]: value };
+            const { name, value, checked } = currentInput;
+            return { ...acc, [name]: name !== 'notify' ? value : checked };
         }, { id: fieldset.dataset.id });
+
+    if (!data.query) return;
     await storage.saveQuery(data);
 }
 
 function createQueryFields(template, {
-    name = '', subreddit = '', query = '', id,
+    name = '', subreddit = '', query = '', id, notify = false,
 } = {}) {
     const searchElem = template.cloneNode(true);
     const fieldset = searchElem.querySelector('fieldset');
@@ -45,6 +48,7 @@ function createQueryFields(template, {
     const subElem = fieldset.querySelector('.subreddit input');
     const queryElem = fieldset.querySelector('.query input');
     const deleteElem = fieldset.querySelector('button.delete');
+    const notifyElem = fieldset.querySelector('.notification input');
     if (!id) id = generateId();
     fieldset.dataset.id = id;
 
@@ -60,6 +64,10 @@ function createQueryFields(template, {
     queryElem.id = `${id}_query`;
     queryElem.parentNode.querySelector('label').htmlFor = `${id}_query`;
 
+    notifyElem.checked = notify;
+    notifyElem.id = `${id}_notify`;
+    notifyElem.parentNode.querySelector('label').htmlFor = `${id}_notify`;
+
     deleteElem.addEventListener('click', ({ target }) => {
         const parentFieldset = target.closest('fieldset');
         const container = fieldset.closest('.container');
@@ -74,19 +82,25 @@ function createQueryFields(template, {
 }
 
 async function restoreOptions() {
-    const { watchSubreddits, messages } = await storage.getOptions();
+    const {
+        watchSubreddits, messages, messageNotify, subredditNotify,
+    } = await storage.getOptions();
     const watchQueries = await storage.getQueriesList();
 
-    // ------- Show messages -------
+    // ------- Mail -------
     const showMessages = $('#messages');
+    const messageNotifyCheckbox = $('#messageNotify');
     showMessages.checked = messages;
-
+    messageNotifyCheckbox.disabled = !showMessages.checked;
+    messageNotifyCheckbox.checked = messageNotify;
 
     // ------- Subreddits -------
     if (watchSubreddits && watchSubreddits.length) {
         const subreddits = $('#subreddits');
         subreddits.value = watchSubreddits.join(' ');
     }
+    const subredditNotifyCheckbox = $('#subredditNotify');
+    subredditNotifyCheckbox.checked = subredditNotify;
 
     // ------- Custom queries -------
     const searchContainer = $('.watch-queries .container');
@@ -103,13 +117,24 @@ async function restoreOptions() {
 
 document.addEventListener('DOMContentLoaded', async () => {
     await restoreOptions();
+
     const showMessages = $('#messages');
+    const messageNotifyCheckbox = $('#messageNotify');
     showMessages.addEventListener('change', async () => {
         await storage.saveOptions({ messages: showMessages.checked });
-        if (!showMessages.checked) await storage.removeMessages();
+        messageNotifyCheckbox.disabled = !showMessages.checked;
+        if (!showMessages.checked) {
+            await storage.removeMessages();
+            messageNotifyCheckbox.checked = false;
+        }
+    });
+    messageNotifyCheckbox.addEventListener('change', async () => {
+        await storage.saveOptions({ messageNotify: messageNotifyCheckbox.checked });
     });
 
+
     const subreddits = $('#subreddits');
+    const subredditNotifyCheckbox = $('#subredditNotify');
     const saveInput = async () => {
         const values = subreddits
             .value
@@ -142,4 +167,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     };
     const debouncedListener = debounce(saveInput, 200);
     subreddits.addEventListener('input', debouncedListener);
+    subredditNotifyCheckbox.addEventListener('change', async () => {
+        await storage.saveOptions({ subredditNotify: subredditNotifyCheckbox.checked });
+    });
 });

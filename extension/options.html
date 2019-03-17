@@ -10,9 +10,13 @@
 
 <body>
   <section class="browser-style">
-    <label for="messages">Track unread messages: </label>
+    <label for="messages">Show unread mail: </label>
     <input id="messages" type="checkbox">
+    <br>
+    <label for="messageNotify">Show desktop notifications of new mail: </label>
+    <input id="messageNotify" type="checkbox">
   </section>
+
   <section class="browser-style watch-subreddits">
     <label for="subreddits">Watch for new posts in following subreddits:</label>
     <input id="subreddits" type="text" name="url" placeholder="firefox learnprogramming" required />
@@ -20,7 +24,12 @@
     <i class="input-description">List of subreddits (without "r/") divided by spaces. Example: firefox
       learnprogramming
     </i>
+    <div class="browser-style subreddit-notify">
+      <label for="subredditNotify">Show desktop notifications of new posts in the subreddits </label>
+      <input id="subredditNotify" type="checkbox">
+    </div>
   </section>
+
   <section class="watch-queries">
     <div class="container">
       <template id="search-tmp">
@@ -35,7 +44,6 @@
             <li class="subreddit browser-style">
               <label>Subreddit:</label>
               <input type="text" name="subreddit" placeholder="e.g.: aww" />
-              </label>
               <div class="info"></div>
             </li>
 
@@ -43,6 +51,11 @@
               <label>Search query:</label>
               <input type="text" name="query" maxlength="512" placeholder="e.g.: dog">
               <div><a href="https://www.reddit.com/wiki/search#wiki_field_search">reddit search faq</a></div>
+            </li>
+
+            <li class="notification browser-style">
+              <label>Show desktop notifications of new posts in the search</label>
+              <input name="notify" type="checkbox">
             </li>
           </ul>
           <button class="browser-style delete">Delete the search</button>

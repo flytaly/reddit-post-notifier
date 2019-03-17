@@ -7,13 +7,14 @@ section.watch-subreddits {
     flex-direction: column;
 }
 
-.watch-subreddits input {
+.watch-subreddits > input {
     width: 100%;
     margin-top: 10px;
     margin-bottom: 5px;
 }
 .input-description{
     font-size: 0.9em;
+    margin-bottom: 1em;
 }
 
 .invalid{
@@ -52,8 +53,14 @@ section.watch-subreddits {
     padding-left: 20%;
 }
 
-
 .search li.query a {
     text-decoration: none;
 }
 
+.search li.notification label{
+    width: auto;
+}
+
+#messageNotify:disabled {
+    cursor: not-allowed;
+}

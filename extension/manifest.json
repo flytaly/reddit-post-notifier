@@ -16,6 +16,7 @@
     "identity",
     "storage",
     "alarms",
+    "notifications",
     "https://*.reddit.com/*",
     "https://*.redd.it/*"
   ],
