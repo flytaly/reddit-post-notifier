@@ -25,7 +25,7 @@ Array [
   Array [
     "postList",
     Object {
-      "href": "https://reddit.com/r/javascript/search?q=react&sort=new&restrict_sr=on",
+      "href": "https://reddit.com/r/javascript/search?sort=new&restrict_sr=on&q=react",
       "name": "react in r/javascript",
     },
   ],

@@ -53,7 +53,7 @@ const nav = {
                     const { name, query, subreddit } = data.watchQueries.find(q => q.id === id);
 
                     const endpoint = subreddit
-                        ? `/r/${subreddit}/search?q=${query}&sort=new&restrict_sr=on`
+                        ? `/r/${subreddit}/search?sort=new&restrict_sr=on&q=${query}`
                         : `/search?q=${query}&sort=new`;
 
                     updateHeader(location, {

@@ -23,7 +23,7 @@ export default class RedditApiClient {
                 Authorization: `bearer ${token}`,
             },
         };
-        const result = await fetch(`${this.origin}${endpoint}?${query}`, init);
+        const result = await fetch(encodeURI(`${this.origin}${endpoint}?${query}`), init);
         return result.json();
     }
 

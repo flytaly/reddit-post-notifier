@@ -27,13 +27,32 @@ function getSearchTmp() {
 }
 
 async function saveQueryFieldset(fieldset) {
-    const inputs = Array.from(fieldset.getElementsByTagName('input'));
+    const checkSubreddits = subs => subs
+        .split('+')
+        .every(s => subredditNameRegExp.test(s));
 
+    const inputs = Array.from(fieldset.getElementsByTagName('input'));
+    const subredditInput = fieldset.querySelector('.subreddit input');
     const data = inputs
         .reduce((acc, currentInput) => {
             const { name, value, checked } = currentInput;
-            return { ...acc, [name]: name !== 'notify' ? value : checked };
+            if (name === 'subreddit' && value) {
+                return {
+                    ...acc,
+                    [name]: value.trim().replace(/\s/g, '+'),
+                };
+            }
+            return {
+                ...acc,
+                [name]: name !== 'notify' ? value : checked,
+            };
         }, { id: fieldset.dataset.id });
+
+    if (data.subreddit && !checkSubreddits(data.subreddit)) {
+        subredditInput.classList.add('invalid');
+        return;
+    }
+    subredditInput.classList.remove('invalid');
 
     if (!data.query) return;
     await storage.saveQuery(data);
