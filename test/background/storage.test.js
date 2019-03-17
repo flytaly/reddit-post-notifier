@@ -5,6 +5,8 @@ import storage from '../../scripts/storage';
 global.browser = browser;
 
 storage.countNumberOfUnreadItems = jest.fn();
+storage.removeQueryData = jest.fn();
+
 
 describe('authorization data', () => {
     const RealDate = Date;

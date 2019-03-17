@@ -35,17 +35,16 @@ async function saveQueryFieldset(fieldset) {
     const subredditInput = fieldset.querySelector('.subreddit input');
     const data = inputs
         .reduce((acc, currentInput) => {
-            const { name, value, checked } = currentInput;
-            if (name === 'subreddit' && value) {
-                return {
-                    ...acc,
-                    [name]: value.trim().replace(/\s/g, '+'),
-                };
+            const { name, checked } = currentInput;
+            let { value } = currentInput;
+
+            if (value) {
+                value = value.trim();
+                if (name === 'subreddit') value = value.replace(/\s/g, '+');
             }
-            return {
-                ...acc,
-                [name]: name !== 'notify' ? value : checked,
-            };
+            if (name === 'notify') value = checked;
+
+            return { ...acc, [name]: value };
         }, { id: fieldset.dataset.id });
 
     if (data.subreddit && !checkSubreddits(data.subreddit)) {
@@ -94,9 +93,8 @@ function createQueryFields(template, {
         storage.removeQueries([parentFieldset.dataset.id]);
     });
 
-    fieldset.addEventListener('input', () => {
-        saveQueryFieldset(fieldset);
-    });
+    const debouncedListener = debounce(() => saveQueryFieldset(fieldset), 200);
+    fieldset.addEventListener('input', debouncedListener);
     return fieldset;
 }
 

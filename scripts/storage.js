@@ -77,7 +77,12 @@ const storage = {
         const queriesList = await storage.getQueriesList();
         let wasUpdated = false;
         const queriesUpdated = queriesList.map((q) => {
-            if (q.id !== query.id) return q;
+            const { id: prevId, subreddit: prevSubreddit, query: prevQuery } = q;
+            if (prevId !== query.id) return q;
+
+            if ((prevQuery && prevQuery !== query.query) || prevSubreddit !== query.subreddit) {
+                storage.removeQueryData(query.id);
+            }
             wasUpdated = true;
             return query;
         });
@@ -130,6 +135,11 @@ const storage = {
     async removeMessages() {
         const { messages } = await browser.storage.local.get({ messages: {} });
         await browser.storage.local.set({ messages: { ...messages, messages: [], count: 0 } });
+    },
+
+    async removeQueryData(queryId) {
+        const data = await storage.getQueriesData();
+        await browser.storage.local.set({ queries: { ...data, [queryId]: { posts: [] } } });
     },
 
     async removePost({ id, subreddit, searchId }) {
