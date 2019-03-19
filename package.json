@@ -1,7 +1,7 @@
 {
-  "name": "subreddit-notifier",
+  "name": "reddit-post-notifier",
   "version": "1.0.0",
-  "description": "Firefox extension",
+  "description": "Firefox extension that watches for new posts in subreddits or reddit search",
   "main": "manifest.json",
   "scripts": {
     "web-ext": "web-ext run --source-dir extension",
@@ -17,10 +17,10 @@
   },
   "author": "Vitaly Yerofeyevsky",
   "license": "MPL-2.0",
-  "homepage": "https://github.com/flytaly/subreddit-notifier#readme",
+  "homepage": "https://github.com/flytaly/reddit-post-notifier#readme",
   "repository": {
     "type": "git",
-    "url": "https://github.com/flytaly/subreddit-notifier.git"
+    "url": "https://github.com/flytaly/reddit-post-notifier.git"
   },
   "devDependencies": {
     "@babel/core": "^7.3.3",

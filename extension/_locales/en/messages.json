@@ -1,14 +1,14 @@
 {
   "description": {
-    "message": "description",
+    "message": "Watch for new posts in given subreddits or reddit search",
     "description": "Description of the extension"
   },
   "name": {
-    "message": "name",
+    "message": "Reddit post notifier",
     "description": "Name of the extension"
   },
   "extension_title": {
-    "message": "extension_title",
+    "message": "New submissions on Reddit",
     "description": "Extension title"
   }
 }

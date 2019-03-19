@@ -3,14 +3,14 @@
   "applications": {
     "gecko": {
       "strict_min_version": "64.0",
-      "id": "subreddit-notifier@flytaly"
+      "id": "reddit-post-notifier@flytaly"
     }
   },
   "default_locale": "en",
   "description": "__MSG_description__",
   "name": "__MSG_name__",
   "version": "1.0.0",
-  "homepage_url": "https://github.com/flytaly/subreddit-notifier",
+  "homepage_url": "https://github.com/flytaly/reddit-post-notifier",
   "icons": {
     "48": "images/icon-48.png",
     "96": "images/icon-96.png"
