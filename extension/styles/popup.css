@@ -73,11 +73,12 @@ ul > li {
     border-top: 1px solid var(--main-bg-color);
     border-bottom: 1px solid var(--main-bg-color);
 }
-
+ul > li:focus,
 ul > li:hover {
     background-color: var(--hover-bg-color);
     border-top: 1px solid var(--hover-border-color);
     border-bottom: 1px solid var(--hover-border-color);
+    outline: none;
 }
 
 .no-posts {
@@ -136,7 +137,9 @@ a.mail {
     width: auto;
 }
 button.options:hover,
-a.mail:hover{
+button.options:focus,
+a.mail:hover,
+a.mail:focus{
     transform: scale(1.08);
 }
 button.options:active,
@@ -150,10 +153,12 @@ button.arrow-left{
     padding: 2px;
 }
 
+button.arrow-left:focus,
 button.arrow-left:hover{
     background-color: var(--hover-bg-color);
 }
 
+button.arrow-left:focus:active,
 button.arrow-left:hover:active{
     background-color: var(--hover-border-color);
 }
@@ -166,6 +171,8 @@ button.arrow-left[hidden]{
     fill: grey;
 }
 
+li:focus .check-mark svg,
+.check-mark:focus svg,
 .check-mark:hover svg {
     fill: green;
     transform: scale(1.08);
@@ -222,10 +229,12 @@ footer {
     text-align: center;
 }
 
+.footer-button:focus,
 .footer-button:hover {
     background-color: var(--hover-bg-color);
   }
 
+.footer-button:focus:active,
 .footer-button:hover:active {
     background-color: var(--hover-border-color);
   }
@@ -245,3 +254,5 @@ footer {
       left : 0;
     }
   }
+
+

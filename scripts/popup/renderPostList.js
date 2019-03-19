@@ -71,11 +71,14 @@ async function renderPostListBlock({ subreddit, search }) {
     const { preview } = getElements();
     let windowHeight;
     let posts;
-    if (subreddit) posts = data.subrData[subreddit].posts;
-    if (search) posts = data.queryData[search].posts;
-
-    postList.dataset.subreddit = subreddit;
-    postList.dataset.search = search;
+    if (subreddit) {
+        posts = data.subrData[subreddit].posts;
+        postList.dataset.subreddit = subreddit;
+    }
+    if (search) {
+        posts = data.queryData[search].posts;
+        postList.dataset.search = search;
+    }
 
     if (posts && posts.length) {
         const postFragment = posts.reduce((fragment, post) => {

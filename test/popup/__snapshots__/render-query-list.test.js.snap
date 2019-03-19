@@ -8,6 +8,7 @@ exports[`renderQueryListBlock should render query list block  1`] = `
       
   <li
     data-id="r_reactjs"
+    tabindex="1"
   >
     
         
@@ -53,6 +54,7 @@ exports[`renderQueryListBlock should render query list block  1`] = `
   </li>
   <li
     data-id="s_judzi2k1"
+    tabindex="1"
   >
     
         

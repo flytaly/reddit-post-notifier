@@ -28,6 +28,7 @@ const nav = {
                 document.body.style.minWidth = '';
 
                 elements.mainContainer.innerHTML = '';
+                elements.preview.classList.remove('show');
                 elements.mainContainer.appendChild(
                     await renderQueryListBlock(nav),
                 );

@@ -35,10 +35,10 @@ exports[`render new posts should add new posts in search query view 1`] = `
 <ul
   class="post-list run-animation"
   data-search="judzi2k1"
-  data-subreddit="undefined"
 >
   <li
     data-id="newPostId1"
+    tabindex="1"
   >
     
         
@@ -75,6 +75,7 @@ exports[`render new posts should add new posts in search query view 1`] = `
   </li>
   <li
     data-id="newPostId2"
+    tabindex="1"
   >
     
         
@@ -111,6 +112,7 @@ exports[`render new posts should add new posts in search query view 1`] = `
   </li>
   <li
     data-id="b06z83"
+    tabindex="1"
   >
     
         
@@ -147,6 +149,7 @@ exports[`render new posts should add new posts in search query view 1`] = `
   </li>
   <li
     data-id="b06wu2"
+    tabindex="1"
   >
     
         
@@ -183,6 +186,7 @@ exports[`render new posts should add new posts in search query view 1`] = `
   </li>
   <li
     data-id="b06uuz"
+    tabindex="1"
   >
     
         
@@ -219,6 +223,7 @@ exports[`render new posts should add new posts in search query view 1`] = `
   </li>
   <li
     data-id="b06u41"
+    tabindex="1"
   >
     
         
@@ -255,6 +260,7 @@ exports[`render new posts should add new posts in search query view 1`] = `
   </li>
   <li
     data-id="b06t7k"
+    tabindex="1"
   >
     
         
@@ -291,6 +297,7 @@ exports[`render new posts should add new posts in search query view 1`] = `
   </li>
   <li
     data-id="b06s9m"
+    tabindex="1"
   >
     
         
@@ -327,6 +334,7 @@ exports[`render new posts should add new posts in search query view 1`] = `
   </li>
   <li
     data-id="b06r9m"
+    tabindex="1"
   >
     
         
@@ -363,6 +371,7 @@ exports[`render new posts should add new posts in search query view 1`] = `
   </li>
   <li
     data-id="b06lxm"
+    tabindex="1"
   >
     
         
@@ -399,6 +408,7 @@ exports[`render new posts should add new posts in search query view 1`] = `
   </li>
   <li
     data-id="b06le6"
+    tabindex="1"
   >
     
         
@@ -435,6 +445,7 @@ exports[`render new posts should add new posts in search query view 1`] = `
   </li>
   <li
     data-id="b06f1r"
+    tabindex="1"
   >
     
         
@@ -471,6 +482,7 @@ exports[`render new posts should add new posts in search query view 1`] = `
   </li>
   <li
     data-id="b067v5"
+    tabindex="1"
   >
     
         
@@ -511,11 +523,11 @@ exports[`render new posts should add new posts in search query view 1`] = `
 exports[`render new posts should add new posts in subreddit view 1`] = `
 <ul
   class="post-list run-animation"
-  data-search="undefined"
   data-subreddit="reactjs"
 >
   <li
     data-id="newPostId1"
+    tabindex="1"
   >
     
         
@@ -552,6 +564,7 @@ exports[`render new posts should add new posts in subreddit view 1`] = `
   </li>
   <li
     data-id="newPostId2"
+    tabindex="1"
   >
     
         
@@ -588,6 +601,7 @@ exports[`render new posts should add new posts in subreddit view 1`] = `
   </li>
   <li
     data-id="b05ufb"
+    tabindex="1"
   >
     
         
@@ -624,6 +638,7 @@ exports[`render new posts should add new posts in subreddit view 1`] = `
   </li>
   <li
     data-id="b05ldl"
+    tabindex="1"
   >
     
         
@@ -660,6 +675,7 @@ exports[`render new posts should add new posts in subreddit view 1`] = `
   </li>
   <li
     data-id="b04pdf"
+    tabindex="1"
   >
     
         
@@ -696,6 +712,7 @@ exports[`render new posts should add new posts in subreddit view 1`] = `
   </li>
   <li
     data-id="b04dyj"
+    tabindex="1"
   >
     
         
@@ -737,10 +754,10 @@ exports[`renderPostListBlock should render queries's posts 1`] = `
 <ul
   class="post-list run-animation"
   data-search="judzi2k1"
-  data-subreddit="undefined"
 >
   <li
     data-id="b06z83"
+    tabindex="1"
   >
     
         
@@ -777,6 +794,7 @@ exports[`renderPostListBlock should render queries's posts 1`] = `
   </li>
   <li
     data-id="b06wu2"
+    tabindex="1"
   >
     
         
@@ -813,6 +831,7 @@ exports[`renderPostListBlock should render queries's posts 1`] = `
   </li>
   <li
     data-id="b06uuz"
+    tabindex="1"
   >
     
         
@@ -849,6 +868,7 @@ exports[`renderPostListBlock should render queries's posts 1`] = `
   </li>
   <li
     data-id="b06u41"
+    tabindex="1"
   >
     
         
@@ -885,6 +905,7 @@ exports[`renderPostListBlock should render queries's posts 1`] = `
   </li>
   <li
     data-id="b06t7k"
+    tabindex="1"
   >
     
         
@@ -921,6 +942,7 @@ exports[`renderPostListBlock should render queries's posts 1`] = `
   </li>
   <li
     data-id="b06s9m"
+    tabindex="1"
   >
     
         
@@ -957,6 +979,7 @@ exports[`renderPostListBlock should render queries's posts 1`] = `
   </li>
   <li
     data-id="b06r9m"
+    tabindex="1"
   >
     
         
@@ -993,6 +1016,7 @@ exports[`renderPostListBlock should render queries's posts 1`] = `
   </li>
   <li
     data-id="b06lxm"
+    tabindex="1"
   >
     
         
@@ -1029,6 +1053,7 @@ exports[`renderPostListBlock should render queries's posts 1`] = `
   </li>
   <li
     data-id="b06le6"
+    tabindex="1"
   >
     
         
@@ -1065,6 +1090,7 @@ exports[`renderPostListBlock should render queries's posts 1`] = `
   </li>
   <li
     data-id="b06f1r"
+    tabindex="1"
   >
     
         
@@ -1101,6 +1127,7 @@ exports[`renderPostListBlock should render queries's posts 1`] = `
   </li>
   <li
     data-id="b067v5"
+    tabindex="1"
   >
     
         
@@ -1141,11 +1168,11 @@ exports[`renderPostListBlock should render queries's posts 1`] = `
 exports[`renderPostListBlock should render subreddit's posts 1`] = `
 <ul
   class="post-list run-animation"
-  data-search="undefined"
   data-subreddit="reactjs"
 >
   <li
     data-id="b05ufb"
+    tabindex="1"
   >
     
         
@@ -1182,6 +1209,7 @@ exports[`renderPostListBlock should render subreddit's posts 1`] = `
   </li>
   <li
     data-id="b05ldl"
+    tabindex="1"
   >
     
         
@@ -1218,6 +1246,7 @@ exports[`renderPostListBlock should render subreddit's posts 1`] = `
   </li>
   <li
     data-id="b04pdf"
+    tabindex="1"
   >
     
         
@@ -1254,6 +1283,7 @@ exports[`renderPostListBlock should render subreddit's posts 1`] = `
   </li>
   <li
     data-id="b04dyj"
+    tabindex="1"
   >
     
         
