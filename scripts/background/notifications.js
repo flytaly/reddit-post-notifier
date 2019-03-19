@@ -7,9 +7,14 @@ export const notificationIds = {
 function notify(type, items = []) {
     if (!items.length) return;
 
+    const opts = {
+        type: 'basic',
+        iconUrl: browser.extension.getURL('/images/icon-96.png'),
+    };
+
     if (type === notificationIds.mail) {
         const nOpts = {
-            type: 'basic',
+            ...opts,
             title: 'Reddit: new mail',
         };
         if (items.length === 1) {
@@ -22,7 +27,7 @@ function notify(type, items = []) {
 
     if (type === notificationIds.subreddit) {
         const nOpts = {
-            type: 'basic',
+            ...opts,
             title: 'Reddit: new posts',
             message: `New posts in subreddits: ${items
                 .map(({ subreddit, len }) => `${subreddit} (${len})`)
@@ -34,7 +39,7 @@ function notify(type, items = []) {
 
     if (type === notificationIds.query) {
         const nOpts = {
-            type: 'basic',
+            ...opts,
             title: 'Reddit: new posts',
             message: `New posts in: ${items
                 .map(({ query, len }) => `${query} (${len})`)
