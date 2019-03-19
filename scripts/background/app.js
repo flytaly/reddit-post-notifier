@@ -133,7 +133,9 @@ const app = {
         const notificationBatch = [];
         for (const subreddit of watchSubreddits) {
             const newMessages = await app.updateSubreddit({ subreddit, subData, listing: { limit } });
-            if (subredditNotify && newMessages && newMessages.length) notificationBatch.push({ subreddit, len: newMessages.length });
+            if (subredditNotify && newMessages && newMessages.length) {
+                notificationBatch.push({ subreddit, len: newMessages.length });
+            }
             await wait(waitTimeout * 1000);
         }
         notify(notificationIds.subreddit, notificationBatch);
@@ -141,7 +143,9 @@ const app = {
         notificationBatch.length = 0;
         for (const query of watchQueries) {
             const newMessages = await app.updateQueries({ query, queryData, listing: { limit } });
-            if (query.notify && newMessages && newMessages.length) notificationBatch.push({ query: query.name || query.query, len: newMessages.length });
+            if (query.notify && newMessages && newMessages.length) {
+                notificationBatch.push({ query: query.name || query.query, len: newMessages.length });
+            }
             await wait(waitTimeout * 1000);
         }
         notify(notificationIds.query, notificationBatch);

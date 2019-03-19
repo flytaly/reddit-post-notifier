@@ -1,7 +1,6 @@
 import getTemplates from './templates';
 import getElements from './elements';
 import getOptions from './options';
-import storage from '../storage';
 import nav from './navigation';
 import { connect } from './messages';
 
