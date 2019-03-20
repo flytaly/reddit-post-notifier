@@ -30,6 +30,8 @@ async function handleKeydownEvent(e) {
         if (target.parentElement.classList.contains('post-list')) {
             const link = target.querySelector('a');
             link.click();
+            // close window shortly after the click because the extension will lose focus anyway
+            setTimeout(() => window.close(), 50);
         }
         return;
     }
@@ -38,11 +40,12 @@ async function handleKeydownEvent(e) {
     if (key === 'Enter') {
         const { headerSubredditLink } = getElements();
         headerSubredditLink.click();
+        setTimeout(() => window.close(), 50);
         return;
     }
 
     // Select next element in the list
-    if (key === 'ArrowDown') {
+    if (key === 'ArrowDown' || key.toUpperCase() === 'J') {
         const { mainContainer } = getElements();
         if (target.tagName === 'LI') {
             const next = target.nextElementSibling

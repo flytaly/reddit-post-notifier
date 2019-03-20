@@ -8,6 +8,8 @@ function updateHeader(location, payload = { unreadMsgCount: 0, name: '', href: '
 
         elements.header.classList.remove('posts', 'run-animation');
         elements.header.classList.add('query-list');
+        elements.headerSubredditLink.textContent = 'reddit';
+        elements.headerSubredditLink.href = 'https://www.reddit.com';
 
         if (unreadMsgCount) {
             elements.mail.classList.add('unread');
