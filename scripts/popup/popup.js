@@ -22,7 +22,7 @@ async function handleKeydownEvent(e) {
     }
 
     // Navigate to the list of posts or open selected post
-    if ((key === 'ArrowRight' || key === 'Enter') && target.tagName === 'LI' && target.dataset.id) {
+    if ((key === 'ArrowRight' || key === 'Enter' || key.toUpperCase() === 'L') && target.tagName === 'LI' && target.dataset.id) {
         if (target.parentElement.classList.contains('query-list')) {
             const btn = target.querySelector('button.arrow-right');
             if (btn) btn.click();
@@ -59,7 +59,7 @@ async function handleKeydownEvent(e) {
         return;
     }
     // Select previous element in the list
-    if (key === 'ArrowUp') {
+    if (key === 'ArrowUp' || key.toUpperCase() === 'K') {
         const { mainContainer } = getElements();
         if (target.tagName === 'LI') {
             const next = target.previousElementSibling
@@ -74,7 +74,7 @@ async function handleKeydownEvent(e) {
     }
 
     // Go to main screen
-    if (key === 'ArrowLeft' || key === 'Backspace') {
+    if (key === 'ArrowLeft' || key === 'Backspace' || key.toUpperCase() === 'H') {
         await nav.navigate(nav.locations.queriesList, { forceUpdate: true });
     }
 }
