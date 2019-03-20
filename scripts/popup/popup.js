@@ -4,7 +4,12 @@ import getOptions from './options';
 import nav from './navigation';
 import { connect } from './messages';
 
-async function handleKeydownEvent({ target, key }) {
+async function handleKeydownEvent(e) {
+    const { target, key } = e;
+
+    // Prevent scrolling by arrow key and other potential default behavior
+    if ([' ', 'ArrowRight', 'ArrowLeft', 'ArrowUp', 'ArrowDown', 'Backspace'].includes(key)) e.preventDefault();
+
     // Mark selected post or subreddit as read
     if (key === ' ') {
         if (target.tagName !== 'LI' || !target.dataset.id) return;
