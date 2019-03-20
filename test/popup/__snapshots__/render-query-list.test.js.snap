@@ -14,6 +14,9 @@ exports[`renderQueryListBlock should render query list block  1`] = `
         
     <button
       class="check-mark"
+      data-l10n-attrs="title"
+      data-l10n-id="queryList-checkMark"
+      data-l10n-nocontent="true"
     >
       
           
@@ -60,6 +63,9 @@ exports[`renderQueryListBlock should render query list block  1`] = `
         
     <button
       class="check-mark"
+      data-l10n-attrs="title"
+      data-l10n-id="queryList-checkMark"
+      data-l10n-nocontent="true"
     >
       
           

@@ -44,6 +44,9 @@ exports[`render new posts should add new posts in search query view 1`] = `
         
     <button
       class="check-mark"
+      data-l10n-attrs="title"
+      data-l10n-id="postList-checkMark"
+      data-l10n-nocontent="true"
     >
       
           
@@ -81,6 +84,9 @@ exports[`render new posts should add new posts in search query view 1`] = `
         
     <button
       class="check-mark"
+      data-l10n-attrs="title"
+      data-l10n-id="postList-checkMark"
+      data-l10n-nocontent="true"
     >
       
           
@@ -118,6 +124,9 @@ exports[`render new posts should add new posts in search query view 1`] = `
         
     <button
       class="check-mark"
+      data-l10n-attrs="title"
+      data-l10n-id="postList-checkMark"
+      data-l10n-nocontent="true"
     >
       
           
@@ -155,6 +164,9 @@ exports[`render new posts should add new posts in search query view 1`] = `
         
     <button
       class="check-mark"
+      data-l10n-attrs="title"
+      data-l10n-id="postList-checkMark"
+      data-l10n-nocontent="true"
     >
       
           
@@ -192,6 +204,9 @@ exports[`render new posts should add new posts in search query view 1`] = `
         
     <button
       class="check-mark"
+      data-l10n-attrs="title"
+      data-l10n-id="postList-checkMark"
+      data-l10n-nocontent="true"
     >
       
           
@@ -229,6 +244,9 @@ exports[`render new posts should add new posts in search query view 1`] = `
         
     <button
       class="check-mark"
+      data-l10n-attrs="title"
+      data-l10n-id="postList-checkMark"
+      data-l10n-nocontent="true"
     >
       
           
@@ -266,6 +284,9 @@ exports[`render new posts should add new posts in search query view 1`] = `
         
     <button
       class="check-mark"
+      data-l10n-attrs="title"
+      data-l10n-id="postList-checkMark"
+      data-l10n-nocontent="true"
     >
       
           
@@ -303,6 +324,9 @@ exports[`render new posts should add new posts in search query view 1`] = `
         
     <button
       class="check-mark"
+      data-l10n-attrs="title"
+      data-l10n-id="postList-checkMark"
+      data-l10n-nocontent="true"
     >
       
           
@@ -340,6 +364,9 @@ exports[`render new posts should add new posts in search query view 1`] = `
         
     <button
       class="check-mark"
+      data-l10n-attrs="title"
+      data-l10n-id="postList-checkMark"
+      data-l10n-nocontent="true"
     >
       
           
@@ -377,6 +404,9 @@ exports[`render new posts should add new posts in search query view 1`] = `
         
     <button
       class="check-mark"
+      data-l10n-attrs="title"
+      data-l10n-id="postList-checkMark"
+      data-l10n-nocontent="true"
     >
       
           
@@ -414,6 +444,9 @@ exports[`render new posts should add new posts in search query view 1`] = `
         
     <button
       class="check-mark"
+      data-l10n-attrs="title"
+      data-l10n-id="postList-checkMark"
+      data-l10n-nocontent="true"
     >
       
           
@@ -451,6 +484,9 @@ exports[`render new posts should add new posts in search query view 1`] = `
         
     <button
       class="check-mark"
+      data-l10n-attrs="title"
+      data-l10n-id="postList-checkMark"
+      data-l10n-nocontent="true"
     >
       
           
@@ -488,6 +524,9 @@ exports[`render new posts should add new posts in search query view 1`] = `
         
     <button
       class="check-mark"
+      data-l10n-attrs="title"
+      data-l10n-id="postList-checkMark"
+      data-l10n-nocontent="true"
     >
       
           
@@ -533,6 +572,9 @@ exports[`render new posts should add new posts in subreddit view 1`] = `
         
     <button
       class="check-mark"
+      data-l10n-attrs="title"
+      data-l10n-id="postList-checkMark"
+      data-l10n-nocontent="true"
     >
       
           
@@ -570,6 +612,9 @@ exports[`render new posts should add new posts in subreddit view 1`] = `
         
     <button
       class="check-mark"
+      data-l10n-attrs="title"
+      data-l10n-id="postList-checkMark"
+      data-l10n-nocontent="true"
     >
       
           
@@ -607,6 +652,9 @@ exports[`render new posts should add new posts in subreddit view 1`] = `
         
     <button
       class="check-mark"
+      data-l10n-attrs="title"
+      data-l10n-id="postList-checkMark"
+      data-l10n-nocontent="true"
     >
       
           
@@ -644,6 +692,9 @@ exports[`render new posts should add new posts in subreddit view 1`] = `
         
     <button
       class="check-mark"
+      data-l10n-attrs="title"
+      data-l10n-id="postList-checkMark"
+      data-l10n-nocontent="true"
     >
       
           
@@ -681,6 +732,9 @@ exports[`render new posts should add new posts in subreddit view 1`] = `
         
     <button
       class="check-mark"
+      data-l10n-attrs="title"
+      data-l10n-id="postList-checkMark"
+      data-l10n-nocontent="true"
     >
       
           
@@ -718,6 +772,9 @@ exports[`render new posts should add new posts in subreddit view 1`] = `
         
     <button
       class="check-mark"
+      data-l10n-attrs="title"
+      data-l10n-id="postList-checkMark"
+      data-l10n-nocontent="true"
     >
       
           
@@ -763,6 +820,9 @@ exports[`renderPostListBlock should render queries's posts 1`] = `
         
     <button
       class="check-mark"
+      data-l10n-attrs="title"
+      data-l10n-id="postList-checkMark"
+      data-l10n-nocontent="true"
     >
       
           
@@ -800,6 +860,9 @@ exports[`renderPostListBlock should render queries's posts 1`] = `
         
     <button
       class="check-mark"
+      data-l10n-attrs="title"
+      data-l10n-id="postList-checkMark"
+      data-l10n-nocontent="true"
     >
       
           
@@ -837,6 +900,9 @@ exports[`renderPostListBlock should render queries's posts 1`] = `
         
     <button
       class="check-mark"
+      data-l10n-attrs="title"
+      data-l10n-id="postList-checkMark"
+      data-l10n-nocontent="true"
     >
       
           
@@ -874,6 +940,9 @@ exports[`renderPostListBlock should render queries's posts 1`] = `
         
     <button
       class="check-mark"
+      data-l10n-attrs="title"
+      data-l10n-id="postList-checkMark"
+      data-l10n-nocontent="true"
     >
       
           
@@ -911,6 +980,9 @@ exports[`renderPostListBlock should render queries's posts 1`] = `
         
     <button
       class="check-mark"
+      data-l10n-attrs="title"
+      data-l10n-id="postList-checkMark"
+      data-l10n-nocontent="true"
     >
       
           
@@ -948,6 +1020,9 @@ exports[`renderPostListBlock should render queries's posts 1`] = `
         
     <button
       class="check-mark"
+      data-l10n-attrs="title"
+      data-l10n-id="postList-checkMark"
+      data-l10n-nocontent="true"
     >
       
           
@@ -985,6 +1060,9 @@ exports[`renderPostListBlock should render queries's posts 1`] = `
         
     <button
       class="check-mark"
+      data-l10n-attrs="title"
+      data-l10n-id="postList-checkMark"
+      data-l10n-nocontent="true"
     >
       
           
@@ -1022,6 +1100,9 @@ exports[`renderPostListBlock should render queries's posts 1`] = `
         
     <button
       class="check-mark"
+      data-l10n-attrs="title"
+      data-l10n-id="postList-checkMark"
+      data-l10n-nocontent="true"
     >
       
           
@@ -1059,6 +1140,9 @@ exports[`renderPostListBlock should render queries's posts 1`] = `
         
     <button
       class="check-mark"
+      data-l10n-attrs="title"
+      data-l10n-id="postList-checkMark"
+      data-l10n-nocontent="true"
     >
       
           
@@ -1096,6 +1180,9 @@ exports[`renderPostListBlock should render queries's posts 1`] = `
         
     <button
       class="check-mark"
+      data-l10n-attrs="title"
+      data-l10n-id="postList-checkMark"
+      data-l10n-nocontent="true"
     >
       
           
@@ -1133,6 +1220,9 @@ exports[`renderPostListBlock should render queries's posts 1`] = `
         
     <button
       class="check-mark"
+      data-l10n-attrs="title"
+      data-l10n-id="postList-checkMark"
+      data-l10n-nocontent="true"
     >
       
           
@@ -1178,6 +1268,9 @@ exports[`renderPostListBlock should render subreddit's posts 1`] = `
         
     <button
       class="check-mark"
+      data-l10n-attrs="title"
+      data-l10n-id="postList-checkMark"
+      data-l10n-nocontent="true"
     >
       
           
@@ -1215,6 +1308,9 @@ exports[`renderPostListBlock should render subreddit's posts 1`] = `
         
     <button
       class="check-mark"
+      data-l10n-attrs="title"
+      data-l10n-id="postList-checkMark"
+      data-l10n-nocontent="true"
     >
       
           
@@ -1252,6 +1348,9 @@ exports[`renderPostListBlock should render subreddit's posts 1`] = `
         
     <button
       class="check-mark"
+      data-l10n-attrs="title"
+      data-l10n-id="postList-checkMark"
+      data-l10n-nocontent="true"
     >
       
           
@@ -1289,6 +1388,9 @@ exports[`renderPostListBlock should render subreddit's posts 1`] = `
         
     <button
       class="check-mark"
+      data-l10n-attrs="title"
+      data-l10n-id="postList-checkMark"
+      data-l10n-nocontent="true"
     >
       
           

@@ -66,7 +66,7 @@ async function handleKeydownEvent({ target, key }) {
     }
 
     // Go to main screen
-    if (key === 'ArrowLeft') {
+    if (key === 'ArrowLeft' || key === 'Backspace') {
         await nav.navigate(nav.locations.queriesList, { forceUpdate: true });
     }
 }

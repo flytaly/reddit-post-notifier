@@ -1,6 +1,7 @@
 /* eslint-disable global-require */
 import './mocks/document-body.mock';
 import './mocks/storage.mock';
+import './mocks/browser.mock';
 import { wait } from 'dom-testing-library';
 import nav from './mocks/navigation.mock';
 import getElements from '../../scripts/popup/elements';

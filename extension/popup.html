@@ -18,9 +18,15 @@
 
   <header>
     <button class="arrow-left"><img src="images/arrowhead-left.svg"></img></button>
-    <a class="subreddit-name" href="reddit.com"></a>
-    <button class="options"><img src="images/settings.svg"></img></button>
-    <a class="mail">
+
+    <a class="subreddit-name" href="reddit.com" data-l10n-id="header-subredditName" data-l10n-nocontent="true"
+      data-l10n-attrs="title"></a>
+
+    <button class="options" data-l10n-id="header-options" data-l10n-nocontent="true" data-l10n-attrs="title">
+      <img src="images/settings.svg"></img>
+    </button>
+
+    <a class="mail" data-l10n-id="header-mail" data-l10n-nocontent="true" data-l10n-attrs="title">
       <span class="unread-number"></span>
       <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 16 16">
         <path
@@ -38,7 +44,8 @@
     </template>
     <template id="query-list-row-tmp">
       <li tabindex="1">
-        <button class="check-mark">
+        <button class="check-mark" data-l10n-id="queryList-checkMark" data-l10n-nocontent="true"
+          data-l10n-attrs="title">
           <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16">
             <use href="#check-mark-path">
           </svg>
@@ -58,7 +65,7 @@
     </template>
     <template id="post-list-row-tmp">
       <li tabindex="1">
-        <button class="check-mark">
+        <button class="check-mark" data-l10n-id="postList-checkMark" data-l10n-nocontent="true" data-l10n-attrs="title">
           <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16">
             <use href="#check-mark-path">
           </svg>
@@ -70,7 +77,7 @@
   </main>
 
   <footer>
-    <button class="footer-button">Mark all as read</button>
+    <button class="footer-button" data-l10n-id="footer-button">Mark all posts as read</button>
   </footer>
 
   <div id="preview"></div>

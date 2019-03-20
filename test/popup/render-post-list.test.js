@@ -1,5 +1,6 @@
 /* eslint-disable prefer-destructuring */
 import 'jest-dom/extend-expect';
+import './mocks/browser.mock';
 import { wait, getByText } from 'dom-testing-library';
 import storage from './mocks/storage.mock';
 import './mocks/document-body.mock';

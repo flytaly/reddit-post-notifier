@@ -1,4 +1,5 @@
 import { JSDOM } from 'jsdom';
+import './mocks/browser.mock';
 import getTemplates from '../../scripts/popup/templates';
 import html from '../../extension/popup.html';
 

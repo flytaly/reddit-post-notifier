@@ -12,7 +12,7 @@ describe('remove all posts', () => {
     test('should call removing all posts by clicking on the footer button', async () => {
         nav.locations.current = nav.locations.queriesList;
         await updateFooter(nav);
-        getByText(document.body, 'Mark all as read').click();
+        getByText(document.body, 'Mark all posts as read').click();
         await wait(() => {
             expect(storage.removeAllPosts).toHaveBeenCalledTimes(1);
             expect(nav.navigate).toHaveBeenCalledWith(nav.locations.queriesList, { forceUpdate: true });
@@ -34,7 +34,7 @@ describe('removing posts from a specific subreddit', () => {
     test('should call removing posts from specific subreddit', async () => {
         const payload = { subreddit: 'subreddit' };
         await updateFooter(nav, payload);
-        getByText(document.body, 'Mark all as read').click();
+        getByText(document.body, 'Mark all posts as read').click();
         expect(storage.removePostsFrom).toHaveBeenCalledWith(payload);
         await wait(() => {
             expect(nav.navigate).not.toHaveBeenCalled();
