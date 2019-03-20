@@ -1,3 +1,5 @@
+import storage from '../storage';
+
 export const notificationIds = {
     mail: 'mail',
     subreddit: 'subreddit',
@@ -50,11 +52,12 @@ function notify(type, items = []) {
     }
 }
 
-browser.notifications.onClicked.addListener((id) => {
+browser.notifications.onClicked.addListener(async (id) => {
     if (id === notificationIds.mail) {
-        browser.tabs.create({
+        await browser.tabs.create({
             url: 'https://www.reddit.com/message/unread/',
         });
+        await storage.removeMessages();
     }
 });
 

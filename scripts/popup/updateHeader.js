@@ -1,4 +1,5 @@
 import getElements from './elements';
+import storage from '../storage';
 
 function updateHeader(location, payload = { unreadMsgCount: 0, name: '', href: '#' }) {
     const elements = getElements();
@@ -15,6 +16,10 @@ function updateHeader(location, payload = { unreadMsgCount: 0, name: '', href: '
             elements.mail.classList.add('unread');
             elements.mail.querySelector('.unread-number').textContent = unreadMsgCount;
             elements.mail.href = 'https://www.reddit.com/message/unread/';
+            elements.mail.onclick = async () => {
+                await storage.removeMessages();
+                window.close();
+            };
         } else {
             elements.mail.classList.remove('unread');
             elements.mail.querySelector('.unread-number').textContent = '';
