@@ -83,7 +83,7 @@ const app = {
             await storage.saveQueryData(query.id, { posts: newPosts });
             popupPort.postMessage({
                 type: types.NEW_POSTS,
-                payload: { query, posts: newPosts },
+                payload: { search: query.id, posts: newPosts },
             });
         }
         return newPosts;
