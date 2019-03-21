@@ -1,6 +1,6 @@
 # Reddit post notifier
 
-[ ![addons.mozilla.org/](https://addons.cdn.mozilla.net/static/img/addons-buttons/AMO-button_2.png)](https://addons.mozilla.org/firefox/addon/)
+[ ![addons.mozilla.org/](https://addons.cdn.mozilla.net/static/img/addons-buttons/AMO-button_2.png)](https://addons.mozilla.org/firefox/addon/reddit-post-notifier)
 
 Firefox extension that watches for posts in given subreddits or reddit searches and notifies about the new ones.
 
