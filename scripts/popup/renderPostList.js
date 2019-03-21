@@ -98,7 +98,7 @@ async function renderPostListBlock({ subreddit, search }) {
 
     postList.onclick = async ({ target }) => {
         // if (target.classList.contains('check-mark')) {
-        const li = target.parentNode;
+        const li = target.closest('li');
         const { id } = li.dataset;
         await storage.removePost({ id, subreddit, searchId: search });
         li.classList.add('read');

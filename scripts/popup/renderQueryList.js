@@ -22,11 +22,14 @@ async function renderQueryListBlock(nav) {
     const queryList = queryListTmp.querySelector('ul');
 
     queryList.addEventListener('click', async ({ target }) => {
-        const { id: fullId } = target.parentElement.dataset;
+        const li = target.closest('li');
+        if (!li) return;
+        const { id: fullId } = li.dataset;
+
         if (fullId) {
             const [type, id] = [fullId.slice(0, 1), fullId.slice(2)];
 
-            if (target.classList.contains('check-mark')) {
+            if (target.closest('.check-mark')) {
                 const payload = {};
 
                 if (type === 'r') {
