@@ -72,7 +72,7 @@ const app = {
                 .search({ ...listing, q });
 
         if (!response.data || response.kind !== 'Listing') {
-            console.error(`Error during fetching posts query r/${query.query}: `, response);
+            console.error(`Error during fetching posts query ${query.query} on ${query.subreddit || 'reddit'}: `, response);
             await storage.saveQueryData(query.id, { error: response });
             return null;
         }

@@ -12,6 +12,37 @@ section.watch-subreddits {
     margin-top: 10px;
     margin-bottom: 5px;
 }
+
+.subreddits-errors {
+    display: none;
+}
+
+.subreddits-errors.show {
+    display: block;
+    color: red;
+}
+
+.subreddits-errors ul{
+    padding: 0px;
+    color: initial;
+    list-style: none;
+    margin: 0px 1em;
+}
+
+.query-error {
+    display: none;
+    margin-bottom: 1em;
+}
+
+.query-error.show {
+    display: block;
+    color: red;
+}
+
+.query-error span{
+    color: initial;
+}
+
 .input-description{
     font-size: 0.9em;
     margin-bottom: 1em;

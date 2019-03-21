@@ -59,7 +59,7 @@ async function saveQueryFieldset(fieldset) {
 
 function createQueryFields(template, {
     name = '', subreddit = '', query = '', id, notify = false,
-} = {}) {
+} = {}, error) {
     const searchElem = template.cloneNode(true);
     const fieldset = searchElem.querySelector('fieldset');
     const nameElem = fieldset.querySelector('.name input');
@@ -86,6 +86,12 @@ function createQueryFields(template, {
     notifyElem.id = `${id}_notify`;
     notifyElem.parentNode.querySelector('label').htmlFor = `${id}_notify`;
 
+    if (error) {
+        const errorElem = fieldset.querySelector('.query-error');
+        errorElem.classList.add('show');
+        errorElem.querySelector('span').textContent = `${error.error} ${error.message} ${error.reason ? `(${error.reason})` : ''}`;
+    }
+
     deleteElem.addEventListener('click', ({ target }) => {
         const parentFieldset = target.closest('fieldset');
         const container = fieldset.closest('.container');
@@ -102,6 +108,8 @@ async function restoreOptions() {
     const {
         watchSubreddits, messages, messageNotify, subredditNotify,
     } = await storage.getOptions();
+    const subredditData = await storage.getSubredditData();
+    const queryData = await storage.getQueriesData();
     const watchQueries = await storage.getQueriesList();
 
     // ------- Mail -------
@@ -115,6 +123,28 @@ async function restoreOptions() {
     if (watchSubreddits && watchSubreddits.length) {
         const subreddits = $('#subreddits');
         subreddits.value = watchSubreddits.join(' ');
+        const errors = watchSubreddits.reduce((fragment, subreddit) => {
+            const { error } = subredditData[subreddit] || {};
+            if (error) {
+                const { reason, message, error: code } = error;
+                const li = document.createElement('li');
+                const subredditName = document.createElement('b');
+                const errorInfo = document.createElement('span');
+                subredditName.textContent = subreddit;
+                errorInfo.textContent = `: ${code} ${message} ${reason ? `(${reason || ''})` : ''}`;
+                li.appendChild(subredditName);
+                li.appendChild(errorInfo);
+                fragment.appendChild(li);
+            }
+            return fragment;
+        }, document.createDocumentFragment());
+
+        if (errors.children.length) {
+            const errorsBlock = $('.subreddits-errors');
+            const errorsList = errorsBlock.querySelector('ul');
+            errorsBlock.classList.add('show');
+            errorsList.appendChild(errors);
+        }
     }
     const subredditNotifyCheckbox = $('#subredditNotify');
     subredditNotifyCheckbox.checked = subredditNotify;
@@ -122,7 +152,10 @@ async function restoreOptions() {
     // ------- Custom queries -------
     const searchContainer = $('.watch-queries .container');
     const searchTmp = getSearchTmp();
-    const row = watchQueries.map(query => createQueryFields(searchTmp, query));
+    const row = watchQueries.map((query) => {
+        const error = queryData[query.id] && queryData[query.id].error;
+        return createQueryFields(searchTmp, query, error);
+    });
     row.push(createQueryFields(searchTmp));
     searchContainer.append(...row);
 
@@ -169,11 +202,10 @@ document.addEventListener('DOMContentLoaded', async () => {
                 return acc;
             }, { valid: [], invalid: [] });
 
-        if (values.valid.length) {
-            const watchSubreddits = values.valid;
-            await storage.saveOptions({ watchSubreddits });
-            await storage.prune({ watchSubreddits });
-        }
+        const watchSubreddits = values.valid;
+        await storage.saveOptions({ watchSubreddits });
+        await storage.prune({ watchSubreddits });
+
         if (values.invalid.length) {
             subreddits.setCustomValidity(`Invalid subreddits names: ${values.invalid.join(' ')}`);
             subreddits.classList.add('invalid');

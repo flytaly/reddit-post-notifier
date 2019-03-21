@@ -31,6 +31,11 @@
         subreddits</label>
       <input id="subredditNotify" type="checkbox">
     </div>
+    <div class="subreddits-errors">
+      <b>Errors with subreddits:</b>
+      <ul>
+      </ul>
+    </div>
   </section>
 
   <section class="watch-queries">
@@ -66,6 +71,9 @@
               <input name="notify" type="checkbox">
             </li>
           </ul>
+          <div class="query-error">
+            <b>Error:</b> <span></span>
+          </div>
           <button class="browser-style delete" data-l10n-id="option-searchDelete">Delete the search</button>
         </fieldset>
       </template>
