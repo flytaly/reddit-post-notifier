@@ -1,5 +1,5 @@
-import { getByText } from 'dom-testing-library';
-import 'jest-dom/extend-expect';
+import { getByText } from '@testing-library/dom';
+import '@testing-library/jest-dom/extend-expect';
 import './mocks/browser.mock';
 import storage from './mocks/storage.mock';
 import './mocks/document-body.mock';

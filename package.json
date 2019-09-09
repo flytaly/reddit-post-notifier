@@ -1,62 +1,67 @@
 {
-  "name": "reddit-post-notifier",
-  "version": "1.0.0",
-  "description": "Firefox extension that watches for new posts in subreddits or reddit searcho",
-  "main": "manifest.json",
-  "scripts": {
-    "web-ext": "web-ext run --source-dir extension",
-    "web-ext:ffdev": "web-ext run --firefox=firefoxdeveloperedition --source-dir extension",
-    "webpack": "webpack --watch",
-    "start": "npm-run-all --parallel webpack web-ext",
-    "start:ffdev": "npm-run-all --parallel webpack web-ext:ffdev",
-    "build:webpack": "webpack --mode production",
-    "build:webext": "web-ext build --source-dir extension",
-    "build": "npm-run-all --sequential build:webpack build:webext",
-    "test": "jest --coverage",
-    "test:watch": "jest --watch"
-  },
-  "author": "Vitaly Yerofeyevsky",
-  "license": "MPL-2.0",
-  "homepage": "https://github.com/flytaly/reddit-post-notifier#readme",
-  "repository": {
-    "type": "git",
-    "url": "https://github.com/flytaly/reddit-post-notifier.git"
-  },
-  "devDependencies": {
-    "@babel/core": "^7.3.3",
-    "@babel/preset-env": "^7.3.1",
-    "babel-jest": "^24.1.0",
-    "dom-testing-library": "^3.17.0",
-    "html-loader": "^0.5.5",
-    "jest": "^24.1.0",
-    "jest-dom": "^3.1.2",
-    "jsdom": "^14.0.0",
-    "lodash.clonedeep": "^4.5.0",
-    "npm-run-all": "^4.1.5",
-    "sinon-chrome": "^2.3.2",
-    "web-ext": "^2.9.3",
-    "webpack": "^4.29.5",
-    "webpack-cli": "^3.2.3"
-  },
-  "eslintIgnore": [
-    "l10n.js"
-  ],
-  "jest": {
-    "collectCoverageFrom": [
-      "scripts/**/*.js",
-      "!<rootDir>/node_modules/",
-      "!<rootDir>/scripts/l10n.js",
-      "!<rootDir>/scripts/reddit-scopes.js"
+    "name": "reddit-post-notifier",
+    "version": "1.0.0",
+    "description": "Firefox extension that watches for new posts in subreddits or reddit searcho",
+    "main": "manifest.json",
+    "scripts": {
+        "web-ext": "web-ext run --source-dir extension",
+        "web-ext:ffdev": "web-ext run --firefox=firefoxdeveloperedition --source-dir extension",
+        "webpack": "webpack --watch",
+        "start": "npm-run-all --parallel webpack web-ext",
+        "start:ffdev": "npm-run-all --parallel webpack web-ext:ffdev",
+        "build:webpack": "webpack --mode production",
+        "build:webext": "web-ext build --source-dir extension",
+        "build": "npm-run-all --sequential build:webpack build:webext",
+        "test": "jest --coverage",
+        "test:watch": "jest --watch"
+    },
+    "author": "Vitaly Yerofeyevsky",
+    "license": "MPL-2.0",
+    "homepage": "https://github.com/flytaly/reddit-post-notifier#readme",
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/flytaly/reddit-post-notifier.git"
+    },
+    "devDependencies": {
+        "@babel/core": "^7.6.0",
+        "@babel/preset-env": "^7.6.0",
+        "@testing-library/dom": "^6.2.0",
+        "@testing-library/jest-dom": "^4.1.0",
+        "babel-jest": "^24.9.0",
+        "eslint": "^6.3.0",
+        "eslint-config-airbnb": "^18.0.1",
+        "eslint-plugin-import": "^2.18.2",
+        "html-loader": "^0.5.5",
+        "jest": "^24.9.0",
+        "jsdom": "^15.1.1",
+        "lodash.clonedeep": "^4.5.0",
+        "npm-run-all": "^4.1.5",
+        "sinon-chrome": "^3.0.1",
+        "web-ext": "^3.1.1",
+        "webpack": "^4.39.3",
+        "webpack-cli": "^3.3.8"
+    },
+    "eslintIgnore": [
+        "l10n.js",
+        "bundles"
     ],
-    "moduleFileExtensions": [
-      "js",
-      "html",
-      "svg"
-    ],
-    "transform": {
-      "^.+\\.js$": "babel-jest",
-      "^.+\\.html$": "<rootDir>/test/utils/htmlLoader.js",
-      "\\.(jpg|jpeg|png|gif|eot|otf|webp|svg|ttf|woff|woff2|mp4|webm|wav|mp3|m4a|aac|oga)$": "<rootDir>/test/utils/fileTransformer.js"
-    }
-  }
+    "jest": {
+        "collectCoverageFrom": [
+            "scripts/**/*.js",
+            "!<rootDir>/node_modules/",
+            "!<rootDir>/scripts/l10n.js",
+            "!<rootDir>/scripts/reddit-scopes.js"
+        ],
+        "moduleFileExtensions": [
+            "js",
+            "html",
+            "svg"
+        ],
+        "transform": {
+            "^.+\\.js$": "babel-jest",
+            "^.+\\.html$": "<rootDir>/test/utils/htmlLoader.js",
+            "\\.(jpg|jpeg|png|gif|eot|otf|webp|svg|ttf|woff|woff2|mp4|webm|wav|mp3|m4a|aac|oga)$": "<rootDir>/test/utils/fileTransformer.js"
+        }
+    },
+    "dependencies": {}
 }

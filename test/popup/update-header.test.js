@@ -1,4 +1,4 @@
-import 'jest-dom/extend-expect';
+import '@testing-library/jest-dom/extend-expect';
 import './mocks/document-body.mock';
 import nav from './mocks/navigation.mock';
 import getElements from '../../scripts/popup/elements';

@@ -24,7 +24,10 @@ describe('navigation', () => {
         await nav.navigate(nav.locations.queriesList, { forceUpdate: true });
 
         expect(nav.locations.current).toBe(nav.locations.queriesList);
-        expect(updateHeader).toHaveBeenCalledWith(nav.locations.queriesList, { unreadMsgCount: data.messageData.count });
+        expect(updateHeader).toHaveBeenCalledWith(
+            nav.locations.queriesList,
+            { unreadMsgCount: data.messageData.count },
+        );
         expect(updateFooter).toHaveBeenCalledWith(nav);
         expect(document.body.style.minHeight).toBe('');
         expect(document.body.style.minWidth).toBe('');

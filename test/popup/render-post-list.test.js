@@ -1,7 +1,7 @@
 /* eslint-disable prefer-destructuring */
-import 'jest-dom/extend-expect';
+import '@testing-library/jest-dom/extend-expect';
 import './mocks/browser.mock';
-import { wait, getByText } from 'dom-testing-library';
+import { wait, getByText } from '@testing-library/dom';
 import storage from './mocks/storage.mock';
 import './mocks/document-body.mock';
 import renderPostListBlock, { insertNewPosts } from '../../scripts/popup/renderPostList';

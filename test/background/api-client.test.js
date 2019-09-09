@@ -32,7 +32,7 @@ describe('HTTP GET request', () => {
     });
 
     test('should have correct url without params', async () => {
-        global.fetch = jest.fn(async (url, init) => {
+        global.fetch = jest.fn(async (url/* , init */) => {
             expect(url).toBe('https://oauth.reddit.com/endpoint?raw_json=1');
             return ({
                 json: jest.fn(async () => response),

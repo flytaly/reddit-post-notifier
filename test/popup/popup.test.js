@@ -2,7 +2,7 @@
 import './mocks/document-body.mock';
 import './mocks/storage.mock';
 import './mocks/browser.mock';
-import { wait } from 'dom-testing-library';
+import { wait } from '@testing-library/dom';
 import nav from './mocks/navigation.mock';
 import getElements from '../../scripts/popup/elements';
 import { connect } from './mocks/messages.mock';

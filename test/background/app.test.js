@@ -82,7 +82,7 @@ describe('update posts', () => {
         expect(storage.getOptions).toHaveBeenCalled();
         expect(storage.getSubredditData).toHaveBeenCalled();
         expect(reddit.getSubreddit).toHaveBeenCalledTimes(options.watchSubreddits.length);
-        for (const [index, value] of options.watchSubreddits.entries()) {
+        for (const [index/* , value */] of options.watchSubreddits.entries()) {
             expect(getNewPost).toHaveBeenNthCalledWith(index + 1, { limit: 10 });
         }
         expect(wait).toHaveBeenCalledTimes(options.watchSubreddits.length
@@ -127,6 +127,9 @@ describe('update messages', () => {
 
     test('should update and save new private messages', async () => {
         await app.update();
-        expect(storage.saveMessageData).toHaveBeenCalledWith({ newMessages, count: messageData.count + newMessages.length });
+        expect(storage.saveMessageData).toHaveBeenCalledWith({
+            newMessages,
+            count: messageData.count + newMessages.length,
+        });
     });
 });
