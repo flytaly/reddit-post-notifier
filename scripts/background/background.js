@@ -5,6 +5,12 @@ import app from './app';
 import types from '../types';
 import popupPort from './popupPort';
 
+// Support notification-sound extension
+// https://github.com/freaktechnik/notification-sounds#extension-integration
+browser.notifications.onShown.addListener(() => {
+    browser.runtime.sendMessage('@notification-sound', 'new-notification');
+});
+
 async function update() {
     const { updateInterval } = await storage.getOptions();
 
