@@ -2,6 +2,7 @@
 import storage from '../storage';
 import { translateElement } from '../l10n';
 import { generateId } from '../utils';
+import types from '../types';
 
 const $ = document.querySelector.bind(document);
 
@@ -106,11 +107,16 @@ function createQueryFields(template, {
 
 async function restoreOptions() {
     const {
-        watchSubreddits, messages, messageNotify, subredditNotify,
+        watchSubreddits, messages, messageNotify, subredditNotify, updateInterval,
     } = await storage.getOptions();
     const subredditData = await storage.getSubredditData();
     const queryData = await storage.getQueriesData();
     const watchQueries = await storage.getQueriesList();
+
+    // ------- Options -------
+    const updateIntervalInput = $('#updateInterval');
+    updateIntervalInput.value = updateInterval;
+
 
     // ------- Mail -------
     const showMessages = $('#messages');
@@ -167,6 +173,16 @@ async function restoreOptions() {
 
 document.addEventListener('DOMContentLoaded', async () => {
     await restoreOptions();
+
+    const updateIntervalInput = $('#updateInterval');
+    const saveUpdateInterval = async () => {
+        const updateInterval = parseInt(updateIntervalInput.value.trim(), 10);
+        if (!Number.isNaN(updateInterval) && updateInterval > 0) {
+            await storage.saveOptions({ updateInterval });
+            browser.alarms.create(types.ALARM_UPDATE, { delayInMinutes: updateInterval / 60 });
+        }
+    };
+    updateIntervalInput.addEventListener('input', debounce(saveUpdateInterval, 200));
 
     const showMessages = $('#messages');
     const messageNotifyCheckbox = $('#messageNotify');

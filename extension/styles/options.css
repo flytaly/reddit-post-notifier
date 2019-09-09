@@ -1,4 +1,3 @@
-
 section {
     margin: 10px 0;
 }
@@ -22,7 +21,7 @@ section.watch-subreddits {
     color: red;
 }
 
-.subreddits-errors ul{
+.subreddits-errors ul {
     padding: 0px;
     color: initial;
     list-style: none;
@@ -39,16 +38,16 @@ section.watch-subreddits {
     color: red;
 }
 
-.query-error span{
+.query-error span {
     color: initial;
 }
 
-.input-description{
+.input-description {
     font-size: 0.9em;
     margin-bottom: 1em;
 }
 
-.invalid{
+.invalid {
     border: 1px solid rgba(255, 0, 0, 0.35);
     box-shadow: 0 0 0 2px rgba(255, 0, 0, 0.35);
 }
@@ -68,19 +67,19 @@ section.watch-subreddits {
 .search label {
     width: 20%;
 }
-.search li.name input{
+.search li.name input {
     width: 50%;
 }
 
-.search li.subreddit input{
+.search li.subreddit input {
     width: 50%;
 }
 
-.search li.query input{
+.search li.query input {
     flex-grow: 1;
 }
 
-.search li.query div{
+.search li.query div {
     flex: 1 1 100%;
     padding-left: 20%;
 }
@@ -89,10 +88,15 @@ section.watch-subreddits {
     text-decoration: none;
 }
 
-.search li.notification label{
+.search li.notification label {
     width: auto;
 }
 
 #messageNotify:disabled {
     cursor: not-allowed;
+}
+
+input[type='number'] {
+    width: 8em;
+    margin: 0 2px;
 }

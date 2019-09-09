@@ -10,6 +10,14 @@
 
 <body>
   <section class="browser-style">
+    <br />
+    <label for="updateInterval" data-l10n-id="option-updateInterval">
+        Update interval:
+    </label>
+    <input id="updateInterval" type="number" name="updateInterval" min="1" max="3600" required />
+    <span>seconds</span>
+  </section>
+  <section class="browser-style">
     <h3 data-l10n-id="option-mail">Mail</h3>
     <label for="messages" data-l10n-id="option-mailShow" data-l10n-attrs="title">Watch for new mail: </label>
     <input id="messages" type="checkbox">
