@@ -58,8 +58,7 @@
   "commands": {
     "_execute_browser_action": {
       "suggested_key": {
-        "default": "Alt+Shift+S",
-        "mac": "Command+Shift+S"
+        "default": "Alt+Shift+S"
       }
     }
   },
