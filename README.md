@@ -18,7 +18,7 @@ This extension uses [OAuth2](https://github.com/reddit-archive/reddit/wiki/OAuth
 ## Keyboard shortcuts
 | Key | Function |
 |:---:| --- |
-|<kbd>Alt</kbd>+<kbd>Shift</kbd>+<kbd>S</kbd> <br>(Mac: <kbd>&#8984;</kbd>+<kbd>Shift</kbd>+<kbd>S</kbd>)| Open the extension's popup |
+|<kbd>Alt</kbd>+<kbd>Shift</kbd>+<kbd>S</kbd> | Open the extension's popup |
 |<kbd>&darr;</kbd>, <kbd>j</kbd>| Select the next item |
 |<kbd>&uarr;</kbd>, <kbd>k</kbd>| Select the previous item |
 |<kbd>&rarr;</kbd>, <kbd>l</kbd>  | Go to the list of selected item's posts |
