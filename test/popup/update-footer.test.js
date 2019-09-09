@@ -43,6 +43,6 @@ describe('removing posts from a specific subreddit', () => {
     test('should mark every post as read', () => {
         const rows = getAllByTestId(document.body, 'row');
         expect(rows).toHaveLength(3);
-        rows.forEach(row => expect(row).toHaveClass('read'));
+        rows.forEach((row) => expect(row).toHaveClass('read'));
     });
 });

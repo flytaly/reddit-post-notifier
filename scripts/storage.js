@@ -194,7 +194,7 @@ const storage = {
 
     async removeQueries(ids = []) {
         const queriesList = await storage.getQueriesList();
-        const queriesUpdated = queriesList.filter(q => !ids.includes(q.id));
+        const queriesUpdated = queriesList.filter((q) => !ids.includes(q.id));
 
         return browser.storage.local.set({ queriesList: queriesUpdated });
     },
@@ -247,7 +247,7 @@ const storage = {
 };
 
 /** Higher-order function that updates badge after every change in storage */
-const wrapper = func => async (...args) => {
+const wrapper = (func) => async (...args) => {
     const results = await func(...args);
     (async () => {
         const countItems = await storage.countNumberOfUnreadItems();

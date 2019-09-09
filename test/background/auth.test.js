@@ -9,7 +9,7 @@ jest.mock('../../scripts/storage.js');
 
 window.browser = browser;
 
-const queryStrToObj = query => query.split('&').reduce((acc, pair) => {
+const queryStrToObj = (query) => query.split('&').reduce((acc, pair) => {
     const [name, value] = pair.split('=');
     return { ...acc, [name]: value };
 }, {});

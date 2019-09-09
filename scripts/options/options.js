@@ -27,9 +27,9 @@ function getSearchTmp() {
 }
 
 async function saveQueryFieldset(fieldset) {
-    const checkSubreddits = subs => subs
+    const checkSubreddits = (subs) => subs
         .split('+')
-        .every(s => subredditNameRegExp.test(s));
+        .every((s) => subredditNameRegExp.test(s));
 
     const inputs = Array.from(fieldset.getElementsByTagName('input'));
     const subredditInput = fieldset.querySelector('.subreddit input');

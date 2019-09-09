@@ -51,7 +51,7 @@ const nav = {
                 }
                 if (type === 's') {
                     info.search = id;
-                    const { name, query, subreddit } = data.watchQueries.find(q => q.id === id);
+                    const { name, query, subreddit } = data.watchQueries.find((q) => q.id === id);
 
                     const endpoint = subreddit
                         ? `/r/${subreddit}/search?sort=new&restrict_sr=on&q=${query}`

@@ -30,8 +30,8 @@ export default class RedditApiClient {
     getSubreddit(subreddit) {
         return {
             /** @param {Object} listing */
-            new: async listing => this.GET(`/r/${subreddit}/new`, listing),
-            search: async listing => this.search(listing, subreddit),
+            new: async (listing) => this.GET(`/r/${subreddit}/new`, listing),
+            search: async (listing) => this.search(listing, subreddit),
         };
     }
 
@@ -44,7 +44,7 @@ export default class RedditApiClient {
 
     get messages() {
         return {
-            unread: async listing => this.GET('/message/unread', listing),
+            unread: async (listing) => this.GET('/message/unread', listing),
         };
     }
 }

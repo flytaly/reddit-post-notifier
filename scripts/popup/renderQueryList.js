@@ -71,7 +71,7 @@ async function renderQueryListBlock(nav) {
     ];
 
     const rowsWithPosts = rows
-        .filter(row => row.postsCount)
+        .filter((row) => row.postsCount)
         .sort((a, b) => b.lastPostCreated - a.lastPostCreated);
 
     if (!rowsWithPosts.length) return noPosts;

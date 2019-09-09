@@ -33,7 +33,7 @@ describe('authorization data', () => {
             token_type: 'tokenType',
             scope: 'scope',
         };
-        browser.storage.local.set.callsFake(async data => data);
+        browser.storage.local.set.callsFake(async (data) => data);
         mockDate('2019-02-17T00:25:58.000Z');
         const expiresInAbsolute = new Date().getTime() + expiresIn * 1000;
         const savedData = await storage.saveAuthData(authDataSnake);
@@ -150,7 +150,7 @@ describe('subreddits', () => {
         browser.storage.local.set.callsFake(async (param) => {
             Object
                 .keys(param.subreddits)
-                .forEach(subreddit => expect(param.subreddits[subreddit].posts).toEqual([]));
+                .forEach((subreddit) => expect(param.subreddits[subreddit].posts).toEqual([]));
         });
         await storage.removeAllPosts();
     });
@@ -274,7 +274,7 @@ describe('search queries', () => {
         browser.storage.local.set.callsFake(async (param) => {
             Object
                 .keys(param.queries)
-                .forEach(q => expect(param.queries[q].posts).toEqual([]));
+                .forEach((q) => expect(param.queries[q].posts).toEqual([]));
         });
         await storage.removeAllPosts();
     });

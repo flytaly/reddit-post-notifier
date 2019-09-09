@@ -137,7 +137,7 @@ async function renderPostListBlock({ subreddit, search }) {
         if (search) { posts = (await getData()).queryData[search].posts; }
 
         if (!posts) return;
-        const post = posts.find(p => p.data.id === id);
+        const post = posts.find((p) => p.data.id === id);
         if (fillPreview(preview, post)) positionPreview(event);
         postList.onmousemove = positionPreview;
     };

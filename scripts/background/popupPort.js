@@ -1,6 +1,6 @@
 const popupPort = {
     port: null,
-    postMessage: msg => popupPort.port && popupPort.port.postMessage(msg),
+    postMessage: (msg) => popupPort.port && popupPort.port.postMessage(msg),
 };
 
 

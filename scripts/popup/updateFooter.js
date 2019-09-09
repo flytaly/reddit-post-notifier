@@ -15,7 +15,7 @@ async function updateFooter(nav, payload) {
         footerBtn.onclick = async () => {
             await storage.removePostsFrom(payload);
             const rows = mainContainer.querySelectorAll('ul.post-list li');
-            rows.forEach(row => row.classList.add('read'));
+            rows.forEach((row) => row.classList.add('read'));
         };
     }
 }
