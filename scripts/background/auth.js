@@ -111,27 +111,22 @@ const auth = {
      * @return {Promise<string>} accessToken
      */
     async renewAccessToken(refreshToken) {
-        try {
-            const params = {
-                grant_type: 'refresh_token',
-                refresh_token: refreshToken,
-            };
-            const response = await fetch(this.accessTokenURL, this.fetchAuthInit(params));
+        const params = {
+            grant_type: 'refresh_token',
+            refresh_token: refreshToken,
+        };
+        const response = await fetch(this.accessTokenURL, this.fetchAuthInit(params));
 
-            if (response.status !== 200) {
-                throw new AuthError(`Couldn't refresh access token. ${response.status}: ${response.statusText}`);
-            }
-            const body = await response.json();
-            if (body.error) {
-                throw new AuthError(`Couldn't refresh access token. Error: ${body.error}`);
-            }
-            await storage.saveAuthData(body);
-
-            return body.access_token;
-        } catch (e) {
-            console.error(e);
-            return this.setAuth();
+        if (response.status !== 200) {
+            throw new AuthError(`Couldn't refresh access token. ${response.status}: ${response.statusText}`);
         }
+        const body = await response.json();
+        if (body.error) {
+            throw new AuthError(`Couldn't refresh access token. Error: ${body.error}`);
+        }
+        await storage.saveAuthData(body);
+
+        return body.access_token;
     },
 
     /**
@@ -167,7 +162,7 @@ const auth = {
                     browser.browserAction.setBadgeText({ text: '' });
                     resolve(token);
                 } catch (e) {
-                    console.error(`${e.name}: ${e.message}`);
+                    console.error(e);
                 }
             };
             browser.browserAction.onClicked.addListener(listener);

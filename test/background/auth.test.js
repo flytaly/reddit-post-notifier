@@ -143,32 +143,15 @@ describe('Token Refreshing', () => {
         expect(token).toBe(refreshSuccessBody.access_token);
     });
 
-    test('should launch setAuth if error happend during refreshing', async () => {
-        const $setAuth = auth.setAuth;
-        const $error = console.error;
-
-        auth.setAuth = jest.fn();
-        console.error = jest.fn();
-
+    test('should throw AuthError if error happend during refreshing', async () => {
         global.fetch = jest.fn(async () => ({
             status: 400,
         }));
-        await auth.renewAccessToken();
-        expect(auth.setAuth).toBeCalledTimes(1);
-        expect(console.error).toBeCalledTimes(1);
-
-        jest.clearAllMocks();
-
-        global.fetch = jest.fn(async () => ({
-            status: 200,
-            json: async () => ({ error: 'error' }),
-        }));
-        await auth.renewAccessToken();
-        expect(auth.setAuth).toBeCalledTimes(1);
-        expect(console.error).toBeCalledTimes(1);
-
-        auth.setAuth = $setAuth;
-        auth.error = $error;
+        try {
+            await auth.renewAccessToken();
+        } catch (e) {
+            expect(e).toBeInstanceOf(AuthError);
+        }
     });
 });
 
