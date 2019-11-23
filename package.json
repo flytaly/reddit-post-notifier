@@ -1,6 +1,6 @@
 {
     "name": "reddit-post-notifier",
-    "version": "1.1.0",
+    "version": "1.2.0",
     "description": "Firefox extension that watches for posts in given subreddits or reddit searches",
     "main": "manifest.json",
     "scripts": {
