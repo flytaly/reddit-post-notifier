@@ -130,5 +130,13 @@
     "option-searchDelete": {
         "message": "Delete the search",
         "description": "Button: delete the search"
+    },
+    "option-signOut": {
+        "message": "Sign out and remove local data",
+        "description": "Button: sign out"
+    },
+    "option-signOut_title": {
+        "message": "Unauthorize extension and remove all local data from the browser",
+        "description": "Attribute title of button signout"
     }
 }

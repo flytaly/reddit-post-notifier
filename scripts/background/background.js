@@ -11,7 +11,12 @@ browser.notifications.onShown.addListener(() => {
     browser.runtime.sendMessage('@notification-sound', 'new-notification');
 });
 
+let updating = false;
+
 async function update() {
+    if (updating) return;
+    updating = true;
+
     const { updateInterval } = await storage.getOptions();
 
     const countItems = await storage.countNumberOfUnreadItems();
@@ -24,10 +29,13 @@ async function update() {
         console.error(e);
         if (e.name === 'AuthError') {
             await auth.setAuth();
+            updating = false;
             await update();
         } else {
             browser.alarms.create(types.ALARM_UPDATE, { delayInMinutes: updateInterval / 60 });
         }
+    } finally {
+        updating = false;
     }
 }
 
@@ -76,6 +84,12 @@ function connectListener(port) {
             }
             case types.READ_ALL: {
                 await storage.removeAllPosts();
+                break;
+            }
+            case types.RESET: {
+                await storage.clearStorage();
+                await setOptions();
+                update();
                 break;
             }
             default:

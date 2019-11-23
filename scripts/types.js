@@ -6,6 +6,7 @@ const types = {
     READ_ALL: 'READ_ALL',
     NEW_POSTS: 'NEW_POSTS',
     NEW_MESSAGES: 'NEW_MESSAGES',
+    RESET: 'RESET',
 };
 
 export default types;

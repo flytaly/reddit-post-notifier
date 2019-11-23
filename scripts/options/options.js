@@ -172,6 +172,7 @@ async function restoreOptions() {
 }
 
 document.addEventListener('DOMContentLoaded', async () => {
+    const bgScriptPort = browser.runtime.connect();
     await restoreOptions();
 
     const updateIntervalInput = $('#updateInterval');
@@ -234,5 +235,10 @@ document.addEventListener('DOMContentLoaded', async () => {
     subreddits.addEventListener('input', debouncedListener);
     subredditNotifyCheckbox.addEventListener('change', async () => {
         await storage.saveOptions({ subredditNotify: subredditNotifyCheckbox.checked });
+    });
+
+    const signOutButton = $('#signOut');
+    signOutButton.addEventListener('click', async () => {
+        if (bgScriptPort) bgScriptPort.postMessage({ type: types.RESET });
     });
 });

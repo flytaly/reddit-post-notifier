@@ -100,3 +100,7 @@ input[type='number'] {
     width: 8em;
     margin: 0 2px;
 }
+
+.sign-out {
+    float: right;
+}

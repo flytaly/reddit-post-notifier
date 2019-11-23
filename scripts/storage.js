@@ -132,6 +132,10 @@ const storage = {
         return browser.storage.local.set({ subreddits: { ...data, [subreddit]: current } });
     },
 
+    async clearStorage() {
+        await browser.storage.local.clear();
+    },
+
     async removeMessages() {
         const { messages } = await browser.storage.local.get({ messages: {} });
         await browser.storage.local.set({ messages: { ...messages, messages: [], count: 0 } });
