@@ -249,10 +249,10 @@ const storage = {
 /** Higher-order function that updates badge after every change in storage */
 const wrapper = (func) => async (...args) => {
     const results = await func(...args);
-    (async () => {
-        const countItems = await storage.countNumberOfUnreadItems();
-        browser.browserAction.setBadgeText({ text: countItems ? String(countItems) : '' });
-    })();
+
+    const countItems = await storage.countNumberOfUnreadItems();
+    browser.browserAction.setBadgeText({ text: countItems ? String(countItems) : '' });
+
     return results;
 };
 
