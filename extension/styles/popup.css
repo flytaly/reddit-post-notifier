@@ -11,6 +11,7 @@ html {
 }
 
 body {
+    margin: 0;
     min-width: 200px;
     max-width: 500px;
     display: flex;
@@ -28,10 +29,14 @@ header {
     display: flex;
     flex-direction: row-reverse;
     align-items: center;
-    column-gap: 6px;
+    /* column-gap: 6px; /* don't work with flex in chrome */
     padding: 2px 4px;
     min-height: 20px;
     border-bottom: 1px solid var(--hover-border-color);
+}
+
+header > *:not(:first-child) {
+    margin-left: 6px;
 }
 
 header.posts{
@@ -68,10 +73,13 @@ ul > li {
     display: flex;
     flex-direction: row;
     align-items: center;
-    column-gap: 4px;
+    /* column-gap: 4px; */
     padding: 2px 4px;
     border-top: 1px solid var(--main-bg-color);
     border-bottom: 1px solid var(--main-bg-color);
+}
+ul > li > *:not(:last-child) {
+    margin-right: 4px;
 }
 ul > li:focus,
 ul > li:hover {
@@ -116,7 +124,7 @@ button.arrow-right {
     justify-content: center;
     width: 16px;
     height: 16px;
-    margin: 0;
+    /* margin: 0; */
     padding: 0;
     border: none;
     background: none;
@@ -133,7 +141,6 @@ a.mail.unread svg {
 }
 
 a.mail {
-    column-gap: 3px;
     width: auto;
 }
 button.options:hover,
