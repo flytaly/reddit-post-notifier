@@ -47,7 +47,7 @@ describe('Token Retrieval', () => {
         expect(parsedUrl.origin).toBe('https://www.reddit.com');
         expect(parsedUrl.pathname).toBe('/api/v1/authorize');
         expect(parsedUrl.searchParams.get('response_type')).toBe('code');
-        expect(parsedUrl.searchParams.get('redirect_uri')).toBe('https://localhost/');
+        expect(parsedUrl.searchParams.get('redirect_uri')).toBe(config.redirectUri);
         expect(parsedUrl.searchParams.get('client_id')).toBe(config.clientId);
         expect(parsedUrl.searchParams.get('scope')).toBe(`${scopes.read.id} ${scopes.privatemessages.id}`);
         expect(parsedUrl.searchParams.get('state')).toBe(auth.authState);
@@ -78,7 +78,7 @@ describe('Token Retrieval', () => {
 
             const parsedUrl = new URL(url);
             testUrl(parsedUrl);
-            const redirectUri = `https://localhost/?code=${fakeCode}&state=${auth.authState}`;
+            const redirectUri = `${config.redirectUri}?code=${fakeCode}&state=${auth.authState}`;
             return redirectUri;
         });
 
@@ -105,13 +105,13 @@ describe('Token Retrieval', () => {
     test('should throw AuthError when retrieving code', async () => {
         const error = 'access_denied';
         browser.identity.launchWebAuthFlow.callsFake(async () => {
-            const redirectUri = `https://localhost/?error=${error}&state=${auth.authState}`;
+            const redirectUri = `${config.redirectUri}?error=${error}&state=${auth.authState}`;
             return redirectUri;
         });
         await expect(auth.login()).rejects.toThrowError(AuthError);
 
         browser.identity.launchWebAuthFlow.callsFake(async () => {
-            const redirectUri = `https://localhost/?state=${auth.authState}`;
+            const redirectUri = `${config.redirectUri}?state=${auth.authState}`;
             return redirectUri;
         });
         await expect(auth.login()).rejects.toThrowError(AuthError);

@@ -33,7 +33,7 @@ Object {
       <button
         class="check-mark"
         data-l10n-attrs="title"
-        data-l10n-id="postList-checkMark"
+        data-l10n-id="postListCheckMark"
         data-l10n-nocontent="true"
       >
         
@@ -88,7 +88,7 @@ Object {
       <button
         class="check-mark"
         data-l10n-attrs="title"
-        data-l10n-id="queryList-checkMark"
+        data-l10n-id="queryListCheckMark"
         data-l10n-nocontent="true"
       >
         

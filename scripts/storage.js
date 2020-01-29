@@ -255,8 +255,10 @@ const wrapper = (func) => async (...args) => {
     const results = await func(...args);
 
     const countItems = await storage.countNumberOfUnreadItems();
-    browser.browserAction.setBadgeText({ text: countItems ? String(countItems) : '' });
-
+    const current = await browser.browserAction.getBadgeText({});
+    if (current !== '...') { // if authorized
+        browser.browserAction.setBadgeText({ text: countItems ? String(countItems) : '' });
+    }
     return results;
 };
 

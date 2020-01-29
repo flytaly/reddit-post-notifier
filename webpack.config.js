@@ -1,4 +1,5 @@
 const path = require('path');
+const CopyWebpackPlugin = require('copy-webpack-plugin');
 
 module.exports = {
     entry: {
@@ -14,4 +15,11 @@ module.exports = {
     watchOptions: {
         ignored: ['node_modules'],
     },
+    plugins: [
+        new CopyWebpackPlugin([
+            {
+                from: 'node_modules/webextension-polyfill/dist/browser-polyfill.js',
+            },
+        ]),
+    ],
 };

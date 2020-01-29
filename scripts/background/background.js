@@ -5,11 +5,14 @@ import app from './app';
 import types from '../types';
 import popupPort from './popupPort';
 
+
 // Support notification-sound extension
 // https://github.com/freaktechnik/notification-sounds#extension-integration
-browser.notifications.onShown.addListener(() => {
-    browser.runtime.sendMessage('@notification-sound', 'new-notification');
-});
+if (browser.notifications.onShown) {
+    browser.notifications.onShown.addListener(() => {
+        browser.runtime.sendMessage('@notification-sound', 'new-notification');
+    });
+}
 
 let updating = false;
 
@@ -101,7 +104,10 @@ function connectListener(port) {
 }
 browser.runtime.onConnect.addListener(connectListener);
 
-window.requestIdleCallback(startExtension);
+//! requestIdleCallback doesn't work in Chrome
+// window.requestIdleCallback(startExtension);
+if (process.env.NODE_ENV !== 'test') { startExtension(); }
+
 
 export default {
     update, setOptions, startExtension, connectListener,
