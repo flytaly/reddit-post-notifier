@@ -1,6 +1,6 @@
 
 import browser from './mocks/browser.mock';
-// import requestIdleCallback from './mocks/requestIdleCallback.mock';
+import requestIdleCallback from './mocks/requestIdleCallback.mock';
 import storage from '../../scripts/storage';
 import auth from '../../scripts/background/auth';
 import bgScripts from '../../scripts/background/background';
@@ -21,12 +21,10 @@ beforeAll(() => {
 afterEach(() => { jest.clearAllMocks(); });
 
 describe('background script', () => {
-    /*
     test('should pass entry function into requestIdleCallback', async () => {
-            expect(requestIdleCallback).toHaveBeenCalled();
-            expect(requestIdleCallback).toHaveBeenCalledWith(startExtension);
-        });
-    */
+        expect(requestIdleCallback).toHaveBeenCalled();
+        expect(requestIdleCallback).toHaveBeenCalledWith(startExtension);
+    });
 
     test('should call setAuth if there is no accessToken in the storage', async () => {
         storage.getAuthData.mockImplementationOnce(() => ({ }));

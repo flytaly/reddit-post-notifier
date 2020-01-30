@@ -1,3 +1,4 @@
+const { DefinePlugin } = require('webpack');
 const path = require('path');
 const CopyWebpackPlugin = require('copy-webpack-plugin');
 
@@ -33,6 +34,9 @@ module.exports = (env) => {
         },
         plugins: [
             new CopyWebpackPlugin(copyPatterns),
+            new DefinePlugin({
+                TARGET: JSON.stringify(isChrome ? 'chrome' : 'firefox'),
+            }),
         ],
     });
 };

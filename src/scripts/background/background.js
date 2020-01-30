@@ -104,10 +104,12 @@ function connectListener(port) {
 }
 browser.runtime.onConnect.addListener(connectListener);
 
-//! requestIdleCallback doesn't work in Chrome
-// window.requestIdleCallback(startExtension);
-if (process.env.NODE_ENV !== 'test') { startExtension(); }
-
+// requestIdleCallback doesn't work in Chrome
+if (TARGET === 'chrome') {
+    startExtension();
+} else { // firefox
+    window.requestIdleCallback(startExtension);
+}
 
 export default {
     update, setOptions, startExtension, connectListener,
