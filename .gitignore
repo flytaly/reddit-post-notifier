@@ -3,7 +3,6 @@
 node_modules
 .idea
 .vscode
-scripts/config.js
 web-ext-artifacts
-extension/bundles/
 coverage/
+dist/

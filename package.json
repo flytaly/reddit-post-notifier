@@ -4,14 +4,18 @@
     "description": "Firefox extension that watches for posts in given subreddits or reddit searches",
     "main": "manifest.json",
     "scripts": {
-        "web-ext": "web-ext run --source-dir extension",
-        "web-ext:ffdev": "web-ext run --firefox=firefoxdeveloperedition --source-dir extension",
-        "webpack": "webpack --watch",
-        "start": "npm-run-all --parallel webpack web-ext",
-        "start:ffdev": "npm-run-all --parallel webpack web-ext:ffdev",
-        "build:webpack": "webpack --mode production",
-        "build:webext": "web-ext build --source-dir extension",
-        "build": "npm-run-all --sequential build:webpack build:webext",
+        "web-ext": "web-ext run --source-dir dist/firefox",
+        "web-ext:chrome": "web-ext run --source-dir dist/chrome --target chromium",
+        "webpack:ff": "webpack --watch",
+        "webpack:chrome": "webpack --watch --env.target=chrome",
+        "start": "npm-run-all --parallel webpack:ff web-ext",
+        "start:chrome": "npm-run-all --parallel webpack:chrome web-ext:chrome",
+        "build:ff": "webpack --mode production",
+        "build:chrome": "webpack --mode production --env.target=chrome",
+        "zip:ff": "web-ext build --source-dir dist/firefox",
+        "zip:chrome": "web-ext build --source-dir dist/chrome",
+        "buildzip:ff": "npm-run-all --sequential build:ff zip:ff",
+        "buildzip:chrome": "npm-run-all --sequential build:chrome zip:chrome",
         "test": "jest --coverage",
         "test:watch": "jest --watch"
     },
@@ -51,8 +55,8 @@
         "collectCoverageFrom": [
             "scripts/**/*.js",
             "!<rootDir>/node_modules/",
-            "!<rootDir>/scripts/l10n.js",
-            "!<rootDir>/scripts/reddit-scopes.js"
+            "!<rootDir>/src/scripts/l10n.js",
+            "!<rootDir>/src/scripts/reddit-scopes.js"
         ],
         "moduleFileExtensions": [
             "js",
@@ -61,8 +65,8 @@
         ],
         "transform": {
             "^.+\\.js$": "babel-jest",
-            "^.+\\.html$": "<rootDir>/test/utils/htmlLoader.js",
-            "\\.(jpg|jpeg|png|gif|eot|otf|webp|svg|ttf|woff|woff2|mp4|webm|wav|mp3|m4a|aac|oga)$": "<rootDir>/test/utils/fileTransformer.js"
+            "^.+\\.html$": "<rootDir>/src/test/utils/htmlLoader.js",
+            "\\.(jpg|jpeg|png|gif|eot|otf|webp|svg|ttf|woff|woff2|mp4|webm|wav|mp3|m4a|aac|oga)$": "<rootDir>/src/test/utils/fileTransformer.js"
         }
     },
     "dependencies": {}
