@@ -5,10 +5,9 @@ import app from './app';
 import types from '../types';
 import popupPort from './popupPort';
 
-
-// Support notification-sound extension
-// https://github.com/freaktechnik/notification-sounds#extension-integration
-if (browser.notifications.onShown) {
+if (TARGET === 'firefox' && browser.notifications.onShown) {
+    // Support notification-sound extension
+    // https://github.com/freaktechnik/notification-sounds#extension-integration
     browser.notifications.onShown.addListener(() => {
         browser.runtime.sendMessage('@notification-sound', 'new-notification');
     });
