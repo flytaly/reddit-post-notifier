@@ -6,3 +6,4 @@ node_modules
 web-ext-artifacts
 coverage/
 dist/
+src/scripts/config.js
