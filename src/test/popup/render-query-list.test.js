@@ -59,7 +59,8 @@ describe('renderQueryListBlock', () => {
         storage.getSubredditData.mockImplementationOnce(() => ({}));
         await updateData();
         const noPosts = await renderQueryListBlock(nav);
-        expect(noPosts).toHaveClass('no-posts');
-        expect(noPosts).toHaveTextContent('No unread posts');
+
+        expect(noPosts.classList.contains('no-posts')).toBeTruthy();
+        expect(noPosts.textContent).toBe('No unread posts');
     });
 });

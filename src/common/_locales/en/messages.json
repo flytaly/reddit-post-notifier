@@ -11,131 +11,131 @@
         "message": "New submissions on Reddit",
         "description": "Extension title"
     },
-    "header-subredditName_title": {
+    "headerSubredditName_title": {
         "message": "Open the subreddit or search",
         "description": "Attribute title of the link to a subreddit"
     },
-    "header-mail_title": {
+    "headerMail_title": {
         "message": "Open private mail",
         "description": "Attribute title of the private mail icon"
     },
-    "header-options_title": {
+    "headerOptions_title": {
         "message": "Open options",
         "description": "Attribute title of the options icon"
     },
-    "queryList-checkMark_title": {
+    "queryListCheckMark_title": {
         "message": "Mark all posts in the subreddit or search as read",
         "description": "Attribute title of the check mark icon in query list"
     },
-    "postList-checkMark_title": {
+    "postListCheckMark_title": {
         "message": "Mark the post as read",
         "description": "Attribute title of the check mark icon in post list"
     },
-    "footer-button": {
+    "footerButton": {
         "message": "Mark all posts as read",
         "description": "Footer button"
     },
-    "option-updateInterval": {
+    "optionUpdateInterval": {
         "message": "Update interval:",
         "description": "Name of option: update interval"
     },
-    "option-mail": {
+    "optionMail": {
         "message": "Mail",
         "description": "Name of option group: mail"
     },
-    "option-mailShow": {
+    "optionMailShow": {
         "message": "Watch for new reddit mail:",
         "description": "Option: watch for new mail"
     },
-    "option-mailShow_title": {
+    "optionMailShow_title": {
         "message": "Show number of unread private messages in the popup",
         "description": "Attribute title of option: watch for new mail"
     },
-    "option-mailNotify": {
+    "optionMailNotify": {
         "message": "Show desktop notifications of new mail:",
         "description": "Option: show new mail notifications"
     },
-    "option-mailNotify_title": {
+    "optionMailNotify_title": {
         "message": "Show desktop notifications when you have new unread private messages",
         "description": "Attribute title of option: show new mail notifications"
     },
-    "option-subreddits": {
+    "optionSubreddits": {
         "message": "Subreddits",
         "description": "Name of option group: Subreddits"
     },
-    "option-subredditsLabel": {
+    "optionSubredditsLabel": {
         "message": "Watch for new posts in following subreddits:",
         "description": "Option: label for the input of subreddits"
     },
-    "option-subredditsDescription": {
-        "message": "List of subreddits (without \"r/\") divided by spaces. Example: firefox learnprogramming",
+    "optionSubredditsDescription": {
+        "message": "List of subreddits (without \"r/\") divided by spaces. Example: formula1 learnprogramming",
         "description": "Option: description for the input of subreddits"
     },
-    "option-subredditsNotify": {
+    "optionSubredditsNotify": {
         "message": "Show desktop notifications of new posts in the subreddits ",
         "description": "Option: notify about new subreddit posts"
     },
-    "option-search": {
+    "optionSearch": {
         "message": "Search",
         "description": "Name of option group: Subreddits"
     },
-    "option-searchLegend": {
+    "optionSearchLegend": {
         "message": "Watch for specific posts in the subreddit:",
         "description": "Legend of fieldset with a search inputs"
     },
-    "option-searchName": {
+    "optionSearchName": {
         "message": "Name:",
         "description": "Label of search input 'name'"
     },
-    "option-searchName_title": {
+    "optionSearchName_title": {
         "message": "Optional name of the search query",
         "description": "Attribute title of search input 'name' and its label"
     },
-    "option-searchName_placeholder": {
+    "optionSearchName_placeholder": {
         "message": "e.g.: dogs in r/aww",
         "description": "Attribute placeholder of search input 'name' and its label"
     },
-    "option-searchSubreddit": {
+    "optionSearchSubreddit": {
         "message": "Subreddit:",
         "description": "Label of search input 'subreddit'"
     },
-    "option-searchSubreddit_title": {
+    "optionSearchSubreddit_title": {
         "message": "Search submissions in a specific subreddit. You can combine subreddits with '+' like: 'aww+todayilearned'. Leave empty to search in the entire reddit.",
         "description": "Attribute title of search input 'subreddit' and its label"
     },
-    "option-searchSubreddit_placeholder": {
+    "optionSearchSubreddit_placeholder": {
         "message": "e.g.: aww",
         "description": "Attribute placeholder of search input 'subreddit'"
     },
-    "option-searchQuery": {
+    "optionSearchQuery": {
         "message": "Search query:",
         "description": "Label of search input 'query'"
     },
-    "option-searchQuery_title": {
+    "optionSearchQuery_title": {
         "message": "Search for posts that fit the search query. Look search faq for more information.",
         "description": "Attribute title of search input 'query' and its label"
     },
-    "option-searchQuery_placeholder": {
+    "optionSearchQuery_placeholder": {
         "message": "e.g.: dog",
         "description": "Attribute placeholder of search input 'query'"
     },
-    "option-searchFaq": {
+    "optionSearchFaq": {
         "message": "reddit search faq",
         "description": "Search faq link"
     },
-    "option-searchNotify": {
+    "optionSearchNotify": {
         "message": "Show desktop notifications of new posts in the search",
         "description": "Option: show notifications of new posts in the search"
     },
-    "option-searchDelete": {
+    "optionSearchDelete": {
         "message": "Delete the search",
         "description": "Button: delete the search"
     },
-    "option-signOut": {
+    "optionSignOut": {
         "message": "Sign out and remove local data",
         "description": "Button: sign out"
     },
-    "option-signOut_title": {
+    "optionSignOut_title": {
         "message": "Unauthorize extension and remove all local data from the browser",
         "description": "Attribute title of button signout"
     }

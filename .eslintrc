@@ -10,6 +10,9 @@
         "webextensions": true,
         "jest": true
     },
+    "globals": {
+        "TARGET": true,
+    },
     "rules": {
         "indent": ["error", 4, {"SwitchCase": 1}],
         "max-len": ["error", 120, 4, {
@@ -22,6 +25,7 @@
         "no-console": "off",
         "no-restricted-syntax": ["error", "ForInStatement", "LabeledStatement", "WithStatement"],
         "global-require": "off",
-        "import/prefer-default-export": "off"
+        "import/prefer-default-export": "off",
+        "import/no-extraneous-dependencies":"off"
     }
 }

@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+  <meta charset="utf-8">
+  <link rel="stylesheet" href="styles/options.css">
+  <script src="browser-polyfill.js"></script>
+  <script src="bundles/options.js"></script>
+</head>
+
+<body>
+  <section class="browser-style">
+    <br />
+    <label for="updateInterval" data-l10n-id="optionUpdateInterval">
+        Update interval:
+    </label>
+    <input id="updateInterval" type="number" name="updateInterval" min="1" max="3600" required />
+    <span>seconds</span>
+  </section>
+  <section class="browser-style">
+    <h3 data-l10n-id="optionMail">Mail</h3>
+    <label for="messages" data-l10n-id="optionMailShow" data-l10n-attrs="title">Watch for new mail: </label>
+    <input id="messages" type="checkbox">
+    <br>
+    <label for="messageNotify" data-l10n-id="optionMailNotify" data-l10n-attrs="title">Show desktop notifications of
+      new mail: </label>
+    <input id="messageNotify" type="checkbox">
+  </section>
+
+  <section class="browser-style watch-subreddits">
+    <h3 data-l10n-id="optionSubreddits">Subreddits</h3>
+    <label for="subreddits" data-l10n-id="optionSubredditsLabel">Watch for new posts in following subreddits:</label>
+    <input id="subreddits" type="text" name="url" placeholder="formula1 learnprogramming" required />
+    <!-- <div class="input-message">Error</div> -->
+    <i class="input-description" data-l10n-id="optionSubredditsDescription">List of subreddits (without "r/") divided
+      by spaces. Example: formula1 learnprogramming</i>
+    <div class="browser-style subreddit-notify">
+      <label for="subredditNotify" data-l10n-id="optionSubredditsNotify">Show desktop notifications of new posts in the
+        subreddits</label>
+      <input id="subredditNotify" type="checkbox">
+    </div>
+    <div class="subreddits-errors">
+      <b>Errors with subreddits:</b>
+      <ul>
+      </ul>
+    </div>
+  </section>
+
+  <section class="watch-queries">
+    <h3 data-l10n-id="optionSearch">Search</h3>
+    <div class="container">
+      <template id="search-tmp">
+        <fieldset class="browser-style search">
+          <legend data-l10n-id="optionSearchLegend">Watch for specific posts in the subreddit:</legend>
+          <ul id="search-queries">
+            <li class="name browser-style">
+              <label data-l10n-id="optionSearchName" data-l10n-attrs="title">Name:</label>
+              <input type="text" name="name" placeholder="e.g.: dogs in r/aww" data-l10n-id="optionSearchName"
+                data-l10n-nocontent="true" data-l10n-attrs="title,placeholder" />
+            </li>
+
+            <li class="subreddit browser-style">
+              <label data-l10n-id="optionSearchSubreddit" data-l10n-attrs="title">Subreddit:</label>
+              <input type="text" name="subreddit" placeholder="e.g.: aww" data-l10n-id="optionSearchSubreddit"
+                data-l10n-nocontent="true" data-l10n-attrs="title,placeholder" />
+              <div class="info"></div>
+            </li>
+
+            <li class="query browser-style">
+              <label data-l10n-id="optionSearchQuery" data-l10n-attrs="title">Search query:</label>
+              <input type="text" name="query" maxlength="512" placeholder="e.g.: dog" data-l10n-id="optionSearchQuery"
+                data-l10n-nocontent="true" data-l10n-attrs="title,placeholder">
+              <div><a href="https://www.reddit.com/wiki/search#wiki_field_search" data-l10n-id="optionSearchFaq">reddit
+                  search faq</a></div>
+            </li>
+
+            <li class="notification browser-style">
+              <label data-l10n-id="optionSearchNotify">Show desktop notifications of new posts in the search</label>
+              <input name="notify" type="checkbox">
+            </li>
+          </ul>
+          <div class="query-error">
+            <b>Error:</b> <span></span>
+          </div>
+          <button class="browser-style delete" data-l10n-id="optionSearchDelete">Delete the search</button>
+        </fieldset>
+      </template>
+    </div>
+    <button class="browser-style add-search">Add a search</button>
+  </section>
+
+  <div class="panel-section-separator"></div>
+
+  <section>
+    <button id="signOut" class="browser-style sign-out" data-l10n-id="optionSignOut" data-l10n-attrs="title">Sign out</button>
+  </section>
+</body>
+
+</html>

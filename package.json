@@ -4,14 +4,18 @@
     "description": "Firefox extension that watches for posts in given subreddits or reddit searches",
     "main": "manifest.json",
     "scripts": {
-        "web-ext": "web-ext run --source-dir extension",
-        "web-ext:ffdev": "web-ext run --firefox=firefoxdeveloperedition --source-dir extension",
-        "webpack": "webpack --watch",
-        "start": "npm-run-all --parallel webpack web-ext",
-        "start:ffdev": "npm-run-all --parallel webpack web-ext:ffdev",
-        "build:webpack": "webpack --mode production",
-        "build:webext": "web-ext build --source-dir extension",
-        "build": "npm-run-all --sequential build:webpack build:webext",
+        "web-ext": "web-ext run --source-dir dist/firefox",
+        "web-ext:chrome": "web-ext run --source-dir dist/chrome --target chromium",
+        "webpack:ff": "webpack --watch",
+        "webpack:chrome": "webpack --watch --env.target=chrome",
+        "start": "npm-run-all build:ff --parallel webpack:ff web-ext",
+        "start:chrome": "npm-run-all build:chrome --parallel webpack:chrome web-ext:chrome",
+        "build:ff": "webpack --mode production",
+        "build:chrome": "webpack --mode production --env.target=chrome",
+        "zip:ff": "web-ext build --source-dir dist/firefox",
+        "zip:chrome": "web-ext build --source-dir dist/chrome",
+        "buildzip:ff": "npm-run-all --sequential build:ff zip:ff",
+        "buildzip:chrome": "npm-run-all --sequential build:chrome zip:chrome",
         "test": "jest --coverage",
         "test:watch": "jest --watch"
     },
@@ -23,23 +27,25 @@
         "url": "https://github.com/flytaly/reddit-post-notifier.git"
     },
     "devDependencies": {
-        "@babel/core": "^7.6.0",
-        "@babel/preset-env": "^7.6.0",
-        "@testing-library/dom": "^6.2.0",
-        "@testing-library/jest-dom": "^4.1.0",
-        "babel-jest": "^24.9.0",
-        "eslint": "^6.3.0",
+        "@babel/core": "^7.8.3",
+        "@babel/preset-env": "^7.8.3",
+        "@testing-library/dom": "^6.12.0",
+        "@testing-library/jest-dom": "^5.0.2",
+        "babel-jest": "^25.1.0",
+        "copy-webpack-plugin": "^5.1.1",
+        "eslint": "^6.8.0",
         "eslint-config-airbnb": "^18.0.1",
-        "eslint-plugin-import": "^2.18.2",
+        "eslint-plugin-import": "^2.20.0",
         "html-loader": "^0.5.5",
-        "jest": "^24.9.0",
-        "jsdom": "^15.1.1",
+        "jest": "^25.1.0",
+        "jsdom": "^16.0.1",
         "lodash.clonedeep": "^4.5.0",
         "npm-run-all": "^4.1.5",
         "sinon-chrome": "^3.0.1",
-        "web-ext": "^3.1.1",
-        "webpack": "^4.39.3",
-        "webpack-cli": "^3.3.8"
+        "web-ext": "^4.0.0",
+        "webextension-polyfill": "^0.6.0",
+        "webpack": "^4.41.5",
+        "webpack-cli": "^3.3.10"
     },
     "eslintIgnore": [
         "l10n.js",
@@ -49,8 +55,8 @@
         "collectCoverageFrom": [
             "scripts/**/*.js",
             "!<rootDir>/node_modules/",
-            "!<rootDir>/scripts/l10n.js",
-            "!<rootDir>/scripts/reddit-scopes.js"
+            "!<rootDir>/src/scripts/l10n.js",
+            "!<rootDir>/src/scripts/reddit-scopes.js"
         ],
         "moduleFileExtensions": [
             "js",
@@ -59,9 +65,12 @@
         ],
         "transform": {
             "^.+\\.js$": "babel-jest",
-            "^.+\\.html$": "<rootDir>/test/utils/htmlLoader.js",
-            "\\.(jpg|jpeg|png|gif|eot|otf|webp|svg|ttf|woff|woff2|mp4|webm|wav|mp3|m4a|aac|oga)$": "<rootDir>/test/utils/fileTransformer.js"
-        }
+            "^.+\\.html$": "<rootDir>/src/test/utils/htmlLoader.js",
+            "\\.(jpg|jpeg|png|gif|eot|otf|webp|svg|ttf|woff|woff2|mp4|webm|wav|mp3|m4a|aac|oga)$": "<rootDir>/src/test/utils/fileTransformer.js"
+        },
+        "setupFilesAfterEnv": [
+            "<rootDir>/src/test/setupTests.js"
+        ]
     },
     "dependencies": {}
 }
