@@ -68,7 +68,7 @@
         "description": "Option: label for the input of subreddits"
     },
     "optionSubredditsDescription": {
-        "message": "List of subreddits (without \"r/\") divided by spaces. Example: firefox learnprogramming",
+        "message": "List of subreddits (without \"r/\") divided by spaces. Example: formula1 learnprogramming",
         "description": "Option: description for the input of subreddits"
     },
     "optionSubredditsNotify": {
