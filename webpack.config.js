@@ -3,7 +3,7 @@ const path = require('path');
 const CopyWebpackPlugin = require('copy-webpack-plugin');
 
 module.exports = (env) => {
-    const isChrome = env.target === 'chrome';
+    const isChrome = env && (env.target === 'chrome');
     const destDir = isChrome ? 'dist/chrome' : 'dist/firefox';
     const copyPatterns = [{
         from: '**/*',
@@ -15,6 +15,11 @@ module.exports = (env) => {
         }, {
             from: '**/*',
             context: 'src/chrome',
+        });
+    } else {
+        copyPatterns.push({
+            from: '**/*',
+            context: 'src/firefox',
         });
     }
 
