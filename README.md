@@ -8,7 +8,7 @@ Firefox extension that watches for posts in given subreddits or reddit searches 
 
 - `npm run start`
   - build the extension with [webpack](https://github.com/webpack/webpack) and run it in Firefox using [web-ext](https://github.com/mozilla/web-ext)
-- `npm run build`
+- `npm run buildzip:ff`
   - create an extension package in /web-ext-artifacts folder
 - `npm run test`
   - test extension's code with jest
