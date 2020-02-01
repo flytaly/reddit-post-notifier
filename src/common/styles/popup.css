@@ -3,15 +3,37 @@
 }
 
 html {
-    /* font-size: 62.5%; ==10px if default font size is 16px */
     /* font-family: "PT Sans", "Trebuchet MS", Arial, sans-serif; */
+    --font-color: #000000;
     --main-bg-color: #FFFFFF;
     --hover-bg-color: rgba(0, 0, 0, 0.06);
+    --hover-bg-color2:  rgba(0, 0, 0, 0.06);
     --hover-border-color: rgba(0, 0, 0, 0.1);
+    --link-color: #016ED8;
+    --grey: grey;
+    --green: green;
+    --new-mail-color: darkred;
+    --footer-font-color: #1a1a1a;
+}
+
+@media (prefers-color-scheme: dark) {
+    html {
+        --font-color: #fafafb;
+        --main-bg-color: #2a2a2e;
+        --hover-bg-color:  #4a4a4f;
+        --hover-bg-color2:  #b1b1b3;
+        --hover-border-color: #737373;
+        --link-color: #98c0ff;
+        --grey: lightgrey;
+        --green: lightgreen;
+        --new-mail-color: #ffcccb;
+        --footer-font-color: #fafafb;
+    }
 }
 
 body {
-    margin: 3px 0 0 0;
+    color: var(--font-color);
+    margin: 0;
     min-width: 200px;
     max-width: 500px;
     display: flex;
@@ -20,18 +42,24 @@ body {
     overflow: hidden auto;
 }
 
+svg {
+    fill: var(--font-color);
+    color: var(--font-color);
+}
+
 a {
     text-decoration: none;
-    color: #016ED8;
+    color: var(--link-color);
 }
 
 header {
     display: flex;
     align-items: center;
-    padding: 2px 4px;
-    min-height: 20px;
+    padding: 5px 4px 2px 4px;
+    min-height: 23px;
     border-bottom: 1px solid var(--hover-border-color);
 }
+
 header .left-buttons {
     display: flex;
     flex: 1;
@@ -67,7 +95,7 @@ header.posts button.options {
 header a.subreddit-name{
     font-weight: bold;
     font-size: 1.05em;
-    color: black;
+    color: inherit;
 }
 
 
@@ -106,12 +134,12 @@ ul > li:hover {
 .no-posts {
     text-align: center;
     padding: 5px 0;
-    color: grey;
+    color: var(--grey);
 }
 
-header img {
-    width: 18px;
-    height: 18px;
+header svg {
+    width: 16px;
+    height: 16px;
 }
 
 li img{
@@ -145,14 +173,16 @@ button.arrow-right {
     background: none;
     transition: 150ms;
 }
-
+a.mail .unread-number {
+    margin-right: 4px;
+}
 a.mail {
     color: inherit;
 }
 a.mail.unread,
 a.mail.unread svg {
-    fill: darkred;
-    color: darkred;
+    fill: var(--new-mail-color);
+    color: var(--new-mail-color);
 }
 
 a.mail {
@@ -173,19 +203,22 @@ a.mail:active{
 }
 
 button.arrow-left{
-    width: 20px;
+    width: 18px;
+    height: 18px;
+}
+button.arrow-left svg {
+    width: 100%;
     height: 100%;
-    padding: 2px;
 }
 
 button.arrow-left:focus,
 button.arrow-left:hover{
-    background-color: var(--hover-bg-color);
+    background-color: var(--hover-border-color);
 }
 
 button.arrow-left:focus:active,
 button.arrow-left:hover:active{
-    background-color: var(--hover-border-color);
+    background-color: var(--hover-bg-color2);
 }
 
 button.arrow-left[hidden]{
@@ -193,13 +226,13 @@ button.arrow-left[hidden]{
 }
 
 .check-mark svg {
-    fill: grey;
+    fill: var(--grey);
 }
 
 li:focus .check-mark svg,
 .check-mark:focus svg,
 .check-mark:hover svg {
-    fill: green;
+    fill: var(--green);
     transform: scale(1.08);
 }
 
@@ -212,7 +245,7 @@ li:focus .check-mark svg,
 }
 
 .post-list li.read a {
-    color: grey;
+    color: var(--grey);
 }
 
 .post-list li{
@@ -228,7 +261,7 @@ li:focus .check-mark svg,
     font-size: 0.9em;
     word-wrap: break-word;
     overflow: hidden;
-    background-color: white;
+    background-color: var(--main-bg-color);
     border: 1px solid var(--hover-border-color);
     z-index: 100;
 }
@@ -240,7 +273,6 @@ li:focus .check-mark svg,
 footer {
     background-color: var(--hover-bg-color);
     border-top: 1px solid var(--hover-border-color);
-    color: #1a1a1a;
     display: flex;
     flex-direction: row;
     padding: 0;
@@ -252,16 +284,18 @@ footer {
     border: none;
     margin: 0;
     text-align: center;
+    color: var(--footer-font-color);
+    background-color: var(--hover-bg-color);
 }
 
 .footer-button:focus,
 .footer-button:hover {
-    background-color: var(--hover-bg-color);
+    background-color: var(--hover-border-color);
   }
 
 .footer-button:focus:active,
 .footer-button:hover:active {
-    background-color: var(--hover-border-color);
+    background-color: var(--hover-bg-color2);
   }
 
 .run-animation {
