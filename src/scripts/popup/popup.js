@@ -29,6 +29,7 @@ async function init() {
     });
     elements.update.addEventListener('click', () => {
         postMessage({ type: types.UPDATE_NOW });
+        elements.update.blur();
     });
     document.addEventListener('keydown', handleKeydownEvent);
 }
