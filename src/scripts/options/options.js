@@ -109,6 +109,7 @@ async function restoreOptions() {
     const {
         watchSubreddits, messages, messageNotify, subredditNotify, updateInterval,
     } = await storage.getOptions();
+    const { accessToken } = await storage.getAuthData();
     const subredditData = await storage.getSubredditData();
     const queryData = await storage.getQueriesData();
     const watchQueries = await storage.getQueriesList();
@@ -169,6 +170,11 @@ async function restoreOptions() {
     addSearchButton.addEventListener('click', () => {
         searchContainer.appendChild(createQueryFields(searchTmp));
     });
+
+    const signOutButton = $('#signOut');
+    if (!accessToken) {
+        signOutButton.style.display = 'none';
+    }
 }
 
 document.addEventListener('DOMContentLoaded', async () => {
