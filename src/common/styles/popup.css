@@ -11,7 +11,7 @@ html {
 }
 
 body {
-    margin: 0;
+    margin: 3px 0 0 0;
     min-width: 200px;
     max-width: 500px;
     display: flex;
@@ -27,12 +27,25 @@ a {
 
 header {
     display: flex;
-    flex-direction: row-reverse;
     align-items: center;
-    /* column-gap: 6px; /* don't work with flex in chrome */
     padding: 2px 4px;
     min-height: 20px;
     border-bottom: 1px solid var(--hover-border-color);
+}
+header .left-buttons {
+    display: flex;
+    flex: 1;
+    align-items: center;
+}
+header .left-buttons > * {
+    margin-right: 6px;
+}
+header .right-buttons {
+    display: flex;
+    align-items: center;
+}
+header .right-buttons > * {
+    margin-left: 6px;
 }
 
 header > *:not(:first-child) {
@@ -45,8 +58,9 @@ header.posts{
 }
 header.query-list  button.arrow-left,
 header.query-list .subreddit-name,
+header.posts button.update,
 header.posts a.mail,
-header.posts button.options{
+header.posts button.options {
     display: none;
 }
 
@@ -115,6 +129,7 @@ ul.query-list .query-name {
 }
 
 a.mail,
+button.update,
 button.options,
 button.arrow-left,
 button.check-mark,
@@ -143,12 +158,15 @@ a.mail.unread svg {
 a.mail {
     width: auto;
 }
+button.update:hover,
+button.update:focus,
 button.options:hover,
 button.options:focus,
 a.mail:hover,
 a.mail:focus{
     transform: scale(1.08);
 }
+button.update:active,
 button.options:active,
 a.mail:active{
     transform: scale(0.92);
@@ -251,6 +269,10 @@ footer {
     animation: slide-animation-left 0.10s ease;
 }
 
+.run-spinner {
+    animation: spinner-animation 800ms linear infinite;
+}
+
 @keyframes slide-animation-left {
     from {
       opacity : 0;
@@ -261,5 +283,10 @@ footer {
       left : 0;
     }
   }
+
+@keyframes spinner-animation {
+    0%   { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
 
 

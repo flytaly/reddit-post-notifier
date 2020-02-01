@@ -15,6 +15,10 @@
         "message": "Open the subreddit or search",
         "description": "Attribute title of the link to a subreddit"
     },
+    "headerUpdateBtn_title": {
+        "message": "Update now",
+        "description": "Attribute title of the update button"
+    },
     "headerMail_title": {
         "message": "Open private mail",
         "description": "Attribute title of the private mail icon"

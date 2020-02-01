@@ -18,6 +18,7 @@ let updating = false;
 async function update() {
     if (updating) return;
     updating = true;
+    popupPort.postMessage({ type: types.UPDATING_START });
 
     const { updateInterval } = await storage.getOptions();
 
@@ -38,6 +39,7 @@ async function update() {
         }
     } finally {
         updating = false;
+        popupPort.postMessage({ type: types.UPDATING_END });
     }
 }
 
@@ -72,6 +74,7 @@ async function startExtension() {
 }
 
 function connectListener(port) {
+    if (updating) { port.postMessage({ type: types.UPDATING_START }); }
     popupPort.port = port;
     popupPort.port.onMessage.addListener(async (message) => {
         const { type, payload } = message;
@@ -91,6 +94,10 @@ function connectListener(port) {
             case types.RESET: {
                 await storage.clearStorage();
                 await setOptions();
+                update();
+                break;
+            }
+            case types.UPDATE_NOW: {
                 update();
                 break;
             }

@@ -34,7 +34,7 @@ export default async function handleKeydownEvent(e) {
     }
 
     // Open subreddit or search
-    if (key === 'Enter') {
+    if (key === 'Enter' && target === document.body) {
         const { headerSubredditLink } = getElements();
         headerSubredditLink.click();
         setTimeout(() => window.close(), 50);

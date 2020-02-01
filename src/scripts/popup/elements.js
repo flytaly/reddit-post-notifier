@@ -14,6 +14,7 @@ function getElements() {
             preview: $('#preview'),
             mail: $('a.mail'),
             options: $('button.options'),
+            update: $('button.update'),
         };
     }
     return elements;

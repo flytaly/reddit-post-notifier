@@ -7,6 +7,9 @@ const types = {
     NEW_POSTS: 'NEW_POSTS',
     NEW_MESSAGES: 'NEW_MESSAGES',
     RESET: 'RESET',
+    UPDATE_NOW: 'UPDATE_NOW',
+    UPDATING_START: 'UPDATING_START',
+    UPDATING_END: 'UPDATING_END',
 };
 
 export default types;

@@ -72,5 +72,7 @@
             "<rootDir>/src/test/setupTests.js"
         ]
     },
-    "dependencies": {}
+    "dependencies": {
+        "nprogress": "^0.2.0"
+    }
 }

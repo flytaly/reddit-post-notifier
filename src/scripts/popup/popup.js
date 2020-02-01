@@ -2,8 +2,9 @@ import getTemplates from './templates';
 import getElements from './elements';
 import getOptions from './options';
 import nav from './navigation';
-import { connect } from './messages';
+import { connect, postMessage } from './messages';
 import handleKeydownEvent from './handleKeys';
+import types from '../types';
 
 if (TARGET === 'chrome') {
     // chrome doesn't open links by default
@@ -25,6 +26,9 @@ async function init() {
     elements.options.addEventListener('click', async () => {
         await browser.runtime.openOptionsPage();
         window.close();
+    });
+    elements.update.addEventListener('click', () => {
+        postMessage({ type: types.UPDATE_NOW });
     });
     document.addEventListener('keydown', handleKeydownEvent);
 }

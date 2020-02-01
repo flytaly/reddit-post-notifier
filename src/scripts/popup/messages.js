@@ -1,7 +1,11 @@
+import nprogress from 'nprogress';
 import types from '../types';
 import { insertNewPosts } from './renderPostList';
 import { updateData } from './data';
 import updateHeader from './updateHeader';
+import getElements from './elements';
+
+nprogress.configure({ showSpinner: false });
 
 let port = null;
 
@@ -25,6 +29,14 @@ export function connect(nav) {
                         updateHeader(nav.locations.queriesList, { unreadMsgCount: payload.count });
                         await updateData();
                     }
+                    break;
+                case types.UPDATING_START:
+                    nprogress.start();
+                    getElements().update.classList.add('run-spinner');
+                    break;
+                case types.UPDATING_END:
+                    nprogress.done();
+                    getElements().update.classList.remove('run-spinner');
                     break;
                 default:
             }
