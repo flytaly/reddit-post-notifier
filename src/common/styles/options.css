@@ -1,3 +1,69 @@
+html {
+    --font-color: #252729;
+    --font-color_h: #000000;
+    --font-color_sub: #4c4e4f;
+    --bg-color: #FFFFFF;
+    --input-bg-color: initial;
+    --border-color: initial;
+    --link-color: #016ED8;
+}
+
+@media (prefers-color-scheme: dark) {
+    html {
+        --font-color: #e8eaed;
+        --font-color_h: #ffffff;
+        --font-color_sub: #90959b;
+        --bg-color: #202023;
+        --input-bg-color: #474749;
+        --border-color: #737373;
+        --link-color: #98c0ff;
+    }
+    button {
+        background-color: #4a4a4f;
+        border-color: var(--border-color);
+        color: #fafafb;
+        background-image: none;
+    }
+    button:hover,
+    button:focus {
+        border-color: #fafafb;
+    }
+    button:active {
+        background-color: #737373;
+    }
+}
+
+body {
+    color: var(--font-color);
+    background-color: var(--bg-color);
+}
+
+h1, h2, h3, h4 {
+    color: var(--font-color_h);
+}
+
+a {
+    color: var(--link-color);
+}
+
+input[type="text"],
+input[type="number"]{
+    color: var(--font-color);
+    background-color: var(--input-bg-color);
+    border-color: var(--border-color);
+}
+
+input[type="checkbox"]{
+    margin-left: 4px;
+}
+
+button
+button.sign-out,
+button.delete,
+button.add-search {
+    margin-top: 4px;
+}
+
 section {
     margin: 10px 0;
 }
@@ -23,7 +89,6 @@ section.watch-subreddits {
 
 .subreddits-errors ul {
     padding: 0px;
-    color: initial;
     list-style: none;
     margin: 0px 1em;
 }
@@ -38,12 +103,9 @@ section.watch-subreddits {
     color: red;
 }
 
-.query-error span {
-    color: initial;
-}
-
 .input-description {
     font-size: 0.9em;
+    color: var(--font-color_sub);
     margin-bottom: 1em;
 }
 
