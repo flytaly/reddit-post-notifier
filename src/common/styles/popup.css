@@ -152,6 +152,9 @@ li svg {
     height: 16px;
 }
 
+ul.query-list {
+    cursor: default;
+}
 ul.query-list .query-name {
     flex-grow: 1;
 }
