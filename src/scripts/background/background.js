@@ -5,6 +5,7 @@ import app from './app';
 import types from '../types';
 import popupPort from './popupPort';
 import { watchAlarms, scheduleNextUpdate } from './timer';
+import applyTheme from '../theme';
 
 if (TARGET === 'firefox' && browser.notifications.onShown) {
     // Support notification-sound extension
@@ -52,6 +53,16 @@ async function setOptions() {
 }
 
 async function startExtension() {
+    if (TARGET === 'chrome') {
+        /*
+            Change icon theme in Chrome after extension's launch.
+            Unfortunately, chrome doesn't support 'theme_icons' in manifest.
+            Also media query event listener doesn't work in the background page,
+            so user still need to launch popup to change icon dynamically.
+        */
+        applyTheme();
+    }
+
     setOptions();
     watchAlarms(update);
 

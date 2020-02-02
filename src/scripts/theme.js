@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-expressions */
 import storage from './storage';
 
 let listenerAdded = false;
@@ -17,8 +18,26 @@ const toggleTheme = (theme, mql) => {
     }
     if (isDark) {
         document.body.classList.add(className);
+        if (TARGET === 'chrome') {
+            browser.browserAction.setIcon({
+                path: {
+                    16: 'images/icon-16-light.png',
+                    32: 'images/icon-32-light.png',
+                    64: 'images/icon-64-light.png',
+                },
+            });
+        }
     } else {
         document.body.classList.remove(className);
+        if (TARGET === 'chrome') {
+            browser.browserAction.setIcon({
+                path: {
+                    16: 'images/icon-16.png',
+                    32: 'images/icon-32.png',
+                    64: 'images/icon-64.png',
+                },
+            });
+        }
     }
 };
 

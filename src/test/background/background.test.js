@@ -16,6 +16,7 @@ jest.mock('../../scripts/storage.js');
 const { startExtension, connectListener } = bgScripts;
 
 beforeAll(() => {
+    window.matchMedia = jest.fn(() => ({ matches: false, addEventListener: jest.fn() }));
     storage.getOptions = jest.fn(async () => optionsDefault);
 });
 
