@@ -3,6 +3,7 @@ import storage from '../storage';
 import { translateElement } from '../l10n';
 import { generateId } from '../utils';
 import types from '../types';
+import applyTheme from '../theme';
 
 const $ = document.querySelector.bind(document);
 
@@ -106,8 +107,9 @@ function createQueryFields(template, {
 }
 
 async function restoreOptions() {
+    applyTheme();
     const {
-        watchSubreddits, messages, messageNotify, subredditNotify, updateInterval,
+        watchSubreddits, messages, messageNotify, subredditNotify, updateInterval, theme,
     } = await storage.getOptions();
     const { accessToken } = await storage.getAuthData();
     const subredditData = await storage.getSubredditData();
@@ -117,6 +119,11 @@ async function restoreOptions() {
     // ------- Options -------
     const updateIntervalInput = $('#updateInterval');
     updateIntervalInput.value = updateInterval;
+
+    // ------- Theme -------
+    const themeSwitcher = $('#theme');
+    const themes = themeSwitcher.elements.theme;
+    themes.value = theme || 'auto';
 
 
     // ------- Mail -------
@@ -190,6 +197,13 @@ document.addEventListener('DOMContentLoaded', async () => {
         }
     };
     updateIntervalInput.addEventListener('input', debounce(saveUpdateInterval, 200));
+
+    const themeSwitcher = $('#theme');
+    themeSwitcher.addEventListener('change', async ({ target }) => {
+        await storage.saveOptions({ theme: target.value || 'auto' });
+        applyTheme();
+    });
+
 
     const showMessages = $('#messages');
     const messageNotifyCheckbox = $('#messageNotify');

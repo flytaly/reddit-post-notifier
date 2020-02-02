@@ -1,4 +1,4 @@
-html {
+body {
     --font-color: #252729;
     --font-color_h: #000000;
     --font-color_sub: #4c4e4f;
@@ -8,29 +8,28 @@ html {
     --link-color: #016ED8;
 }
 
-@media (prefers-color-scheme: dark) {
-    html {
-        --font-color: #e8eaed;
-        --font-color_h: #ffffff;
-        --font-color_sub: #90959b;
-        --bg-color: #202023;
-        --input-bg-color: #474749;
-        --border-color: #737373;
-        --link-color: #98c0ff;
-    }
-    button {
-        background-color: #4a4a4f;
-        border-color: var(--border-color);
-        color: #fafafb;
-        background-image: none;
-    }
-    button:hover,
-    button:focus {
-        border-color: #fafafb;
-    }
-    button:active {
-        background-color: #737373;
-    }
+body.dark-mode {
+    --font-color: #e8eaed;
+    --font-color_h: #ffffff;
+    --font-color_sub: #90959b;
+    --bg-color: #202023;
+    --input-bg-color: #474749;
+    --border-color: #737373;
+    --link-color: #98c0ff;
+}
+
+body.dark-mode button {
+    background-color: #4a4a4f;
+    border-color: var(--border-color);
+    color: #fafafb;
+    background-image: none;
+}
+body.dark-mode button:hover,
+body.dark-mode button:focus {
+    border-color: #fafafb;
+}
+body.dark-mode button:active {
+    background-color: #737373;
 }
 
 body {
@@ -124,6 +123,7 @@ section.watch-subreddits {
 .search li {
     display: flex;
     flex-wrap: wrap;
+    margin-bottom: 4px;
 }
 
 .search label {

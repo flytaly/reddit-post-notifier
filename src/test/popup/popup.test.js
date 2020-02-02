@@ -2,6 +2,7 @@
 import './mocks/document-body.mock';
 import './mocks/storage.mock';
 import './mocks/browser.mock';
+import './mocks/match-media.mock';
 import { wait } from '@testing-library/dom';
 import nav from './mocks/navigation.mock';
 import getElements from '../../scripts/popup/elements';
@@ -25,5 +26,9 @@ describe('', () => {
         const { headerBackBtn } = getElements();
         headerBackBtn.dispatchEvent(new MouseEvent('click'));
         expect(nav.navigate).toHaveBeenCalledWith(nav.locations.queriesList, { forceUpdate: true });
+    });
+
+    test('should apply theme', () => {
+        expect(window.matchMedia).toHaveBeenCalledWith('(prefers-color-scheme: dark)');
     });
 });

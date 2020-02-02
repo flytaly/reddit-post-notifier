@@ -5,4 +5,5 @@ export default {
     messages: true, // show the number of unread private messages
     messageNotify: true,
     subredditNotify: false,
+    theme: 'auto',
 };

@@ -5,6 +5,7 @@ import nav from './navigation';
 import { connect, postMessage } from './messages';
 import handleKeydownEvent from './handleKeys';
 import types from '../types';
+import applyTheme from '../theme';
 
 if (TARGET === 'chrome') {
     // chrome doesn't open links by default
@@ -17,6 +18,7 @@ if (TARGET === 'chrome') {
 }
 
 async function init() {
+    applyTheme();
     getTemplates();
     getOptions();
     const elements = getElements();

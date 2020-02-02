@@ -18,6 +18,25 @@
     <input id="updateInterval" type="number" name="updateInterval" min="1" max="3600" required />
     <span>seconds</span>
   </section>
+
+  <section class="browser-style">
+    <form id="theme" class="browser-style">
+      <span>Theme:</span>
+      <label class="browser-style">
+        <input type="radio" name="theme" value="light">
+        Light
+      </label>
+      <label>
+        <input type="radio" name="theme" value="dark">
+        Dark
+      </label>
+      <label>
+        <input type="radio" name="theme" value="auto">
+        Auto
+      </label>
+    </form>
+  </section>
+
   <section class="browser-style">
     <h3 data-l10n-id="optionMail">Mail</h3>
     <label for="messages" data-l10n-id="optionMailShow" data-l10n-attrs="title">Watch for new mail: </label>
