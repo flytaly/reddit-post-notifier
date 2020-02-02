@@ -4,6 +4,7 @@ import optionsDefault from '../options-default';
 import app from './app';
 import types from '../types';
 import popupPort from './popupPort';
+import { watchAlarms, scheduleNextUpdate } from './timer';
 
 if (TARGET === 'firefox' && browser.notifications.onShown) {
     // Support notification-sound extension
@@ -20,14 +21,12 @@ async function update() {
     updating = true;
     popupPort.postMessage({ type: types.UPDATING_START });
 
-    const { updateInterval } = await storage.getOptions();
-
     const countItems = await storage.countNumberOfUnreadItems();
     browser.browserAction.setBadgeText({ text: countItems ? String(countItems) : '' });
 
     try {
         await app.update();
-        browser.alarms.create(types.ALARM_UPDATE, { delayInMinutes: updateInterval / 60 });
+        await scheduleNextUpdate();
     } catch (e) {
         console.error(e);
         if (e.name === 'AuthError') {
@@ -35,7 +34,7 @@ async function update() {
             updating = false;
             await update();
         } else {
-            browser.alarms.create(types.ALARM_UPDATE, { delayInMinutes: updateInterval / 60 });
+            await scheduleNextUpdate();
         }
     } finally {
         updating = false;
@@ -52,17 +51,9 @@ async function setOptions() {
     }
 }
 
-function watchAlarms() {
-    browser.alarms.onAlarm.addListener(async ({ name }) => {
-        if (name === types.ALARM_UPDATE) {
-            await update();
-        }
-    });
-}
-
 async function startExtension() {
     setOptions();
-    watchAlarms();
+    watchAlarms(update);
 
     const { accessToken } = await storage.getAuthData();
 

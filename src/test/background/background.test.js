@@ -3,6 +3,7 @@ import browser from './mocks/browser.mock';
 import requestIdleCallback from './mocks/requestIdleCallback.mock';
 import storage from '../../scripts/storage';
 import auth from '../../scripts/background/auth';
+import app from '../../scripts/background/app';
 import bgScripts from '../../scripts/background/background';
 import optionsDefault from '../../scripts/options-default';
 import types from '../../scripts/types';
@@ -112,5 +113,57 @@ describe('popup messages listener', () => {
         storage.removeAllPosts = jest.fn();
         messageListener({ type: types.READ_ALL });
         expect(storage.removeAllPosts).toHaveBeenCalled();
+    });
+});
+
+describe('alarms', () => {
+    beforeAll(() => {
+        window.setTimeout = jest.fn();
+        storage.getOptions.mockImplementation(() => ({
+            updateInterval: 30,
+        }));
+    });
+    beforeEach(() => {
+        storage.getAuthData.mockImplementationOnce(() => ({ accessToken: 'validToken' }));
+        browser.alarms.onAlarm.addListener.resetHistory();
+        browser.alarms.create.resetHistory();
+    });
+    afterAll(() => { window.TARGET = 'firefox'; });
+
+    test('should set alarm listener', async () => {
+        await startExtension();
+        expect(browser.alarms.onAlarm.addListener.calledOnce).toBeTruthy();
+
+        const cb = browser.alarms.onAlarm.addListener.args[0][0];
+        app.update.mockClear();
+        await cb({ name: types.ALARM_UPDATE });
+        expect(app.update).toHaveBeenCalledTimes(1);
+    });
+
+    test('should set alarm in FF', async () => {
+        await startExtension();
+        expect(browser.alarms.create.calledOnce).toBeTruthy();
+        expect(browser.alarms.create.args[0][0]).toBe(types.ALARM_UPDATE);
+        expect(browser.alarms.create.args[0][1]).toMatchObject({
+            delayInMinutes: 30 / 60,
+        });
+    });
+    test('should set setTimeout in Chrome if delay < 60 sec', async () => {
+        window.TARGET = 'chrome';
+        await startExtension();
+        expect(browser.alarms.create.called).toBeFalsy();
+        expect(setTimeout).toHaveBeenCalled();
+        expect(setTimeout.mock.calls[0][1]).toBe(30 * 1000);
+    });
+    test('should set alarm in Chrome if delay >= 60 sec', async () => {
+        storage.getOptions.mockImplementation(() => ({
+            updateInterval: 60,
+        }));
+        window.TARGET = 'chrome';
+        await startExtension();
+        expect(browser.alarms.create.called).toBeTruthy();
+        expect(browser.alarms.create.args[0][1]).toMatchObject({
+            delayInMinutes: 1,
+        });
     });
 });
