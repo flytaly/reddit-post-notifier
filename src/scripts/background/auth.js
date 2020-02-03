@@ -151,7 +151,7 @@ const auth = {
     */
     setAuth() {
         browser.browserAction.setPopup({ popup: '' });
-        browser.browserAction.setBadgeBackgroundColor({ color: 'red' });
+        // browser.browserAction.setBadgeBackgroundColor({ color: 'red' });
         browser.browserAction.setBadgeText({ text: '...' });
         return new Promise((resolve) => {
             const listener = async () => {

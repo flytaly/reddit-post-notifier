@@ -42,6 +42,7 @@ const toggleTheme = (theme, mql) => {
 };
 
 export default async () => {
+    browser.browserAction.setBadgeBackgroundColor({ color: 'darkred' });
     const { theme } = await storage.getOptions();
     const preferDarkQuery = '(prefers-color-scheme: dark)';
     const mql = window.matchMedia(preferDarkQuery);
