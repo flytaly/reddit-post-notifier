@@ -37,6 +37,9 @@ module.exports = (env) => {
         watchOptions: {
             ignored: ['node_modules'],
         },
+        optimization: {
+            minimize: false,
+        },
         plugins: [
             new CopyWebpackPlugin(copyPatterns),
             new DefinePlugin({
