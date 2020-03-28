@@ -9,7 +9,7 @@ if (TARGET === 'chrome') {
 } else {
     conf.clientId = '';
     conf.clientSecret = '';
-    conf.redirectUri = 'https://localhost/';
+    conf.redirectUri = 'https://*.extensions.allizom.org/';
     // https://github.com/reddit-archive/reddit/wiki/api#rules
     conf.userAgent = '';
 }
