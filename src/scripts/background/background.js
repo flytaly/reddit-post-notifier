@@ -120,8 +120,19 @@ browser.runtime.onConnect.addListener(connectListener);
 if (TARGET === 'chrome') {
     startExtension();
 } else { // firefox
+    // reset auth data if prev. version <1.4 to force reauthorization (because of the changes in FF75 identity API)
+    browser.runtime.onInstalled.addListener((details) => {
+        const { previousVersion, reason } = details;
+        if (reason === 'update' && previousVersion) {
+            const re = /^1.(\d+)./.exec(previousVersion);
+            if (re && re[1] < 4) {
+                storage.saveAuthData({ access_token: '', expires_in: 0, refresh_token: '' });
+            }
+        }
+    });
     window.requestIdleCallback(startExtension);
 }
+
 
 export default {
     update, setOptions, startExtension, connectListener,
