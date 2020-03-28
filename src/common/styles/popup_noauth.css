@@ -5,11 +5,16 @@
     box-sizing: border-box;
 }
 
+html {
+    font-size: 14px;
+}
+
 body {
     display: flex;
     flex-direction: column;
     margin: 0;
     max-width: 300px;
+    width: 300px;
 }
 
 .description {

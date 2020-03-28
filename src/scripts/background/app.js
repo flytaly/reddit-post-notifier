@@ -1,7 +1,7 @@
 /* eslint-disable no-await-in-loop */
 import RedditApiClient from './api-client';
 import storage from '../storage';
-import { wait } from '../utils';
+import { wait, getSubredditUrl, getSearchQueryUrl } from '../utils';
 import popupPort from './popupPort';
 import types from '../types';
 import notify, { notificationIds } from './notifications';
@@ -134,7 +134,11 @@ const app = {
         for (const subreddit of watchSubreddits) {
             const newMessages = await app.updateSubreddit({ subreddit, subData, listing: { limit } });
             if (subredditNotify && newMessages && newMessages.length) {
-                notificationBatch.push({ subreddit, len: newMessages.length });
+                notificationBatch.push({
+                    subreddit,
+                    len: newMessages.length,
+                    link: getSubredditUrl(subreddit),
+                });
             }
             await wait(waitTimeout * 1000);
         }
@@ -143,8 +147,13 @@ const app = {
         notificationBatch.length = 0;
         for (const query of watchQueries) {
             const newMessages = await app.updateQueries({ query, queryData, listing: { limit } });
+
             if (query.notify && newMessages && newMessages.length) {
-                notificationBatch.push({ query: query.name || query.query, len: newMessages.length });
+                notificationBatch.push({
+                    query: query.name || query.query,
+                    len: newMessages.length,
+                    link: getSearchQueryUrl(query.query, query.subreddit),
+                });
             }
             await wait(waitTimeout * 1000);
         }

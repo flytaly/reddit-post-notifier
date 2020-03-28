@@ -6,6 +6,11 @@ export const notificationIds = {
     query: 'query',
 };
 
+const linksToOpen = {
+    subreddits: [],
+    queries: [],
+};
+
 function notify(type, items = []) {
     if (!items.length) return;
 
@@ -36,9 +41,13 @@ function notify(type, items = []) {
                 .join(', ')
             }`,
         };
-        browser.notifications.create(notificationIds.subreddit, nOpts);
 
-        // TODO: open subreddit/search by clicking on notification
+        const links = items.filter((item) => item.link).map((item) => item.link);
+        if (links) {
+            linksToOpen.subreddits = [...links];
+        }
+
+        browser.notifications.create(notificationIds.subreddit, nOpts);
     }
 
     if (type === notificationIds.query) {
@@ -50,7 +59,11 @@ function notify(type, items = []) {
                 .join(', ')
             }`,
         };
-        browser.notifications.create(notificationIds.subreddit, nOpts);
+        const links = items.filter((item) => item.link).map((item) => item.link);
+        if (links) {
+            linksToOpen.queries = [...links];
+        }
+        browser.notifications.create(notificationIds.query, nOpts);
     }
 }
 
@@ -60,6 +73,32 @@ browser.notifications.onClicked.addListener(async (id) => {
             url: 'https://www.reddit.com/message/unread/',
         });
         await storage.removeMessages();
+    }
+
+    if (id === notificationIds.subreddit) {
+        if (linksToOpen.subreddits) {
+            linksToOpen.subreddits.forEach((link, index, array) => {
+                browser.tabs.create({
+                    url: link,
+                    active: index === (array.length - 1),
+                });
+            });
+            linksToOpen.subreddits = [];
+            browser.notifications.clear(notificationIds.subreddit);
+        }
+    }
+
+    if (id === notificationIds.query) {
+        if (linksToOpen.queries) {
+            linksToOpen.queries.forEach((link, index, array) => {
+                browser.tabs.create({
+                    url: link,
+                    active: index === (array.length - 1),
+                });
+            });
+            linksToOpen.queries = [];
+            browser.notifications.clear(notificationIds.query);
+        }
     }
 });
 

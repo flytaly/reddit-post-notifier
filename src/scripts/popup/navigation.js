@@ -5,6 +5,7 @@ import updateHeader from './updateHeader';
 import updateFooter from './updateFooter';
 import { updateData, getData } from './data';
 import getOptions from './options';
+import { getSubredditUrl, getSearchQueryUrl } from '../utils';
 
 const nav = {
     locations: {
@@ -43,7 +44,7 @@ const nav = {
                     info.subreddit = id;
                     updateHeader(location, {
                         name: `r/${id}/new`,
-                        href: `https://reddit.com/r/${id}/new`,
+                        href: getSubredditUrl(id),
                     });
                     updateFooter(nav, {
                         subreddit: id,
@@ -52,14 +53,9 @@ const nav = {
                 if (type === 's') {
                     info.search = id;
                     const { name, query, subreddit } = data.watchQueries.find((q) => q.id === id);
-
-                    const endpoint = subreddit
-                        ? `/r/${subreddit}/search?sort=new&restrict_sr=on&q=${query}`
-                        : `/search?q=${query}&sort=new`;
-
                     updateHeader(location, {
                         name: name || query,
-                        href: `https://reddit.com${endpoint}`,
+                        href: getSearchQueryUrl(query, subreddit),
                     });
                     updateFooter(nav, {
                         searchId: id,
