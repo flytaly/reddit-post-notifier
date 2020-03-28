@@ -154,5 +154,13 @@
     "notAuthMessage2": {
         "message": "Press on the button below to authorize",
         "description": "Not authorized message 2"
+    },
+    "notAuthFirefoxMessage": {
+        "message": "If you use Firefox Multi-Account Containers it could break authorization flow.",
+        "description": "Firefox specific message"
+    },
+    "notAuthFirefoxLink": {
+        "message": "Read more",
+        "description": "Firefox specific message link"
     }
 }

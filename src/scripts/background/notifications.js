@@ -37,6 +37,8 @@ function notify(type, items = []) {
             }`,
         };
         browser.notifications.create(notificationIds.subreddit, nOpts);
+
+        // TODO: open subreddit/search by clicking on notification
     }
 
     if (type === notificationIds.query) {
