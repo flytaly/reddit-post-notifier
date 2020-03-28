@@ -9,11 +9,6 @@ jest.mock('../../scripts/storage.js');
 
 window.browser = browser;
 
-const queryStrToObj = (query) => query.split('&').reduce((acc, pair) => {
-    const [name, value] = pair.split('=');
-    return { ...acc, [name]: value };
-}, {});
-
 const testAuthFetchOptions = (options) => {
     expect(options.method).toBe('POST');
     expect(options.headers).toHaveProperty('Authorization');
@@ -22,69 +17,64 @@ const testAuthFetchOptions = (options) => {
     expect(atob(credentials)).toBe(`${config.clientId}:${config.clientSecret}`);
 };
 
+const queryStrToObj = (query) => query.split('&').reduce((acc, pair) => {
+    const [name, value] = pair.split('=');
+    return { ...acc, [name]: value };
+}, {});
+
+function testUrl(parsedUrl) {
+    expect(parsedUrl.origin).toBe('https://www.reddit.com');
+    expect(parsedUrl.pathname).toBe('/api/v1/authorize');
+    expect(parsedUrl.searchParams.get('response_type')).toBe('code');
+    expect(parsedUrl.searchParams.get('redirect_uri')).toBe(config.redirectUri);
+    expect(parsedUrl.searchParams.get('client_id')).toBe(config.clientId);
+    expect(parsedUrl.searchParams.get('scope')).toBe(`${scopes.read.id} ${scopes.privatemessages.id}`);
+    expect(parsedUrl.searchParams.get('state')).toBe(auth.authState);
+    expect(parsedUrl.searchParams.get('duration')).toBe('permanent');
+}
+
+const fakeCode = 'fakecode';
+const authSuccessBody = {
+    access_token: 'fakeToken',
+    refresh_token: 'fakeRefreshToken',
+    expires_in: new Date(Date.now() + 3600),
+};
+
+global.fetch = jest.fn(async (url, options) => {
+    expect(url).toBe('https://www.reddit.com/api/v1/access_token');
+    testAuthFetchOptions(options);
+    const body = queryStrToObj(options.body);
+    expect(body.grant_type).toBe('authorization_code');
+    expect(body.code).toBe(fakeCode);
+
+    const response = { status: 200, json: async () => authSuccessBody };
+    return response;
+});
+
+browser.identity.launchWebAuthFlow.callsFake(async (details) => {
+    const { url, interactive } = details;
+    expect(interactive).toBeTruthy();
+
+    const parsedUrl = new URL(url);
+    testUrl(parsedUrl);
+    const redirectUri = `${config.redirectUri}?code=${fakeCode}&state=${auth.authState}`;
+    return redirectUri;
+});
+
+
 describe('setAuth', () => {
-    test('should return Promise that resolves after successful login', async () => {
-        const $login = auth.login;
-        let listener;
-
-        const addListener = jest.fn((f) => { listener = f; f(); });
-        const removeListener = jest.fn(() => { });
-        browser.browserAction.onClicked.addListener = addListener;
-        browser.browserAction.onClicked.removeListener = removeListener;
-
-        auth.login = jest.fn(() => Promise.resolve());
-
-        await auth.setAuth();
-        expect(addListener).toHaveBeenCalledWith(listener);
-        expect(removeListener).toHaveBeenCalledWith(listener);
-
-        auth.login = $login;
+    test('should return Promise and save it', async (done) => {
+        expect(auth.authPromiseResolveFn).toBeNull();
+        auth.setAuth().then(() => done());
+        expect(auth.authPromiseResolveFn).toBeInstanceOf(Function);
+        auth.login();
     });
 });
 
 describe('Token Retrieval', () => {
-    function testUrl(parsedUrl) {
-        expect(parsedUrl.origin).toBe('https://www.reddit.com');
-        expect(parsedUrl.pathname).toBe('/api/v1/authorize');
-        expect(parsedUrl.searchParams.get('response_type')).toBe('code');
-        expect(parsedUrl.searchParams.get('redirect_uri')).toBe(config.redirectUri);
-        expect(parsedUrl.searchParams.get('client_id')).toBe(config.clientId);
-        expect(parsedUrl.searchParams.get('scope')).toBe(`${scopes.read.id} ${scopes.privatemessages.id}`);
-        expect(parsedUrl.searchParams.get('state')).toBe(auth.authState);
-        expect(parsedUrl.searchParams.get('duration')).toBe('permanent');
-    }
-
     test('should retrieve tokens and save them to storage', async () => {
-        const fakeCode = 'fakecode';
-        const authSuccessBody = {
-            access_token: 'fakeToken',
-            refresh_token: 'fakeRefreshToken',
-            expires_in: new Date(Date.now() + 3600),
-        };
-        global.fetch = jest.fn(async (url, options) => {
-            expect(url).toBe('https://www.reddit.com/api/v1/access_token');
-            testAuthFetchOptions(options);
-            const body = queryStrToObj(options.body);
-            expect(body.grant_type).toBe('authorization_code');
-            expect(body.code).toBe(fakeCode);
-
-            const response = { status: 200, json: async () => authSuccessBody };
-            return response;
-        });
-
-        browser.identity.launchWebAuthFlow.callsFake(async (details) => {
-            const { url, interactive } = details;
-            expect(interactive).toBeTruthy();
-
-            const parsedUrl = new URL(url);
-            testUrl(parsedUrl);
-            const redirectUri = `${config.redirectUri}?code=${fakeCode}&state=${auth.authState}`;
-            return redirectUri;
-        });
-
-        const token = await auth.login();
+        await auth.login();
         expect(storage.saveAuthData).toHaveBeenCalledWith(authSuccessBody);
-        expect(token).toBe(authSuccessBody.access_token);
     });
 
     test('should throw AuthError when retrieving tokens', async () => {

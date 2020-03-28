@@ -103,6 +103,10 @@ function connectListener(port) {
                 update();
                 break;
             }
+            case types.START_AUTH_FLOW: {
+                await auth.login();
+                break;
+            }
             default:
         }
     });

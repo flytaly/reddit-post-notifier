@@ -1,4 +1,4 @@
-import { getByText, getAllByTestId, wait } from '@testing-library/dom';
+import { getByText, getAllByTestId, waitFor } from '@testing-library/dom';
 import '@testing-library/jest-dom/extend-expect';
 import './mocks/document-body.mock';
 import storage from './mocks/storage.mock';
@@ -13,7 +13,7 @@ describe('remove all posts', () => {
         nav.locations.current = nav.locations.queriesList;
         await updateFooter(nav);
         getByText(document.body, 'Mark all posts as read').click();
-        await wait(() => {
+        await waitFor(() => {
             expect(storage.removeAllPosts).toHaveBeenCalledTimes(1);
             expect(nav.navigate).toHaveBeenCalledWith(nav.locations.queriesList, { forceUpdate: true });
         });
@@ -36,7 +36,7 @@ describe('removing posts from a specific subreddit', () => {
         await updateFooter(nav, payload);
         getByText(document.body, 'Mark all posts as read').click();
         expect(storage.removePostsFrom).toHaveBeenCalledWith(payload);
-        await wait(() => {
+        await waitFor(() => {
             expect(nav.navigate).not.toHaveBeenCalled();
         });
     });

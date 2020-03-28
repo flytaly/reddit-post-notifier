@@ -1,32 +1,8 @@
+@import "./colors.css";
+@import "./footer.css";
+
 * {
     box-sizing: border-box;
-}
-
-body {
-    /* font-family: "PT Sans", "Trebuchet MS", Arial, sans-serif; */
-    --font-color: #000000;
-    --main-bg-color: #FFFFFF;
-    --hover-bg-color: rgba(0, 0, 0, 0.06);
-    --hover-bg-color2:  rgba(0, 0, 0, 0.06);
-    --hover-border-color: rgba(0, 0, 0, 0.1);
-    --link-color: #016ED8;
-    --grey: grey;
-    --green: green;
-    --new-mail-color: darkred;
-    --footer-font-color: #1a1a1a;
-}
-
-body.dark-mode {
-    --font-color: #fafafb;
-    --main-bg-color: #2a2a2e;
-    --hover-bg-color:  #4a4a4f;
-    --hover-bg-color2:  #b1b1b3;
-    --hover-border-color: #737373;
-    --link-color: #98c0ff;
-    --grey: lightgrey;
-    --green: lightgreen;
-    --new-mail-color: #ffcccb;
-    --footer-font-color: #fafafb;
 }
 
 body {
@@ -271,33 +247,6 @@ li:focus .check-mark svg,
     display: block;
 }
 
-footer {
-    background-color: var(--hover-bg-color);
-    border-top: 1px solid var(--hover-border-color);
-    display: flex;
-    flex-direction: row;
-    padding: 0;
-}
-
-.footer-button {
-    flex: 1 1 auto;
-    padding: 5px;
-    border: none;
-    margin: 0;
-    text-align: center;
-    color: var(--footer-font-color);
-    background-color: var(--hover-bg-color);
-}
-
-.footer-button:focus,
-.footer-button:hover {
-    background-color: var(--hover-border-color);
-  }
-
-.footer-button:focus:active,
-.footer-button:hover:active {
-    background-color: var(--hover-bg-color2);
-  }
 
 .run-animation {
     position: relative;

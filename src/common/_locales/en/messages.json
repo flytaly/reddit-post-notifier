@@ -142,5 +142,17 @@
     "optionSignOut_title": {
         "message": "Unauthorize extension and remove all local data from the browser",
         "description": "Attribute title of button signout"
+    },
+    "authorizeButton": {
+        "message": "Authorize",
+        "description": "Authorize button"
+    },
+    "notAuthMessage1": {
+        "message": "The extension isn't authorized",
+        "description": "Not authorized message 1"
+    },
+    "notAuthMessage2": {
+        "message": "Press on the button below to authorize",
+        "description": "Not authorized message 2"
     }
 }

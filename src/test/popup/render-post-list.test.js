@@ -1,7 +1,7 @@
 /* eslint-disable prefer-destructuring */
 import '@testing-library/jest-dom/extend-expect';
 import './mocks/browser.mock';
-import { wait, getByText } from '@testing-library/dom';
+import { waitFor, getByText } from '@testing-library/dom';
 import storage from './mocks/storage.mock';
 import './mocks/document-body.mock';
 import renderPostListBlock, { insertNewPosts } from '../../scripts/popup/renderPostList';
@@ -77,7 +77,7 @@ describe('mouseEvents', () => {
         const btn = document.querySelector(`li[data-id="${id}"] .check-mark`);
         btn.click();
         expect(storage.removePost).toHaveBeenCalledWith({ id, subreddit });
-        await wait(() => expect(btn.closest('li')).toHaveClass('read'));
+        await waitFor(() => expect(btn.closest('li')).toHaveClass('read'));
     });
 
     test('should mark as read after click on title', async () => {
@@ -85,7 +85,7 @@ describe('mouseEvents', () => {
         const link = getByText(document.body, title);
         link.click();
         expect(storage.removePost).toHaveBeenCalledWith({ id, subreddit });
-        await wait(() => expect(link.closest('li')).toHaveClass('read'));
+        await waitFor(() => expect(link.closest('li')).toHaveClass('read'));
     });
 
     test('should show popup', async () => {
@@ -96,7 +96,7 @@ describe('mouseEvents', () => {
         link.dispatchEvent(new MouseEvent('mouseover', {
             bubbles: true,
         }));
-        await wait(() => {
+        await waitFor(() => {
             expect(preview).toHaveClass('show');
             expect(preview).toMatchSnapshot();
         });

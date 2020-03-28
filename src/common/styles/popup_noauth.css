@@ -1,0 +1,24 @@
+@import "./colors.css";
+@import "./footer.css";
+
+* {
+    box-sizing: border-box;
+}
+
+body {
+    display: flex;
+    flex-direction: column;
+    margin: 0;
+    max-width: 300px;
+}
+
+.description {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin: 1rem;
+}
+
+.authorize {
+    text-transform: uppercase;
+}

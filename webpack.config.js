@@ -27,6 +27,7 @@ module.exports = (env) => {
         entry: {
             background: './src/scripts/background/background.js',
             popup: './src/scripts/popup/popup.js',
+            popup_noauth: './src/scripts/popup_noauth.js',
             options: './src/scripts/options/options.js',
         },
         output: {

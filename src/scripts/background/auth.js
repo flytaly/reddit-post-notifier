@@ -141,19 +141,32 @@ const auth = {
         const authData = await this.getTokens(code);
         await storage.saveAuthData(authData);
 
-        return authData.access_token;
+        if (this.authPromiseResolveFn) this.authPromiseResolveFn(authData.access_token);
     },
 
+
+    authPromiseResolveFn: null,
+
     /**
-        Initiate authentication next time user click badge.
+        Change popup to popup with authorization button.
         Returns promise that will be fulfilled only after a successful login
         @return {Promise<string>} accessToken
     */
     setAuth() {
-        browser.browserAction.setPopup({ popup: '' });
-        // browser.browserAction.setBadgeBackgroundColor({ color: 'red' });
+        // browser.browserAction.setPopup({ popup: '' });
         browser.browserAction.setBadgeText({ text: '...' });
+        browser.browserAction.setBadgeBackgroundColor({ color: 'red' });
+        browser.browserAction.setPopup({ popup: browser.extension.getURL('popup_noauth.html') });
+
         return new Promise((resolve) => {
+            this.authPromiseResolveFn = () => {
+                browser.browserAction.setPopup({ popup: browser.extension.getURL('popup.html') });
+                browser.browserAction.setBadgeText({ text: '' });
+                resolve();
+            };
+        });
+        /*
+            return new Promise((resolve) => {
             const listener = async () => {
                 try {
                     const token = await this.login();
@@ -167,6 +180,7 @@ const auth = {
             };
             browser.browserAction.onClicked.addListener(listener);
         });
+        */
     },
 
 

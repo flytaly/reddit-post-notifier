@@ -3,7 +3,7 @@ import './mocks/document-body.mock';
 import './mocks/storage.mock';
 import './mocks/browser.mock';
 import './mocks/match-media.mock';
-import { wait } from '@testing-library/dom';
+import { waitFor } from '@testing-library/dom';
 import nav from './mocks/navigation.mock';
 import getElements from '../../scripts/popup/elements';
 import { connect } from './mocks/messages.mock';
@@ -15,11 +15,11 @@ describe('', () => {
     });
 
     test('should call the connect that establishes a connection with the extension process', async () => {
-        await wait(() => expect(connect).toHaveBeenCalledWith(nav));
+        await waitFor(() => expect(connect).toHaveBeenCalledWith(nav));
     });
 
     test('should navigate after DOM Content Loaded', async () => {
-        await wait(() => expect(nav.navigate).toHaveBeenCalledWith(nav.locations.queriesList));
+        await waitFor(() => expect(nav.navigate).toHaveBeenCalledWith(nav.locations.queriesList));
     });
 
     test('should have added click listener to button', () => {

@@ -10,6 +10,7 @@ const types = {
     UPDATE_NOW: 'UPDATE_NOW',
     UPDATING_START: 'UPDATING_START',
     UPDATING_END: 'UPDATING_END',
+    START_AUTH_FLOW: 'START_AUTH_FLOW',
 };
 
 export default types;
