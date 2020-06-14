@@ -90,7 +90,7 @@ ul > li {
     flex-direction: row;
     align-items: center;
     /* column-gap: 4px; */
-    padding: 2px 4px;
+    padding: 4px 4px;
     border-top: 1px solid var(--main-bg-color);
     border-bottom: 1px solid var(--main-bg-color);
 }

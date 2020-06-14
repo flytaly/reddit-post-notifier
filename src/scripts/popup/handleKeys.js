@@ -27,8 +27,10 @@ export default async function handleKeydownEvent(e) {
         if (target.parentElement.classList.contains('post-list')) {
             const link = target.querySelector('a');
             link.click();
-            // close window shortly after the click because the extension will lose focus anyway
-            setTimeout(() => window.close(), 50);
+            if (TARGET === 'firefox') {
+            // close window shortly after the click because the extension will lose focus in firefox anyway
+                setTimeout(() => window.close(), 50);
+            }
         }
         return;
     }
