@@ -133,7 +133,6 @@ if (TARGET === 'chrome') {
     window.requestIdleCallback(startExtension);
 }
 
-
 export default {
     update, setOptions, startExtension, connectListener,
 };

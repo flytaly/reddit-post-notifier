@@ -8,7 +8,6 @@ import types from '../types';
 import applyTheme from '../theme';
 import './openLinks';
 
-
 async function init() {
     applyTheme();
     getTemplates();

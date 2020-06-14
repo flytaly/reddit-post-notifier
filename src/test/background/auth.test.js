@@ -61,7 +61,6 @@ browser.identity.launchWebAuthFlow.callsFake(async (details) => {
     return redirectUri;
 });
 
-
 describe('setAuth', () => {
     test('should return Promise and save it', async (done) => {
         expect(auth.authPromiseResolveFn).toBeNull();

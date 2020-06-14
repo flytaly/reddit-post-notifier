@@ -7,7 +7,6 @@ global.browser = browser;
 storage.countNumberOfUnreadItems = jest.fn();
 storage.removeQueryData = jest.fn();
 
-
 describe('authorization data', () => {
     const RealDate = Date;
     function mockDate(isoDate) {
@@ -242,7 +241,6 @@ describe('search queries', () => {
             expect(arg.queries[queryId].lastPostCreated).toEqual('1552338638');
             expect(arg.queries[queryId].posts).toEqual([...posts, ...queries[queryId].posts]);
         });
-
 
         await storage.saveQueryData(queryId, { posts });
     });

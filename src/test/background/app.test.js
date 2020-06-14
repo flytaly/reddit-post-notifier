@@ -101,7 +101,6 @@ describe('update posts', () => {
     });
 });
 
-
 describe('update messages', () => {
     const messageData = {
         messages: [{ data: { created } }],

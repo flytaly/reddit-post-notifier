@@ -144,7 +144,6 @@ const auth = {
         if (this.authPromiseResolveFn) this.authPromiseResolveFn(authData.access_token);
     },
 
-
     authPromiseResolveFn: null,
 
     /**
@@ -182,7 +181,6 @@ const auth = {
         });
         */
     },
-
 
 };
 

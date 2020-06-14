@@ -1,4 +1,3 @@
-
 import browser from './mocks/browser.mock';
 import requestIdleCallback from './mocks/requestIdleCallback.mock';
 import storage from '../../scripts/storage';
@@ -94,7 +93,6 @@ describe('popup messages listener', () => {
         onDisconnectListener();
         expect(popupPort.port).toBe(null);
     });
-
 
     test('should call removing post from storage after receiving READ_POST', () => {
         storage.removePost = jest.fn();

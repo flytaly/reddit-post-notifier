@@ -125,7 +125,6 @@ async function restoreOptions() {
     const themes = themeSwitcher.elements.theme;
     themes.value = theme || 'auto';
 
-
     // ------- Mail -------
     const showMessages = $('#messages');
     const messageNotifyCheckbox = $('#messageNotify');
@@ -204,7 +203,6 @@ document.addEventListener('DOMContentLoaded', async () => {
         applyTheme();
     });
 
-
     const showMessages = $('#messages');
     const messageNotifyCheckbox = $('#messageNotify');
     showMessages.addEventListener('change', async () => {
@@ -218,7 +216,6 @@ document.addEventListener('DOMContentLoaded', async () => {
     messageNotifyCheckbox.addEventListener('change', async () => {
         await storage.saveOptions({ messageNotify: messageNotifyCheckbox.checked });
     });
-
 
     const subreddits = $('#subreddits');
     const subredditNotifyCheckbox = $('#subredditNotify');

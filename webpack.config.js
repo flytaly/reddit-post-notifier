@@ -42,7 +42,7 @@ module.exports = (env) => {
             minimize: false,
         },
         plugins: [
-            new CopyWebpackPlugin(copyPatterns),
+            new CopyWebpackPlugin({ patterns: copyPatterns }),
             new DefinePlugin({
                 TARGET: JSON.stringify(isChrome ? 'chrome' : 'firefox'),
             }),

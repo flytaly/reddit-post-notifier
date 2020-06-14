@@ -6,5 +6,4 @@ jest.mock('../../../scripts/popup/renderQueryList', () => jest.fn(() => {
     return block;
 }));
 
-
 export default renderQueryListBlock;

@@ -18,7 +18,6 @@ function postMessage(message) {
     port.postMessage(message);
 }
 
-
 connect();
 
 document.addEventListener('DOMContentLoaded', () => {

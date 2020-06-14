@@ -41,7 +41,6 @@ describe('navigation', () => {
         expect(updateHeader).toHaveBeenCalledWith(nav.locations.queriesList, { unreadMsgCount: false });
     });
 
-
     test('should navigate to the list of subreddit\'s posts', async () => {
         const id = 'subreddit';
         const params = { id, type: 'r' };

@@ -13,7 +13,6 @@ export const watchAlarms = (update) => {
     });
 };
 
-
 export const scheduleNextUpdate = async () => {
     const { updateInterval } = await storage.getOptions();
 

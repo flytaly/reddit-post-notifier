@@ -8,7 +8,6 @@ import renderQueryListBlock from '../../scripts/popup/renderQueryList';
 import { data, updateData } from '../../scripts/popup/data';
 import getOptions from '../../scripts/popup/options';
 
-
 let list;
 
 describe('renderQueryListBlock', () => {
@@ -37,7 +36,6 @@ describe('renderQueryListBlock', () => {
         row.click();
         expect(nav.navigate).toHaveBeenLastCalledWith(nav.locations.postList, { id, type: 's' });
     });
-
 
     test('should call removing posts from the subreddit by clicking on the check mark', async () => {
         const { watchSubreddits } = await getOptions();
