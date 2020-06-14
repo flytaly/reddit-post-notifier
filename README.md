@@ -3,13 +3,15 @@
 [ ![addons.mozilla.org/](https://ffp4g1ylyit3jdyti1hqcvtb-wpengine.netdna-ssl.com/addons/files/2015/11/get-the-addon.png)](https://addons.mozilla.org/firefox/addon/reddit-post-notifier/)
 [ ![chrome.google.com/](https://developer.chrome.com/webstore/images/ChromeWebStore_BadgeWBorder_v2_206x58.png)](https://chrome.google.com/webstore/detail/reddit-post-notifier/hoolgoecmeegpbidbbcefgkjegdejibd)
 
-Firefox extension that watches for posts in given subreddits or reddit searches and notifies about the new ones.
+Firefox/Chrome extension that watches for posts in given subreddits or reddit searches and notifies about the new ones.
 
 ## Usage
 
 - `npm run start`
-  - build the extension with [webpack](https://github.com/webpack/webpack) and run it in Firefox using [web-ext](https://github.com/mozilla/web-ext)
+- `npm run start:chrome`
+  - build the extension with [webpack](https://github.com/webpack/webpack) and run it in Firefox or Chrome using [web-ext](https://github.com/mozilla/web-ext)
 - `npm run buildzip:ff`
+- `npm run buildzip:chrome`
   - create an extension package in /web-ext-artifacts folder
 - `npm run test`
   - test extension's code with jest
