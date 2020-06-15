@@ -90,10 +90,12 @@ ul > li {
     flex-direction: row;
     align-items: center;
     /* column-gap: 4px; */
-    padding: 4px 4px;
+    /* padding: 4px 4px; */
+    padding: 0 4px;
     border-top: 1px solid var(--main-bg-color);
     border-bottom: 1px solid var(--main-bg-color);
 }
+
 ul > li > *:not(:last-child) {
     margin-right: 4px;
 }
@@ -131,6 +133,7 @@ ul.query-list {
 }
 ul.query-list .query-name {
     flex-grow: 1;
+    padding: 4px 0;
 }
 
 a.mail,
@@ -219,6 +222,8 @@ li:focus .check-mark svg,
 
 .post-list li a{
     transition: color 0.1s ease;
+    width: 100%;
+    padding: 4px 0;
 }
 
 .post-list li.read a {
