@@ -116,16 +116,16 @@
         "description": "Label of search input 'query'"
     },
     "optionSearchQuery_title": {
-        "message": "Search for posts that fit the search query. Look search faq for more information.",
+        "message": "Search for posts that fit the search query. Look search wiki for more information.",
         "description": "Attribute title of search input 'query' and its label"
     },
     "optionSearchQuery_placeholder": {
         "message": "e.g.: dog",
         "description": "Attribute placeholder of search input 'query'"
     },
-    "optionSearchFaq": {
-        "message": "reddit search faq",
-        "description": "Search faq link"
+    "optionSearchWiki": {
+        "message": "reddit search wiki",
+        "description": "Search wiki link"
     },
     "optionSearchNotify": {
         "message": "Show desktop notifications of new posts in the search",
