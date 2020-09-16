@@ -2,10 +2,10 @@ body {
     --font-color: #252729;
     --font-color_h: #000000;
     --font-color_sub: #4c4e4f;
-    --bg-color: #FFFFFF;
+    --bg-color: #ffffff;
     --input-bg-color: initial;
     --border-color: initial;
-    --link-color: #016ED8;
+    --link-color: #016ed8;
 }
 
 body.dark-mode {
@@ -23,6 +23,7 @@ body.dark-mode button {
     border-color: var(--border-color);
     color: #fafafb;
     background-image: none;
+    text-shadow: none;
 }
 body.dark-mode button:hover,
 body.dark-mode button:focus {
@@ -34,10 +35,15 @@ body.dark-mode button:active {
 
 body {
     color: var(--font-color);
+    padding: 1em;
+    max-width: 100%;
     background-color: var(--bg-color);
 }
 
-h1, h2, h3, h4 {
+h1,
+h2,
+h3,
+h4 {
     color: var(--font-color_h);
 }
 
@@ -45,27 +51,31 @@ a {
     color: var(--link-color);
 }
 
-input[type="text"],
-input[type="number"]{
+input[type='text'],
+input[type='number'] {
     color: var(--font-color);
     background-color: var(--input-bg-color);
     border-color: var(--border-color);
 }
 
-input[type="checkbox"]{
+input[type='checkbox'] {
     margin-left: 4px;
 }
 
-button
-button.sign-out,
+button button.sign-out,
 button.delete,
 button.add-search {
     margin-top: 4px;
 }
 
+.update-warning {
+    font-size: 0.9em;
+}
+
 section {
     margin: 10px 0;
 }
+
 section.watch-subreddits {
     display: flex;
     flex-direction: column;
@@ -122,6 +132,7 @@ section.watch-subreddits {
 
 .search li {
     display: flex;
+    align-items: center;
     flex-wrap: wrap;
     margin-bottom: 4px;
 }
@@ -165,4 +176,49 @@ input[type='number'] {
 
 .sign-out {
     float: right;
+}
+
+.text-with-tooltip {
+    display: flex;
+    align-items: center;
+}
+
+button.tooltip-button {
+    display: inline-flex;
+    padding: 0;
+    box-shadow: none;
+    border: none;
+    background: none;
+    background-color: none;
+    min-width: 18px;
+    min-height: 18px;
+    width: 18px;
+    height: 18px;
+    margin-left: 8px;
+}
+
+.tooltip-button:focus,
+.tooltip-button:hover {
+    box-shadow: none !important;
+    background-image: none !important;
+    border: none !important;
+    color: inherit !important;
+}
+
+.tooltip-button svg {
+    width: 18px;
+    height: 18px;
+    fill: none;
+    stroke: #4499cc;
+    stroke-width: 2.3;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+}
+
+body.dark-mode .tooltip-button {
+    background: none;
+}
+
+body.dark-mode .tooltip-button svg {
+    stroke: #aaccdd;
 }

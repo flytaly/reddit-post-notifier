@@ -43,6 +43,14 @@
         "message": "Update interval:",
         "description": "Name of option: update interval"
     },
+    "optionUpdateIntervalSeconds": {
+        "message": "seconds",
+        "description": "Seconds"
+    },
+    "optionUpdateIntervalTooltip": {
+        "message": "To reduce power and internet traffic consumption it's recommended to set update interval at least 60 seconds",
+        "description": "Update interval tooltip"
+    },
     "optionMail": {
         "message": "Mail",
         "description": "Name of option group: mail"
@@ -67,6 +75,14 @@
         "message": "Subreddits",
         "description": "Name of option group: Subreddits"
     },
+    "optionSubredditsTooltip1": {
+        "message": "Enter the list of subreddits you want to monitor.",
+        "description": "Subreddits tooltip"
+    },
+    "optionSubredditsTooltip2": {
+        "message": "To check that everything works, open extension's popup in the browser toolbar and click the update button in the top left corner.",
+        "description": "Subreddits tooltip"
+    },
     "optionSubredditsLabel": {
         "message": "Watch for new posts in following subreddits:",
         "description": "Option: label for the input of subreddits"
@@ -81,7 +97,15 @@
     },
     "optionSearch": {
         "message": "Search",
-        "description": "Name of option group: Subreddits"
+        "description": "Name of option group: Search"
+    },
+    "optionSearchTooltip1": {
+        "message": "Watch for specific posts.",
+        "description": "Search tooltip"
+    },
+    "optionSearchTooltip2": {
+        "message": "To check that everything works, open extension's popup in the browser toolbar and click the update button in the top left corner.",
+        "description": "Search tooltip"
     },
     "optionSearchLegend": {
         "message": "Watch for specific posts in the subreddit:",
@@ -104,7 +128,7 @@
         "description": "Label of search input 'subreddit'"
     },
     "optionSearchSubreddit_title": {
-        "message": "Search submissions in a specific subreddit. You can combine subreddits with '+' like: 'aww+todayilearned'. Leave empty to search in the entire reddit.",
+        "message": "Search submissions in a specific subreddit. You can combine subreddits with '+' like: 'europe+worldnews'. Leave empty to search in the entire reddit.",
         "description": "Attribute title of search input 'subreddit' and its label"
     },
     "optionSearchSubreddit_placeholder": {
@@ -116,7 +140,7 @@
         "description": "Label of search input 'query'"
     },
     "optionSearchQuery_title": {
-        "message": "Search for posts that fit the search query. Look search wiki for more information.",
+        "message": "Search for posts that fit the search query. For example, if you want to monitor posts that contain the word France in their title enter: 'title:France'.  For more information look search wiki.",
         "description": "Attribute title of search input 'query' and its label"
     },
     "optionSearchQuery_placeholder": {

@@ -1,5 +1,5 @@
 {
-    "extends": "airbnb/base",
+    "extends": ["airbnb/base", "prettier"],
     "parserOptions": {
         "ecmaVersion": 2018,
         "sourceType": "module"
@@ -14,18 +14,24 @@
         "TARGET": true
     },
     "rules": {
-        "indent": ["error", 4, {"SwitchCase": 1}],
-        "max-len": ["error", 120, 4, {
-            "ignoreUrls": true,
-            "ignoreComments": false,
-            "ignoreRegExpLiterals": true,
-            "ignoreStrings": true,
-            "ignoreTemplateLiterals": true
-        }],
+        "indent": ["error", 4, { "SwitchCase": 1 }],
+        "max-len": [
+            "error",
+            120,
+            4,
+            {
+                "ignoreUrls": true,
+                "ignoreComments": false,
+                "ignoreRegExpLiterals": true,
+                "ignoreStrings": true,
+                "ignoreTemplateLiterals": true
+            }
+        ],
         "no-console": "off",
         "no-restricted-syntax": ["error", "ForInStatement", "LabeledStatement", "WithStatement"],
         "global-require": "off",
         "import/prefer-default-export": "off",
-        "import/no-extraneous-dependencies":"off"
+        "import/no-extraneous-dependencies": "off",
+        "consistent-return": "off"
     }
 }

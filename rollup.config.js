@@ -9,14 +9,18 @@ const outputPath = target === 'firefox' ? './dist/firefox/' : './dist/chrome/';
 const isWatchMode = process.env.ROLLUP_WATCH;
 
 const plugins = [
-    replace({ TARGET: `'${target}'` }),
+    replace({
+        TARGET: `'${target}'`,
+        'process.env.NODE_ENV': JSON.stringify(isWatchMode ? 'development' : 'production'),
+    }),
     nodeResolve(),
     commonjs(),
 ];
 
-const polyfillPath = target !== 'firefox'
-    ? 'node_modules/webextension-polyfill/dist/browser-polyfill.js'
-    : 'src/firefox/browser-polyfill.js';
+const polyfillPath =
+    target !== 'firefox'
+        ? 'node_modules/webextension-polyfill/dist/browser-polyfill.js'
+        : 'src/firefox/browser-polyfill.js';
 
 const copyPlugin = copy({
     ...(isWatchMode ? { watch: ['src/common/**/*', 'src/styles/**/*', `src/${target}/*`] } : {}),
@@ -26,6 +30,7 @@ const copyPlugin = copy({
         { src: 'src/styles/', dest: outputPath },
         { src: `src/${target}/*`, dest: outputPath },
         { src: polyfillPath, dest: outputPath },
+        { src: 'node_modules/tippy.js/dist/tippy.css', dest: `${outputPath}styles` },
     ],
     copyOnce: true,
 });

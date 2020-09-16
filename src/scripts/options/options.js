@@ -4,6 +4,7 @@ import { translateElement } from '../l10n';
 import { generateId } from '../utils';
 import types from '../types';
 import applyTheme from '../theme';
+import { setTooltips } from './tooltips';
 
 const $ = document.querySelector.bind(document);
 
@@ -29,14 +30,12 @@ function getSearchTmp() {
 }
 
 async function saveQueryFieldset(fieldset) {
-    const checkSubreddits = (subs) => subs
-        .split('+')
-        .every((s) => subredditNameRegExp.test(s));
+    const checkSubreddits = (subs) => subs.split('+').every((s) => subredditNameRegExp.test(s));
 
     const inputs = Array.from(fieldset.getElementsByTagName('input'));
     const subredditInput = fieldset.querySelector('.subreddit input');
-    const data = inputs
-        .reduce((acc, currentInput) => {
+    const data = inputs.reduce(
+        (acc, currentInput) => {
             const { name, checked } = currentInput;
             let { value } = currentInput;
 
@@ -47,7 +46,9 @@ async function saveQueryFieldset(fieldset) {
             if (name === 'notify') value = checked;
 
             return { ...acc, [name]: value };
-        }, { id: fieldset.dataset.id });
+        },
+        { id: fieldset.dataset.id },
+    );
 
     if (data.subreddit && !checkSubreddits(data.subreddit)) {
         subredditInput.classList.add('invalid');
@@ -59,9 +60,7 @@ async function saveQueryFieldset(fieldset) {
     await storage.saveQuery(data);
 }
 
-function createQueryFields(template, {
-    name = '', subreddit = '', query = '', id, notify = false,
-} = {}, error) {
+function createQueryFields(template, { name = '', subreddit = '', query = '', id, notify = false } = {}, error) {
     const searchElem = template.cloneNode(true);
     const fieldset = searchElem.querySelector('fieldset');
     const nameElem = fieldset.querySelector('.name input');
@@ -91,7 +90,9 @@ function createQueryFields(template, {
     if (error) {
         const errorElem = fieldset.querySelector('.query-error');
         errorElem.classList.add('show');
-        errorElem.querySelector('span').textContent = `${error.error} ${error.message} ${error.reason ? `(${error.reason})` : ''}`;
+        errorElem.querySelector('span').textContent = `${error.error} ${error.message} ${
+            error.reason ? `(${error.reason})` : ''
+        }`;
     }
 
     deleteElem.addEventListener('click', ({ target }) => {
@@ -109,7 +110,12 @@ function createQueryFields(template, {
 async function restoreOptions() {
     applyTheme();
     const {
-        watchSubreddits, messages, messageNotify, subredditNotify, updateInterval, theme,
+        watchSubreddits,
+        messages,
+        messageNotify,
+        subredditNotify,
+        updateInterval,
+        theme,
     } = await storage.getOptions();
     const { accessToken } = await storage.getAuthData();
     const subredditData = await storage.getSubredditData();
@@ -220,21 +226,23 @@ document.addEventListener('DOMContentLoaded', async () => {
     const subreddits = $('#subreddits');
     const subredditNotifyCheckbox = $('#subredditNotify');
     const saveInput = async () => {
-        const values = subreddits
-            .value
+        const values = subreddits.value
             .trim()
             .split(' ')
-            .reduce((acc, curr) => {
-                if (curr === '') return acc;
+            .reduce(
+                (acc, curr) => {
+                    if (curr === '') return acc;
 
-                if (subredditNameRegExp.test(curr)) {
-                    acc.valid.push(curr);
-                } else {
-                    acc.invalid.push(curr);
-                }
+                    if (subredditNameRegExp.test(curr)) {
+                        acc.valid.push(curr);
+                    } else {
+                        acc.invalid.push(curr);
+                    }
 
-                return acc;
-            }, { valid: [], invalid: [] });
+                    return acc;
+                },
+                { valid: [], invalid: [] },
+            );
 
         const watchSubreddits = values.valid;
         await storage.saveOptions({ watchSubreddits });
@@ -258,4 +266,6 @@ document.addEventListener('DOMContentLoaded', async () => {
     signOutButton.addEventListener('click', async () => {
         if (bgScriptPort) bgScriptPort.postMessage({ type: types.RESET });
     });
+
+    setTooltips();
 });
