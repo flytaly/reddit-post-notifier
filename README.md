@@ -7,7 +7,7 @@ Firefox/Chrome extension that watches for posts in given subreddits or reddit se
 
 ## Usage
 
-- `npm run start`
+- `npm run start:ff`
 - `npm run start:chrome`
   - build the extension with [webpack](https://github.com/webpack/webpack) and run it in Firefox or Chrome using [web-ext](https://github.com/mozilla/web-ext)
 - `npm run buildzip:ff`
