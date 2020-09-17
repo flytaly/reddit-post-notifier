@@ -64,7 +64,7 @@
     ],
     "jest": {
         "collectCoverageFrom": [
-            "scripts/**/*.js",
+            "<rootDir>/src/scripts/**/*.js",
             "!<rootDir>/node_modules/",
             "!<rootDir>/src/scripts/l10n.js",
             "!<rootDir>/src/scripts/reddit-scopes.js"

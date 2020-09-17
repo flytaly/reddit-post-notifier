@@ -6,10 +6,10 @@ import { mapObjToQueryStr } from '../utils';
 
 export default class RedditApiClient {
     constructor() {
-        this.origin = 'https://oauth.reddit.com';
+        this.authOrigin = 'https://oauth.reddit.com';
+        this.publicOrigin = 'https://reddit.com';
         this.headers = {
             Accept: 'application/json',
-            'User-Agent': userAgent,
         };
     }
 
@@ -18,12 +18,15 @@ export default class RedditApiClient {
         const query = mapObjToQueryStr({ ...params, raw_json: 1 });
         const init = {
             method: 'GET',
-            headers: {
-                ...this.headers,
-                Authorization: `bearer ${token}`,
-            },
+            headers: { ...this.headers },
         };
-        const result = await fetch(encodeURI(`${this.origin}${endpoint}?${query}`), init);
+        if (token) {
+            init.headers['User-Agent'] = userAgent;
+            init.headers.Authorization = `bearer ${token}`;
+        }
+        const origin = token ? this.authOrigin : this.publicOrigin;
+        const actualEndpoint = token ? endpoint : `${endpoint}.json`;
+        const result = await fetch(encodeURI(`${origin}${actualEndpoint}?${query}`), init);
         return result.json();
     }
 

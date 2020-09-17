@@ -1,7 +1,6 @@
 import browser from './mocks/browser.mock';
 import requestIdleCallback from './mocks/requestIdleCallback.mock';
 import storage from '../../scripts/storage';
-import auth from '../../scripts/background/auth';
 import app from '../../scripts/background/app';
 import bgScripts from '../../scripts/background/background';
 import optionsDefault from '../../scripts/options-default';
@@ -19,7 +18,9 @@ beforeAll(() => {
     storage.getOptions = jest.fn(async () => optionsDefault);
 });
 
-afterEach(() => { jest.clearAllMocks(); });
+afterEach(() => {
+    jest.clearAllMocks();
+});
 
 describe('background script', () => {
     test('should pass entry function into requestIdleCallback', async () => {
@@ -27,17 +28,17 @@ describe('background script', () => {
         expect(requestIdleCallback).toHaveBeenCalledWith(startExtension);
     });
 
-    test('should call setAuth if there is no accessToken in the storage', async () => {
-        storage.getAuthData.mockImplementationOnce(() => ({ }));
-        await startExtension();
-        expect(auth.setAuth).toHaveBeenCalled();
-    });
+    // test('should call setAuth if there is no accessToken in the storage', async () => {
+    //     storage.getAuthData.mockImplementationOnce(() => ({ }));
+    //     await startExtension();
+    //     expect(auth.setAuth).toHaveBeenCalled();
+    // });
 
-    test('should not call setAuth if there is an accessToken in the storage', async () => {
-        storage.getAuthData.mockImplementationOnce(() => ({ accessToken: 'validToken' }));
-        await startExtension();
-        expect(auth.setAuth).not.toHaveBeenCalled();
-    });
+    // test('should not call setAuth if there is an accessToken in the storage', async () => {
+    //     storage.getAuthData.mockImplementationOnce(() => ({ accessToken: 'validToken' }));
+    //     await startExtension();
+    //     expect(auth.setAuth).not.toHaveBeenCalled();
+    // });
 });
 
 describe('set options', () => {
@@ -52,7 +53,7 @@ describe('set options', () => {
 
     test('should add and save new default options to existing', async () => {
         const opts = { option: 'value' };
-        storage.getOptions.mockImplementationOnce(async () => (opts));
+        storage.getOptions.mockImplementationOnce(async () => opts);
         await startExtension();
         expect(storage.saveOptions).toHaveBeenCalledWith({ ...optionsDefault, ...opts });
     });
@@ -127,7 +128,9 @@ describe('alarms', () => {
         browser.alarms.onAlarm.addListener.resetHistory();
         browser.alarms.create.resetHistory();
     });
-    afterAll(() => { window.TARGET = 'firefox'; });
+    afterAll(() => {
+        window.TARGET = 'firefox';
+    });
 
     test('should set alarm listener', async () => {
         await startExtension();

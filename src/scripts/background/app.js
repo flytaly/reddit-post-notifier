@@ -36,7 +36,7 @@ const app = {
         const info = subData[subreddit] || {};
 
         // fetch subreddits with error at a slower pace
-        if (info.error && (Date.now() - info.lastUpdate < 1000 * 60 * 10)) return null;
+        if (info.error && Date.now() - info.lastUpdate < 1000 * 60 * 10) return null;
 
         // if (info.lastPost) listing.before = info.lastPost;
         const response = await reddit.getSubreddit(subreddit).new(listing);
@@ -63,16 +63,16 @@ const app = {
 
         const data = queryData[id] || {};
 
-        if (data.error && (Date.now() - data.lastUpdate < 1000 * 60 * 10)) return null;
+        if (data.error && Date.now() - data.lastUpdate < 1000 * 60 * 10) return null;
         const response = subreddit
-            ? await reddit
-                .getSubreddit(subreddit)
-                .search({ ...listing, q, restrict_sr: 'on' })
-            : await reddit
-                .search({ ...listing, q });
+            ? await reddit.getSubreddit(subreddit).search({ ...listing, q, restrict_sr: 'on' })
+            : await reddit.search({ ...listing, q });
 
         if (!response.data || response.kind !== 'Listing') {
-            console.error(`Error during fetching posts query ${query.query} on ${query.subreddit || 'reddit'}: `, response);
+            console.error(
+                `Error during fetching posts query ${query.query} on ${query.subreddit || 'reddit'}: `,
+                response,
+            );
             await storage.saveQueryData(query.id, { error: response });
             return null;
         }
@@ -117,14 +117,20 @@ const app = {
             Instead, we ask some last posts and then save only new posts depending on their timestamp
             */
         const {
-            watchSubreddits = [], waitTimeout, messages, limit = 10, messageNotify, subredditNotify,
+            watchSubreddits = [],
+            waitTimeout,
+            messages,
+            limit = 10,
+            messageNotify,
+            subredditNotify,
         } = await storage.getOptions();
         const watchQueries = await storage.getQueriesList();
         const subData = await storage.getSubredditData();
         const queryData = await storage.getQueriesData();
         const messageData = await storage.getMessageData();
+        const authData = await storage.getAuthData();
 
-        if (messages) {
+        if (messages && authData && authData.refreshToken) {
             const newMessages = await app.updateUnreadMsg(messageData);
             if (messageNotify && newMessages && newMessages.length) notify(notificationIds.mail, newMessages);
             await wait(waitTimeout * 1000);
@@ -159,7 +165,6 @@ const app = {
         }
         notify(notificationIds.query, notificationBatch);
     },
-
 };
 
 export default app;

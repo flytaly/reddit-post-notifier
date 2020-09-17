@@ -24,14 +24,15 @@ async function update() {
 
     const countItems = await storage.countNumberOfUnreadItems();
     browser.browserAction.setBadgeText({ text: countItems ? String(countItems) : '' });
-
     try {
         await app.update();
         await scheduleNextUpdate();
     } catch (e) {
         console.error(e);
+
         if (e.name === 'AuthError') {
-            await auth.setAuth();
+            // If authorization fails remove authorization data from storage and update again.
+            await storage.clearAuthData();
             updating = false;
             await update();
         } else {
@@ -53,6 +54,8 @@ async function setOptions() {
 }
 
 async function startExtension() {
+    await setOptions();
+
     if (TARGET === 'chrome') {
         /*
             Change icon theme in Chrome after extension's launch.
@@ -63,14 +66,12 @@ async function startExtension() {
         applyTheme();
     }
 
-    setOptions();
     watchAlarms(update);
 
-    const { accessToken } = await storage.getAuthData();
-
+    /* const { accessToken } = await storage.getAuthData();
     if (!accessToken) {
         await auth.setAuth();
-    }
+    } */
 
     await update();
 }

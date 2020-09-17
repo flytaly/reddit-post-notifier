@@ -17,10 +17,11 @@ const testAuthFetchOptions = (options) => {
     expect(atob(credentials)).toBe(`${config.clientId}:${config.clientSecret}`);
 };
 
-const queryStrToObj = (query) => query.split('&').reduce((acc, pair) => {
-    const [name, value] = pair.split('=');
-    return { ...acc, [name]: value };
-}, {});
+const queryStrToObj = (query) =>
+    query.split('&').reduce((acc, pair) => {
+        const [name, value] = pair.split('=');
+        return { ...acc, [name]: value };
+    }, {});
 
 function testUrl(parsedUrl) {
     expect(parsedUrl.origin).toBe('https://www.reddit.com');
@@ -61,6 +62,7 @@ browser.identity.launchWebAuthFlow.callsFake(async (details) => {
     return redirectUri;
 });
 
+/*
 describe('setAuth', () => {
     test('should return Promise and save it', async (done) => {
         expect(auth.authPromiseResolveFn).toBeNull();
@@ -68,7 +70,7 @@ describe('setAuth', () => {
         expect(auth.authPromiseResolveFn).toBeInstanceOf(Function);
         auth.login();
     });
-});
+}); */
 
 describe('Token Retrieval', () => {
     test('should retrieve tokens and save them to storage', async () => {
@@ -86,7 +88,7 @@ describe('Token Retrieval', () => {
 
         global.fetch = jest.fn(async () => ({
             status: 404,
-            json: async () => ({ }),
+            json: async () => ({}),
         }));
         await expect(auth.login()).rejects.toThrowError(AuthError);
     });
@@ -121,10 +123,10 @@ describe('Token Refreshing', () => {
             const body = queryStrToObj(options.body);
             expect(body.grant_type).toBe('refresh_token');
             expect(body.refresh_token).toBe(refreshToken);
-            return ({
+            return {
                 status: 200,
                 json: async () => refreshSuccessBody,
-            });
+            };
         });
 
         const token = await auth.renewAccessToken(refreshToken);
@@ -145,7 +147,7 @@ describe('Token Refreshing', () => {
 });
 
 describe('getAccessToken', () => {
-    let setAuth;
+    // let setAuth;
     let renewAccessToken;
     const renewedToken = 'renewedToken';
     const authData = {
@@ -154,7 +156,7 @@ describe('getAccessToken', () => {
     };
 
     beforeAll(() => {
-        setAuth = jest.spyOn(auth, 'setAuth').mockImplementation(async () => renewedToken);
+        // setAuth = jest.spyOn(auth, 'setAuth').mockImplementation(async () => renewedToken);
         renewAccessToken = jest.spyOn(auth, 'renewAccessToken').mockImplementation(async () => renewedToken);
     });
 
@@ -163,7 +165,7 @@ describe('getAccessToken', () => {
     });
 
     afterAll(() => {
-        setAuth.mockRestore();
+        // setAuth.mockRestore();
         renewAccessToken.mockRestore();
     });
 
@@ -190,13 +192,16 @@ describe('getAccessToken', () => {
     });
 
     test('should return renewed accessToken if there is no token in storage', async () => {
+        const refreshToken = '___refreshToken___';
         storage.getAuthData = jest.fn(async () => ({
             expiresIn: new Date().getTime() + 1000 * 3600,
+            refreshToken,
         }));
 
         const token = await auth.getAccessToken();
         expect(storage.getAuthData).toHaveBeenCalled();
-        expect(auth.setAuth).toHaveBeenCalledWith();
+        // expect(auth.setAuth).toHaveBeenCalledWith();
+        expect(auth.renewAccessToken).toHaveBeenCalledWith(refreshToken);
         expect(token).toBe(renewedToken);
     });
 });
