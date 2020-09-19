@@ -11,7 +11,7 @@
 
     <body>
         <!-- https://feathericons.com/ -->
-        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" style="display: none;">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" style="display: none">
             <g id="help-circle">
                 <circle cx="12" cy="12" r="10"></circle>
                 <path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"></path>
@@ -22,10 +22,8 @@
         <section class="browser-style">
             <div class="text-with-tooltip">
                 <div>
-                    <label for="updateInterval" data-l10n-id="optionUpdateInterval">
-                        Update interval:
-                    </label>
-                    <input id="updateInterval" type="number" name="updateInterval" min="1" max="3600" required />
+                    <label for="updateInterval" data-l10n-id="optionUpdateInterval"> Update interval: </label>
+                    <input id="updateInterval" type="number" name="updateInterval" min="2" max="3600" required />
                     <span data-l10n-id="optionUpdateIntervalSeconds">seconds</span>
                 </div>
                 <button class="tooltip-button" data-tooltip-tmp="update-interval-tmp">
@@ -58,16 +56,37 @@
         </section>
 
         <section class="browser-style">
-            <h3 data-l10n-id="optionMail">
-                Mail
-            </h3>
-            <label for="messages" data-l10n-id="optionMailShow" data-l10n-attrs="title">Watch for new mail: </label>
-            <input id="messages" type="checkbox" />
+            <div class="text-with-tooltip">
+                <h3 data-l10n-id="optionMail">Mail & Authorization</h3>
+                <button class="tooltip-button" data-tooltip-tmp="mail-auth-tooltip-tmp">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+                        <use href="#help-circle"></use>
+                    </svg>
+                </button>
+                <template id="mail-auth-tooltip-tmp">
+                    <span data-l10n-id="optionMailTooltip"></span>
+                </template>
+            </div>
+            <div id="auth-block">
+                <div class="no-authorized">
+                    <span data-l10n-id="optionNoAuthMsg"></span>
+                    <button data-l10n-id="optionStartAuthBtn"></button>
+                </div>
+                <div class="is-authorized" hidden>
+                    <span data-l10n-id="optionIsAuthMsg"></span>
+                    <button data-l10n-id="optionSignOutBtn"></button>
+                </div>
+            </div>
             <br />
-            <label for="messageNotify" data-l10n-id="optionMailNotify" data-l10n-attrs="title"
-                >Show desktop notifications of new mail:
-            </label>
-            <input id="messageNotify" type="checkbox" />
+            <div id="mail-block" class="browser-style disabled">
+                <label for="messages" data-l10n-id="optionMailShow" data-l10n-attrs="title">Watch for new mail: </label>
+                <input id="messages" type="checkbox" />
+                <br />
+                <label for="messageNotify" data-l10n-id="optionMailNotify" data-l10n-attrs="title">
+                    Show desktop notifications of new mail:
+                </label>
+                <input id="messageNotify" type="checkbox" />
+            </div>
         </section>
 
         <section class="browser-style watch-subreddits">
@@ -98,7 +117,7 @@
             >
             <div class="browser-style subreddit-notify">
                 <label for="subredditNotify" data-l10n-id="optionSubredditsNotify"
-                    >Show desktop noti{fications of new posts in the subreddits</label
+                    >Show desktop notifications of new posts in the subreddits</label
                 >
                 <input id="subredditNotify" type="checkbox" />
             </div>
@@ -123,8 +142,6 @@
                     <br />
                     <br />
                     <span data-l10n-id="optionSearchTooltip2"></span>
-                    <br />
-                    <span data-l10n-id="optionSearchTooltip3"></span>
                     <br />
                 </template>
             </div>

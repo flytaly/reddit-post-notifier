@@ -45,6 +45,7 @@ h2,
 h3,
 h4 {
     color: var(--font-color_h);
+    font-weight: bold;
 }
 
 a {
@@ -68,12 +69,30 @@ button.add-search {
     margin-top: 4px;
 }
 
-.update-warning {
-    font-size: 0.9em;
-}
-
 section {
     margin: 10px 0;
+}
+
+#mail-block {
+    opacity: 1;
+}
+
+#mail-block.disabled {
+    opacity: 0.4;
+}
+
+#auth-block .no-authorized {
+    color: red;
+}
+.dark-mode #auth-block .no-authorized {
+    color: lightcoral;
+}
+
+#auth-block .is-authorized {
+    color: green;
+}
+.dark-mode #auth-block .is-authorized {
+    color: lightgreen;
 }
 
 section.watch-subreddits {
@@ -165,7 +184,7 @@ section.watch-subreddits {
     width: auto;
 }
 
-#messageNotify:disabled {
+input:disabled {
     cursor: not-allowed;
 }
 

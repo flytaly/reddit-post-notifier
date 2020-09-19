@@ -3,7 +3,6 @@ import { translateElement } from '../l10n';
 
 export const setTooltips = () => {
     tippy('.tooltip-button', {
-        placement: 'right',
         allowHTML: true,
         content: (toolTipAnchor) => {
             const { tooltipTmp } = toolTipAnchor.dataset;
