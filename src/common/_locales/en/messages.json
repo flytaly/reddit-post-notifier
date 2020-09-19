@@ -56,7 +56,7 @@
         "description": "Name of option group: mail"
     },
     "optionMailTooltip": {
-        "message": "The extension should be authorized to check your mail",
+        "message": "Check unread mail on reddit. The extension should be authorized to check your mail",
         "description": "Mail & Authorization tooltip"
     },
     "optionNoAuthMsg": {

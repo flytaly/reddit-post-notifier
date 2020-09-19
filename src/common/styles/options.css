@@ -83,6 +83,10 @@ section {
     opacity: 0.6;
 }
 
+#auth-block {
+    margin-bottom: 1em;
+}
+
 #auth-block .no-authorized,
 #auth-error-message {
     color: darkred;
