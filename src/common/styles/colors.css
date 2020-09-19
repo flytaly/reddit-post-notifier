@@ -1,11 +1,11 @@
 body {
     /* font-family: "PT Sans", "Trebuchet MS", Arial, sans-serif; */
     --font-color: #000000;
-    --main-bg-color: #FFFFFF;
+    --main-bg-color: #ffffff;
     --hover-bg-color: rgba(0, 0, 0, 0.06);
-    --hover-bg-color2:  rgba(0, 0, 0, 0.06);
+    --hover-bg-color2: rgba(0, 0, 0, 0.06);
     --hover-border-color: rgba(0, 0, 0, 0.1);
-    --link-color: #016ED8;
+    --link-color: #016ed8;
     --grey: grey;
     --green: green;
     --new-mail-color: darkred;
@@ -15,8 +15,8 @@ body {
 body.dark-mode {
     --font-color: #fafafb;
     --main-bg-color: #2a2a2e;
-    --hover-bg-color:  #4a4a4f;
-    --hover-bg-color2:  #b1b1b3;
+    --hover-bg-color: #4a4a4f;
+    --hover-bg-color2: #b1b1b3;
     --hover-border-color: #737373;
     --link-color: #98c0ff;
     --grey: lightgrey;
