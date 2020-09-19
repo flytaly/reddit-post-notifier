@@ -70,6 +70,8 @@ button.add-search {
 }
 
 section {
+    display: flex;
+    flex-direction: column;
     margin: 10px 0;
 }
 
@@ -96,11 +98,6 @@ section {
 }
 .dark-mode #auth-block .is-authorized {
     color: lightgreen;
-}
-
-section.watch-subreddits {
-    display: flex;
-    flex-direction: column;
 }
 
 .watch-subreddits > input {
@@ -249,4 +246,8 @@ body.dark-mode .tooltip-button {
 
 body.dark-mode .tooltip-button svg {
     stroke: #aaccdd;
+}
+
+footer {
+    align-self: center;
 }

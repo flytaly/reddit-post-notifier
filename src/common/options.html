@@ -235,20 +235,37 @@
                     </fieldset>
                 </template>
             </div>
-            <button class="browser-style add-search">Add a search</button>
+            <div>
+                <button class="browser-style add-search">Add a search</button>
+            </div>
         </section>
 
-        <div class="panel-section-separator"></div>
+        <section>
+            <div>
+                <button
+                    id="clearData"
+                    class="browser-style clear-data"
+                    data-l10n-id="optionClearData"
+                    data-l10n-attrs="title"
+                >
+                    Clear data
+                </button>
+            </div>
+        </section>
 
         <section>
-            <button
-                id="clearData"
-                class="browser-style clear-data"
-                data-l10n-id="optionClearData"
-                data-l10n-attrs="title"
-            >
-                Clear data
-            </button>
+            <footer>
+                <a
+                    href="https://github.com/flytaly/reddit-post-notifier/#keyboard-shortcuts"
+                    data-l10n-id="optionLinkShortcuts"
+                ></a>
+                <span>|</span>
+                <a href="https://github.com/flytaly/reddit-post-notifier/issues" data-l10n-id="optionLinkIssues"
+                    >issues</a
+                >
+                <span>|</span>
+                <a id="storeLink" href="#" target="_blank" data-l10n-id="optionLinkRate"></a>
+            </footer>
         </section>
     </body>
 </html>

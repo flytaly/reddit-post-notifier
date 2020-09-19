@@ -89,4 +89,12 @@ document.addEventListener('DOMContentLoaded', async () => {
     await restoreOptions();
     setListeners();
     setTooltips();
+
+    const storeLink = $('#storeLink');
+    if (storeLink) {
+        storeLink.href =
+            TARGET === 'chrome'
+                ? 'https://chrome.google.com/webstore/detail/reddit-post-notifier/hoolgoecmeegpbidbbcefgkjegdejibd/reviews'
+                : 'https://addons.mozilla.org/firefox/addon/reddit-post-notifier/reviews/';
+    }
 });

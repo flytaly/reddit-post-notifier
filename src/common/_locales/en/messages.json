@@ -187,6 +187,18 @@
         "message": "Unauthorize extension and remove all local data from the browser",
         "description": "Attribute title of button signout"
     },
+    "optionLinkShortcuts": {
+        "message": "keyboard shortcuts",
+        "description": "Link to shortcuts"
+    },
+    "optionLinkIssues": {
+        "message": "issues",
+        "description": "Link to issues"
+    },
+    "optionLinkRate": {
+        "message": "rate extension",
+        "description": "Link to reviews"
+    },
     "authorizeButton": {
         "message": "Authorize",
         "description": "Authorize button"
