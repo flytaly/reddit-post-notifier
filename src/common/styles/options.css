@@ -63,7 +63,6 @@ input[type='checkbox'] {
     margin-left: 4px;
 }
 
-button button.sign-out,
 button.delete,
 button.add-search {
     margin-top: 4px;
@@ -193,8 +192,10 @@ input[type='number'] {
     margin: 0 2px;
 }
 
-.sign-out {
+.clear-data {
     float: right;
+    margin-top: 4px;
+    margin-bottom: 1em;
 }
 
 .text-with-tooltip {

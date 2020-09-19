@@ -179,9 +179,9 @@
         "message": "Delete the search",
         "description": "Button: delete the search"
     },
-    "optionSignOut": {
-        "message": "Sign out and remove local data",
-        "description": "Button: sign out"
+    "optionClearData": {
+        "message": "Sign out and clear local data",
+        "description": "Button: clear data"
     },
     "optionSignOut_title": {
         "message": "Unauthorize extension and remove all local data from the browser",

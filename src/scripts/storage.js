@@ -143,7 +143,7 @@ const storage = {
     },
 
     async clearStorage() {
-        await browser.storage.local.set();
+        await browser.storage.local.clear();
     },
 
     async removeMessages() {

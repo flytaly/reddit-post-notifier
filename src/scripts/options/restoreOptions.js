@@ -97,9 +97,6 @@ async function onAuthorization(isAuthorized = false, setMailCheck = false) {
     const mailBlock = $('#mail-block');
     const isAuth = $('#auth-block .is-authorized');
     const noAuth = $('#auth-block .no-authorized');
-    const signOutButton = $('#signOut');
-
-    signOutButton.style.display = isAuthorized ? 'block' : 'none';
 
     if (isAuthorized) {
         mailBlock.classList.remove('disabled');

@@ -78,9 +78,10 @@ function setListeners() {
     });
 
     const bgScriptPort = browser.runtime.connect();
-    const signOutButton = $('#signOut');
-    signOutButton.addEventListener('click', async () => {
+    const clearDataButton = $('#clearData');
+    clearDataButton.addEventListener('click', async () => {
         if (bgScriptPort) bgScriptPort.postMessage({ type: types.RESET });
+        setTimeout(() => window.location.reload(), 100);
     });
 }
 
