@@ -141,10 +141,14 @@ export async function restoreOptions() {
     const startAuthBtn = $('#auth-block .no-authorized button');
     startAuthBtn.addEventListener('click', async () => {
         try {
+            startAuthBtn.disabled = true;
             await auth.login();
         } catch (e) {
             console.error(e);
+            const errorElem = $('#auth-error-message');
+            if (errorElem) errorElem.textContent = e.message;
         }
+        startAuthBtn.disabled = false;
         refreshToken = (await storage.getAuthData()).refreshToken;
         onAuthorization(!!refreshToken, true);
     });

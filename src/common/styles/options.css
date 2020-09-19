@@ -36,6 +36,7 @@ body.dark-mode button:active {
 body {
     color: var(--font-color);
     padding: 1em;
+    min-width: 600px;
     max-width: 100%;
     background-color: var(--bg-color);
 }
@@ -77,13 +78,16 @@ section {
 }
 
 #mail-block.disabled {
-    opacity: 0.4;
+    opacity: 0.6;
 }
 
-#auth-block .no-authorized {
-    color: red;
+#auth-block .no-authorized,
+#auth-error-message {
+    color: darkred;
 }
-.dark-mode #auth-block .no-authorized {
+
+.dark-mode #auth-block .no-authorized,
+.dark-mode #auth-error-message {
     color: lightcoral;
 }
 
@@ -139,6 +143,10 @@ section.watch-subreddits {
 .invalid {
     border: 1px solid rgba(255, 0, 0, 0.35);
     box-shadow: 0 0 0 2px rgba(255, 0, 0, 0.35);
+}
+
+.search {
+    margin-bottom: 10px;
 }
 
 .search ul {

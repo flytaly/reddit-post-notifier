@@ -64,7 +64,7 @@
         "description": "No authorized message"
     },
     "optionStartAuthBtn": {
-        "message": "Click here to authorize",
+        "message": "click here to authorize",
         "description": "Authorize button"
     },
     "optionIsAuthMsg": {
