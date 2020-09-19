@@ -52,8 +52,28 @@
         "description": "Update interval tooltip"
     },
     "optionMail": {
-        "message": "Mail",
+        "message": "Mail & Authorization",
         "description": "Name of option group: mail"
+    },
+    "optionMailTooltip": {
+        "message": "Check unread mail on reddit. The extension should be authorized to check your mail",
+        "description": "Mail & Authorization tooltip"
+    },
+    "optionNoAuthMsg": {
+        "message": "Extension isn't authorized",
+        "description": "No authorized message"
+    },
+    "optionStartAuthBtn": {
+        "message": "click here to authorize",
+        "description": "Authorize button"
+    },
+    "optionIsAuthMsg": {
+        "message": "Extension is authorized",
+        "description": "Authorized message"
+    },
+    "optionSignOutBtn": {
+        "message": "sign out",
+        "description": "Sign out button"
     },
     "optionMailShow": {
         "message": "Watch for new reddit mail:",
@@ -64,7 +84,7 @@
         "description": "Attribute title of option: watch for new mail"
     },
     "optionMailNotify": {
-        "message": "Show desktop notifications of new mail:",
+        "message": "and show desktop notifications if there is new mail:",
         "description": "Option: show new mail notifications"
     },
     "optionMailNotify_title": {
@@ -159,13 +179,25 @@
         "message": "Delete the search",
         "description": "Button: delete the search"
     },
-    "optionSignOut": {
-        "message": "Sign out and remove local data",
-        "description": "Button: sign out"
+    "optionClearData": {
+        "message": "Sign out and clear local data",
+        "description": "Button: clear data"
     },
     "optionSignOut_title": {
         "message": "Unauthorize extension and remove all local data from the browser",
         "description": "Attribute title of button signout"
+    },
+    "optionLinkShortcuts": {
+        "message": "keyboard shortcuts",
+        "description": "Link to shortcuts"
+    },
+    "optionLinkIssues": {
+        "message": "issues",
+        "description": "Link to issues"
+    },
+    "optionLinkRate": {
+        "message": "rate extension",
+        "description": "Link to reviews"
     },
     "authorizeButton": {
         "message": "Authorize",

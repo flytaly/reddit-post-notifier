@@ -1,6 +1,4 @@
-import {
-    clientId, clientSecret, redirectUri, userAgent,
-} from '../config';
+import { clientId, clientSecret, redirectUri, userAgent } from '../config';
 import { AuthError } from './errors';
 import scopes from '../reddit-scopes';
 import storage from '../storage';
@@ -23,11 +21,12 @@ const auth = {
      */
     async getAccessToken() {
         const { accessToken, expiresIn, refreshToken } = await storage.getAuthData();
-        if (!refreshToken) return this.setAuth();
+        // if (!refreshToken) return this.setAuth();
+        if (!refreshToken) return null;
         const now = new Date();
         const expires = new Date(expiresIn - 60000 * 2); // 2 mins before expire
 
-        const token = expires > now ? accessToken : await this.renewAccessToken(refreshToken);
+        const token = expires > now && accessToken ? accessToken : await this.renewAccessToken(refreshToken);
         return token;
     },
 
@@ -136,52 +135,37 @@ const auth = {
     async login() {
         this.authState = this.generateAuthState();
         const code = await this.getAuthCode(this.authState);
-        if (!code) throw new AuthError('Couldn\'t get auth code');
+        if (!code) throw new AuthError("Couldn't get auth code");
 
         const authData = await this.getTokens(code);
         await storage.saveAuthData(authData);
 
-        if (this.authPromiseResolveFn) this.authPromiseResolveFn(authData.access_token);
+        // if (this.authPromiseResolveFn) this.authPromiseResolveFn(authData.access_token);
     },
 
-    authPromiseResolveFn: null,
+    // authPromiseResolveFn: null,
 
     /**
-        Change popup to popup with authorization button.
-        Returns promise that will be fulfilled only after a successful login
-        @return {Promise<string>} accessToken
-    */
-    setAuth() {
-        // browser.browserAction.setPopup({ popup: '' });
-        browser.browserAction.setBadgeText({ text: '...' });
-        browser.browserAction.setBadgeBackgroundColor({ color: 'red' });
-        browser.browserAction.setPopup({ popup: browser.extension.getURL('popup_noauth.html') });
+     * ! In versions 1.* authorization was mandatory.
+     * ! The extension just stopped worked if it wasn't authorazed.
+     *
+     *  Change popup to popup with authorization button.
+     *  Returns promise that will be fulfilled only after a successful login
+     *  @return {Promise<string>} accessToken
+     */
+    // setAuth() {
+    //     browser.browserAction.setBadgeText({ text: '...' });
+    //     browser.browserAction.setBadgeBackgroundColor({ color: 'red' });
+    //     browser.browserAction.setPopup({ popup: browser.extension.getURL('popup_noauth.html') });
 
-        return new Promise((resolve) => {
-            this.authPromiseResolveFn = () => {
-                browser.browserAction.setPopup({ popup: browser.extension.getURL('popup.html') });
-                browser.browserAction.setBadgeText({ text: '' });
-                resolve();
-            };
-        });
-        /*
-            return new Promise((resolve) => {
-            const listener = async () => {
-                try {
-                    const token = await this.login();
-                    browser.browserAction.setPopup({ popup: browser.extension.getURL('popup.html') });
-                    browser.browserAction.onClicked.removeListener(listener);
-                    browser.browserAction.setBadgeText({ text: '' });
-                    resolve(token);
-                } catch (e) {
-                    console.error(e);
-                }
-            };
-            browser.browserAction.onClicked.addListener(listener);
-        });
-        */
-    },
-
+    //     return new Promise((resolve) => {
+    //         this.authPromiseResolveFn = () => {
+    //             browser.browserAction.setPopup({ popup: browser.extension.getURL('popup.html') });
+    //             browser.browserAction.setBadgeText({ text: '' });
+    //             resolve();
+    //         };
+    //     });
+    // },
 };
 
 export default auth;

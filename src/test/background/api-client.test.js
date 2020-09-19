@@ -21,9 +21,9 @@ describe('HTTP GET request', () => {
             expect(init.headers.Authorization).toBe(`bearer ${accessToken}`);
             expect(url).toBe('https://oauth.reddit.com/endpoint?p1=v1&p2=v2&raw_json=1');
 
-            return ({
+            return {
                 json: jest.fn(async () => response),
-            });
+            };
         });
 
         const result = await reddit.GET(endpoint, params);
@@ -32,11 +32,34 @@ describe('HTTP GET request', () => {
     });
 
     test('should have correct url without params', async () => {
-        global.fetch = jest.fn(async (url/* , init */) => {
+        global.fetch = jest.fn(async (url /* , init */) => {
             expect(url).toBe('https://oauth.reddit.com/endpoint?raw_json=1');
-            return ({
+            return {
                 json: jest.fn(async () => response),
-            });
+            };
+        });
+        const result = await reddit.GET(endpoint);
+        expect(result).toEqual(response);
+    });
+
+    test('should have correct oauth url', async () => {
+        global.fetch = jest.fn(async (url /* , init */) => {
+            expect(url).toBe('https://oauth.reddit.com/endpoint?raw_json=1');
+            return {
+                json: jest.fn(async () => response),
+            };
+        });
+        const result = await reddit.GET(endpoint);
+        expect(result).toEqual(response);
+    });
+
+    test('should have correct no-oauth url', async () => {
+        auth.getAccessToken = jest.fn(async () => null);
+        global.fetch = jest.fn(async (url /* , init */) => {
+            expect(url).toBe('https://reddit.com/endpoint.json?raw_json=1');
+            return {
+                json: jest.fn(async () => response),
+            };
         });
         const result = await reddit.GET(endpoint);
         expect(result).toEqual(response);

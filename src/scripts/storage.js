@@ -1,5 +1,7 @@
+const authKeys = ['accessToken', 'expiresIn', 'refreshToken'];
+
 const storage = {
-    async getAuthData(keys = ['accessToken', 'expiresIn', 'refreshToken']) {
+    async getAuthData(keys = authKeys) {
         return browser.storage.local.get(keys);
     },
 
@@ -40,7 +42,7 @@ const storage = {
             // scope,
         } = data;
 
-        const expiresIn = expiresInRelative && (new Date().getTime() + expiresInRelative * 1000);
+        const expiresIn = expiresInRelative && new Date().getTime() + expiresInRelative * 1000;
 
         return browser.storage.local.set({
             ...(accessToken && { accessToken }),
@@ -50,7 +52,7 @@ const storage = {
     },
 
     async saveMessageData({ newMessages, count }) {
-        const data = await storage.getMessageData() || {};
+        const data = (await storage.getMessageData()) || {};
         data.messages = data.messages || [];
         if (count === 0) {
             data.messages = [];
@@ -132,6 +134,14 @@ const storage = {
         return browser.storage.local.set({ subreddits: { ...data, [subreddit]: current } });
     },
 
+    async clearAuthData() {
+        const authData = {};
+        authKeys.forEach((key) => {
+            authData[key] = null;
+        });
+        await browser.storage.local.set(authData);
+    },
+
     async clearStorage() {
         await browser.storage.local.clear();
     },
@@ -150,18 +160,14 @@ const storage = {
         if (subreddit) {
             const subreddits = await storage.getSubredditData();
 
-            subreddits[subreddit].posts = subreddits[subreddit]
-                .posts
-                .filter(({ data }) => data.id !== id);
+            subreddits[subreddit].posts = subreddits[subreddit].posts.filter(({ data }) => data.id !== id);
 
             await browser.storage.local.set({ subreddits });
         }
 
         if (searchId) {
             const queries = await storage.getQueriesData();
-            queries[searchId].posts = queries[searchId]
-                .posts
-                .filter(({ data }) => data.id !== id);
+            queries[searchId].posts = queries[searchId].posts.filter(({ data }) => data.id !== id);
 
             await browser.storage.local.set({ queries });
         }
@@ -212,23 +218,19 @@ const storage = {
         const { watchSubreddits = [] } = options;
         const subreddits = await storage.getSubredditData();
         if (subreddits) {
-            const pruned = Object
-                .keys(subreddits)
-                .reduce((acc, sub) => {
-                    if (watchSubreddits.includes(sub)) {
-                        acc[sub] = subreddits[sub];
-                    }
-                    return acc;
-                }, {});
+            const pruned = Object.keys(subreddits).reduce((acc, sub) => {
+                if (watchSubreddits.includes(sub)) {
+                    acc[sub] = subreddits[sub];
+                }
+                return acc;
+            }, {});
             await browser.storage.local.set({ subreddits: pruned });
         }
     },
 
     async countNumberOfUnreadItems() {
         let count = 0;
-        const {
-            options, queriesList, queries, subreddits, messages,
-        } = await browser.storage.local.get();
+        const { options, queriesList, queries, subreddits, messages } = await browser.storage.local.get();
 
         if (options.watchSubreddits && options.watchSubreddits.length && subreddits) {
             count += options.watchSubreddits.reduce((acc, curr) => {
@@ -256,7 +258,8 @@ const wrapper = (func) => async (...args) => {
 
     const countItems = await storage.countNumberOfUnreadItems();
     const current = await browser.browserAction.getBadgeText({});
-    if (current !== '...') { // if authorized
+    if (current !== '...') {
+        // if authorized
         browser.browserAction.setBadgeText({ text: countItems ? String(countItems) : '' });
     }
     return results;

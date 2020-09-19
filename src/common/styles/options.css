@@ -36,6 +36,7 @@ body.dark-mode button:active {
 body {
     color: var(--font-color);
     padding: 1em;
+    min-width: 600px;
     max-width: 100%;
     background-color: var(--bg-color);
 }
@@ -45,6 +46,7 @@ h2,
 h3,
 h4 {
     color: var(--font-color_h);
+    font-weight: bold;
 }
 
 a {
@@ -62,23 +64,44 @@ input[type='checkbox'] {
     margin-left: 4px;
 }
 
-button button.sign-out,
 button.delete,
 button.add-search {
     margin-top: 4px;
 }
 
-.update-warning {
-    font-size: 0.9em;
-}
-
 section {
+    display: flex;
+    flex-direction: column;
     margin: 10px 0;
 }
 
-section.watch-subreddits {
-    display: flex;
-    flex-direction: column;
+#mail-block {
+    opacity: 1;
+}
+
+#mail-block.disabled {
+    opacity: 0.6;
+}
+
+#auth-block {
+    margin-bottom: 1em;
+}
+
+#auth-block .no-authorized,
+#auth-error-message {
+    color: darkred;
+}
+
+.dark-mode #auth-block .no-authorized,
+.dark-mode #auth-error-message {
+    color: lightcoral;
+}
+
+#auth-block .is-authorized {
+    color: green;
+}
+.dark-mode #auth-block .is-authorized {
+    color: lightgreen;
 }
 
 .watch-subreddits > input {
@@ -123,6 +146,10 @@ section.watch-subreddits {
     box-shadow: 0 0 0 2px rgba(255, 0, 0, 0.35);
 }
 
+.search {
+    margin-bottom: 10px;
+}
+
 .search ul {
     list-style: none;
     padding: 0;
@@ -165,7 +192,7 @@ section.watch-subreddits {
     width: auto;
 }
 
-#messageNotify:disabled {
+input:disabled {
     cursor: not-allowed;
 }
 
@@ -174,8 +201,10 @@ input[type='number'] {
     margin: 0 2px;
 }
 
-.sign-out {
+.clear-data {
     float: right;
+    margin-top: 4px;
+    margin-bottom: 1em;
 }
 
 .text-with-tooltip {
@@ -221,4 +250,8 @@ body.dark-mode .tooltip-button {
 
 body.dark-mode .tooltip-button svg {
     stroke: #aaccdd;
+}
+
+footer {
+    align-self: center;
 }

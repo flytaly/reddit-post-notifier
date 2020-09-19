@@ -1,5 +1,5 @@
-@import "./colors.css";
-@import "./footer.css";
+@import './colors.css';
+@import './footer.css';
 
 * {
     box-sizing: border-box;
@@ -54,11 +54,11 @@ header > *:not(:first-child) {
     margin-left: 6px;
 }
 
-header.posts{
+header.posts {
     background-color: var(--hover-bg-color);
     flex-direction: row;
 }
-header.query-list  button.arrow-left,
+header.query-list button.arrow-left,
 header.query-list .subreddit-name,
 header.posts button.update,
 header.posts a.mail,
@@ -66,12 +66,11 @@ header.posts button.options {
     display: none;
 }
 
-header a.subreddit-name{
+header a.subreddit-name {
     font-weight: bold;
     font-size: 1.05em;
     color: inherit;
 }
-
 
 main {
     flex: 1 1;
@@ -118,7 +117,7 @@ header svg {
     height: 16px;
 }
 
-li img{
+li img {
     width: 16px;
     height: 16px;
 }
@@ -173,16 +172,16 @@ button.update:focus,
 button.options:hover,
 button.options:focus,
 a.mail:hover,
-a.mail:focus{
+a.mail:focus {
     transform: scale(1.08);
 }
 button.update:active,
 button.options:active,
-a.mail:active{
+a.mail:active {
     transform: scale(0.92);
 }
 
-button.arrow-left{
+button.arrow-left {
     width: 18px;
     height: 18px;
 }
@@ -192,16 +191,16 @@ button.arrow-left svg {
 }
 
 button.arrow-left:focus,
-button.arrow-left:hover{
+button.arrow-left:hover {
     background-color: var(--hover-border-color);
 }
 
 button.arrow-left:focus:active,
-button.arrow-left:hover:active{
+button.arrow-left:hover:active {
     background-color: var(--hover-bg-color2);
 }
 
-button.arrow-left[hidden]{
+button.arrow-left[hidden] {
     display: none;
 }
 
@@ -220,7 +219,7 @@ li:focus .check-mark svg,
     transform: scale(0.92);
 }
 
-.post-list li a{
+.post-list li a {
     transition: color 0.1s ease;
     width: 100%;
     padding: 4px 0;
@@ -230,7 +229,7 @@ li:focus .check-mark svg,
     color: var(--grey);
 }
 
-.post-list li{
+.post-list li {
     position: relative;
 }
 
@@ -248,14 +247,13 @@ li:focus .check-mark svg,
     z-index: 100;
 }
 
-#preview.show{
+#preview.show {
     display: block;
 }
 
-
 .run-animation {
     position: relative;
-    animation: slide-animation-left 0.10s ease;
+    animation: slide-animation-left 0.1s ease;
 }
 
 .run-spinner {
@@ -264,18 +262,20 @@ li:focus .check-mark svg,
 
 @keyframes slide-animation-left {
     from {
-      opacity : 0;
-      left : 100%;
+        opacity: 0;
+        left: 100%;
     }
     to {
-      opacity : 1;
-      left : 0;
+        opacity: 1;
+        left: 0;
     }
-  }
-
-@keyframes spinner-animation {
-    0%   { transform: rotate(0deg); }
-    100% { transform: rotate(360deg); }
 }
 
-
+@keyframes spinner-animation {
+    0% {
+        transform: rotate(0deg);
+    }
+    100% {
+        transform: rotate(360deg);
+    }
+}

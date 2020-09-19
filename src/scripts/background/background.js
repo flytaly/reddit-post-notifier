@@ -24,14 +24,15 @@ async function update() {
 
     const countItems = await storage.countNumberOfUnreadItems();
     browser.browserAction.setBadgeText({ text: countItems ? String(countItems) : '' });
-
     try {
         await app.update();
         await scheduleNextUpdate();
     } catch (e) {
         console.error(e);
+
         if (e.name === 'AuthError') {
-            await auth.setAuth();
+            // If authorization fails remove authorization data from storage and update again.
+            await storage.clearAuthData();
             updating = false;
             await update();
         } else {
@@ -53,6 +54,8 @@ async function setOptions() {
 }
 
 async function startExtension() {
+    await setOptions();
+
     if (TARGET === 'chrome') {
         /*
             Change icon theme in Chrome after extension's launch.
@@ -63,20 +66,20 @@ async function startExtension() {
         applyTheme();
     }
 
-    setOptions();
     watchAlarms(update);
 
-    const { accessToken } = await storage.getAuthData();
-
+    /* const { accessToken } = await storage.getAuthData();
     if (!accessToken) {
         await auth.setAuth();
-    }
+    } */
 
     await update();
 }
 
 function connectListener(port) {
-    if (updating) { port.postMessage({ type: types.UPDATING_START }); }
+    if (updating) {
+        port.postMessage({ type: types.UPDATING_START });
+    }
     popupPort.port = port;
     popupPort.port.onMessage.addListener(async (message) => {
         const { type, payload } = message;
@@ -107,6 +110,10 @@ function connectListener(port) {
                 await auth.login();
                 break;
             }
+            case types.SCHEDULE_NEXT_UPDATE: {
+                await scheduleNextUpdate();
+                break;
+            }
             default:
         }
     });
@@ -119,20 +126,14 @@ browser.runtime.onConnect.addListener(connectListener);
 // requestIdleCallback doesn't work in Chrome
 if (TARGET === 'chrome') {
     startExtension();
-} else { // firefox
-    // reset auth data if prev. version <1.4 to force reauthorization (because of the changes in FF75 identity API)
-    browser.runtime.onInstalled.addListener((details) => {
-        const { previousVersion, reason } = details;
-        if (reason === 'update' && previousVersion) {
-            const re = /^1.(\d+)./.exec(previousVersion);
-            if (re && re[1] < 4) {
-                storage.saveAuthData({ access_token: '', expires_in: 0, refresh_token: '' });
-            }
-        }
-    });
+} else {
+    // firefox
     window.requestIdleCallback(startExtension);
 }
 
 export default {
-    update, setOptions, startExtension, connectListener,
+    update,
+    setOptions,
+    startExtension,
+    connectListener,
 };
