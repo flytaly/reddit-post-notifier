@@ -110,6 +110,10 @@ function connectListener(port) {
                 await auth.login();
                 break;
             }
+            case types.SCHEDULE_NEXT_UPDATE: {
+                await scheduleNextUpdate();
+                break;
+            }
             default:
         }
     });

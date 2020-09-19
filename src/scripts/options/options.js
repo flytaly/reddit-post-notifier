@@ -6,12 +6,14 @@ import { setTooltips } from './tooltips';
 import { restoreOptions } from './restoreOptions';
 
 function setListeners() {
+    const bgScriptPort = browser.runtime.connect();
+
     const updateIntervalInput = $('#updateInterval');
     const saveUpdateInterval = async () => {
         const updateInterval = parseInt(updateIntervalInput.value.trim(), 10);
         if (!Number.isNaN(updateInterval) && updateInterval > 0) {
             await storage.saveOptions({ updateInterval });
-            browser.alarms.create(types.ALARM_UPDATE, { delayInMinutes: updateInterval / 60 });
+            if (bgScriptPort) bgScriptPort.postMessage({ type: types.SCHEDULE_NEXT_UPDATE });
         }
     };
     updateIntervalInput.addEventListener('input', debounce(saveUpdateInterval, 200));
@@ -77,7 +79,6 @@ function setListeners() {
         await storage.saveOptions({ subredditNotify: subredditNotifyCheckbox.checked });
     });
 
-    const bgScriptPort = browser.runtime.connect();
     const clearDataButton = $('#clearData');
     clearDataButton.addEventListener('click', async () => {
         if (bgScriptPort) bgScriptPort.postMessage({ type: types.RESET });
