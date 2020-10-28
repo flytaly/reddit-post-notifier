@@ -1,14 +1,17 @@
 import getElements from './elements';
 import nav from './navigation';
 
+/**
+ * @param {KeyboardEvent} e
+ */
 export default async function handleKeydownEvent(e) {
-    const { target, key } = e;
+    const { target, key, code } = e;
 
     // Prevent scrolling by arrow key and other potential default behavior
     if ([' ', 'ArrowRight', 'ArrowLeft', 'ArrowUp', 'ArrowDown', 'Backspace'].includes(key)) e.preventDefault();
 
     // Mark selected post or subreddit as read
-    if (key === ' ') {
+    if (code === 'Space') {
         if (target.tagName !== 'LI' || !target.dataset.id) return;
         const ul = target.parentElement;
         if (ul.classList.contains('query-list') || ul.classList.contains('post-list')) {
@@ -19,7 +22,7 @@ export default async function handleKeydownEvent(e) {
     }
 
     // Navigate to the list of posts or open selected post
-    if ((key === 'ArrowRight' || key === 'Enter' || key.toUpperCase() === 'L') && target.tagName === 'LI' && target.dataset.id) {
+    if ((key === 'ArrowRight' || key === 'Enter' || code === 'KeyL') && target.tagName === 'LI' && target.dataset.id) {
         if (target.parentElement.classList.contains('query-list')) {
             const btn = target.querySelector('button.arrow-right');
             if (btn) btn.click();
@@ -28,7 +31,7 @@ export default async function handleKeydownEvent(e) {
             const link = target.querySelector('a');
             link.click();
             if (TARGET === 'firefox') {
-            // close window shortly after the click because the extension will lose focus in firefox anyway
+                // close window shortly after the click because the extension will lose focus in firefox anyway
                 setTimeout(() => window.close(), 50);
             }
         }
@@ -44,12 +47,10 @@ export default async function handleKeydownEvent(e) {
     }
 
     // Select next element in the list
-    if (key === 'ArrowDown' || key.toUpperCase() === 'J') {
+    if (key === 'ArrowDown' || code === 'KeyJ') {
         const { mainContainer } = getElements();
         if (target.tagName === 'LI') {
-            const next = target.nextElementSibling
-                ? target.nextSibling
-                : target.parentElement.firstElementChild;
+            const next = target.nextElementSibling ? target.nextSibling : target.parentElement.firstElementChild;
             next.focus();
         } else {
             const ul = mainContainer.querySelector('ul');
@@ -58,7 +59,7 @@ export default async function handleKeydownEvent(e) {
         return;
     }
     // Select previous element in the list
-    if (key === 'ArrowUp' || key.toUpperCase() === 'K') {
+    if (key === 'ArrowUp' || code === 'KeyK') {
         const { mainContainer } = getElements();
         if (target.tagName === 'LI') {
             const next = target.previousElementSibling
@@ -73,7 +74,7 @@ export default async function handleKeydownEvent(e) {
     }
 
     // Go to main screen
-    if (key === 'ArrowLeft' || key === 'Backspace' || key.toUpperCase() === 'H') {
+    if (key === 'ArrowLeft' || key === 'Backspace' || code === 'KeyH') {
         await nav.navigate(nav.locations.queriesList, { forceUpdate: true });
     }
 }
