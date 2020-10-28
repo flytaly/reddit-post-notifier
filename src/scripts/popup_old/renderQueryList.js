@@ -2,6 +2,7 @@ import getTemplates from './templates';
 import getOptions from './options';
 import { getData } from './data';
 import storage from '../storage';
+import renderPostListBlock from './renderPostList';
 
 function renderQueryListRow(queryListRowTmp, { name, id, postsCount }) {
     const queryListRow = queryListRowTmp.querySelector('li');
@@ -70,16 +71,13 @@ async function renderQueryListBlock(nav) {
         }),
     ];
 
-    const rowsWithPosts = rows
-        .filter((row) => row.postsCount)
-        .sort((a, b) => b.lastPostCreated - a.lastPostCreated);
+    const rowsWithPosts = rows.filter((row) => row.postsCount).sort((a, b) => b.lastPostCreated - a.lastPostCreated);
 
     if (!rowsWithPosts.length) return noPosts;
 
     const subredditRows = rowsWithPosts.reduce((fragment, rowInfo) => {
         const rowEl = renderQueryListRow(templates.queryListRow.cloneNode(true), rowInfo);
         fragment.appendChild(rowEl);
-
         return fragment;
     }, document.createDocumentFragment());
 

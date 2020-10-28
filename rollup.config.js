@@ -3,17 +3,22 @@ import nodeResolve from '@rollup/plugin-node-resolve';
 import commonjs from '@rollup/plugin-commonjs';
 import copy from 'rollup-plugin-copy-watch';
 import del from 'rollup-plugin-delete';
+import svelte from 'rollup-plugin-svelte';
 
 const target = process.env.TARGET ? process.env.TARGET : 'firefox';
 const outputPath = target === 'firefox' ? './dist/firefox/' : './dist/chrome/';
 const isWatchMode = process.env.ROLLUP_WATCH;
 
+const isDev = isWatchMode;
 const plugins = [
     replace({
         TARGET: `'${target}'`,
-        'process.env.NODE_ENV': JSON.stringify(isWatchMode ? 'development' : 'production'),
+        'process.env.NODE_ENV': JSON.stringify(isDev ? 'development' : 'production'),
     }),
-    nodeResolve(),
+    nodeResolve({
+        browser: true,
+        dedupe: ['svelte'],
+    }),
     commonjs(),
 ];
 
@@ -44,7 +49,14 @@ export default [
             file: `${outputPath}bundles/popup.js`,
             format: 'iife',
         },
-        plugins: [copyPlugin, ...plugins, ...(isWatchMode ? [] : [delPlugin])],
+        plugins: [
+            copyPlugin,
+            svelte({
+                dev: isDev,
+            }),
+            ...plugins,
+            ...(isWatchMode ? [] : [delPlugin]),
+        ],
     },
     {
         input: './src/scripts/options/options.js',
