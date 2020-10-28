@@ -139,33 +139,7 @@ const auth = {
 
         const authData = await this.getTokens(code);
         await storage.saveAuthData(authData);
-
-        // if (this.authPromiseResolveFn) this.authPromiseResolveFn(authData.access_token);
     },
-
-    // authPromiseResolveFn: null,
-
-    /**
-     * ! In versions 1.* authorization was mandatory.
-     * ! The extension just stopped worked if it wasn't authorazed.
-     *
-     *  Change popup to popup with authorization button.
-     *  Returns promise that will be fulfilled only after a successful login
-     *  @return {Promise<string>} accessToken
-     */
-    // setAuth() {
-    //     browser.browserAction.setBadgeText({ text: '...' });
-    //     browser.browserAction.setBadgeBackgroundColor({ color: 'red' });
-    //     browser.browserAction.setPopup({ popup: browser.extension.getURL('popup_noauth.html') });
-
-    //     return new Promise((resolve) => {
-    //         this.authPromiseResolveFn = () => {
-    //             browser.browserAction.setPopup({ popup: browser.extension.getURL('popup.html') });
-    //             browser.browserAction.setBadgeText({ text: '' });
-    //             resolve();
-    //         };
-    //     });
-    // },
 };
 
 export default auth;

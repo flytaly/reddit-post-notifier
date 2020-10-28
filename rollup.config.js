@@ -47,14 +47,6 @@ export default [
         plugins: [copyPlugin, ...plugins, ...(isWatchMode ? [] : [delPlugin])],
     },
     {
-        input: './src/scripts/popup_noauth.js',
-        output: {
-            file: `${outputPath}bundles/popup_noauth.js`,
-            format: 'iife',
-        },
-        plugins,
-    },
-    {
         input: './src/scripts/options/options.js',
         output: [
             {
