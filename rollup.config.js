@@ -4,6 +4,7 @@ import commonjs from '@rollup/plugin-commonjs';
 import copy from 'rollup-plugin-copy-watch';
 import del from 'rollup-plugin-delete';
 import svelte from 'rollup-plugin-svelte';
+import svg from 'rollup-plugin-svg-import';
 
 const target = process.env.TARGET ? process.env.TARGET : 'firefox';
 const outputPath = target === 'firefox' ? './dist/firefox/' : './dist/chrome/';
@@ -51,6 +52,7 @@ export default [
         },
         plugins: [
             copyPlugin,
+            svg({ stringify: true }),
             svelte({
                 dev: isDev,
             }),

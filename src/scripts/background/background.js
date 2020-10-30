@@ -55,6 +55,7 @@ async function setOptions() {
 
 async function startExtension() {
     await setOptions();
+    browser.browserAction.setBadgeBackgroundColor({ color: 'darkred' });
 
     if (TARGET === 'chrome') {
         /*
