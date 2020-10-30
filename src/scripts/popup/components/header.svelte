@@ -1,11 +1,11 @@
 <script>
     import SvgButton from './svg-button.svelte';
-    import ArrowLeftIcon from './assets/arrowhead-left.svg';
-    import RefreshIcon from './assets/refresh.svg';
-    import MailIcon from './assets/mail.svg';
-    import SettingsIcon from './assets/settings.svg';
+    import ArrowLeftIcon from '../assets/arrowhead-left.svg';
+    import RefreshIcon from '../assets/refresh.svg';
+    import MailIcon from '../assets/mail.svg';
+    import SettingsIcon from '../assets/settings.svg';
 
-    export let isPostList = false;
+    export let isPostList = true;
 
     const { getMessage } = browser.i18n;
 

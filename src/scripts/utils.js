@@ -34,3 +34,5 @@ export const debounce = (func, waitMs) => {
         }, waitMs);
     };
 };
+
+export const getMsg = (msg) => browser.i18n.getMessage(msg);

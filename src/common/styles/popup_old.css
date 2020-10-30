@@ -1,0 +1,281 @@
+@import './colors.css';
+@import './footer.css';
+
+* {
+    box-sizing: border-box;
+}
+
+body {
+    color: var(--font-color);
+    margin: 0;
+    min-width: 200px;
+    max-width: 500px;
+    display: flex;
+    flex-direction: column;
+    background-color: var(--main-bg-color);
+    overflow: hidden auto;
+}
+
+svg {
+    fill: var(--font-color);
+    color: var(--font-color);
+}
+
+a {
+    text-decoration: none;
+    color: var(--link-color);
+}
+
+header {
+    display: flex;
+    align-items: center;
+    padding: 5px 4px 2px 4px;
+    min-height: 23px;
+    border-bottom: 1px solid var(--hover-border-color);
+}
+
+header .left-buttons {
+    display: flex;
+    flex: 1;
+    align-items: center;
+}
+header .left-buttons > * {
+    margin-right: 6px;
+}
+header .right-buttons {
+    display: flex;
+    align-items: center;
+}
+header .right-buttons > * {
+    margin-left: 6px;
+}
+
+header > *:not(:first-child) {
+    margin-left: 6px;
+}
+
+header.posts {
+    background-color: var(--hover-bg-color);
+    flex-direction: row;
+}
+header.query-list button.arrow-left,
+header.query-list .subreddit-name,
+header.posts button.update,
+header.posts a.mail,
+header.posts button.options {
+    display: none;
+}
+
+header a.subreddit-name {
+    font-weight: bold;
+    font-size: 1.05em;
+    color: inherit;
+}
+
+main {
+    flex: 1 1;
+}
+
+ul {
+    display: flex;
+    flex-direction: column;
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+ul > li {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    /* column-gap: 4px; */
+    /* padding: 4px 4px; */
+    padding: 0 4px;
+    border-top: 1px solid var(--main-bg-color);
+    border-bottom: 1px solid var(--main-bg-color);
+}
+
+ul > li > *:not(:last-child) {
+    margin-right: 4px;
+}
+ul > li:focus,
+ul > li:hover {
+    background-color: var(--hover-bg-color);
+    border-top: 1px solid var(--hover-border-color);
+    border-bottom: 1px solid var(--hover-border-color);
+    outline: none;
+}
+
+.no-posts {
+    text-align: center;
+    padding: 5px 0;
+    color: var(--grey);
+}
+
+header svg {
+    width: 16px;
+    height: 16px;
+}
+
+li img {
+    width: 16px;
+    height: 16px;
+}
+
+li svg {
+    width: 16px;
+    height: 16px;
+}
+
+ul.query-list {
+    cursor: default;
+}
+ul.query-list .query-name {
+    flex-grow: 1;
+    padding: 4px 0;
+}
+
+a.mail,
+button.update,
+button.options,
+button.arrow-left,
+button.check-mark,
+button.arrow-right {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 16px;
+    height: 16px;
+    /* margin: 0; */
+    padding: 0;
+    border: none;
+    background: none;
+    transition: 150ms;
+}
+a.mail .unread-number {
+    margin-right: 4px;
+}
+a.mail {
+    color: inherit;
+}
+a.mail.unread,
+a.mail.unread svg {
+    fill: var(--new-mail-color);
+    color: var(--new-mail-color);
+}
+
+a.mail {
+    width: auto;
+}
+button.update:hover,
+button.update:focus,
+button.options:hover,
+button.options:focus,
+a.mail:hover,
+a.mail:focus {
+    transform: scale(1.08);
+}
+button.update:active,
+button.options:active,
+a.mail:active {
+    transform: scale(0.92);
+}
+
+button.arrow-left {
+    width: 18px;
+    height: 18px;
+}
+button.arrow-left svg {
+    width: 100%;
+    height: 100%;
+}
+
+button.arrow-left:focus,
+button.arrow-left:hover {
+    background-color: var(--hover-border-color);
+}
+
+button.arrow-left:focus:active,
+button.arrow-left:hover:active {
+    background-color: var(--hover-bg-color2);
+}
+
+button.arrow-left[hidden] {
+    display: none;
+}
+
+.check-mark svg {
+    fill: var(--grey);
+}
+
+li:focus .check-mark svg,
+.check-mark:focus svg,
+.check-mark:hover svg {
+    fill: var(--green);
+    transform: scale(1.08);
+}
+
+.check-mark:active svg {
+    transform: scale(0.92);
+}
+
+.post-list li a {
+    transition: color 0.1s ease;
+    width: 100%;
+    padding: 4px 0;
+}
+
+.post-list li.read a {
+    color: var(--grey);
+}
+
+.post-list li {
+    position: relative;
+}
+
+#preview {
+    display: none;
+    position: absolute;
+    max-width: 300px;
+    max-height: 200px;
+    padding: 2px;
+    font-size: 0.9em;
+    word-wrap: break-word;
+    overflow: hidden;
+    background-color: var(--main-bg-color);
+    border: 1px solid var(--hover-border-color);
+    z-index: 100;
+}
+
+#preview.show {
+    display: block;
+}
+
+.run-animation {
+    position: relative;
+    animation: slide-animation-left 0.1s ease;
+}
+
+.run-spinner {
+    animation: spinner-animation 800ms linear infinite;
+}
+
+@keyframes slide-animation-left {
+    from {
+        opacity: 0;
+        left: 100%;
+    }
+    to {
+        opacity: 1;
+        left: 0;
+    }
+}
+
+@keyframes spinner-animation {
+    0% {
+        transform: rotate(0deg);
+    }
+    100% {
+        transform: rotate(360deg);
+    }
+}
