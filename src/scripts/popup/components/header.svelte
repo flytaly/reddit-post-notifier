@@ -4,11 +4,12 @@
     import RefreshIcon from '../assets/refresh.svg';
     import MailIcon from '../assets/mail.svg';
     import SettingsIcon from '../assets/settings.svg';
+    import { getMsg } from '../../utils';
+    import { postMessage } from '../connect';
+    import types from '../../types';
 
-    export let isPostList = true;
-
-    const { getMessage } = browser.i18n;
-
+    export let isPostList = false;
+    export let loading = false;
     const onOptionClick = async () => {
         await browser.runtime.openOptionsPage();
         window.close();
@@ -61,6 +62,18 @@
     .arrow-left :global(button):hover:active {
         background-color: var(--hover-bg-color2);
     }
+
+    .loading :global(svg) {
+        animation: spinner-animation 800ms linear infinite;
+    }
+    @keyframes spinner-animation {
+        0% {
+            transform: rotate(0deg);
+        }
+        100% {
+            transform: rotate(360deg);
+        }
+    }
 </style>
 
 <header>
@@ -73,25 +86,28 @@
             </span>
 
             <!-- Subreddit's name -->
-            <a
-                class="subreddit-name"
-                href="https://reddit.com"
-                title={getMessage('headerSubredditName_title')}>subreddit's name</a>
+            <a class="subreddit-name" href="https://reddit.com" title={getMsg('headerSubredditName_title')}>subreddit's
+                name</a>
         {:else}
-            <SvgButton title={getMessage('headerUpdateBtn_title')}>
-                {@html RefreshIcon}
+            <SvgButton
+                disabled={loading}
+                on:click={() => postMessage({ type: types.UPDATE_NOW })}
+                title={getMsg('headerUpdateBtn_title')}>
+                <span class:loading>
+                    {@html RefreshIcon}
+                </span>
             </SvgButton>
         {/if}
     </span>
 
     {#if !isPostList}
         <span class="right-buttons">
-            <SvgButton href="https://reddit.com/message/inbox/" title={getMessage('headerMail_title')}>
+            <SvgButton href="https://reddit.com/message/inbox/" title={getMsg('headerMail_title')}>
                 <span class="unread-number" />
                 {@html MailIcon}
             </SvgButton>
 
-            <SvgButton onclick={onOptionClick} title={getMessage('headerOptions_title')}>
+            <SvgButton on:click={onOptionClick} title={getMsg('headerOptions_title')}>
                 {@html SettingsIcon}
             </SvgButton>
         </span>

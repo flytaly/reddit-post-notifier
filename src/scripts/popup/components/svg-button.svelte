@@ -1,7 +1,7 @@
 <script>
     export let title;
     export let href = null;
-    export let onclick = null;
+    export let disabled = false;
 </script>
 
 <style>
@@ -26,11 +26,11 @@
 </style>
 
 {#if href}
-    <a class="svg-button" {href} {title} on:click={onclick}>
+    <a class="svg-button" {href} {title} on:click>
         <slot />
     </a>
 {:else}
-    <button class="svg-button" {title} on:click={onclick}>
+    <button class="svg-button" {title} {disabled} on:click>
         <slot />
     </button>
 {/if}
