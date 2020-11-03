@@ -7,12 +7,14 @@
     import { state } from '../store/store';
 
     let loading = false;
+    let subreddits = {};
     onMount(() => {
         nprogress.configure({ showSpinner: false });
     });
 
     state.subscribe(($state) => {
         loading = $state.isLoading;
+        subreddits = $state.subreddits;
     });
 </script>
 
@@ -20,5 +22,5 @@
 </style>
 
 <Header {loading} />
-<Main />
+<Main {subreddits} />
 <Footer />

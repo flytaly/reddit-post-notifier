@@ -22,8 +22,6 @@ async function update() {
     updating = true;
     popupPort.postMessage({ type: types.UPDATING_START });
 
-    const countItems = await storage.countNumberOfUnreadItems();
-    browser.browserAction.setBadgeText({ text: countItems ? String(countItems) : '' });
     try {
         await app.update();
         await scheduleNextUpdate();
@@ -56,6 +54,8 @@ async function setOptions() {
 async function startExtension() {
     await setOptions();
     browser.browserAction.setBadgeBackgroundColor({ color: 'darkred' });
+    storage.countNumberOfUnreadItems();
+    browser.storage.onChanged.addListener(() => storage.countNumberOfUnreadItems());
 
     if (TARGET === 'chrome') {
         /*

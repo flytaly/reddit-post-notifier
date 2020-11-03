@@ -1,5 +1,12 @@
 const authKeys = ['accessToken', 'expiresIn', 'refreshToken'];
 
+export const dataFields = {
+    queries: {},
+    queriesList: [],
+    subreddits: {},
+    messages: {},
+};
+
 const storage = {
     async getAuthData(keys = authKeys) {
         return browser.storage.local.get(keys);
@@ -28,6 +35,10 @@ const storage = {
     async getQueriesData() {
         const { queries } = await browser.storage.local.get({ queries: {} });
         return queries;
+    },
+
+    async getAllData() {
+        return browser.storage.local.get(dataFields);
     },
 
     /**
@@ -202,12 +213,14 @@ const storage = {
         await browser.storage.local.set({ subreddits, queries });
     },
 
+    // TODO: remove 'queries' data also not only id from queriesList
     async removeQueries(ids = []) {
         const queriesList = await storage.getQueriesList();
         const queriesUpdated = queriesList.filter((q) => !ids.includes(q.id));
 
         return browser.storage.local.set({ queriesList: queriesUpdated });
     },
+
     /**
      * Remove unused data
      */
@@ -228,7 +241,7 @@ const storage = {
         }
     },
 
-    async countNumberOfUnreadItems() {
+    async countNumberOfUnreadItems(updateBadge = true) {
         let count = 0;
         const { options, queriesList, queries, subreddits, messages } = await browser.storage.local.get();
 
@@ -248,33 +261,9 @@ const storage = {
 
         if (messages && messages.count) count += messages.count;
 
+        if (updateBadge) browser.browserAction.setBadgeText({ text: count ? String(count) : '' });
         return count;
     },
 };
 
-/** Higher-order function that updates badge after every change in storage */
-const wrapper = (func) => async (...args) => {
-    const results = await func(...args);
-
-    const countItems = await storage.countNumberOfUnreadItems();
-    const current = await browser.browserAction.getBadgeText({});
-    if (current !== '...') {
-        // if authorized
-        browser.browserAction.setBadgeText({ text: countItems ? String(countItems) : '' });
-    }
-    return results;
-};
-
-const proxy = new Proxy(storage, {
-    get(target, prop) {
-        if (typeof prop !== 'string') return target[prop]; // prop could be Symbol.toStringTag
-
-        if (prop.startsWith('remove') || prop.startsWith('save')) {
-            return wrapper(target[prop].bind(target));
-        }
-
-        return target[prop];
-    },
-});
-
-export default proxy;
+export default storage;
