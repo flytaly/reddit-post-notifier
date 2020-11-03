@@ -16,18 +16,18 @@ export const state = writable(defaultState, async () => {
 
     // Update data on changes
     browser.storage.onChanged.addListener((changes) => {
-        const { subreddits, queries, queriesList, messages } = changes.newValue;
-        if (subreddits) {
-            state.update((prev) => ({ ...prev, subreddits: { ...prev.subreddits, ...subreddits } }));
+        const { subreddits, queries, queriesList, messages } = changes;
+        if (subreddits?.newValue) {
+            state.update((prev) => ({ ...prev, subreddits: { ...subreddits.newValue } }));
         }
-        if (queries) {
-            state.update((prev) => ({ ...prev, queries: { ...prev.queries, ...queries } }));
+        if (queries?.newValue) {
+            state.update((prev) => ({ ...prev, queries: { ...queries.newValue } }));
         }
-        if (messages) {
-            state.update((prev) => ({ ...prev, messages: { ...prev.messages, ...messages } }));
+        if (messages?.newValue) {
+            state.update((prev) => ({ ...prev, messages: { ...messages.newValue } }));
         }
-        if (queriesList) {
-            state.update((prev) => ({ ...prev, queriesList: { ...prev.queriesList, ...queriesList } }));
+        if (queriesList?.newValue) {
+            state.update((prev) => ({ ...prev, queriesList: [...queriesList.newValue] }));
         }
     });
 

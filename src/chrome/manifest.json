@@ -1,7 +1,7 @@
 {
     "manifest_version": 2,
     "key": "MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAi+t5ySos/8pLUphc43Y+2Ee5ehEwX86iSRannZu9lOdZTtnD6X0eiVKUvr5y2Q9abSQQ1ZFmQkf4VkbHgff0rST+ihZuRTLvOBRLel/txvk9cbwQE3YOHChXzRqNCguPSkDHBVGLbXx5UIPdG6YMrnN6VGbbmUM7yW16g55uU6SjRZm/CL2r00f6kg/nOdKcXbAc8dwOOFCLeWfHdbNmcXvD6Ud9eeKmwm+XrLz0xgIFNOj+D4vqs/p3JwdWz49Ed3j0qNcM1MQvjI42P26kDXYG5w8O9If/WyaFd6/QgvmhBdNYjfVG878bWIxdTu+McmHtSG55WffGhShmoZL1/wIDAQAB",
-    "minimum_chrome_version": "76",
+    "minimum_chrome_version": "80",
     "default_locale": "en",
     "description": "__MSG_description__",
     "name": "__MSG_name__",

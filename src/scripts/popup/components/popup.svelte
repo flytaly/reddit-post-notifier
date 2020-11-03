@@ -8,6 +8,9 @@
 
     let loading = false;
     let subreddits = {};
+    let queries = {};
+    let queriesList = [];
+
     onMount(() => {
         nprogress.configure({ showSpinner: false });
     });
@@ -15,6 +18,8 @@
     state.subscribe(($state) => {
         loading = $state.isLoading;
         subreddits = $state.subreddits;
+        queries = $state.queries;
+        queriesList = $state.queriesList;
     });
 </script>
 
@@ -22,5 +27,5 @@
 </style>
 
 <Header {loading} />
-<Main {subreddits} />
+<Main {subreddits} {queries} {queriesList} />
 <Footer />

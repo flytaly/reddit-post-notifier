@@ -1,5 +1,6 @@
 <script>
     import { getMsg } from '../../utils';
+    import storage from '../../storage';
 </script>
 
 <style>
@@ -32,4 +33,6 @@
     }
 </style>
 
-<footer><button class="footer-button">{getMsg('footerButton')}</button></footer>
+<footer>
+    <button class="footer-button" on:click={() => storage.removeAllPosts()}>{getMsg('footerButton')}</button>
+</footer>

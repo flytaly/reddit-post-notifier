@@ -27,6 +27,10 @@
         "message": "Open options",
         "description": "Attribute title of the options icon"
     },
+    "noPosts": {
+        "message": "No unread posts",
+        "description": "No unread posts note"
+    },
     "queryListCheckMark_title": {
         "message": "Mark all posts in the subreddit or search as read",
         "description": "Attribute title of the check mark icon in query list"
