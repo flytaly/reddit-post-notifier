@@ -36,12 +36,6 @@ export const state = writable(defaultState, async () => {
     port.onMessage.addListener(async (message) => {
         const { type /* , payload */ } = message;
         switch (type) {
-            case types.NEW_POSTS:
-                // TODO: remove legacy messages
-                break;
-            case types.NEW_MESSAGES:
-                // TODO: remove legacy messages
-                break;
             case types.UPDATING_START:
                 nprogress.start();
                 state.update((prev) => ({ ...prev, isLoading: true }));

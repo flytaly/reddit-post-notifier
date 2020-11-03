@@ -1,7 +1,8 @@
 <script>
-    import MainBlockRow from './main-block-row.svelte';
+    import WatchListRow from './watch-list-row.svelte';
     import { getMsg } from '../../utils';
     import storage from '../../storage';
+    import { route, ROUTES } from '../store/route';
 
     export let subredditList = [];
     export let subreddits = {};
@@ -11,7 +12,9 @@
     $: subredditList = Object.keys(subreddits)
         .filter((s) => subreddits[s].posts.length)
         .sort((s1, s2) => subreddits[s2].lastPostCreated - subreddits[s1].lastPostCreated);
-    $: queriesList = queriesList.sort((q1, q2) => queries[q1].lastPostCreated - queries[q2].lastPostCreated);
+    $: queriesList = queriesList
+        .filter((q) => queries[q.id]?.posts?.length)
+        .sort((q1, q2) => queries[q1.id].lastPostCreated - queries[q2.id].lastPostCreated);
 </script>
 
 <style>
@@ -38,15 +41,19 @@
     {#if subredditList.length || queriesList.length}
         <ul>
             {#each subredditList as subreddit}
-                <MainBlockRow
+                <WatchListRow
                     checkMarkClickHandler={() => storage.removePostsFrom({ subreddit })}
-                    clickHandler={() => console.log('move to posts list')}
+                    clickHandler={() => {
+                        route.set({ route: ROUTES.SUBREDDIT_POSTS_LIST, id: subreddit });
+                    }}
                     text={`r/${subreddit} (${subreddits[subreddit].posts?.length})`} />
             {/each}
             {#each queriesList as query}
-                <MainBlockRow
+                <WatchListRow
                     checkMarkClickHandler={() => storage.removePostsFrom({ searchId: query.id })}
-                    clickHandler={() => console.log('move to posts list')}
+                    clickHandler={() => {
+                        route.set({ route: ROUTES.SEARCH_POSTS_LIST, id: query.id });
+                    }}
                     text={`${query.name || query.query} (${queries[query.id].posts?.length})`} />
             {/each}
         </ul>

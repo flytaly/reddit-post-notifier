@@ -1,5 +1,5 @@
 <script>
-    export let title;
+    export let title = '';
     export let href = null;
     export let disabled = false;
 </script>

@@ -49,10 +49,6 @@ const app = {
         const newPosts = app.extractNewItems(response, info);
         if (newPosts) {
             await storage.saveSubredditData(subreddit, { posts: newPosts });
-            popupPort.postMessage({
-                type: types.NEW_POSTS,
-                payload: { subreddit, posts: newPosts },
-            });
         }
         return newPosts;
     },
@@ -81,10 +77,6 @@ const app = {
 
         if (newPosts) {
             await storage.saveQueryData(query.id, { posts: newPosts });
-            popupPort.postMessage({
-                type: types.NEW_POSTS,
-                payload: { search: query.id, posts: newPosts },
-            });
         }
         return newPosts;
     },
@@ -101,10 +93,6 @@ const app = {
         const newMessages = app.extractNewItems(response, msgData);
 
         await storage.saveMessageData({ newMessages, count });
-        popupPort.postMessage({
-            type: types.NEW_MESSAGES,
-            payload: { count },
-        });
         return newMessages;
     },
 
