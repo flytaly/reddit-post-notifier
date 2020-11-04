@@ -17,6 +17,10 @@
     let cachedPosts = [];
     $: cachedPosts = [...posts.filter((p) => !postIds.has(p.data.id)), ...cachedPosts];
     $: cachedPosts.forEach((p) => postIds.add(p.data.id));
+    // if posts in storage are empty it means that user clicked footer button
+    $: if (!posts.length) {
+        cachedPosts.forEach((p) => readPosts.add(p.data.id));
+    }
 
     const clickHandler = async (event) => {
         const li = event.target.closest('li');

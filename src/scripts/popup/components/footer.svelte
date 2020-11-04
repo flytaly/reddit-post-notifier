@@ -1,6 +1,20 @@
 <script>
     import { getMsg } from '../../utils';
     import storage from '../../storage';
+    import { ROUTES } from '../store/route';
+
+    export let currentRoute;
+    export let subredditOrSearchId;
+
+    const clickHandler = () => {
+        if (currentRoute === ROUTES.SEARCH_POSTS_LIST) {
+            storage.removePostsFrom({ searchId: subredditOrSearchId });
+        } else if (currentRoute === ROUTES.SUBREDDIT_POSTS_LIST) {
+            storage.removePostsFrom({ subreddit: subredditOrSearchId });
+        } else {
+            storage.removeAllPosts();
+        }
+    };
 </script>
 
 <style>
@@ -33,6 +47,4 @@
     }
 </style>
 
-<footer>
-    <button class="footer-button" on:click={() => storage.removeAllPosts()}>{getMsg('footerButton')}</button>
-</footer>
+<footer><button class="footer-button" on:click={clickHandler}>{getMsg('footerButton')}</button></footer>

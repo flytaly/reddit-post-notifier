@@ -60,5 +60,5 @@
         {/if}
     </main>
 
-    <Footer />
+    <Footer {currentRoute} {subredditOrSearchId} />
 </Container>
