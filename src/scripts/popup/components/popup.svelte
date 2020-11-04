@@ -4,8 +4,10 @@
     import Header from './header.svelte';
     import Footer from './footer.svelte';
     import WatchList from './watch-list.svelte';
+    import PostList from './post-list.svelte';
     import { state } from '../store/store';
     import { route, ROUTES } from '../store/route';
+    import Container from './container.svelte';
 
     let loading = false;
     let subreddits = {};
@@ -34,12 +36,14 @@
 <style>
 </style>
 
-<Header {loading} />
+<Container big={currentRoute !== ROUTES.WATCH_LIST}>
+    <Header {loading} {queriesList} />
 
-{#if currentRoute !== ROUTES.WATCH_LIST}
-    <main>{currentRoute}</main>
-{:else}
-    <WatchList {subreddits} {queries} {queriesList} />
-{/if}
+    {#if currentRoute !== ROUTES.WATCH_LIST}
+        <PostList />
+    {:else}
+        <WatchList {subreddits} {queries} {queriesList} />
+    {/if}
 
-<Footer />
+    <Footer />
+</Container>

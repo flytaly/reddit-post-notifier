@@ -4,12 +4,40 @@
     import RefreshIcon from '../assets/refresh.svg';
     import MailIcon from '../assets/mail.svg';
     import SettingsIcon from '../assets/settings.svg';
-    import { getMsg } from '../../utils';
+    import { getMsg, getSearchQueryUrl, getSubredditUrl } from '../../utils';
     import { postMessage } from '../connect';
     import types from '../../types';
+    import { route, ROUTES } from '../store/route';
 
-    export let isPostList = false;
     export let loading = false;
+    export let queriesList = [];
+
+    let isPostList = false;
+    let currentRoute = ROUTES.WATCH_LIST;
+    let subredditOrSearchId = null;
+    let headerURL = '';
+    let headerTitle = '';
+
+    $: if (currentRoute === ROUTES.SEARCH_POSTS_LIST) {
+        isPostList = true;
+        const search = queriesList.find((s) => s.id === subredditOrSearchId);
+        headerURL = getSearchQueryUrl(search?.query, search?.subreddit);
+        headerTitle = search?.name || search?.query;
+    } else if (currentRoute === ROUTES.SUBREDDIT_POSTS_LIST) {
+        isPostList = true;
+        headerURL = getSubredditUrl(subredditOrSearchId);
+        headerTitle = `r/${subredditOrSearchId}`;
+    } else {
+        isPostList = false;
+        headerURL = '';
+        headerTitle = '';
+    }
+
+    route.subscribe(($route) => {
+        currentRoute = $route.route;
+        subredditOrSearchId = $route.id;
+    });
+
     const onOptionClick = async () => {
         await browser.runtime.openOptionsPage();
         window.close();
@@ -80,14 +108,13 @@
     <span class="left-buttons">
         {#if isPostList}
             <span class="arrow-left">
-                <SvgButton>
+                <SvgButton on:click={() => route.set({ route: ROUTES.WATCH_LIST, id: null })}>
                     {@html ArrowLeftIcon}
                 </SvgButton>
             </span>
 
             <!-- Subreddit's name -->
-            <a class="subreddit-name" href="https://reddit.com" title={getMsg('headerSubredditName_title')}>subreddit's
-                name</a>
+            <a class="subreddit-name" href={headerURL} title={getMsg('headerSubredditName_title')}>{headerTitle}</a>
         {:else}
             <SvgButton
                 disabled={loading}
