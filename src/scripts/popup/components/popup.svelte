@@ -16,6 +16,15 @@
 
     let currentRoute = ROUTES.WATCH_LIST;
     let subredditOrSearchId = null;
+    let posts = [];
+
+    $: if (currentRoute === ROUTES.SUBREDDIT_POSTS_LIST) {
+        posts = subreddits[subredditOrSearchId].posts;
+    } else if (currentRoute === ROUTES.SEARCH_POSTS_LIST) {
+        posts = queries[subredditOrSearchId].posts;
+    } else {
+        posts = [];
+    }
 
     onMount(() => {
         nprogress.configure({ showSpinner: false });
@@ -27,6 +36,7 @@
         queries = $state.queries;
         queriesList = $state.queriesList;
     });
+
     route.subscribe(($route) => {
         currentRoute = $route.route;
         subredditOrSearchId = $route.id;
@@ -34,16 +44,21 @@
 </script>
 
 <style>
+    main {
+        flex: 1 1;
+    }
 </style>
 
 <Container big={currentRoute !== ROUTES.WATCH_LIST}>
     <Header {loading} {queriesList} />
 
-    {#if currentRoute !== ROUTES.WATCH_LIST}
-        <PostList />
-    {:else}
-        <WatchList {subreddits} {queries} {queriesList} />
-    {/if}
+    <main>
+        {#if currentRoute !== ROUTES.WATCH_LIST}
+            <PostList {posts} {currentRoute} {subredditOrSearchId} />
+        {:else}
+            <WatchList {subreddits} {queries} {queriesList} />
+        {/if}
+    </main>
 
     <Footer />
 </Container>

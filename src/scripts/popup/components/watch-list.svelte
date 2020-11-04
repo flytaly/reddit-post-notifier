@@ -18,10 +18,6 @@
 </script>
 
 <style>
-    main {
-        flex: 1 1;
-    }
-
     ul {
         display: flex;
         flex-direction: column;
@@ -37,27 +33,25 @@
     }
 </style>
 
-<main>
-    {#if subredditList.length || queriesList.length}
-        <ul>
-            {#each subredditList as subreddit}
-                <WatchListRow
-                    checkMarkClickHandler={() => storage.removePostsFrom({ subreddit })}
-                    clickHandler={() => {
-                        route.set({ route: ROUTES.SUBREDDIT_POSTS_LIST, id: subreddit });
-                    }}
-                    text={`r/${subreddit} (${subreddits[subreddit].posts?.length})`} />
-            {/each}
-            {#each queriesList as query}
-                <WatchListRow
-                    checkMarkClickHandler={() => storage.removePostsFrom({ searchId: query.id })}
-                    clickHandler={() => {
-                        route.set({ route: ROUTES.SEARCH_POSTS_LIST, id: query.id });
-                    }}
-                    text={`${query.name || query.query} (${queries[query.id].posts?.length})`} />
-            {/each}
-        </ul>
-    {:else}
-        <div class="no-posts">{getMsg('noPosts')}</div>
-    {/if}
-</main>
+{#if subredditList.length || queriesList.length}
+    <ul>
+        {#each subredditList as subreddit}
+            <WatchListRow
+                checkMarkClickHandler={() => storage.removePostsFrom({ subreddit })}
+                on:click={() => {
+                    route.set({ route: ROUTES.SUBREDDIT_POSTS_LIST, id: subreddit });
+                }}
+                text={`r/${subreddit} (${subreddits[subreddit].posts?.length})`} />
+        {/each}
+        {#each queriesList as query}
+            <WatchListRow
+                checkMarkClickHandler={() => storage.removePostsFrom({ searchId: query.id })}
+                on:click={() => {
+                    route.set({ route: ROUTES.SEARCH_POSTS_LIST, id: query.id });
+                }}
+                text={`${query.name || query.query} (${queries[query.id].posts?.length})`} />
+        {/each}
+    </ul>
+{:else}
+    <div class="no-posts">{getMsg('noPosts')}</div>
+{/if}
