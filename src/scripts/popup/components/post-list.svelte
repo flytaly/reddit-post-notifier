@@ -1,4 +1,6 @@
 <script>
+    import { quadOut } from 'svelte/easing';
+
     import { getMsg } from '../../utils';
     import ListRow from './list-row.svelte';
     import storage from '../../storage';
@@ -42,6 +44,19 @@
         }
         readPosts.add(id);
     };
+
+    function slideleft(node, { duration }) {
+        return {
+            duration,
+            css: (t) => {
+                const eased = quadOut(t);
+                return `
+                    transform: translate(${(1 - eased) * 100}%, 0);
+                    opacity: ${eased};
+					`;
+            },
+        };
+    }
 </script>
 
 <style>
@@ -63,7 +78,7 @@
 </style>
 
 <div bind:this={containerRef}>
-    <ul data-keys-target="list">
+    <ul data-keys-target="list" transition:slideleft={{ duration: 130 }}>
         {#each cachedPosts as post}
             <ListRow
                 on:click={clickHandler}
