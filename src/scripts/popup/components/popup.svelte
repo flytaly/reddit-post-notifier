@@ -14,6 +14,7 @@
     let subreddits = {};
     let queries = {};
     let queriesList = [];
+    let messages = {};
 
     let currentRoute = ROUTES.WATCH_LIST;
     let subredditOrSearchId = null;
@@ -40,6 +41,7 @@
         subreddits = _state.subreddits;
         queries = _state.queries;
         queriesList = _state.queriesList;
+        messages = _state.messages;
     });
 
     route.subscribe((_route) => {
@@ -55,7 +57,7 @@
 </style>
 
 <Container big={currentRoute !== ROUTES.WATCH_LIST}>
-    <Header {loading} {queriesList} />
+    <Header {loading} {queriesList} messagesCount={messages.count} />
 
     <main>
         {#if currentRoute !== ROUTES.WATCH_LIST}

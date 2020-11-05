@@ -8,9 +8,11 @@
     import { postMessage } from '../connect';
     import types from '../../types';
     import { route, ROUTES } from '../store/route';
+    import storage from '../../storage';
 
     export let loading = false;
     export let queriesList = [];
+    export let messagesCount = 0;
 
     let isPostList = false;
     let currentRoute = ROUTES.WATCH_LIST;
@@ -102,6 +104,14 @@
             transform: rotate(360deg);
         }
     }
+    .unread-number {
+        margin-right: 0.4em;
+    }
+    .unread :global(a),
+    .unread :global(svg) {
+        fill: var(--new-mail-color);
+        color: var(--new-mail-color);
+    }
 </style>
 
 <header>
@@ -133,11 +143,15 @@
 
     {#if !isPostList}
         <span class="right-buttons">
-            <SvgButton href="https://reddit.com/message/inbox/" title={getMsg('headerMail_title')}>
-                <span class="unread-number" />
-                {@html MailIcon}
-            </SvgButton>
-
+            <span class={messagesCount ? 'unread' : ''}>
+                <SvgButton
+                    href="https://reddit.com/message/inbox/"
+                    title={getMsg('headerMail_title')}
+                    on:click={() => storage.removeMessages()}>
+                    {#if messagesCount}<span class="unread-number">{messagesCount} </span>{/if}
+                    {@html MailIcon}
+                </SvgButton>
+            </span>
             <SvgButton on:click={onOptionClick} title={getMsg('headerOptions_title')}>
                 {@html SettingsIcon}
             </SvgButton>

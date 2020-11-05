@@ -9,12 +9,14 @@
         display: flex;
         align-items: center;
         justify-content: center;
-        width: 16px;
-        height: 16px;
         padding: 0;
         border: none;
         background: none;
         transition: 150ms;
+    }
+    .svg-button :global(svg) {
+        width: 16px;
+        height: 16px;
     }
     .svg-button:hover,
     .svg-button:focus {
