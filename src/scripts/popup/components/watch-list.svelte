@@ -34,7 +34,7 @@
 </style>
 
 {#if subredditList.length || queriesList.length}
-    <ul>
+    <ul data-keys-target="list">
         {#each subredditList as subreddit}
             <WatchListRow
                 checkMarkClickHandler={() => storage.removePostsFrom({ subreddit })}

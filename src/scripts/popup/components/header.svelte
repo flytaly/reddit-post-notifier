@@ -114,7 +114,11 @@
             </span>
 
             <!-- Subreddit's name -->
-            <a class="subreddit-name" href={headerURL} title={getMsg('headerSubredditName_title')}>{headerTitle}</a>
+            <a
+                class="subreddit-name"
+                href={headerURL}
+                title={getMsg('headerSubredditName_title')}
+                data-keys-target="header-link">{headerTitle}</a>
         {:else}
             <SvgButton
                 disabled={loading}

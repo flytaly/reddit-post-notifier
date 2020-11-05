@@ -28,7 +28,7 @@
         cachedPosts.forEach((p) => readPosts.add(p.data.id));
     }
 
-    let listElementRef;
+    let containerRef;
     let type = 'subreddit';
     $: type = currentRoute === ROUTES.SEARCH_POSTS_LIST ? 'search' : 'subreddit';
 
@@ -62,22 +62,24 @@
     }
 </style>
 
-<ul bind:this={listElementRef}>
-    {#each cachedPosts as post}
-        <ListRow
-            on:click={clickHandler}
-            checkMarkClickHandler={clickHandler}
-            title={getMsg('postListCheckMark_title')}
-            id={post.data.id}>
-            <a
-                class="item-name"
-                href={`${baseUrl}${post.data.permalink}`}
-                class:read={readPosts.has(post.data.id)}
-                data-id={post.data.id}>
-                {post.data.title}</a>
-        </ListRow>
-    {/each}
-    {#if listElementRef}
-        <FloatPreview posts={cachedPosts} containerElement={listElementRef} />
+<div bind:this={containerRef}>
+    <ul data-keys-target="list">
+        {#each cachedPosts as post}
+            <ListRow
+                on:click={clickHandler}
+                checkMarkClickHandler={clickHandler}
+                title={getMsg('postListCheckMark_title')}
+                id={post.data.id}>
+                <a
+                    class="item-name"
+                    href={`${baseUrl}${post.data.permalink}`}
+                    class:read={readPosts.has(post.data.id)}
+                    data-id={post.data.id}>
+                    {post.data.title}</a>
+            </ListRow>
+        {/each}
+    </ul>
+    {#if containerRef}
+        <FloatPreview posts={cachedPosts} containerElement={containerRef} />
     {/if}
-</ul>
+</div>

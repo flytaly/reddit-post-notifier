@@ -8,6 +8,7 @@
     import { state } from '../store/store';
     import { route, ROUTES } from '../store/route';
     import Container from './container.svelte';
+    import handleKeydownEvent from '../handleKeys';
 
     let loading = false;
     let subreddits = {};
@@ -28,6 +29,10 @@
 
     onMount(() => {
         nprogress.configure({ showSpinner: false });
+        document.addEventListener('keydown', handleKeydownEvent);
+        return () => {
+            document.removeEventListener('keydown', handleKeydownEvent);
+        };
     });
 
     state.subscribe((_state) => {
@@ -46,9 +51,6 @@
 <style>
     main {
         flex: 1 1;
-    }
-    .container {
-        overflow: hidden;
     }
 </style>
 

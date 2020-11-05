@@ -35,8 +35,8 @@
     }
 </style>
 
-<li tabindex="0" on:click data-id={id}>
-    <span class="check-mark">
+<li tabindex="0" on:click data-id={id} data-keys-target="list-row">
+    <span class="check-mark" data-keys-target="check-mark">
         <SvgButton
             on:click={(e) => {
                 e.stopPropagation();
