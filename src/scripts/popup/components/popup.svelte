@@ -30,22 +30,25 @@
         nprogress.configure({ showSpinner: false });
     });
 
-    state.subscribe(($state) => {
-        loading = $state.isLoading;
-        subreddits = $state.subreddits;
-        queries = $state.queries;
-        queriesList = $state.queriesList;
+    state.subscribe((_state) => {
+        loading = _state.isLoading;
+        subreddits = _state.subreddits;
+        queries = _state.queries;
+        queriesList = _state.queriesList;
     });
 
-    route.subscribe(($route) => {
-        currentRoute = $route.route;
-        subredditOrSearchId = $route.id;
+    route.subscribe((_route) => {
+        currentRoute = _route.route;
+        subredditOrSearchId = _route.id;
     });
 </script>
 
 <style>
     main {
         flex: 1 1;
+    }
+    .container {
+        overflow: hidden;
     }
 </style>
 

@@ -6,7 +6,7 @@
     .container {
         display: flex;
         flex-direction: column;
-        overflow: hidden auto;
+        overflow: hidden;
         min-width: 200px;
         max-width: 500px;
     }

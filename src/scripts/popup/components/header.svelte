@@ -33,9 +33,9 @@
         headerTitle = '';
     }
 
-    route.subscribe(($route) => {
-        currentRoute = $route.route;
-        subredditOrSearchId = $route.id;
+    route.subscribe((_route) => {
+        currentRoute = _route.route;
+        subredditOrSearchId = _route.id;
     });
 
     const onOptionClick = async () => {
