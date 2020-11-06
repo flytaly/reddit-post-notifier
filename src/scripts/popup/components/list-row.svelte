@@ -6,6 +6,7 @@
     export let checkMarkClickHandler = null;
     export let title = '';
     export let id = null;
+    export let keysTarget = 'list-row';
 </script>
 
 <style>
@@ -14,6 +15,7 @@
         flex-direction: row;
         align-items: center;
         padding: 0 4px;
+        width: 100%;
         border-top: 1px solid var(--main-bg-color);
         border-bottom: 1px solid var(--main-bg-color);
     }
@@ -36,7 +38,7 @@
     }
 </style>
 
-<li tabindex="0" on:click data-id={id} data-keys-target="list-row" out:slidehorizontal={{ duration: 150 }}>
+<li tabindex="0" on:click data-id={id} data-keys-target={keysTarget} out:slidehorizontal={{ duration: 150 }}>
     <span class="check-mark" data-keys-target="check-mark">
         <SvgButton
             on:click={(e) => {

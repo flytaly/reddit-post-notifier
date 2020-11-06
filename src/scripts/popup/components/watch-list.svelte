@@ -105,13 +105,9 @@
                 on:click={makeClickHandler(subreddit)}
                 text={`r/${subreddit} (${subreddits[subreddit].posts?.length})`} />
             {#if expanded.has(subreddit)}
-                <li class="post-list-container">
+                <li class="post-list-container" data-keys-target="list-container">
                     <button class="line" on:click={makeClickHandler(subreddit)}><span /></button>
-                    <PostList
-                        posts={subreddits[subreddit].posts}
-                        subredditOrSearchId={subreddit}
-                        type="subreddit"
-                        animate />
+                    <PostList posts={subreddits[subreddit].posts} subredditOrSearchId={subreddit} type="subreddit" />
                 </li>
             {/if}
         {/each}
@@ -121,7 +117,7 @@
                 on:click={makeClickHandler(query.id)}
                 text={`${query.name || query.query} (${queries[query.id].posts?.length})`} />
             {#if expanded.has(query.id)}
-                <li class="post-list-container">
+                <li class="post-list-container" data-keys-target="list-container">
                     <button class="line" on:click={makeClickHandler(query.id)}><span /></button>
                     <PostList posts={queries[query.id].posts} subredditOrSearchId={query.id} type="search" />
                 </li>

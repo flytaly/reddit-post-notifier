@@ -37,7 +37,7 @@
     }
 </style>
 
-<Header {loading} {queriesList} messagesCount={messages.count} />
+<Header {loading} messagesCount={messages.count} />
 
 <main>
     <WatchList {subreddits} {queries} {queriesList} />

@@ -53,6 +53,9 @@
         padding: 0;
         margin: 0;
     }
+    .container {
+        width: 100%;
+    }
     .item-name {
         flex-grow: 1;
         padding: 4px 2px;
@@ -62,14 +65,15 @@
     }
 </style>
 
-<div bind:this={containerRef}>
+<div bind:this={containerRef} class="container">
     <ul data-keys-target="list" transition:slide={{ duration: 150, easing: quadOut }}>
         {#each cachedPosts as post (post.data.id)}
             <ListRow
                 on:click={clickHandler}
                 checkMarkClickHandler={clickHandler}
                 title={getMsg('postListCheckMark_title')}
-                id={post.data.id}>
+                id={post.data.id}
+                keysTarget="post-row">
                 <a
                     class="item-name"
                     href={`${baseUrl}${post.data.permalink}`}
