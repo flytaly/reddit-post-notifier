@@ -1,5 +1,3 @@
-import { route, ROUTES } from './store/route';
-
 /**
  * @param {KeyboardEvent} e
  */
@@ -51,7 +49,7 @@ export default async function handleKeydownEvent(e) {
 
     // Go to the main screen
     if (key === 'ArrowLeft' || key === 'Backspace' || code === 'KeyH') {
-        route.set({ route: ROUTES.WATCH_LIST, id: null });
+        // TODO: collapse group
     }
 
     // Mark selected post or subreddit as read

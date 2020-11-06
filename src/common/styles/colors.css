@@ -10,6 +10,8 @@ body {
     --green: green;
     --new-mail-color: darkred;
     --footer-font-color: #1a1a1a;
+    --collapse-line-color: #016ed8;
+    --collapse-line-hovered-color: blue;
 }
 
 body.dark-mode {
@@ -23,4 +25,6 @@ body.dark-mode {
     --green: lightgreen;
     --new-mail-color: #ffcccb;
     --footer-font-color: #fafafb;
+    --collapse-line-color: lightgrey;
+    --collapse-line-hovered-color: lightskyblue;
 }

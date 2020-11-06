@@ -18,7 +18,7 @@
 
 <ListRow {checkMarkClickHandler} title={getMsg('queryListCheckMark_title')} on:click>
     <div class="item-name">{text}</div>
-    <SvgButton on:click={clickHandler} data-ololo="hello">
+    <SvgButton on:click={clickHandler}>
         {@html ArrowRight}
     </SvgButton>
 </ListRow>

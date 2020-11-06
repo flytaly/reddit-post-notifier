@@ -4,7 +4,7 @@
     "description": "Browser extension that watches for posts in given subreddits or reddit searches",
     "main": "manifest.json",
     "scripts": {
-        "web-ext:ff": "web-ext run --source-dir dist/firefox  --firefox='/Applications/Firefox beta.app/Contents/MacOS/firefox-bin'",
+        "web-ext:ff": "web-ext run --source-dir dist/firefox",
         "web-ext:chrome": "web-ext run --source-dir dist/chrome --target chromium",
         "watch:ff": "rollup -c -w",
         "watch:chrome": "TARGET='chrome' rollup -c -w",

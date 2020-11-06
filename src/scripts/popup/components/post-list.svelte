@@ -1,18 +1,17 @@
 <script>
     import { quadOut } from 'svelte/easing';
-
+    import { slide } from 'svelte/transition';
     import { getMsg } from '../../utils';
     import ListRow from './list-row.svelte';
     import storage from '../../storage';
-    import { ROUTES } from '../store/route';
     import FloatPreview from './float-preview.svelte';
 
     const baseUrl = 'https://reddit.com';
 
     export let posts = [];
-    export let currentRoute;
-
+    export let type = 'subreddit'; // 'subreddit' || 'search'
     export let subredditOrSearchId;
+    export let shouldCachePosts = false;
 
     // Save given posts in the cachedPosts array to preserve posts,
     // that was removed from storage.
@@ -20,19 +19,18 @@
     const readPosts = new Set();
     let cachedPosts = [];
 
-    $: {
+    $: if (shouldCachePosts) {
         cachedPosts = [...posts.filter((p) => !postIds.has(p.data.id)), ...cachedPosts];
         cachedPosts.forEach((p) => postIds.add(p.data.id));
-    }
-
-    // if posts in storage are empty it means that user clicked footer button
-    $: if (!posts.length) {
-        cachedPosts.forEach((p) => readPosts.add(p.data.id));
+        // if posts in storage are empty it means that user clicked footer button
+        if (!posts.length) {
+            cachedPosts.forEach((p) => readPosts.add(p.data.id));
+        }
+    } else {
+        cachedPosts = posts;
     }
 
     let containerRef;
-    let type = 'subreddit';
-    $: type = currentRoute === ROUTES.SEARCH_POSTS_LIST ? 'search' : 'subreddit';
 
     const clickHandler = async (event) => {
         const li = event.target.closest('li');
@@ -44,19 +42,6 @@
         }
         readPosts.add(id);
     };
-
-    function slideleft(node, { duration }) {
-        return {
-            duration,
-            css: (t) => {
-                const eased = quadOut(t);
-                return `
-                    transform: translate(${(1 - eased) * 100}%, 0);
-                    opacity: ${eased};
-					`;
-            },
-        };
-    }
 </script>
 
 <style>
@@ -78,8 +63,8 @@
 </style>
 
 <div bind:this={containerRef}>
-    <ul data-keys-target="list" transition:slideleft={{ duration: 130 }}>
-        {#each cachedPosts as post}
+    <ul data-keys-target="list" transition:slide={{ duration: 150, easing: quadOut }}>
+        {#each cachedPosts as post (post.data.id)}
             <ListRow
                 on:click={clickHandler}
                 checkMarkClickHandler={clickHandler}

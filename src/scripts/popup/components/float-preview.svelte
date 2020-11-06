@@ -45,6 +45,7 @@
             const { id } = e.target.dataset;
             if (id && id !== prevId) {
                 const post = posts.find((p) => p.data.id === id);
+                if (!post) return;
                 setData(post);
                 prevId = id;
                 window.requestAnimationFrame(() => {

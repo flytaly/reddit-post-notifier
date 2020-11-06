@@ -1,4 +1,5 @@
 <script>
+    import { slidehorizontal } from '../slide-transition';
     import SvgButton from './svg-button.svelte';
     import CheckMark from '../assets/check-mark.svg';
 
@@ -35,7 +36,7 @@
     }
 </style>
 
-<li tabindex="0" on:click data-id={id} data-keys-target="list-row">
+<li tabindex="0" on:click data-id={id} data-keys-target="list-row" out:slidehorizontal={{ duration: 150 }}>
     <span class="check-mark" data-keys-target="check-mark">
         <SvgButton
             on:click={(e) => {
