@@ -66,7 +66,16 @@
 </style>
 
 <div bind:this={containerRef} class="container">
-    <ul data-keys-target="list" transition:slide={{ duration: 150, easing: quadOut }}>
+    <ul
+        data-keys-target="list"
+        transition:slide={{ duration: 150, easing: quadOut }}
+        on:introstart={() => {
+            // to prevent scroll blinking
+            document.body.style.overflowY = 'hidden';
+        }}
+        on:introend={() => {
+            document.body.style.overflowY = '';
+        }}>
         {#each cachedPosts as post (post.data.id)}
             <ListRow
                 on:click={clickHandler}

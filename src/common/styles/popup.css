@@ -8,7 +8,8 @@ body {
     color: var(--font-color);
     margin: 0;
     background-color: var(--main-bg-color);
-    overflow: hidden auto;
+    overflow-x: hidden;
+    overflow-y: auto;
 }
 
 svg {

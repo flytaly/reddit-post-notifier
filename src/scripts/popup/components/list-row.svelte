@@ -38,7 +38,7 @@
     }
 </style>
 
-<li tabindex="0" on:click data-id={id} data-keys-target={keysTarget} out:slidehorizontal={{ duration: 150 }}>
+<li tabindex="0" on:click data-id={id} data-keys-target={keysTarget} out:slidehorizontal|local={{ duration: 150 }}>
     <span class="check-mark" data-keys-target="check-mark">
         <SvgButton
             on:click={(e) => {
