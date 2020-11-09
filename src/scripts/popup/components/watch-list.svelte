@@ -103,7 +103,8 @@
             <WatchListRow
                 checkMarkClickHandler={() => storage.removePostsFrom({ subreddit })}
                 on:click={makeClickHandler(subreddit)}
-                text={`r/${subreddit} (${subreddits[subreddit].posts?.length})`} />
+                text={`r/${subreddit} (${subreddits[subreddit].posts?.length})`}
+                isExpanded={expanded.has(subreddit)} />
             {#if expanded.has(subreddit)}
                 <li class="post-list-container" data-keys-target="list-container">
                     <button class="line" on:click={makeClickHandler(subreddit)}><span /></button>
@@ -115,7 +116,8 @@
             <WatchListRow
                 checkMarkClickHandler={() => storage.removePostsFrom({ searchId: query.id })}
                 on:click={makeClickHandler(query.id)}
-                text={`${query.name || query.query} (${queries[query.id].posts?.length})`} />
+                text={`${query.name || query.query} (${queries[query.id].posts?.length})`}
+                isExpanded={expanded.has(query.id)} />
             {#if expanded.has(query.id)}
                 <li class="post-list-container" data-keys-target="list-container">
                     <button class="line" on:click={makeClickHandler(query.id)}><span /></button>

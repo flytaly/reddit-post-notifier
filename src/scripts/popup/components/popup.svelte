@@ -39,7 +39,7 @@
         justify-content: center;
         align-items: center;
         min-width: 200px;
-        min-height: 100px;
+        min-height: 50px;
         text-align: center;
     }
 </style>
