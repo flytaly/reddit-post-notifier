@@ -1,7 +1,7 @@
 <script>
     import PostList from './post-list.svelte';
     import WatchListRow from './watch-list-row.svelte';
-    import { getMsg } from '../../utils';
+    import { getMsg, getSearchQueryUrl, getSubredditUrl } from '../../utils';
     import storage from '../../storage';
 
     export let subreddits = {};
@@ -102,6 +102,7 @@
         {#each subredditList as subreddit (subreddit)}
             <WatchListRow
                 checkMarkClickHandler={() => storage.removePostsFrom({ subreddit })}
+                href={getSubredditUrl(subreddit)}
                 on:click={makeClickHandler(subreddit)}
                 text={`r/${subreddit} (${subreddits[subreddit].posts?.length})`}
                 isExpanded={expanded.has(subreddit)} />
@@ -115,6 +116,7 @@
         {#each queriesList as query (query.id)}
             <WatchListRow
                 checkMarkClickHandler={() => storage.removePostsFrom({ searchId: query.id })}
+                href={getSearchQueryUrl(query.query, query.subreddit)}
                 on:click={makeClickHandler(query.id)}
                 text={`${query.name || query.query} (${queries[query.id].posts?.length})`}
                 isExpanded={expanded.has(query.id)} />

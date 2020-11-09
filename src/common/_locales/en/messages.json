@@ -31,6 +31,10 @@
         "message": "No unread posts",
         "description": "No unread posts note"
     },
+    "watchListOpenInNew_title": {
+        "message": "Open subreddit or reddit search in new browser tab",
+        "description": "Open in new tab link link title"
+    },
     "queryListCheckMark_title": {
         "message": "Mark all posts in the subreddit or search as read",
         "description": "Attribute title of the check mark icon in query list"
