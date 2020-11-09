@@ -7,4 +7,5 @@ export default {
     subredditNotify: false,
     isAuthorized: false,
     theme: 'auto',
+    expandWithItems: 5, // expand groups in popup that have at least 'x' number of posts
 };

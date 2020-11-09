@@ -5,6 +5,7 @@
     import Footer from './footer.svelte';
     import WatchList from './watch-list.svelte';
     import { state } from '../store/store';
+    import storage from '../../storage';
     import handleKeydownEvent from '../handleKeys';
 
     let loading = false;
@@ -12,8 +13,8 @@
     let queries = {};
     let queriesList = [];
     let messages = {};
+    const options = storage.getOptions();
 
-    const subredditOrSearchId = null;
     onMount(() => {
         nprogress.configure({ showSpinner: false });
         document.addEventListener('keydown', handleKeydownEvent);
@@ -33,14 +34,26 @@
 
 <style>
     main {
+        display: flex;
         flex: 1 1;
+        justify-content: center;
+        align-items: center;
+        min-width: 200px;
+        min-height: 100px;
+        text-align: center;
     }
 </style>
 
 <Header {loading} messagesCount={messages.count} />
 
 <main>
-    <WatchList {subreddits} {queries} {queriesList} />
+    {#await options}
+        <p />
+    {:then options}
+        <WatchList {subreddits} {queries} {queriesList} expandWithItems={options.expandWithItems} />
+    {:catch error}
+        <p style="color: red">{error.message}</p>
+    {/await}
 </main>
 
 <Footer />

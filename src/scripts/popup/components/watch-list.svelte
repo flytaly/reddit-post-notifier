@@ -7,7 +7,7 @@
     export let subreddits = {};
     export let queries = {};
     export let queriesList = [];
-    export let openGroupWithItems = 5;
+    export let expandWithItems = 5;
 
     let subredditList = [];
 
@@ -25,8 +25,8 @@
     $: if (initialLoading) {
         expanded = new Set([
             ...expanded,
-            ...subredditList.filter((s) => subreddits[s].posts.length <= openGroupWithItems),
-            ...queriesList.filter((q) => queries[q.id].posts.length <= openGroupWithItems).map((q) => q.id),
+            ...subredditList.filter((s) => subreddits[s].posts.length <= expandWithItems),
+            ...queriesList.filter((q) => queries[q.id].posts.length <= expandWithItems).map((q) => q.id),
         ]);
         if (expanded.size) initialLoading = false;
     }
