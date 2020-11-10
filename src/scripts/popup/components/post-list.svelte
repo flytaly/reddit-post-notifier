@@ -1,17 +1,27 @@
 <script>
+    import { getContext } from 'svelte';
     import { quadOut } from 'svelte/easing';
     import { slide } from 'svelte/transition';
     import { getMsg } from '../../utils';
     import ListRow from './list-row.svelte';
     import storage from '../../storage';
     import FloatPreview from './float-preview.svelte';
+    import { state } from '../store/store';
 
     const baseUrl = 'https://reddit.com';
 
-    export let posts = [];
     export let type = 'subreddit'; // 'subreddit' || 'search'
     export let subredditOrSearchId;
     export let shouldCachePosts = false;
+
+    const options = getContext('OPTIONS');
+    let posts = [];
+    state.subscribe((_s) => {
+        posts =
+            type === 'subreddit'
+                ? _s.subreddits[subredditOrSearchId].posts //
+                : _s.queries[subredditOrSearchId].posts;
+    });
 
     // Save given posts in the cachedPosts array to preserve posts,
     // that was removed from storage.
@@ -32,7 +42,7 @@
 
     let containerRef;
 
-    const clickHandler = async (event) => {
+    const checkMarkClickHandler = async (event) => {
         const li = event.target.closest('li');
         const { id } = li.dataset;
         if (type === 'search') {
@@ -42,6 +52,8 @@
         }
         readPosts.add(id);
     };
+
+    const bodyClickHandler = (ev) => (options.delPostAfterBodyClick ? checkMarkClickHandler(ev) : null);
 </script>
 
 <style>
@@ -78,8 +90,8 @@
         }}>
         {#each cachedPosts as post (post.data.id)}
             <ListRow
-                on:click={clickHandler}
-                checkMarkClickHandler={clickHandler}
+                on:click={bodyClickHandler}
+                {checkMarkClickHandler}
                 title={getMsg('postListCheckMark_title')}
                 id={post.data.id}
                 keysTarget="post-row">

@@ -1,4 +1,5 @@
 <script>
+    import PostList from './post-list.svelte';
     import SvgButton from './svg-button.svelte';
     import { getMsg } from '../../utils';
     import ArrowRight from '../assets/arrowhead-up.svg';
@@ -10,6 +11,8 @@
     export let text = '';
     export let isExpanded = false;
     export let href = '#';
+    export let subredditOrSearchId;
+    export let type = 'subreddit';
 
     const linkClickHandler = (e) => {
         e.stopPropagation();
@@ -40,6 +43,32 @@
     .isExpanded :global(svg) {
         transform: rotate(180deg);
     }
+
+    .post-list-container {
+        display: flex;
+        flex-direction: row;
+    }
+
+    .line {
+        display: flex;
+        padding: 0;
+        background: none;
+        box-shadow: none;
+        border: 0;
+        width: 2em;
+        justify-content: center;
+        outline: none;
+    }
+    .line span {
+        width: 1px;
+        height: 100%;
+        background-color: var(--collapse-line-color);
+    }
+    .line:hover span,
+    .line:focus span {
+        width: 2px;
+        background-color: var(--collapse-line-hovered-color);
+    }
 </style>
 
 <ListRow {checkMarkClickHandler} title={getMsg('queryListCheckMark_title')} on:click>
@@ -56,3 +85,9 @@
         </span>
     </SvgButton>
 </ListRow>
+{#if isExpanded}
+    <li class="post-list-container" data-keys-target="list-container">
+        <button class="line" on:click><span /></button>
+        <PostList {subredditOrSearchId} {type} />
+    </li>
+{/if}

@@ -55,6 +55,10 @@
         "message": "seconds",
         "description": "Seconds"
     },
+    "optionDelPostAfterClick": {
+        "message": "Delete post after opening (clicking on) it ",
+        "description": "Delete post after click option"
+    },
     "optionUpdateIntervalTooltip": {
         "message": "To reduce power and internet traffic consumption it's recommended to set update interval at least 60 seconds",
         "description": "Update interval tooltip"

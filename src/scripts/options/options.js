@@ -24,6 +24,13 @@ function setListeners() {
         applyTheme();
     });
 
+    const delAfterClick = $('#delPostAfterBodyClick');
+    delAfterClick.addEventListener('change', () =>
+        storage.saveOptions({
+            delPostAfterBodyClick: delAfterClick.checked,
+        }),
+    );
+
     const showMessages = $('#messages');
     const messageNotifyCheckbox = $('#messageNotify');
     showMessages.addEventListener('change', async () => {

@@ -1,5 +1,5 @@
 <script>
-    import PostList from './post-list.svelte';
+    import { getContext } from 'svelte';
     import WatchListRow from './watch-list-row.svelte';
     import { getMsg, getSearchQueryUrl, getSubredditUrl } from '../../utils';
     import storage from '../../storage';
@@ -7,8 +7,8 @@
     export let subreddits = {};
     export let queries = {};
     export let queriesList = [];
-    export let expandWithItems = 5;
 
+    const options = getContext('OPTIONS');
     let subredditList = [];
 
     let expanded = new Set();
@@ -25,8 +25,8 @@
     $: if (initialLoading) {
         expanded = new Set([
             ...expanded,
-            ...subredditList.filter((s) => subreddits[s].posts.length <= expandWithItems),
-            ...queriesList.filter((q) => queries[q.id].posts.length <= expandWithItems).map((q) => q.id),
+            ...subredditList.filter((s) => subreddits[s].posts.length <= options.expandWithItems),
+            ...queriesList.filter((q) => queries[q.id].posts.length <= options.expandWithItems).map((q) => q.id),
         ]);
         if (expanded.size) initialLoading = false;
     }
@@ -71,30 +71,6 @@
         height: 100%;
         min-width: 200px;
     }
-    .post-list-container {
-        display: flex;
-        flex-direction: row;
-    }
-    .line {
-        display: flex;
-        padding: 0;
-        background: none;
-        box-shadow: none;
-        border: 0;
-        width: 2em;
-        justify-content: center;
-        outline: none;
-    }
-    .line span {
-        width: 1px;
-        height: 100%;
-        background-color: var(--collapse-line-color);
-    }
-    .line:hover span,
-    .line:focus span {
-        width: 2px;
-        background-color: var(--collapse-line-hovered-color);
-    }
 </style>
 
 {#if subredditList.length || queriesList.length}
@@ -105,13 +81,9 @@
                 href={getSubredditUrl(subreddit)}
                 on:click={makeClickHandler(subreddit)}
                 text={`r/${subreddit} (${subreddits[subreddit].posts?.length})`}
-                isExpanded={expanded.has(subreddit)} />
-            {#if expanded.has(subreddit)}
-                <li class="post-list-container" data-keys-target="list-container">
-                    <button class="line" on:click={makeClickHandler(subreddit)}><span /></button>
-                    <PostList posts={subreddits[subreddit].posts} subredditOrSearchId={subreddit} type="subreddit" />
-                </li>
-            {/if}
+                isExpanded={expanded.has(subreddit)}
+                subredditOrSearchId={subreddit}
+                type="subreddit" />
         {/each}
         {#each queriesList as query (query.id)}
             <WatchListRow
@@ -119,13 +91,9 @@
                 href={getSearchQueryUrl(query.query, query.subreddit)}
                 on:click={makeClickHandler(query.id)}
                 text={`${query.name || query.query} (${queries[query.id].posts?.length})`}
-                isExpanded={expanded.has(query.id)} />
-            {#if expanded.has(query.id)}
-                <li class="post-list-container" data-keys-target="list-container">
-                    <button class="line" on:click={makeClickHandler(query.id)}><span /></button>
-                    <PostList posts={queries[query.id].posts} subredditOrSearchId={query.id} type="search" />
-                </li>
-            {/if}
+                isExpanded={expanded.has(query.id)}
+                subredditOrSearchId={query.id}
+                type="search" />
         {/each}
     </ul>
 {:else}

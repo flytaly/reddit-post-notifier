@@ -121,7 +121,13 @@ async function onAuthorization(isAuthorized = false, setMailCheck = false) {
 
 export async function restoreOptions() {
     applyTheme();
-    const { watchSubreddits, subredditNotify, updateInterval, theme } = await storage.getOptions();
+    const {
+        watchSubreddits,
+        subredditNotify,
+        updateInterval,
+        theme,
+        delPostAfterBodyClick,
+    } = await storage.getOptions();
     let { refreshToken } = await storage.getAuthData();
     const subredditData = await storage.getSubredditData();
     const queryData = await storage.getQueriesData();
@@ -136,6 +142,9 @@ export async function restoreOptions() {
     const themes = themeSwitcher.elements.theme;
     themes.value = theme || 'auto';
 
+    // ------- Delete after click -------
+    const delAfterClick = $('#delPostAfterBodyClick');
+    delAfterClick.checked = delPostAfterBodyClick;
     // ------- Mail & Auth -------
     onAuthorization(!!refreshToken);
     const startAuthBtn = $('#auth-block .no-authorized button');

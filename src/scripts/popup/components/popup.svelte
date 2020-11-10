@@ -1,11 +1,10 @@
 <script>
     import nprogress from 'nprogress';
-    import { onMount } from 'svelte';
+    import { onMount, setContext } from 'svelte';
     import Header from './header.svelte';
     import Footer from './footer.svelte';
     import WatchList from './watch-list.svelte';
     import { state } from '../store/store';
-    import storage from '../../storage';
     import handleKeydownEvent from '../handleKeys';
 
     let loading = false;
@@ -13,7 +12,9 @@
     let queries = {};
     let queriesList = [];
     let messages = {};
-    const options = storage.getOptions();
+    export let options;
+
+    setContext('OPTIONS', options);
 
     onMount(() => {
         nprogress.configure({ showSpinner: false });
@@ -40,20 +41,11 @@
         align-items: center;
         min-width: 200px;
         min-height: 50px;
-        text-align: center;
     }
 </style>
 
 <Header {loading} messagesCount={messages.count} />
-
 <main>
-    {#await options}
-        <p />
-    {:then options}
-        <WatchList {subreddits} {queries} {queriesList} expandWithItems={options.expandWithItems} />
-    {:catch error}
-        <p style="color: red">{error.message}</p>
-    {/await}
+    <WatchList {subreddits} {queries} {queriesList} />
 </main>
-
 <Footer />
