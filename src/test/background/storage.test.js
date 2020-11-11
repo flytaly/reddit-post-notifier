@@ -157,29 +157,6 @@ describe('subreddits', () => {
     });
 });
 
-describe('prune', () => {
-    const subInfo = {
-        sub1: { posts: [] },
-        sub2: { posts: [] },
-        sub3: { posts: [] },
-        sub4: { posts: [] },
-    };
-    beforeAll(() => {
-        storage.prune = pruneOriginal;
-    });
-    afterAll(() => {
-        storage.prune = jest.fn();
-    });
-    test('should prune redundant subreddits', async () => {
-        storage.getSubredditData = jest.fn(async () => subInfo);
-        browser.storage.local.set.callsFake(async (arg) => {
-            expect(arg).toEqual({ subreddits: { sub1: subInfo.sub1, sub2: subInfo.sub2 } });
-        });
-        const subredditList = ['sub1', 'sub2'];
-        await storage.prune({ subredditList });
-    });
-});
-
 describe('search queries', () => {
     const queriesList = [
         {
@@ -345,5 +322,45 @@ describe('V3 migration', () => {
 
         await storage.migrateToV3();
         expect(saved).toBeTruthy();
+    });
+});
+
+describe('prune', () => {
+    const subInfo = {
+        sub1: { posts: [] },
+        sub2: { posts: [] },
+        sub3: { posts: [] },
+        sub4: { posts: [] },
+    };
+    const queryInfo = {
+        q1: { posts: [] },
+        q2: { posts: [] },
+        q3: { posts: [] },
+    };
+    beforeAll(() => {
+        storage.prune = pruneOriginal;
+    });
+    afterAll(() => {
+        storage.prune = jest.fn();
+    });
+    test('should prune redundant subreddits', async () => {
+        storage.getSubredditData = jest.fn(async () => subInfo);
+        browser.storage.local.set.callsFake(async (arg) => {
+            expect(arg).toEqual({ subreddits: { sub1: subInfo.sub1, sub2: subInfo.sub2 } });
+        });
+        const subredditList = ['sub1', 'sub2'];
+        await storage.prune({ subredditList });
+    });
+
+    test('should prune redundant queries data', async () => {
+        storage.getQueriesData = jest.fn(async () => queryInfo);
+        let called = false;
+        browser.storage.local.set.callsFake(async (arg) => {
+            expect(arg).toEqual({ queries: { q2: queryInfo.q2 } });
+            called = true;
+        });
+        const queriesIdList = ['q2'];
+        await storage.prune({ queriesIdList });
+        expect(called).toBeTruthy();
     });
 });

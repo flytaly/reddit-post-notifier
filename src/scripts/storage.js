@@ -1,3 +1,5 @@
+import { filterPostDataProperties } from './utils';
+
 const authKeys = ['accessToken', 'expiresIn', 'refreshToken'];
 
 export const dataFields = {
@@ -20,7 +22,7 @@ const storage = {
         const options = await storage.getOptions();
         subredditList = options?.watchSubreddits;
         if (subredditList?.length) {
-            delete options.watchSubreddits;
+            options.watchSubreddits = undefined;
             return browser.storage.local.set({ options, subredditList });
         }
     },
@@ -115,64 +117,60 @@ const storage = {
 
     async saveQuery(query) {
         const queriesList = await storage.getQueriesList();
-        let wasUpdated = false;
+        const updateStatus = {
+            wasUpdated: false,
+            shouldClear: false,
+        };
         const queriesUpdated = queriesList.map((q) => {
-            const { id: prevId, subreddit: prevSubreddit, query: prevQuery } = q;
-            if (prevId !== query.id) return q;
+            const { id, subreddit: prevSubreddit, query: prevQuery } = q;
+            if (id !== query.id) return q;
 
-            if ((prevQuery && prevQuery !== query.query) || prevSubreddit !== query.subreddit) {
-                storage.removeQueryData(query.id);
+            if (prevQuery !== query.query || prevSubreddit !== query.subreddit) {
+                updateStatus.shouldClear = true;
             }
-            wasUpdated = true;
+            updateStatus.wasUpdated = true;
             return query;
         });
-        if (!wasUpdated) queriesUpdated.push(query);
-
-        const queriesIdList = queriesUpdated.map((q) => q.id);
-        storage.prune({ queriesIdList });
+        if (!updateStatus.wasUpdated) queriesUpdated.push(query);
+        if (updateStatus.shouldClear) {
+            await storage.removeQueryData(query.id);
+        }
         return browser.storage.local.set({ queriesList: queriesUpdated });
+    },
+
+    // ** Update given subreddit or reddit search data object with new posts or error
+    updateWatchDataObject(watchData, posts, error) {
+        const result = { ...watchData };
+        if (posts) {
+            const postFiltered = posts.map((p) => filterPostDataProperties(p));
+            const savedPosts = result.posts || [];
+            result.posts = [...postFiltered, ...savedPosts];
+            result.error = null;
+            if (postFiltered[0]) {
+                result.lastPost = postFiltered[0].data.name;
+                result.lastPostCreated = postFiltered[0].data.created;
+            }
+        }
+        if (error) {
+            result.error = error;
+        }
+
+        result.lastUpdate = Date.now();
+        return result;
     },
 
     async saveQueryData(queryId, { posts, error }) {
         const data = await storage.getQueriesData();
         const current = data[queryId] || {};
-        if (posts) {
-            const savedPosts = current.posts || [];
-            current.posts = [...posts, ...savedPosts];
-            current.error = null;
-            if (posts[0]) {
-                current.lastPostCreated = posts[0].data.created;
-            }
-        }
-        if (error) {
-            current.error = error;
-        }
-
-        current.lastUpdate = Date.now();
-
-        await browser.storage.local.set({ queries: { ...data, [queryId]: current } });
+        const updatedQuery = storage.updateWatchDataObject(current, posts, error);
+        await browser.storage.local.set({ queries: { ...data, [queryId]: updatedQuery } });
     },
 
     async saveSubredditData(subreddit, { posts, error }) {
         const data = await storage.getSubredditData();
         const current = data[subreddit] || {};
-
-        if (posts) {
-            const savedPosts = current.posts || [];
-            current.posts = [...posts, ...savedPosts];
-            current.error = null;
-            if (posts[0]) {
-                current.lastPost = posts[0].data.name;
-                current.lastPostCreated = posts[0].data.created;
-            }
-        }
-        if (error) {
-            current.error = error;
-        }
-
-        current.lastUpdate = Date.now();
-
-        return browser.storage.local.set({ subreddits: { ...data, [subreddit]: current } });
+        const updatedSubreddit = storage.updateWatchDataObject(current, posts, error);
+        return browser.storage.local.set({ subreddits: { ...data, [subreddit]: updatedSubreddit } });
     },
 
     async clearAuthData() {
@@ -193,8 +191,9 @@ const storage = {
     },
 
     async removeQueryData(queryId) {
-        const data = await storage.getQueriesData();
-        await browser.storage.local.set({ queries: { ...data, [queryId]: { posts: [] } } });
+        const queries = { ...(await storage.getQueriesData()) };
+        queries[queryId] = { posts: [] };
+        await browser.storage.local.set({ queries });
     },
 
     async removePost({ id, subreddit, searchId }) {
@@ -243,11 +242,10 @@ const storage = {
         await browser.storage.local.set({ subreddits, queries });
     },
 
-    // TODO: remove 'queries' data also not only id from queriesList
     async removeQueries(ids = []) {
         const queriesList = await storage.getQueriesList();
         const queriesUpdated = queriesList.filter((q) => !ids.includes(q.id));
-
+        storage.prune({ queriesIdList: queriesUpdated.map((q) => q.id) });
         return browser.storage.local.set({ queriesList: queriesUpdated });
     },
 

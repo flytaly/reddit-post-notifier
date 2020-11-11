@@ -35,3 +35,34 @@ export const debounce = (func, waitMs) => {
 };
 
 export const getMsg = (msg) => browser.i18n.getMessage(msg);
+
+/** Filter out not needed properties */
+export const filterPostDataProperties = (post) => {
+    if (!post?.data) return post;
+    const filterList = [
+        'subreddit',
+        'selftext',
+        'title',
+        'created',
+        'created_utc',
+        'name',
+        'over_18',
+        'author',
+        'permalink',
+        'id',
+        'preview',
+    ];
+
+    const data = filterList.reduce((acc, property) => {
+        if (post.data[property]) {
+            acc[property] = post.data[property];
+        }
+        return acc;
+    }, {});
+
+    if (data.selftext?.length > 400) {
+        data.selftext = data.selftext.slice(0, 400);
+    }
+
+    return { ...post, data };
+};
