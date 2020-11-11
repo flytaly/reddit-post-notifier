@@ -2,8 +2,6 @@
 import RedditApiClient from './api-client';
 import storage from '../storage';
 import { wait, getSubredditUrl, getSearchQueryUrl } from '../utils';
-import popupPort from './popupPort';
-import types from '../types';
 import notify, { notificationIds } from './notifications';
 
 const reddit = new RedditApiClient();
@@ -104,18 +102,14 @@ const app = {
             Hence updates inevitably stop after a while.
             Instead, we ask some last posts and then save only new posts depending on their timestamp
             */
+        const { waitTimeout, messages, limit = 10, messageNotify, subredditNotify } = await storage.getOptions();
         const {
-            watchSubreddits = [],
-            waitTimeout,
-            messages,
-            limit = 10,
-            messageNotify,
-            subredditNotify,
-        } = await storage.getOptions();
-        const watchQueries = await storage.getQueriesList();
-        const subData = await storage.getSubredditData();
-        const queryData = await storage.getQueriesData();
-        const messageData = await storage.getMessageData();
+            queries: queryData,
+            queriesList,
+            subredditList,
+            subreddits: subData,
+            messages: messageData,
+        } = await storage.getAllData();
         const authData = await storage.getAuthData();
 
         if (messages && authData && authData.refreshToken) {
@@ -125,7 +119,7 @@ const app = {
         }
 
         const notificationBatch = [];
-        for (const subreddit of watchSubreddits) {
+        for (const subreddit of subredditList) {
             const newMessages = await app.updateSubreddit({ subreddit, subData, listing: { limit } });
             if (subredditNotify && newMessages && newMessages.length) {
                 notificationBatch.push({
@@ -139,7 +133,7 @@ const app = {
         notify(notificationIds.subreddit, notificationBatch);
 
         notificationBatch.length = 0;
-        for (const query of watchQueries) {
+        for (const query of queriesList) {
             const newMessages = await app.updateQueries({ query, queryData, listing: { limit } });
 
             if (query.notify && newMessages && newMessages.length) {

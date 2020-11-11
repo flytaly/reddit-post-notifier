@@ -16,28 +16,36 @@ jest.mock(
 jest.mock('../../scripts/utils.js', () => ({ wait: jest.fn() }));
 jest.mock('../../scripts/storage.js');
 
+const created = 1551733803;
 const options = {
-    watchSubreddits: ['sub1', 'sub2', 'sub3'],
     updateInterval: 1,
     messages: false,
 };
-const created = 1551733803;
-const queriesList = [{ id: 'id1', query: 'query1' }];
-const queriesData = { id1: { lastPostCreated: created } };
-const subredditsData = {
-    sub1: {
-        lastPost: 'postId_1',
-        lastPostCreated: created,
+const fakeData = {
+    subredditList: ['sub1', 'sub2', 'sub3'],
+    queriesList: [{ id: 'id1', query: 'query1' }],
+    queries: { id1: { lastPostCreated: created } },
+    subreddits: {
+        sub1: {
+            lastPost: 'postId_1',
+            lastPostCreated: created,
+        },
+        sub2: {
+            lastPost: 'postId_2',
+            lastPostCreated: created,
+        },
+        sub3: {
+            lastPost: 'postId_3',
+            lastPostCreated: created,
+        },
     },
-    sub2: {
-        lastPost: 'postId_2',
+    messages: {
+        messages: [{ data: { created } }],
         lastPostCreated: created,
-    },
-    sub3: {
-        lastPost: 'postId_3',
-        lastPostCreated: created,
+        count: 1,
     },
 };
+
 const newPosts = [
     {
         data: {
@@ -56,10 +64,8 @@ const newPosts = [
 let reddit;
 
 beforeAll(() => {
-    storage.getOptions = jest.fn(async () => options);
-    storage.getSubredditData = jest.fn(async () => subredditsData);
-    storage.getQueriesData = jest.fn(async () => queriesData);
-    storage.getQueriesList = jest.fn(async () => queriesList);
+    storage.getAllData = jest.fn(() => Promise.resolve(fakeData));
+    storage.getOptions = jest.fn(() => Promise.resolve(options));
     reddit = global.redditClientInstance;
 });
 
@@ -67,8 +73,9 @@ afterEach(() => jest.clearAllMocks());
 
 describe('update posts', () => {
     test('should update and save new posts', async () => {
+        const { subredditList } = fakeData;
         storage.saveSubredditData = jest.fn(async (sub, data) => {
-            expect(options.watchSubreddits.includes(sub)).toBeTruthy();
+            expect(subredditList.includes(sub)).toBeTruthy();
             expect(data).toEqual({ posts: newPosts.slice(0, 1) });
         });
 
@@ -87,12 +94,13 @@ describe('update posts', () => {
 
         await app.update();
         expect(storage.getOptions).toHaveBeenCalled();
-        expect(storage.getSubredditData).toHaveBeenCalled();
-        expect(reddit.getSubreddit).toHaveBeenCalledTimes(options.watchSubreddits.length);
-        for (const [index /* , value */] of options.watchSubreddits.entries()) {
+        // expect(storage.getSubredditData).toHaveBeenCalled();
+        expect(reddit.getSubreddit).toHaveBeenCalledTimes(subredditList.length);
+        for (const [index /* , value */] of subredditList.entries()) {
             expect(getNewPost).toHaveBeenNthCalledWith(index + 1, { limit: 10 });
         }
-        expect(wait).toHaveBeenCalledTimes(options.watchSubreddits.length + queriesList.length);
+
+        expect(wait).toHaveBeenCalledTimes(subredditList.length + fakeData.queriesList.length);
     });
 
     test("should save subreddit's error", async () => {
@@ -108,21 +116,16 @@ describe('update posts', () => {
 });
 
 describe('update messages', () => {
-    const messageData = {
-        messages: [{ data: { created } }],
-        lastPostCreated: created,
-        count: 1,
-    };
     const newMessages = [{ data: { created: created + 10 } }];
+    const { messages } = fakeData;
     const response = {
         kind: 'Listing',
         data: {
-            children: [...newMessages, ...messageData.messages],
+            children: [...newMessages, ...messages.messages],
         },
     };
 
     beforeAll(() => {
-        storage.getMessageData = jest.fn(async () => messageData);
         storage.getOptions = jest.fn(async () => ({ ...options, messages: true }));
         storage.saveMessageData = jest.fn();
         storage.getAuthData = jest.fn(async () => ({ refreshToken: 'refreshToken' }));
@@ -133,7 +136,7 @@ describe('update messages', () => {
         await app.update();
         expect(storage.saveMessageData).toHaveBeenCalledWith({
             newMessages,
-            count: messageData.count + newMessages.length,
+            count: messages.count + newMessages.length,
         });
     });
 

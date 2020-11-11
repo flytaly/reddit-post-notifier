@@ -124,6 +124,17 @@ function connectListener(port) {
 }
 browser.runtime.onConnect.addListener(connectListener);
 
+function onInstall() {
+    const listener = async (details) => {
+        if (details?.reason === 'update' && parseInt(details?.previousVersion, 10) < 3) {
+            await storage.migrateToV3();
+        }
+    };
+
+    browser.runtime.onInstalled.addListener(listener);
+}
+onInstall();
+
 // requestIdleCallback doesn't work in Chrome
 if (TARGET === 'chrome') {
     startExtension();

@@ -121,17 +121,12 @@ async function onAuthorization(isAuthorized = false, setMailCheck = false) {
 
 export async function restoreOptions() {
     applyTheme();
-    const {
-        watchSubreddits,
-        subredditNotify,
-        updateInterval,
-        theme,
-        delPostAfterBodyClick,
-    } = await storage.getOptions();
+    const { subredditNotify, updateInterval, theme, delPostAfterBodyClick } = await storage.getOptions();
     let { refreshToken } = await storage.getAuthData();
     const subredditData = await storage.getSubredditData();
     const queryData = await storage.getQueriesData();
     const watchQueries = await storage.getQueriesList();
+    const subredditList = await storage.getSubredditList();
 
     // ------- Options -------
     const updateIntervalInput = $('#updateInterval');
@@ -169,10 +164,10 @@ export async function restoreOptions() {
     });
 
     // ------- Subreddits -------
-    if (watchSubreddits && watchSubreddits.length) {
+    if (subredditList?.length) {
         const subreddits = $('#subreddits');
-        subreddits.value = watchSubreddits.join(' ');
-        const errors = watchSubreddits.reduce((fragment, subreddit) => {
+        subreddits.value = subredditList.join(' ');
+        const errors = subredditList.reduce((fragment, subreddit) => {
             const { error } = subredditData[subreddit] || {};
             if (error) {
                 const { reason, message, error: code } = error;

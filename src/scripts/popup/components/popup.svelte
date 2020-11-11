@@ -11,6 +11,7 @@
     let subreddits = {};
     let queries = {};
     let queriesList = [];
+    let subredditList = [];
     let messages = {};
     export let options;
 
@@ -26,6 +27,7 @@
 
     state.subscribe((_state) => {
         loading = _state.isLoading;
+        subredditList = _state.subredditList;
         subreddits = _state.subreddits;
         queries = _state.queries;
         queriesList = _state.queriesList;
@@ -46,6 +48,6 @@
 
 <Header {loading} messagesCount={messages.count} />
 <main>
-    <WatchList {subreddits} {queries} {queriesList} />
+    <WatchList {subreddits} {queries} {queriesList} {subredditList} />
 </main>
 <Footer />

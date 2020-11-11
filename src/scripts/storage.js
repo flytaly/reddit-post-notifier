@@ -3,11 +3,28 @@ const authKeys = ['accessToken', 'expiresIn', 'refreshToken'];
 export const dataFields = {
     queries: {},
     queriesList: [],
+    subredditList: [],
     subreddits: {},
     messages: {},
 };
 
 const storage = {
+    /**
+     * Move list of subreddits outside options object.
+     * This is necessary to update to V3 and save data.
+     */
+    async migrateToV3() {
+        let subredditList = await storage.getSubredditList();
+        if (subredditList && subredditList.length) return;
+
+        const options = await storage.getOptions();
+        subredditList = options?.watchSubreddits;
+        if (subredditList?.length) {
+            delete options.watchSubreddits;
+            return browser.storage.local.set({ options, subredditList });
+        }
+    },
+
     async getAuthData(keys = authKeys) {
         return browser.storage.local.get(keys);
     },
@@ -20,6 +37,11 @@ const storage = {
     async getOptions() {
         const { options } = await browser.storage.local.get('options');
         return options;
+    },
+
+    async getSubredditList() {
+        const { subredditList } = await browser.storage.local.get({ subredditList: [] });
+        return subredditList;
     },
 
     async getSubredditData() {
@@ -86,6 +108,11 @@ const storage = {
         return browser.storage.local.set({ options: { ...optionsPrev, ...data } });
     },
 
+    async saveSubredditList(subredditList) {
+        storage.prune({ subredditList });
+        return browser.storage.local.set({ subredditList });
+    },
+
     async saveQuery(query) {
         const queriesList = await storage.getQueriesList();
         let wasUpdated = false;
@@ -100,6 +127,9 @@ const storage = {
             return query;
         });
         if (!wasUpdated) queriesUpdated.push(query);
+
+        const queriesIdList = queriesUpdated.map((q) => q.id);
+        storage.prune({ queriesIdList });
         return browser.storage.local.set({ queriesList: queriesUpdated });
     },
 
@@ -224,29 +254,40 @@ const storage = {
     /**
      * Remove unused data
      */
-    async prune(options) {
-        // eslint-disable-next-line no-param-reassign
-        if (!options) options = await this.getOptions();
+    async prune({ subredditList, queriesIdList }) {
+        if (subredditList) {
+            const subreddits = await storage.getSubredditData();
+            if (subreddits) {
+                const pruned = Object.keys(subreddits).reduce((acc, sub) => {
+                    if (subredditList.includes(sub)) {
+                        acc[sub] = subreddits[sub];
+                    }
+                    return acc;
+                }, {});
+                await browser.storage.local.set({ subreddits: pruned });
+            }
+        }
 
-        const { watchSubreddits = [] } = options;
-        const subreddits = await storage.getSubredditData();
-        if (subreddits) {
-            const pruned = Object.keys(subreddits).reduce((acc, sub) => {
-                if (watchSubreddits.includes(sub)) {
-                    acc[sub] = subreddits[sub];
-                }
-                return acc;
-            }, {});
-            await browser.storage.local.set({ subreddits: pruned });
+        if (queriesIdList) {
+            const queries = await storage.getQueriesData();
+            if (queries) {
+                const prunedQueries = Object.keys(queries).reduce((acc, qId) => {
+                    if (queriesIdList.includes(qId)) {
+                        acc[qId] = queries[qId];
+                    }
+                    return acc;
+                }, {});
+                await browser.storage.local.set({ queries: prunedQueries });
+            }
         }
     },
 
     async countNumberOfUnreadItems(updateBadge = true) {
         let count = 0;
-        const { options, queriesList, queries, subreddits, messages } = await browser.storage.local.get();
+        const { subredditList, queriesList, queries, subreddits, messages } = await browser.storage.local.get();
 
-        if (options.watchSubreddits && options.watchSubreddits.length && subreddits) {
-            count += options.watchSubreddits.reduce((acc, curr) => {
+        if (subredditList?.length && subreddits) {
+            count += subredditList.reduce((acc, curr) => {
                 if (subreddits[curr] && subreddits[curr].posts) return acc + subreddits[curr].posts.length;
                 return acc;
             }, 0);

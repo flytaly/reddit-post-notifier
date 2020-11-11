@@ -68,9 +68,7 @@ function setListeners() {
                 { valid: [], invalid: [] },
             );
 
-        const watchSubreddits = values.valid;
-        await storage.saveOptions({ watchSubreddits });
-        await storage.prune({ watchSubreddits });
+        await storage.saveSubredditList(values.valid);
 
         if (values.invalid.length) {
             subreddits.setCustomValidity(`Invalid subreddits names: ${values.invalid.join(' ')}`);

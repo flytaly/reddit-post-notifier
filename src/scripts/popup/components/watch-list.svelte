@@ -7,15 +7,15 @@
     export let subreddits = {};
     export let queries = {};
     export let queriesList = [];
+    export let subredditList = [];
 
     const options = getContext('OPTIONS');
-    let subredditList = [];
 
     let expanded = new Set();
     let initialLoading = true;
 
-    $: subredditList = Object.keys(subreddits)
-        .filter((s) => subreddits[s].posts.length)
+    $: subredditList = subredditList
+        .filter((s) => subreddits[s]?.posts?.length)
         .sort((s1, s2) => subreddits[s2].lastPostCreated - subreddits[s1].lastPostCreated);
 
     $: queriesList = queriesList
