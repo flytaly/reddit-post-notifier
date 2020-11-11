@@ -1,10 +1,10 @@
 <script>
-    import PostList from './post-list.svelte';
-    import SvgButton from './svg-button.svelte';
     import { getMsg } from '../../utils';
     import ArrowRight from '../assets/arrowhead-up.svg';
     import OpenInNew from '../assets/open-in-new.svg';
     import ListRow from './list-row.svelte';
+    import PostList from './post-list.svelte';
+    import SvgButton from './svg-button.svelte';
 
     export let clickHandler = null;
     export let checkMarkClickHandler = null;
@@ -13,6 +13,7 @@
     export let href = '#';
     export let subredditOrSearchId;
     export let type = 'subreddit';
+    export let isEmpty = false;
 
     const linkClickHandler = (e) => {
         e.stopPropagation();
@@ -69,23 +70,28 @@
         width: 2px;
         background-color: var(--collapse-line-hovered-color);
     }
+    .is-empty {
+        color: var(--disable);
+    }
 </style>
 
 <ListRow {checkMarkClickHandler} title={getMsg('queryListCheckMark_title')} on:click>
-    <div class="item-name">
+    <div class={`item-name ${isEmpty ? 'is-empty' : ''}`}>
         <span class="text">{text}</span>
         <SvgButton {href} on:click={linkClickHandler} title={getMsg('watchListOpenInNew_title')}>
             {@html OpenInNew}
         </SvgButton>
     </div>
 
-    <SvgButton on:click={clickHandler}>
-        <span class="arrow" class:isExpanded>
-            {@html ArrowRight}
-        </span>
-    </SvgButton>
+    {#if !isEmpty}
+        <SvgButton on:click={clickHandler}>
+            <span class="arrow" class:isExpanded>
+                {@html ArrowRight}
+            </span>
+        </SvgButton>
+    {/if}
 </ListRow>
-{#if isExpanded}
+{#if !isEmpty && isExpanded}
     <li class="post-list-container" data-keys-target="list-container">
         <button class="line" on:click><span /></button>
         <PostList {subredditOrSearchId} {type} />

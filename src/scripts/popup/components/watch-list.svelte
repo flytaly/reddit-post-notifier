@@ -10,28 +10,63 @@
     export let subredditList = [];
 
     const options = getContext('OPTIONS');
+    let groupsWithPosts = [];
+    let groupsWithoutPosts = [];
 
     let expanded = new Set();
     let initialLoading = true;
 
-    $: subredditList = subredditList
-        .filter((s) => subreddits[s]?.posts?.length)
-        .sort((s1, s2) => subreddits[s2].lastPostCreated - subreddits[s1].lastPostCreated);
+    $: {
+        groupsWithPosts = [];
+        groupsWithoutPosts = [];
+        subredditList.forEach((s) => {
+            const length = subreddits[s]?.posts?.length || 0;
+            const lastPostCreated = subreddits[s]?.lastPostCreated;
+            const group = {
+                type: 'subreddit',
+                id: s,
+                href: getSubredditUrl(s),
+                title: `r/${s} (${length})`,
+                lastPostCreated,
+                size: length,
+            };
+            if (length) {
+                groupsWithPosts.push(group);
+            } else if (!options.hideEmptyGroups) {
+                groupsWithoutPosts.push(group);
+            }
+        });
 
-    $: queriesList = queriesList
-        .filter((q) => queries[q.id]?.posts?.length)
-        .sort((q1, q2) => queries[q2.id].lastPostCreated - queries[q1.id].lastPostCreated);
+        queriesList.forEach((q) => {
+            const length = queries[q.id]?.posts?.length || 0;
+            const lastPostCreated = queries[q.id]?.lastPostCreated;
+            const group = {
+                type: 'search',
+                id: q.id,
+                href: getSearchQueryUrl(q.query, q.subreddit),
+                title: `${q.name || q.query} (${length})`,
+                lastPostCreated,
+                size: length,
+            };
+            if (length) {
+                groupsWithPosts.push(group);
+            } else if (!options.hideEmptyGroups) {
+                groupsWithoutPosts.push(group);
+            }
+        });
+        groupsWithPosts.sort((a, b) => a.lastPostCreated - b.lastPostCreated);
+    }
 
     $: if (initialLoading) {
-        expanded = new Set([
-            ...expanded,
-            ...subredditList.filter((s) => subreddits[s].posts.length <= options.expandWithItems),
-            ...queriesList.filter((q) => queries[q.id].posts.length <= options.expandWithItems).map((q) => q.id),
-        ]);
+        if (groupsWithPosts.length === 1) {
+            expanded = new Set(groupsWithPosts.map((g) => g.id));
+        } else {
+            expanded = new Set([
+                ...expanded,
+                ...groupsWithPosts.filter((g) => g.size <= options.expandWithItems).map((g) => g.id),
+            ]);
+        }
         if (expanded.size) initialLoading = false;
-    }
-    $: if (subredditList.length + queriesList.length === 1) {
-        expanded = new Set([...subredditList, ...queriesList.map((q) => q.id)]);
     }
 
     let big = false;
@@ -71,31 +106,43 @@
         height: 100%;
         min-width: 200px;
     }
+    .container {
+        display: flex;
+        flex-direction: column;
+    }
+    .empty-group {
+        color: var(--disable);
+        align-self: center;
+        text-align: center;
+        width: 100%;
+        border-top: 1px dashed var(--disable);
+        margin-top: 1em;
+    }
 </style>
 
-{#if subredditList.length || queriesList.length}
-    <ul data-keys-target="list" class:big>
-        {#each subredditList as subreddit (subreddit)}
-            <WatchListRow
-                checkMarkClickHandler={() => storage.removePostsFrom({ subreddit })}
-                href={getSubredditUrl(subreddit)}
-                on:click={makeClickHandler(subreddit)}
-                text={`r/${subreddit} (${subreddits[subreddit].posts?.length})`}
-                isExpanded={expanded.has(subreddit)}
-                subredditOrSearchId={subreddit}
-                type="subreddit" />
-        {/each}
-        {#each queriesList as query (query.id)}
-            <WatchListRow
-                checkMarkClickHandler={() => storage.removePostsFrom({ searchId: query.id })}
-                href={getSearchQueryUrl(query.query, query.subreddit)}
-                on:click={makeClickHandler(query.id)}
-                text={`${query.name || query.query} (${queries[query.id].posts?.length})`}
-                isExpanded={expanded.has(query.id)}
-                subredditOrSearchId={query.id}
-                type="search" />
-        {/each}
-    </ul>
-{:else}
-    <div class="no-posts">{getMsg('noPosts')}</div>
-{/if}
+<div class="container" class:big>
+    {#if subredditList.length || queriesList.length}
+        <ul data-keys-target="list">
+            {#each groupsWithPosts as { type, id, href, title } (id)}
+                <WatchListRow
+                    checkMarkClickHandler={() => storage.removePostsFrom(type === 'subreddit' ? { subreddit: id } : { searchId: id })}
+                    on:click={makeClickHandler(id)}
+                    isExpanded={expanded.has(id)}
+                    subredditOrSearchId={id}
+                    text={title}
+                    {href}
+                    {type} />
+            {/each}
+        </ul>
+        {#if !options.hideEmptyGroups}
+            <div class="empty-group">empty</div>
+            <ul>
+                {#each groupsWithoutPosts as { type, id, href, title } (id)}
+                    <WatchListRow isExpanded={false} subredditOrSearchId={id} text={title} {href} {type} isEmpty />
+                {/each}
+            </ul>
+        {/if}
+    {:else}
+        <div class="no-posts">{getMsg('noPosts')}</div>
+    {/if}
+</div>
