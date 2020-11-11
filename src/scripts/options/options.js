@@ -31,6 +31,13 @@ function setListeners() {
         }),
     );
 
+    const hideEmptyGroups = $('#hideEmptyGroups');
+    hideEmptyGroups.addEventListener('change', () =>
+        storage.saveOptions({
+            hideEmptyGroups: hideEmptyGroups.checked,
+        }),
+    );
+
     const showMessages = $('#messages');
     const messageNotifyCheckbox = $('#messageNotify');
     showMessages.addEventListener('change', async () => {

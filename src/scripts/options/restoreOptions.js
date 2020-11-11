@@ -121,7 +121,13 @@ async function onAuthorization(isAuthorized = false, setMailCheck = false) {
 
 export async function restoreOptions() {
     applyTheme();
-    const { subredditNotify, updateInterval, theme, delPostAfterBodyClick } = await storage.getOptions();
+    const {
+        subredditNotify,
+        updateInterval,
+        theme,
+        delPostAfterBodyClick,
+        hideEmptyGroups,
+    } = await storage.getOptions();
     let { refreshToken } = await storage.getAuthData();
     const subredditData = await storage.getSubredditData();
     const queryData = await storage.getQueriesData();
@@ -140,6 +146,11 @@ export async function restoreOptions() {
     // ------- Delete after click -------
     const delAfterClick = $('#delPostAfterBodyClick');
     delAfterClick.checked = delPostAfterBodyClick;
+
+    // ------- Hide Empty Groups -------
+    const hideEmptyGroupsElem = $('#hideEmptyGroups');
+    hideEmptyGroupsElem.checked = hideEmptyGroups;
+
     // ------- Mail & Auth -------
     onAuthorization(!!refreshToken);
     const startAuthBtn = $('#auth-block .no-authorized button');
