@@ -141,7 +141,7 @@
                 let:item
                 isExpanded={expanded.has('PINNED_POST_LIST')}
                 rowOutTransition={pinTransition}>
-                <div slot="header-row">
+                <div slot="header-row" style="margin-left:1rem">
                     <!-- TODO: add component -->
                     Pinned posts
                 </div>

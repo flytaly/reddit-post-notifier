@@ -61,6 +61,9 @@
         fill: var(--new-mail-color);
         color: var(--new-mail-color);
     }
+    .update-icon {
+        display: flex;
+    }
 </style>
 
 <header>
@@ -68,8 +71,9 @@
         <SvgButton
             disabled={loading}
             on:click={() => postMessage({ type: types.UPDATE_NOW })}
-            title={getMsg('headerUpdateBtn_title')}>
-            <span class:loading>
+            title={getMsg('headerUpdateBtn_title')}
+            text={loading ? 'updating' : 'update'}>
+            <span class:loading class="update-icon">
                 {@html RefreshIcon}
             </span>
         </SvgButton>
