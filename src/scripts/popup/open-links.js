@@ -3,7 +3,7 @@ if (TARGET === 'chrome') {
     window.addEventListener('click', async (e) => {
         const aElem = e.target.closest('a'); // target could be svg
         if (aElem && aElem.href) {
-            await browser.tabs.create({ url: aElem.href, active: false });
+            await browser.tabs.create({ url: aElem.href, active: true });
         }
     });
 }

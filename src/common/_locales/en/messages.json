@@ -56,7 +56,7 @@
         "description": "Seconds"
     },
     "optionDelPostAfterClick": {
-        "message": "Delete post after opening (clicking on) it ",
+        "message": "Delete post after opening (clicking on it)",
         "description": "Delete post after click option"
     },
     "optionHideEmptyGroups": {

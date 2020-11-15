@@ -8,6 +8,7 @@ export const dataFields = {
     subredditList: [],
     subreddits: {},
     messages: {},
+    pinnedPostList: [],
 };
 
 const storage = {
@@ -39,6 +40,13 @@ const storage = {
     async getOptions() {
         const { options } = await browser.storage.local.get('options');
         return options;
+    },
+
+    async getPinnedPostList() {
+        const { pinnedPostList } = await browser.storage.local.get({
+            pinnedPostList: [],
+        });
+        return pinnedPostList;
     },
 
     async getSubredditList() {
@@ -108,6 +116,13 @@ const storage = {
     async saveOptions(data) {
         const optionsPrev = await this.getOptions();
         return browser.storage.local.set({ options: { ...optionsPrev, ...data } });
+    },
+
+    async savePinnedPost(post) {
+        const prev = await storage.getPinnedPostList();
+        return browser.storage.local.set({
+            pinnedPostList: [post, ...prev],
+        });
     },
 
     async saveSubredditList(subredditList) {

@@ -16,7 +16,10 @@ export const state = writable(defaultState, async () => {
 
     // Update data on changes
     browser.storage.onChanged.addListener((changes) => {
-        const { subredditList, subreddits, queries, queriesList, messages } = changes;
+        const { pinnedPostList, subredditList, subreddits, queries, queriesList, messages } = changes;
+        if (pinnedPostList?.newValue) {
+            state.update((prev) => ({ ...prev, pinnedPostList: [...pinnedPostList.newValue] }));
+        }
         if (subreddits?.newValue) {
             state.update((prev) => ({ ...prev, subreddits: { ...subreddits.newValue } }));
         }

@@ -8,6 +8,6 @@ export default {
     isAuthorized: false,
     theme: 'auto',
     expandWithItems: 5, // expand groups in popup that have at least 'x' number of posts
-    delPostAfterBodyClick: true, // delete post after clicking on it
+    delPostAfterBodyClick: false, // delete post after clicking on it
     hideEmptyGroups: false,
 };

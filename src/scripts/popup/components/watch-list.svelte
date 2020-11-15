@@ -1,20 +1,25 @@
 <script>
     import { getContext } from 'svelte';
-    import WatchListRow from './watch-list-row.svelte';
-    import { getMsg, getSearchQueryUrl, getSubredditUrl } from '../../utils';
+    import { getSearchQueryUrl, getSubredditUrl } from '../../utils';
     import storage from '../../storage';
+    import DropDownList from './drop-down-list.svelte';
+    import GroupTitle from './group-title.svelte';
+    import PostRow from './post-row.svelte';
+    import { getId } from '../pinned-post';
+    import { slideVertical, slideHorizontal } from '../transition';
 
     export let subreddits = {};
     export let queries = {};
     export let queriesList = [];
     export let subredditList = [];
+    export let pinnedPostList = [];
 
     const options = getContext('OPTIONS');
     let groupsWithPosts = [];
     let groupsWithoutPosts = [];
-
     let expanded = new Set();
     let initialLoading = true;
+    let pinContainer;
 
     $: {
         groupsWithPosts = [];
@@ -72,7 +77,7 @@
     let big = false;
     $: big = big || Boolean(expanded.size);
 
-    const makeClickHandler = (id) => () => {
+    const getToggleHandler = (id) => () => {
         if (expanded.has(id)) {
             expanded.delete(id);
             expanded = new Set(expanded);
@@ -80,32 +85,33 @@
             expanded = new Set(expanded.add(id));
         }
     };
+
+    const getGroupItems = (id, type) => {
+        if (type === 'subreddit') {
+            return subreddits[id].posts;
+        }
+        if (type === 'search') {
+            return queries[id].posts;
+        }
+        return [];
+    };
+
+    const getOnCheckHandler = (id, type) => () => {
+        storage.removePostsFrom(type === 'subreddit' ? { subreddit: id } : { searchId: id });
+    };
+
+    const pinTransition = (node, props) =>
+        props.id && props.id === getId() //
+            ? slideVertical(node, pinContainer.getBoundingClientRect().bottom, props)
+            : slideHorizontal(node, props);
 </script>
 
 <style>
-    ul {
-        display: flex;
-        flex-direction: column;
-        list-style: none;
-        padding: 0;
-        margin: 0;
-        min-width: 200px;
-        max-width: 500px;
-    }
     .big {
         min-height: 300px;
         min-width: 400px;
     }
-    .no-posts {
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        justify-content: center;
-        color: var(--grey);
-        padding: 5px 0;
-        height: 100%;
-        min-width: 200px;
-    }
+
     .container {
         display: flex;
         flex-direction: column;
@@ -121,28 +127,49 @@
 </style>
 
 <div class="container" class:big>
-    {#if subredditList.length || queriesList.length}
-        <ul data-keys-target="list">
-            {#each groupsWithPosts as { type, id, href, title } (id)}
-                <WatchListRow
-                    checkMarkClickHandler={() => storage.removePostsFrom(type === 'subreddit' ? { subreddit: id } : { searchId: id })}
-                    on:click={makeClickHandler(id)}
-                    isExpanded={expanded.has(id)}
-                    subredditOrSearchId={id}
-                    text={title}
-                    {href}
-                    {type} />
-            {/each}
-        </ul>
-        {#if !options.hideEmptyGroups}
-            <div class="empty-group">empty</div>
-            <ul>
-                {#each groupsWithoutPosts as { type, id, href, title } (id)}
-                    <WatchListRow isExpanded={false} subredditOrSearchId={id} text={title} {href} {type} isEmpty />
-                {/each}
-            </ul>
+    <!-- PINNED POSTS BLOCK -->
+    <div bind:this={pinContainer}>
+        {#if pinnedPostList.length}
+            <DropDownList
+                toggle={getToggleHandler('PINNED_POST_LIST')}
+                items={pinnedPostList}
+                let:item
+                isExpanded={expanded.has('PINNED_POST_LIST')}
+                rowOutTransition={pinTransition}>
+                <div slot="header-row">
+                    <!-- TODO: add component -->
+                    Pinned posts
+                </div>
+                <div slot="list-row">
+                    <!-- TODO: add another component for pinned posts that shows subreddit -->
+                    <PostRow post={item} />
+                </div>
+            </DropDownList>
         {/if}
-    {:else}
-        <div class="no-posts">{getMsg('noPosts')}</div>
+    </div>
+    <!-- UNREAD POSTS BLOCK -->
+    {#each groupsWithPosts as { type, id, href, title } (id)}
+        <div out:slideHorizontal={{ duration: 150 }}>
+            <DropDownList
+                toggle={getToggleHandler(id)}
+                items={getGroupItems(id, type)}
+                let:item
+                isExpanded={expanded.has(id)}
+                rowOutTransition={pinTransition}>
+                <div slot="header-row">
+                    <GroupTitle onCheck={getOnCheckHandler(id, type)} {href} {title} />
+                </div>
+                <div slot="list-row">
+                    <PostRow post={item} {type} subredditOrSearchId={id} />
+                </div>
+            </DropDownList>
+        </div>
+    {/each}
+    <!-- EMPTY GROUPS -->
+    {#if !options.hideEmptyGroups && groupsWithoutPosts.length}
+        <div class="empty-group">empty</div>
+        {#each groupsWithoutPosts as { href, title }}
+            <GroupTitle {href} {title} />
+        {/each}
     {/if}
 </div>
