@@ -7,6 +7,7 @@
     export let onCheck = null;
     export let href;
     export let title;
+    export let disabled = false;
 
     const linkClickHandler = (e) => {
         e.stopPropagation();
@@ -31,9 +32,13 @@
     .link :global(a:hover svg path) {
         fill-opacity: 1;
     }
+    .disabled {
+        color: var(--disable);
+        padding-left: 1rem;
+    }
 </style>
 
-<div class="item-name">
+<div class="item-name" class:disabled>
     {#if onCheck}
         <CheckMarkButton clickHandler={onCheck} title={getMsg('queryListCheckMark_title')} />
     {/if}

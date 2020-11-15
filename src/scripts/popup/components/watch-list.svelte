@@ -20,6 +20,7 @@
     let expanded = new Set();
     let initialLoading = true;
     let pinContainer;
+    let emptyGroupsRef;
 
     $: {
         groupsWithPosts = [];
@@ -104,6 +105,10 @@
         props.id && props.id === getId() //
             ? slideVertical(node, pinContainer.getBoundingClientRect().bottom, props)
             : slideHorizontal(node, props);
+    const postGroupTransition = (node, props) =>
+        emptyGroupsRef
+            ? slideVertical(node, emptyGroupsRef.getBoundingClientRect().top, props)
+            : slideHorizontal(node, props);
 </script>
 
 <style>
@@ -149,7 +154,7 @@
     </div>
     <!-- UNREAD POSTS BLOCK -->
     {#each groupsWithPosts as { type, id, href, title } (id)}
-        <div out:slideHorizontal={{ duration: 150 }}>
+        <div out:postGroupTransition={{ duration: 150 }}>
             <DropDownList
                 toggle={getToggleHandler(id)}
                 items={getGroupItems(id, type)}
@@ -166,10 +171,13 @@
         </div>
     {/each}
     <!-- EMPTY GROUPS -->
+
     {#if !options.hideEmptyGroups && groupsWithoutPosts.length}
-        <div class="empty-group">empty</div>
-        {#each groupsWithoutPosts as { href, title }}
-            <GroupTitle {href} {title} />
-        {/each}
+        <div bind:this={emptyGroupsRef}>
+            <div class="empty-group">empty</div>
+            {#each groupsWithoutPosts as { href, title }}
+                <GroupTitle {href} {title} disabled />
+            {/each}
+        </div>
     {/if}
 </div>
