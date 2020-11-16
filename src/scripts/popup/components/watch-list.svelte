@@ -78,7 +78,8 @@
     let big = false;
     $: big = big || Boolean(expanded.size);
 
-    const getToggleHandler = (id) => () => {
+    const getToggleHandler = (id) => (e) => {
+        e.stopPropagation();
         if (expanded.has(id)) {
             expanded.delete(id);
             expanded = new Set(expanded);

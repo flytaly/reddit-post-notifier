@@ -42,12 +42,12 @@
                 positionPreview(e);
             });
         const mouseover = (e) => {
-            const { id } = e.target.dataset;
-            if (id && id !== prevId) {
-                const post = posts.find((p) => p.data.id === id);
+            const { postId } = e.target.dataset;
+            if (postId && postId !== prevId) {
+                const post = posts.find((p) => p.data.id === postId);
                 if (!post) return;
                 setData(post);
-                prevId = id;
+                prevId = postId;
                 window.requestAnimationFrame(() => {
                     positionPreview(e);
                 });

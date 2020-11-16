@@ -53,9 +53,14 @@
     }
 </style>
 
-<div class="container" data-post-id={post.data.id}>
+<div class="container">
     <CheckMarkButton clickHandler={() => removePost(post.data.id)} title={getMsg('postListCheckMark_title')} />
-    <a class="item-name" href={`${baseUrl}${post.data.permalink}`} data-keys-target="post-link" on:click={onLinkClick}>
+    <a
+        class="item-name"
+        href={`${baseUrl}${post.data.permalink}`}
+        data-keys-target="post-link"
+        on:click={onLinkClick}
+        data-post-id={post.data.id}>
         {post.data.title}</a>
     <span data-keys-target="pin-post">
         <SvgButton on:click={onPinClick} title={'Pin the post'}>

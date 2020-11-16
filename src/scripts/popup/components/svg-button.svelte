@@ -32,9 +32,9 @@
         transform: scale(0.92);
     }
     .svg-button.with-text {
-        padding: 0.1rem;
+        padding: 0.1rem 0.2rem;
         border: 1px solid var(--hover-border-color);
-        background-color: var(--hover-bg-color);
+        /* background-color: var(--hover-bg-color); */
         color: var(--footer-font-color);
     }
     .svg-button.with-text:hover:not([disabled]),

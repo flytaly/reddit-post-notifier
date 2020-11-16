@@ -83,7 +83,8 @@
     .arrow :global(svg) {
         transition: transform 200ms ease-out;
     }
-    .isExpanded :global(svg) {
+    .arrow.isExpanded :global(svg),
+    .arrow.isExpanded :global(svg):hover {
         transform: rotate(180deg);
     }
 
