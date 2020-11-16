@@ -36,6 +36,14 @@
         queriesList = _state.queriesList;
         messages = _state.messages;
     });
+
+    const optionsHref = browser.runtime.getURL('options.html');
+    const optionsClick = async (e) => {
+        e.preventDefault();
+        e.stopPropagation();
+        await browser.runtime.openOptionsPage();
+        window.close();
+    };
 </script>
 
 <style>
@@ -46,24 +54,30 @@
         min-width: 200px;
         min-height: 50px;
     }
-    .no-posts {
+    .no-queries {
         display: flex;
         flex-direction: column;
         align-items: center;
         justify-content: center;
-        color: var(--grey);
         padding: 5px 0;
         height: 100%;
         min-width: 200px;
+        margin: auto 1rem;
+    }
+    .no-queries a {
+        margin-top: 0.4rem;
     }
 </style>
 
-<Header {loading} message{s}Count={messages.count} />
+<Header {loading} messagesCount={messages.count} />
 <main>
     {#if queriesList.length || subredditList.length || pinnedPostList.length}
         <WatchList {subreddits} {queries} {queriesList} {subredditList} {pinnedPostList} />
     {:else}
-        <div class="no-posts">{getMsg('noPosts')}</div>
+        <div class="no-queries">
+            <span>{getMsg('noQueries')}</span>
+            <a href={optionsHref} on:click={optionsClick}>{getMsg('openOptions')} </a>
+        </div>
     {/if}
 </main>
 <Footer />

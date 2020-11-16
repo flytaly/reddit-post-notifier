@@ -1,6 +1,6 @@
 <script>
     import { getContext } from 'svelte';
-    import { getSearchQueryUrl, getSubredditUrl } from '../../utils';
+    import { getMsg, getSearchQueryUrl, getSubredditUrl } from '../../utils';
     import storage from '../../storage';
     import DropDownList from './drop-down-list.svelte';
     import GroupTitle from './group-title.svelte';
@@ -124,13 +124,17 @@
         display: flex;
         flex-direction: column;
     }
-    .empty-group {
+    .delimiter {
         color: var(--disable);
         align-self: center;
         text-align: center;
         width: 100%;
         border-top: 1px dashed var(--disable);
-        margin-top: 0.5rem;
+        margin: 0.5rem 0;
+    }
+    .no-posts {
+        margin: 1rem auto;
+        color: var(--grey);
     }
 </style>
 
@@ -151,9 +155,10 @@
                     <PinPostRow post={item} />
                 </div>
             </DropDownList>
+            <div class="delimiter" />
         {/if}
     </div>
-    <br />
+
     <!-- UNREAD POSTS BLOCK -->
     {#each groupsWithPosts as { type, id, href, title } (id)}
         <div out:postGroupTransition={{ duration: 150 }}>
@@ -176,11 +181,14 @@
             </DropDownList>
         </div>
     {/each}
+    {#if !groupsWithPosts.length}
+        <div class="no-posts">{getMsg('noPosts')}</div>
+    {/if}
     <!-- EMPTY GROUPS -->
 
     {#if !options.hideEmptyGroups && groupsWithoutPosts.length}
         <div bind:this={emptyGroupsRef}>
-            <div class="empty-group" />
+            <div class="delimiter" />
             {#each groupsWithoutPosts as { href, title }}
                 <GroupTitle {href} {title} disabled />
             {/each}

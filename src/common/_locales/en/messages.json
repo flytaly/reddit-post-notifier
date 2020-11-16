@@ -27,6 +27,14 @@
         "message": "Open options",
         "description": "Attribute title of the options icon"
     },
+    "noQueries": {
+        "message": "You didn't add anything to watch",
+        "description": "No queries popup message"
+    },
+    "openOptions": {
+        "message": "Open options",
+        "description": "Open options page tooltip"
+    },
     "noPosts": {
         "message": "No unread posts",
         "description": "No unread posts note"
