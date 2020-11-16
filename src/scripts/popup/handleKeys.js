@@ -1,29 +1,30 @@
-const focusFirstListElement = (container = document) => {
-    const list = container.querySelector('[data-keys-target="list"]');
-    if (list) list.firstElementChild.focus();
-};
-
-const focusLastListElement = (container = document) => {
-    const list = container.querySelector('[data-keys-target="list"]');
-    if (list) list.lastElementChild.focus();
-};
-
-const getContainer = (elem) => elem.closest('[data-keys-target="list-container"]');
-
-const getNextRowElement = (elem, backward = false) => {
-    let next = backward ? elem.previousElementSibling : elem.nextElementSibling;
-    if (!next) {
-        if (elem.dataset.keysTarget === 'post-row') {
-            next = getNextRowElement(getContainer(elem), backward);
-        } else {
-            next = backward ? elem.parentElement.lastElementChild : elem.parentElement.firstElementChild;
+const focusNextRowElement = (current, reverse = false) => {
+    const rows = document.body.querySelectorAll(`
+    [data-keys-target="list-row"],
+    [data-keys-target="post-row"]
+    `);
+    if (!rows) return;
+    const { length } = rows;
+    let index = reverse ? length : -1;
+    for (let i = 0; i < length; i += 1) {
+        if (rows[i] === current) {
+            index = i;
+            break;
         }
     }
-    return next;
+
+    index = reverse ? (index || length) - 1 : (index + 1) % length;
+
+    rows[index].focus();
+};
+
+const getGroupHeader = (elem) => {
+    const container = elem.closest('[data-keys-target="list-container"]');
+    const header = container.querySelector('[data-keys-target="list-row"]');
+    if (header.dataset.keysTarget === 'list-row') return header;
 };
 
 const isRow = (elem) => ['list-row', 'post-row'].includes(elem.dataset.keysTarget);
-const isRowContainer = (elem) => elem.dataset.keysTarget === 'list-container';
 const isPostRow = (elem) => elem.dataset.keysTarget === 'post-row';
 const isHeaderRow = (elem) => elem.dataset.keysTarget === 'list-row';
 
@@ -38,31 +39,19 @@ export default async function handleKeydownEvent(e) {
 
     // Select next element in the list
     if (key === 'ArrowDown' || code === 'KeyJ') {
-        if (!isRow(target)) {
-            return focusFirstListElement();
-        }
-        const next = getNextRowElement(target);
-        if (isRow(next)) {
-            next.focus();
-        } else if (isRowContainer(next)) focusFirstListElement(next);
+        focusNextRowElement(target);
     }
 
     // Select previous element in the list
     if (key === 'ArrowUp' || code === 'KeyK') {
-        if (!isRow(target)) {
-            return focusLastListElement();
-        }
-        const next = getNextRowElement(target, true);
-        if (isRow(next)) {
-            next.focus();
-        } else if (isRowContainer(next)) focusLastListElement(next);
+        focusNextRowElement(target, true);
     }
 
     // Open selected group of posts or open selected post
     if (key === 'ArrowRight' || key === 'Enter' || code === 'KeyL') {
         if (isHeaderRow(target)) return target.click();
         if (isPostRow(target)) {
-            const link = target.querySelector(`a[data-id="${target.dataset.id}"]`);
+            const link = target.querySelector('a[data-keys-target="post-link"]');
             link?.click();
             if (TARGET === 'firefox') {
                 // close window shortly after the click because the extension will lose focus in firefox anyway
@@ -75,11 +64,9 @@ export default async function handleKeydownEvent(e) {
     if (key === 'ArrowLeft' || key === 'Backspace' || code === 'KeyH') {
         if (isHeaderRow(target)) return target.click();
         if (isPostRow(target)) {
-            const groupHeader = getContainer(target)?.previousElementSibling;
-            if (groupHeader && groupHeader.dataset.keysTarget === 'list-row') {
-                groupHeader.click();
-                groupHeader.focus();
-            }
+            const groupHeader = getGroupHeader(target);
+            groupHeader.click();
+            groupHeader.focus();
         }
     }
 
@@ -93,6 +80,19 @@ export default async function handleKeydownEvent(e) {
         if (isPostRow(target)) {
             if (next) next.focus();
             else prev?.focus();
+        }
+    }
+
+    if (code === 'KeyP') {
+        if (isPostRow(target)) {
+            const next = target.nextElementSibling;
+            const prev = target.previousElementSibling;
+            const btn = target.querySelector('[data-keys-target="pin-post"] button');
+            if (btn) {
+                btn.click();
+                if (next) next.focus();
+                else prev?.focus();
+            }
         }
     }
 }

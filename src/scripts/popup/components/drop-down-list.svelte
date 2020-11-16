@@ -61,6 +61,7 @@
         background: none;
         box-shadow: none;
         border: 0;
+        min-width: 1.3rem;
         width: 1.3rem;
         justify-content: center;
         outline: none;
@@ -92,8 +93,8 @@
     }
 </style>
 
-<div class="drop-down-list">
-    <div class="item" tabindex="0" on:click={toggle}>
+<div class="drop-down-list" data-keys-target="list-container">
+    <div class="item" tabindex="0" on:click={toggle} data-keys-target="list-row">
         <slot name="header-row" />
         <span class="arrow" class:isExpanded>
             <SvgButton on:click={toggle}>
@@ -119,6 +120,7 @@
                     <li
                         class="item"
                         tabindex="0"
+                        data-keys-target="post-row"
                         out:rowOutTransition|local={{ duration: 150, id: item.data.id }}
                         animate:flip={{ delay: 100, duration: 100 }}>
                         <slot name="list-row" {item} />

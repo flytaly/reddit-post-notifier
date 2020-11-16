@@ -9,10 +9,9 @@
     export let post = {};
     export let type = 'subreddit';
     export let subredditOrSearchId;
+    export let deleteOnClick = false;
 
     const baseUrl = 'https://reddit.com';
-
-    let pinnedPost = null;
 
     const removePost = async (id) => {
         if (type === 'search') {
@@ -21,13 +20,16 @@
             await storage.removePost({ id, subreddit: subredditOrSearchId });
         }
     };
-
-    const onPin = async (ev) => {
+    const onPinClick = async (ev) => {
         ev.stopPropagation();
-        pinnedPost = post;
         setId(post.data.id);
         await storage.savePinnedPost(post);
         return removePost(post.data.id);
+    };
+    const onLinkClick = () => {
+        if (deleteOnClick) {
+            removePost(post.data.id);
+        }
     };
 </script>
 
@@ -53,8 +55,11 @@
 
 <div class="container" data-post-id={post.data.id}>
     <CheckMarkButton clickHandler={() => removePost(post.data.id)} title={getMsg('postListCheckMark_title')} />
-    <a class="item-name" href={`${baseUrl}${post.data.permalink}`} data-id={post.data.id}> {post.data.title}</a>
-    <SvgButton on:click={onPin} title={'Pin the post'}>
-        {@html Pin}
-    </SvgButton>
+    <a class="item-name" href={`${baseUrl}${post.data.permalink}`} data-keys-target="post-link" on:click={onLinkClick}>
+        {post.data.title}</a>
+    <span data-keys-target="pin-post">
+        <SvgButton on:click={onPinClick} title={'Pin the post'}>
+            {@html Pin}
+        </SvgButton>
+    </span>
 </div>
