@@ -43,8 +43,6 @@
         display: flex;
         flex-direction: column;
         flex: 1 1;
-        justify-content: center;
-        align-items: center;
         min-width: 200px;
         min-height: 50px;
     }
@@ -60,7 +58,7 @@
     }
 </style>
 
-<Header {loading} messagesCount={messages.count} />
+<Header {loading} message{s}Count={messages.count} />
 <main>
     {#if queriesList.length || subredditList.length || pinnedPostList.length}
         <WatchList {subreddits} {queries} {queriesList} {subredditList} {pinnedPostList} />

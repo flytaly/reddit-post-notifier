@@ -9,6 +9,8 @@ export const $ = document.querySelector.bind(document);
 
 export const subredditNameRegExp = /^[A-Za-z0-9]\w{1,20}$/;
 
+export const baseUrl = 'https://reddit.com';
+
 export const generateId = () => (Date.now() + crypto.getRandomValues(new Uint32Array(1))[0]).toString(36);
 
 export const getSubredditUrl = (subreddit) => `https://reddit.com/r/${subreddit}/new`;
@@ -51,6 +53,7 @@ export const filterPostDataProperties = (post) => {
         'permalink',
         'id',
         'preview',
+        'url',
     ];
 
     const data = filterList.reduce((acc, property) => {

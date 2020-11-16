@@ -8,7 +8,7 @@
 
 <style>
     .check-mark {
-        margin-right: 0.3em;
+        margin-right: 0.3rem;
     }
     .check-mark :global(svg) {
         fill: var(--grey);

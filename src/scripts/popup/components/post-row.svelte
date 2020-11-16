@@ -1,5 +1,5 @@
 <script>
-    import { getMsg } from '../../utils';
+    import { getMsg, baseUrl } from '../../utils';
     import SvgButton from './svg-button.svelte';
     import CheckMarkButton from './check-mark-button.svelte';
     import Pin from '../assets/pin-outline.svg';
@@ -10,8 +10,6 @@
     export let type = 'subreddit';
     export let subredditOrSearchId;
     export let deleteOnClick = false;
-
-    const baseUrl = 'https://reddit.com';
 
     const removePost = async (id) => {
         if (type === 'search') {

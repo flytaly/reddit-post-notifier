@@ -1,5 +1,8 @@
 import { quadOut } from 'svelte/easing';
-import { getId } from './pinned-post';
+
+function clamp(n, min, max) {
+    return Math.min(Math.max(n, min), max);
+}
 
 export function slideHorizontal(node, { duration, easing = quadOut }) {
     const style = getComputedStyle(node);
@@ -17,15 +20,15 @@ export function slideHorizontal(node, { duration, easing = quadOut }) {
 }
 
 /* Move `node` to y coordinate  */
-export const slideVertical = (node, y, { duration }) => {
+export const slideVertical = (node, y, { duration, easing = quadOut }) => {
     const style = getComputedStyle(node);
     const transform = style.transform === 'none' ? '' : style.transform;
     const { top } = node.getBoundingClientRect();
     const distance = top - y;
     return {
-        duration,
+        duration: (duration * clamp(Math.abs(distance), 100, 300)) / 100,
         css: (t) => {
-            const eased = quadOut(t);
+            const eased = easing(t);
             return `transform: ${transform} translate(0, ${(eased - 1) * distance}px)`;
         },
     };

@@ -7,6 +7,8 @@
     import PostRow from './post-row.svelte';
     import { getId } from '../pinned-post';
     import { slideVertical, slideHorizontal } from '../transition';
+    import PinGroupTitle from './pin-group-title.svelte';
+    import PinPostRow from './pin-post-row.svelte';
 
     export let subreddits = {};
     export let queries = {};
@@ -128,7 +130,7 @@
         text-align: center;
         width: 100%;
         border-top: 1px dashed var(--disable);
-        margin-top: 1em;
+        margin-top: 0.5rem;
     }
 </style>
 
@@ -141,18 +143,17 @@
                 items={pinnedPostList}
                 let:item
                 isExpanded={expanded.has('PINNED_POST_LIST')}
-                rowOutTransition={pinTransition}>
-                <div slot="header-row" style="margin-left:1rem">
-                    <!-- TODO: add component -->
-                    Pinned posts
+                rowOutTransition={slideHorizontal}>
+                <div slot="header-row">
+                    <PinGroupTitle count={pinnedPostList.length} />
                 </div>
                 <div slot="list-row">
-                    <!-- TODO: add another component for pinned posts that shows subreddit -->
-                    <PostRow post={item} />
+                    <PinPostRow post={item} />
                 </div>
             </DropDownList>
         {/if}
     </div>
+    <br />
     <!-- UNREAD POSTS BLOCK -->
     {#each groupsWithPosts as { type, id, href, title } (id)}
         <div out:postGroupTransition={{ duration: 150 }}>
@@ -179,7 +180,7 @@
 
     {#if !options.hideEmptyGroups && groupsWithoutPosts.length}
         <div bind:this={emptyGroupsRef}>
-            <div class="empty-group">empty</div>
+            <div class="empty-group" />
             {#each groupsWithoutPosts as { href, title }}
                 <GroupTitle {href} {title} disabled />
             {/each}

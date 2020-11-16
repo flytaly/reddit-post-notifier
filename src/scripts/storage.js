@@ -228,6 +228,13 @@ const storage = {
         }
     },
 
+    async removePinPost(id) {
+        const pinnedPostList = await storage.getPinnedPostList();
+        return browser.storage.local.set({
+            pinnedPostList: pinnedPostList.filter((p) => p.data.id !== id),
+        });
+    },
+
     async removePostsFrom({ subreddit, searchId }) {
         if (subreddit) {
             const subreddits = await storage.getSubredditData();
