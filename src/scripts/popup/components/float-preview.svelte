@@ -5,18 +5,36 @@
     export let containerElement;
 
     let previewElement;
-    let imageInfo = null; // { url, width, height }
+    let imageInfo = null; // { url, width, height, loaded }
     let postText = null;
 
+    $: {
+        if (posts) {
+            // Clear if post list was updated. Usefull in case
+            // when a post is removed from the list but mouseleave event wasn't triggered
+            imageInfo = null;
+            postText = null;
+        }
+    }
+
     function setData(post) {
+        imageInfo = null;
         if (post.data.selftext) {
             postText = post.data.selftext.length > 400 ? `${post.data.selftext.slice(0, 400)}...` : post.data.selftext;
-            imageInfo = null;
         } else {
             const image = post?.data?.preview?.images[0];
             if (image?.resolutions?.length) {
                 const { url, width, height } = image.resolutions[1] || image.resolutions[0];
-                imageInfo = url ? { url, width, height } : null;
+                if (url) {
+                    imageInfo = { url, width, height, loaded: false };
+                    const imgElem = new Image();
+                    imgElem.onload = () => {
+                        if (imageInfo?.url === url) {
+                            imageInfo.loaded = true;
+                        }
+                    };
+                    imgElem.src = url;
+                }
             }
             postText = !imageInfo ? post.data.url : null;
         }
@@ -90,6 +108,10 @@
 
 <div class="preview" bind:this={previewElement} class:hide={!imageInfo && !postText}>
     {#if imageInfo}
-        <img src={imageInfo.url} width={imageInfo.width} height={imageInfo.height} alt="preview" />
+        {#if imageInfo.loaded}
+            <img src={imageInfo.url} width={imageInfo.width} height={imageInfo.height} alt="preview" />
+        {:else}
+            <div style={`width: ${imageInfo.width}px; height: ${imageInfo.height}px`} />
+        {/if}
     {:else}<span>{postText}</span>{/if}
 </div>
