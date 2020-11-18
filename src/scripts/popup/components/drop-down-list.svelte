@@ -94,7 +94,7 @@
     }
 </style>
 
-<div class="drop-down-list" data-keys-target="list-container">
+<div class="drop-down-list" data-keys-target="list-container" bind:this={containerElement}>
     <div class="item" tabindex="0" on:click={toggle} data-keys-target="list-row">
         <slot name="header-row" />
         <span class="arrow" class:isExpanded>
@@ -113,10 +113,9 @@
             }}
             on:introend={() => {
                 document.body.style.overflowY = '';
-            }}
-            bind:this={containerElement}>
+            }}>
             <button class="line" on:click={toggle}><span /></button>
-            <ul class="items">
+            <ul class="items" data-floatpreview-target="true">
                 {#each items as item (item.data.id)}
                     <li
                         class="item"
@@ -129,11 +128,10 @@
                 {/each}
             </ul>
         </div>
+        {#if containerElement}
+            <FloatPreview posts={items} {containerElement} />
+        {/if}
     {/if}
     <!-- to fix warning: https://github.com/sveltejs/svelte/issues/4546 -->
     <slot />
-
-    {#if containerElement}
-        <FloatPreview posts={items} {containerElement} />
-    {/if}
 </div>

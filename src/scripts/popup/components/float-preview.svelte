@@ -76,13 +76,16 @@
             imageInfo = null;
             postText = null;
         };
-        containerElement.addEventListener('mousemove', mousemove);
-        containerElement.addEventListener('mouseover', mouseover);
-        containerElement.addEventListener('mouseleave', mouseleave);
+
+        const elem = containerElement.querySelector('[data-floatpreview-target]');
+
+        elem.addEventListener('mousemove', mousemove);
+        elem.addEventListener('mouseover', mouseover);
+        elem.addEventListener('mouseleave', mouseleave);
         return () => {
-            containerElement.removeEventListener('mousemove', mousemove);
-            containerElement.removeEventListener('mouseover', mouseover);
-            containerElement.removeEventListener('mouseleave', mouseleave);
+            elem.removeEventListener('mousemove', mousemove);
+            elem.removeEventListener('mouseover', mouseover);
+            elem.removeEventListener('mouseleave', mouseleave);
         };
     });
 </script>
