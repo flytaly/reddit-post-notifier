@@ -8,9 +8,12 @@
 <style>
     aside {
         display: flex;
+        position: sticky;
+        top: 1rem;
+        align-self: flex-start;
         flex-direction: column;
         padding: 0.5rem;
-        height: 100%;
+        padding-bottom: 2rem;
         min-width: 8rem;
         box-shadow: 0px 0px 2px 0px rgba(0, 0, 0, 0.5);
     }

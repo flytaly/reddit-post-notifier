@@ -18,7 +18,6 @@ if (TARGET === 'firefox' && browser.notifications.onShown) {
 let updating = false;
 
 async function update() {
-    return;
     if (updating) return;
     updating = true;
     popupPort.postMessage({ type: types.UPDATING_START });

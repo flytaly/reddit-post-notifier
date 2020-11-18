@@ -34,11 +34,12 @@
     .main-container {
         display: flex;
         flex-direction: row;
-        height: 100%;
     }
     .page {
-        flex-grow: 1;
         padding-left: 1rem;
+        height: 100%;
+        width: 900px;
+        max-width: 100%;
     }
 </style>
 
