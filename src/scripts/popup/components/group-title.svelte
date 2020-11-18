@@ -1,6 +1,6 @@
 <script>
     import { getMsg } from '../../utils';
-    import OpenInNew from '../assets/open-in-new.svg';
+    import OpenInNew from '../../assets/open-in-new.svg';
     import SvgButton from './svg-button.svelte';
     import CheckMarkButton from './check-mark-button.svelte';
 

@@ -1,8 +1,8 @@
 <script>
     import SvgButton from './svg-button.svelte';
-    import RefreshIcon from '../assets/refresh.svg';
-    import MailIcon from '../assets/mail.svg';
-    import SettingsIcon from '../assets/settings.svg';
+    import RefreshIcon from '../../assets/refresh.svg';
+    import MailIcon from '../../assets/mail.svg';
+    import SettingsIcon from '../../assets/settings.svg';
     import { getMsg } from '../../utils';
     import { postMessage } from '../connect';
     import types from '../../types';

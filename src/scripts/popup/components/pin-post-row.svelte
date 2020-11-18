@@ -1,7 +1,7 @@
 <script>
     import { baseUrl } from '../../utils';
     import SvgButton from './svg-button.svelte';
-    import PinRemove from '../assets/pin-remove.svg';
+    import PinRemove from '../../assets/pin-remove.svg';
     import storage from '../../storage';
 
     export let post;

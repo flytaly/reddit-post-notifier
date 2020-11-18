@@ -12,6 +12,10 @@ const isWatchMode = process.env.ROLLUP_WATCH;
 
 const isDev = isWatchMode;
 const plugins = [
+    svg({ stringify: true }),
+    svelte({
+        dev: isDev,
+    }),
     replace({
         TARGET: `'${target}'`,
         'process.env.NODE_ENV': JSON.stringify(isDev ? 'development' : 'production'),
@@ -50,15 +54,7 @@ export default [
             file: `${outputPath}bundles/popup.js`,
             format: 'iife',
         },
-        plugins: [
-            copyPlugin,
-            svg({ stringify: true }),
-            svelte({
-                dev: isDev,
-            }),
-            ...plugins,
-            ...(isWatchMode ? [] : [delPlugin]),
-        ],
+        plugins: [copyPlugin, ...plugins, ...(isWatchMode ? [] : [delPlugin])],
     },
     {
         input: './src/scripts/options/options.js',

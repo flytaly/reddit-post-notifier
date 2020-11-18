@@ -1,5 +1,5 @@
 <script>
-    import Pin from '../assets/pin.svg';
+    import Pin from '../../assets/pin.svg';
 
     export let count = 0;
 </script>

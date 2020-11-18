@@ -1,257 +1,55 @@
 body {
-    --font-color: #252729;
-    --font-color_h: #000000;
-    --font-color_sub: #4c4e4f;
-    --bg-color: #ffffff;
-    --input-bg-color: initial;
-    --border-color: initial;
+    --font-color: #252525;
     --link-color: #016ed8;
+    --bg-color: #ffffff;
+    --accent-color: #ff0000;
+    --grey: #777777;
+    --delimiter-color: #dedede;
 }
 
 body.dark-mode {
-    --font-color: #e8eaed;
-    --font-color_h: #ffffff;
-    --font-color_sub: #90959b;
-    --bg-color: #202023;
-    --input-bg-color: #474749;
-    --border-color: #737373;
+    --font-color: #e6e6e6;
+    --bg-color: #202020;
     --link-color: #98c0ff;
+    --accent-color: #f08080;
+    --grey: #888888;
+    --delimiter-color: #444444;
 }
 
-body.dark-mode button {
-    background-color: #4a4a4f;
-    border-color: var(--border-color);
-    color: #fafafb;
-    background-image: none;
-    text-shadow: none;
-}
-body.dark-mode button:hover,
-body.dark-mode button:focus {
-    border-color: #fafafb;
-}
-body.dark-mode button:active {
-    background-color: #737373;
+* {
+    box-sizing: border-box;
 }
 
-body {
-    color: var(--font-color);
-    padding: 1em;
-    min-width: 600px;
-    max-width: 100%;
-    background-color: var(--bg-color);
-}
-
-h1,
-h2,
-h3,
-h4 {
-    color: var(--font-color_h);
-    font-weight: bold;
+body,
+html {
+    margin: 0;
+    padding: 0;
+    height: 100%;
+    scroll-behavior: smooth;
 }
 
 a {
     color: var(--link-color);
 }
 
-input[type='text'],
-input[type='number'] {
+body {
     color: var(--font-color);
-    background-color: var(--input-bg-color);
-    border-color: var(--border-color);
-}
-
-input[type='checkbox'] {
-    margin-left: 4px;
-}
-
-button.delete,
-button.add-search {
-    margin-top: 4px;
-}
-
-section {
-    display: flex;
-    flex-direction: column;
-    margin: 10px 0;
-}
-
-#mail-block {
-    opacity: 1;
-}
-
-#mail-block.disabled {
-    opacity: 0.6;
-}
-
-#auth-block {
-    margin-bottom: 1em;
-}
-
-#auth-block .no-authorized,
-#auth-error-message {
-    color: darkred;
-}
-
-.dark-mode #auth-block .no-authorized,
-.dark-mode #auth-error-message {
-    color: lightcoral;
-}
-
-#auth-block .is-authorized {
-    color: green;
-}
-.dark-mode #auth-block .is-authorized {
-    color: lightgreen;
-}
-
-.watch-subreddits > input {
-    width: 100%;
-    margin-top: 10px;
-    margin-bottom: 5px;
-}
-
-.subreddits-errors {
-    display: none;
-}
-
-.subreddits-errors.show {
-    display: block;
-    color: red;
-}
-
-.subreddits-errors ul {
-    padding: 0px;
-    list-style: none;
-    margin: 0px 1em;
-}
-
-.query-error {
-    display: none;
-    margin-bottom: 1em;
-}
-
-.query-error.show {
-    display: block;
-    color: red;
-}
-
-.input-description {
-    font-size: 0.9em;
-    color: var(--font-color_sub);
-    margin-bottom: 1em;
-}
-
-.invalid {
-    border: 1px solid rgba(255, 0, 0, 0.35);
-    box-shadow: 0 0 0 2px rgba(255, 0, 0, 0.35);
-}
-
-.search {
-    margin-bottom: 10px;
-}
-
-.search ul {
-    list-style: none;
-    padding: 0;
+    padding: 1rem;
     margin: 0;
+    min-height: 100vh;
+    background-color: var(--bg-color);
+}
+
+h1 {
+    text-transform: uppercase;
+    margin: 0;
+    margin-bottom: 1rem;
+    color: var(--grey);
+    letter-spacing: 2px;
+}
+
+h2 {
     width: 100%;
-}
-
-.search li {
-    display: flex;
-    align-items: center;
-    flex-wrap: wrap;
-    margin-bottom: 4px;
-}
-
-.search label {
-    width: 20%;
-}
-.search li.name input {
-    width: 50%;
-}
-
-.search li.subreddit input {
-    width: 50%;
-}
-
-.search li.query input {
-    flex-grow: 1;
-}
-
-.search li.query div {
-    flex: 1 1 100%;
-    padding-left: 20%;
-}
-
-.search li.query a {
-    text-decoration: none;
-}
-
-.search li.notification label {
-    width: auto;
-}
-
-input:disabled {
-    cursor: not-allowed;
-}
-
-input[type='number'] {
-    width: 8em;
-    margin: 0 2px;
-}
-
-.clear-data {
-    float: right;
-    margin-top: 4px;
-    margin-bottom: 1em;
-}
-
-.text-with-tooltip {
-    display: flex;
-    align-items: center;
-}
-
-button.tooltip-button {
-    display: inline-flex;
-    padding: 0;
-    box-shadow: none;
-    border: none;
-    background: none;
-    background-color: none;
-    min-width: 18px;
-    min-height: 18px;
-    width: 18px;
-    height: 18px;
-    margin-left: 8px;
-}
-
-.tooltip-button:focus,
-.tooltip-button:hover {
-    box-shadow: none !important;
-    background-image: none !important;
-    border: none !important;
-    color: inherit !important;
-}
-
-.tooltip-button svg {
-    width: 18px;
-    height: 18px;
-    fill: none;
-    stroke: #4499cc;
-    stroke-width: 2.3;
-    stroke-linecap: round;
-    stroke-linejoin: round;
-}
-
-body.dark-mode .tooltip-button {
-    background: none;
-}
-
-body.dark-mode .tooltip-button svg {
-    stroke: #aaccdd;
-}
-
-footer {
-    align-self: center;
+    margin-top: 1rem;
+    border-bottom: 2px solid var(--delimiter-color);
 }

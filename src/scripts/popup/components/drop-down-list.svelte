@@ -2,7 +2,7 @@
     import { flip } from 'svelte/animate';
     import { quadOut } from 'svelte/easing';
     import { slide } from 'svelte/transition';
-    import ArrowUp from '../assets/arrowhead-up.svg';
+    import ArrowUp from '../../assets/arrowhead-up.svg';
     import { slideHorizontal } from '../transition';
     import SvgButton from './svg-button.svelte';
     import FloatPreview from './float-preview.svelte';

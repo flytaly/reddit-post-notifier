@@ -95,6 +95,24 @@
         "message": "Extension is authorized",
         "description": "Authorized message"
     },
+    "optionsNavSettings": {
+        "message": "Settings"
+    },
+    "optionsNavGeneral": {
+        "message": "General"
+    },
+    "optionsNavMail": {
+        "message": "Mail"
+    },
+    "optionsNavSubreddits": {
+        "message": "Subreddits"
+    },
+    "optionsNavSearch": {
+        "message": "Reddit Search"
+    },
+    "optionsNavInfo": {
+        "message": "Info"
+    },
     "optionSignOutBtn": {
         "message": "sign out",
         "description": "Sign out button"

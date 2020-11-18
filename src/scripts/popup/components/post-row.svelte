@@ -2,7 +2,7 @@
     import { getMsg, baseUrl } from '../../utils';
     import SvgButton from './svg-button.svelte';
     import CheckMarkButton from './check-mark-button.svelte';
-    import Pin from '../assets/pin-outline.svg';
+    import Pin from '../../assets/pin-outline.svg';
     import storage from '../../storage';
     import { setId } from '../pinned-post';
 

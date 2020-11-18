@@ -1,6 +1,6 @@
 <script>
     import SvgButton from './svg-button.svelte';
-    import CheckMark from '../assets/check-mark.svg';
+    import CheckMark from '../../assets/check-mark.svg';
 
     export let clickHandler = null;
     export let title = null;
