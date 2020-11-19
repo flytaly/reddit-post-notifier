@@ -4,15 +4,26 @@
     import { routes } from '../route';
     import OptionItem from './option-item.svelte';
     import storage from '../../storage';
+    import RadioGroup from './radio-group.svelte';
+    import applyTheme from '../../theme';
 
     onMount(() => {
-        if (window.location.hash) document.body.querySelector(window.location.hash)?.scrollIntoView();
+        const { hash } = window.location;
+        if (!hash || hash === `#${routes.settings.id}`) return window.scrollTo(0, 0);
+        document.body.querySelector(hash)?.scrollIntoView();
     });
 
     export let options;
 
-    let { updateInterval } = options;
     const { sections } = routes.settings;
+    const { theme } = options;
+    let { updateInterval } = options;
+
+    const themeValueList = [
+        { value: 'light', id: 'light', label: getMsg('optionThemeLight') }, //
+        { value: 'dark', id: 'dark', label: getMsg('optionThemeDark') },
+        { value: 'auto', id: 'auto', label: getMsg('optionThemeAuto') },
+    ];
 
     const onUpdateIntervalChange = () => {
         const n = parseInt(updateInterval, 10);
@@ -20,9 +31,17 @@
             return storage.saveOptions({ updateInterval });
         }
     };
+
+    const onThemeChange = (newTheme) => {
+        applyTheme(newTheme);
+        storage.saveOptions({ theme: newTheme });
+    };
 </script>
 
 <style>
+    input {
+        min-width: 5rem;
+    }
     .settings-container {
         display: flex;
         flex-direction: column;
@@ -45,6 +64,11 @@
                     size="8"
                     bind:value={updateInterval}
                     on:input={onUpdateIntervalChange} />
+            </div>
+        </OptionItem>
+        <OptionItem title={getMsg('optionTheme')}>
+            <div slot="controls">
+                <RadioGroup initialValue={theme} valueList={themeValueList} onChange={onThemeChange} />
             </div>
         </OptionItem>
     </sections>

@@ -81,6 +81,18 @@
         "message": "Set the update interval at which the extension will check for new updates. To reduce power and internet traffic consumption it's recommended to set update interval at least 60 seconds",
         "description": "Update interval description"
     },
+    "optionTheme": {
+        "message": "Theme"
+    },
+    "optionThemeAuto": {
+        "message": "Auto"
+    },
+    "optionThemeLight": {
+        "message": "Light"
+    },
+    "optionThemeDark": {
+        "message": "Dark"
+    },
     "optionDelPostAfterClick": {
         "message": "Delete post after opening (clicking on it)",
         "description": "Delete post after click option"
