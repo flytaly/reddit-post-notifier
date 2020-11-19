@@ -3,7 +3,7 @@
     import { routes } from '../route';
 
     onMount(() => {
-        document.body.querySelector(window.location.hash)?.scrollIntoView();
+        if (window.location.hash) document.body.querySelector(window.location.hash)?.scrollIntoView();
     });
 </script>
 

@@ -55,13 +55,31 @@
         "message": "Mark all posts as read",
         "description": "Footer button"
     },
+    "optionsNavSettings": {
+        "message": "Settings"
+    },
+    "optionsNavGeneral": {
+        "message": "General"
+    },
+    "optionsNavMail": {
+        "message": "Mail"
+    },
+    "optionsNavSubreddits": {
+        "message": "Subreddits"
+    },
+    "optionsNavSearch": {
+        "message": "Reddit Search"
+    },
+    "optionsNavInfo": {
+        "message": "Info"
+    },
     "optionUpdateInterval": {
-        "message": "Update interval:",
+        "message": "Update interval (in seconds)",
         "description": "Name of option: update interval"
     },
-    "optionUpdateIntervalSeconds": {
-        "message": "seconds",
-        "description": "Seconds"
+    "optionUpdateIntervalDescription": {
+        "message": "Set the update interval at which the extension will check for new updates. To reduce power and internet traffic consumption it's recommended to set update interval at least 60 seconds",
+        "description": "Update interval description"
     },
     "optionDelPostAfterClick": {
         "message": "Delete post after opening (clicking on it)",
@@ -70,10 +88,6 @@
     "optionHideEmptyGroups": {
         "message": "Hide empty groups",
         "description": "Hide empty groups checkbox"
-    },
-    "optionUpdateIntervalTooltip": {
-        "message": "To reduce power and internet traffic consumption it's recommended to set update interval at least 60 seconds",
-        "description": "Update interval tooltip"
     },
     "optionMail": {
         "message": "Mail & Authorization",
@@ -94,24 +108,6 @@
     "optionIsAuthMsg": {
         "message": "Extension is authorized",
         "description": "Authorized message"
-    },
-    "optionsNavSettings": {
-        "message": "Settings"
-    },
-    "optionsNavGeneral": {
-        "message": "General"
-    },
-    "optionsNavMail": {
-        "message": "Mail"
-    },
-    "optionsNavSubreddits": {
-        "message": "Subreddits"
-    },
-    "optionsNavSearch": {
-        "message": "Reddit Search"
-    },
-    "optionsNavInfo": {
-        "message": "Info"
     },
     "optionSignOutBtn": {
         "message": "sign out",

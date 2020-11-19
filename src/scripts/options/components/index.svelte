@@ -47,7 +47,7 @@
     <Sidebar {activePage} />
     <div class="page">
         {#if activePage === routes.settings.id}
-            <SettingsPage />
+            <SettingsPage {options} />
         {:else if activePage === routes.info.id}
             <InfoPage />
         {/if}

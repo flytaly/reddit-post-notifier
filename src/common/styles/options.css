@@ -2,9 +2,14 @@ body {
     --font-color: #252525;
     --link-color: #016ed8;
     --bg-color: #ffffff;
-    --accent-color: #ff0000;
+    --accent-color: #dd0000;
+    --accent-color2: rgb(99, 156, 212);
+    --outline-color: rgba(99, 156, 212, 0.9);
     --grey: #777777;
     --delimiter-color: #dedede;
+    --input-bg-color: intial;
+    --border-color: intial;
+    --invalid-color: #ff0000;
 }
 
 body.dark-mode {
@@ -12,12 +17,25 @@ body.dark-mode {
     --bg-color: #202020;
     --link-color: #98c0ff;
     --accent-color: #f08080;
+    --accent-color2: rgba(173, 205, 221);
+    --outline-color: rgba(173, 205, 221, 0.8);
     --grey: #888888;
     --delimiter-color: #444444;
+    --input-bg-color: #444444;
+    --border-color: #737373;
+    --invalid-color: #ff4040;
 }
 
 * {
     box-sizing: border-box;
+}
+
+*:focus {
+    outline: 2px solid var(--outline-color);
+    outline-offset: 2px;
+}
+*:invalid {
+    outline-color: var(--invalid-color);
 }
 
 body,
@@ -52,4 +70,13 @@ h2 {
     width: 100%;
     margin-top: 1rem;
     border-bottom: 2px solid var(--delimiter-color);
+}
+
+input[type='text'],
+input[type='number'] {
+    color: var(--font-color);
+    background-color: var(--input-bg-color);
+    border-color: var(--border-color);
+    height: 1.5rem;
+    font-size: 1rem;
 }
