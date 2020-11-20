@@ -23,7 +23,11 @@
     input:checked + label {
         background-color: var(--accent-color2);
     }
-    input:focus + label {
+    input:-moz-focusring + label {
+        outline: 2px solid var(--outline-color);
+        outline-offset: 2px;
+    }
+    input:focus-visible + label {
         outline: 2px solid var(--outline-color);
         outline-offset: 2px;
     }

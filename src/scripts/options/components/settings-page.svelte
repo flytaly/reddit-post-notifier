@@ -17,7 +17,7 @@
 
     const { sections } = routes.settings;
     const { theme } = options;
-    let { updateInterval } = options;
+    let { updateInterval, delPostAfterBodyClick, hideEmptyGroups } = options;
 
     const themeValueList = [
         { value: 'light', id: 'light', label: getMsg('optionThemeLight') }, //
@@ -39,7 +39,7 @@
 </script>
 
 <style>
-    input {
+    input[type='number'] {
         min-width: 5rem;
     }
     .settings-container {
@@ -69,6 +69,24 @@
         <OptionItem title={getMsg('optionTheme')}>
             <div slot="controls">
                 <RadioGroup initialValue={theme} valueList={themeValueList} onChange={onThemeChange} />
+            </div>
+        </OptionItem>
+        <OptionItem title={getMsg('optionDelPostAfterClick')}>
+            <div slot="description">{getMsg('optionDelPostAfterClickDescription')}</div>
+            <div slot="controls">
+                <input
+                    type="checkbox"
+                    bind:checked={delPostAfterBodyClick}
+                    on:change={() => storage.saveOptions({ delPostAfterBodyClick })} />
+            </div>
+        </OptionItem>
+        <OptionItem title={getMsg('optionHideEmptyGroups')}>
+            <div slot="description">{getMsg('optionHideEmptyGroupsDescription')}</div>
+            <div slot="controls">
+                <input
+                    type="checkbox"
+                    bind:checked={hideEmptyGroups}
+                    on:change={() => storage.saveOptions({ hideEmptyGroups })} />
             </div>
         </OptionItem>
     </sections>

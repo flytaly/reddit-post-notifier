@@ -7,11 +7,14 @@
         display: flex;
         font-weight: normal;
         font-size: 0.95rem;
-        margin-bottom: 1.5rem;
+        margin-bottom: 2rem;
     }
     .description {
         flex-grow: 1;
         padding-right: 1rem;
+    }
+    .description :global([slot='description']) {
+        color: var(--grey);
     }
     header {
         font-weight: bold;

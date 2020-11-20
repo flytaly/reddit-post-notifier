@@ -78,7 +78,7 @@
         "description": "Name of option: update interval"
     },
     "optionUpdateIntervalDescription": {
-        "message": "Set the update interval at which the extension will check for new updates. To reduce power and internet traffic consumption it's recommended to set update interval at least 60 seconds",
+        "message": "Set the update interval at which the extension will check for new updates. To reduce power and internet traffic consumption it's recommended to set update interval at least 60 seconds.",
         "description": "Update interval description"
     },
     "optionTheme": {
@@ -94,12 +94,18 @@
         "message": "Dark"
     },
     "optionDelPostAfterClick": {
-        "message": "Delete post after opening (clicking on it)",
+        "message": "Delete post after opening",
         "description": "Delete post after click option"
+    },
+    "optionDelPostAfterClickDescription": {
+        "message": "After clicking on a post open it in the new tab and then automatically delete."
     },
     "optionHideEmptyGroups": {
         "message": "Hide empty groups",
         "description": "Hide empty groups checkbox"
+    },
+    "optionHideEmptyGroupsDescription": {
+        "message": "If selected, don't show empty subreddits and reddit searches in the popup."
     },
     "optionMail": {
         "message": "Mail & Authorization",

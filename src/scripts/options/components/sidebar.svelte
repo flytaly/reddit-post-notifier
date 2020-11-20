@@ -12,13 +12,12 @@
         top: 1rem;
         align-self: flex-start;
         flex-direction: column;
-        padding: 0.5rem;
-        padding-bottom: 2rem;
-        min-width: 8rem;
+        padding: 0.5rem 1rem 2rem 1rem;
+        /* width: fit-content; */
         box-shadow: 0px 0px 2px 0px rgba(0, 0, 0, 0.5);
     }
     :global(body.dark-mode) aside {
-        box-shadow: 0px 0px 2px 0px rgba(255, 255, 255, 0.5);
+        box-shadow: 0px 0px 3px 0px rgba(255, 255, 255, 0.5);
     }
     .logo {
         align-self: center;
@@ -43,15 +42,16 @@
     }
     a {
         color: var(--font-color);
-        margin-top: 0.5rem;
         text-decoration: none;
         size: 1rem;
+        line-height: 2rem;
     }
     a.active {
         font-weight: bold;
         color: var(--accent-color);
     }
     a.page-link {
+        line-height: 2.1rem;
         font-size: 1.1rem;
     }
     a:hover {
@@ -60,6 +60,7 @@
     }
     a.section-link {
         margin-left: 1rem;
+        white-space: nowrap;
     }
 </style>
 
