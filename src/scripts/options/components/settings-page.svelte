@@ -6,6 +6,7 @@
     import storage from '../../storage';
     import RadioGroup from './radio-group.svelte';
     import applyTheme from '../../theme';
+    import AuthAndMailBlock from './auth-mail-block.svelte';
 
     onMount(() => {
         const { hash } = window.location;
@@ -91,6 +92,7 @@
         </OptionItem>
     </sections>
     <h2 id={sections.mail.id}>{sections.mail.name}</h2>
+    <AuthAndMailBlock messages={options.messages} messagesNotify={options.messagesNotify} />
     <h2 id={sections.subreddit.id}>{sections.subreddit.name}</h2>
     <h2 id={sections['reddit-search'].id}>{sections['reddit-search'].name}</h2>
 </div>

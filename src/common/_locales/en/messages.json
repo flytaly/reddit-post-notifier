@@ -107,20 +107,22 @@
     "optionHideEmptyGroupsDescription": {
         "message": "If selected, don't show empty subreddits and reddit searches in the popup."
     },
-    "optionMail": {
-        "message": "Mail & Authorization",
-        "description": "Name of option group: mail"
+    "optionAuthorization": {
+        "message": "Authorization"
     },
-    "optionMailTooltip": {
-        "message": "Check unread mail on reddit. The extension should be authorized to check your mail",
-        "description": "Mail & Authorization tooltip"
+    "optionAuthorizationDescription": {
+        "message": "The extension should be authorized to check your mail but it’s not required for everything else."
     },
     "optionNoAuthMsg": {
         "message": "Extension isn't authorized",
         "description": "No authorized message"
     },
     "optionStartAuthBtn": {
-        "message": "click here to authorize",
+        "message": "authorize",
+        "description": "Authorize button"
+    },
+    "optionStartAuthBtnDisabled": {
+        "message": "authorizing",
         "description": "Authorize button"
     },
     "optionIsAuthMsg": {
@@ -131,16 +133,21 @@
         "message": "sign out",
         "description": "Sign out button"
     },
+    "optionMail": {
+        "message": "Mail"
+    },
+    "optionMailDescription": {
+        "message": "Check mail on reddit to display the number of unread private messages in the popup"
+    },
+    "optionMailNoAuthTooltip": {
+        "message": "The extension should be authorized to check your mail"
+    },
     "optionMailShow": {
-        "message": "Watch for new reddit mail:",
+        "message": "watch for new reddit mail",
         "description": "Option: watch for new mail"
     },
-    "optionMailShow_title": {
-        "message": "Show number of unread private messages in the popup",
-        "description": "Attribute title of option: watch for new mail"
-    },
     "optionMailNotify": {
-        "message": "and show desktop notifications if there is new mail:",
+        "message": "and show desktop notifications if there is new mail",
         "description": "Option: show new mail notifications"
     },
     "optionMailNotify_title": {

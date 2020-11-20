@@ -1,13 +1,18 @@
 <script>
-    export let title;
+    export let title = '';
+    export let column = false;
 </script>
 
 <style>
     article {
         display: flex;
+        flex-direction: row;
         font-weight: normal;
         font-size: 0.95rem;
-        margin-bottom: 2rem;
+        margin-bottom: 1.5rem;
+    }
+    .column {
+        flex-direction: column;
     }
     .description {
         flex-grow: 1;
@@ -15,11 +20,12 @@
     }
     .description :global([slot='description']) {
         color: var(--grey);
+        margin-bottom: 0.5rem;
     }
     header {
         font-weight: bold;
         font-size: 1.1rem;
-        margin-bottom: 0.8rem;
+        margin-bottom: 0.5rem;
     }
     .controls {
         min-width: 12rem;
@@ -28,7 +34,7 @@
     }
 </style>
 
-<article>
+<article class:column>
     <div class="description">
         <header>{title}</header>
         <slot name="description" />

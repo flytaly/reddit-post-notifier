@@ -10,8 +10,10 @@ body {
     --input-bg-color: intial;
     --border-color: #252525;
     --invalid-color: #ff0000;
+    --success-color: #409040;
     --btn-hover-color: rgba(0, 0, 0, 0.1);
     --btn-active-color: rgba(0, 0, 0, 0.06);
+    --disable-color: #dddddd;
 }
 
 body.dark-mode {
@@ -24,10 +26,12 @@ body.dark-mode {
     --grey: #a8a8a8;
     --delimiter-color: #444444;
     --input-bg-color: #444444;
-    --border-color: #737373;
+    --border-color: #aaaaaa;
     --invalid-color: #ff4040;
+    --success-color: #70d070;
     --btn-hover-color: #737373;
     --btn-active-color: #b1b1b3;
+    --disable-color: #555555;
 }
 
 * {
@@ -111,14 +115,28 @@ input[type='checkbox']:checked {
     background-image: url('/images/check-mark_dark.svg');
 }
 
+button:disabled,
+label:disabled,
+input:disabled {
+    border-color: var(--disable-color);
+    color: var(--disable-color);
+    cursor: not-allowed;
+}
+
 .dark-mode input[type='checkbox']:checked {
     background-image: url('/images/check-mark_light.svg');
 }
 
 button,
 .is-button {
+    appearance: none;
     user-select: none;
     background-color: var(--input-bg-color);
+    color: var(--font-color);
+    border: 1px solid var(--border-color);
+    padding: 0.3rem 0.8rem;
+    box-shadow: none;
+    font-size: 1rem;
 }
 
 input:hover,
@@ -130,4 +148,8 @@ button:hover {
 .is-button:active,
 button:active {
     background-color: var(--btn-active-color);
+}
+
+.error {
+    color: var(--invalid-color);
 }
