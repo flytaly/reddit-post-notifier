@@ -3,12 +3,13 @@ body {
     --link-color: #016ed8;
     --bg-color: #ffffff;
     --accent-color: #cc0000;
-    --accent-color2: #bfdfff;
+    --accent-color2: #5aa5d2;
+    --accent-color-fill: #bfdfff;
     --outline-color: rgba(99, 156, 212, 0.9);
     --grey: #777777;
     --delimiter-color: #dedede;
     --input-bg-color: intial;
-    --border-color: #252525;
+    --border-color: #333333;
     --invalid-color: #ff0000;
     --success-color: #409040;
     --btn-hover-color: rgba(100, 100, 100, 0.1);
@@ -21,7 +22,8 @@ body.dark-mode {
     --bg-color: #202020;
     --link-color: #98c0ff;
     --accent-color: #f08080;
-    --accent-color2: #6688dd;
+    --accent-color2: #aaccdd;
+    --accent-color-fill: #6688dd;
     --outline-color: rgba(173, 205, 221, 0.8);
     --grey: #a8a8a8;
     --delimiter-color: #444444;
@@ -95,7 +97,7 @@ input {
     appearance: none;
     color: var(--font-color);
     background-color: var(--input-bg-color);
-    border: 2px solid var(--border-color);
+    border: 1px solid var(--border-color);
     box-shadow: none;
 }
 
@@ -113,7 +115,7 @@ input[type='checkbox'] {
 }
 
 input[type='checkbox']:checked {
-    background-color: var(--accent-color2);
+    background-color: var(--accent-color-fill);
     background-image: url('/images/check-mark_dark.svg');
 }
 

@@ -22,6 +22,9 @@
         color: var(--grey);
         margin-bottom: 0.5rem;
     }
+    :not(.column) .description :global([slot='description']) {
+        max-width: 80%;
+    }
     header {
         font-weight: bold;
         font-size: 1.1rem;

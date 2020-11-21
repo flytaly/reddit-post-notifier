@@ -38,8 +38,9 @@
     }
     .page {
         padding-left: 1rem;
+        padding-bottom: 1rem;
         height: 100%;
-        width: 900px;
+        width: 50rem;
         max-width: 100%;
     }
 </style>

@@ -151,7 +151,7 @@
         "description": "Option: show new mail notifications"
     },
     "optionSubreddits": {
-        "message": "Watch for new posts in following subreddits"
+        "message": "Watch for new posts in subreddits"
     },
     "optionSubredditsTooltip1": {
         "message": "Enter the list of subreddits you want to monitor.",
@@ -169,21 +169,8 @@
         "message": "show desktop notifications of new posts in the subreddits ",
         "description": "Option: notify about new subreddit posts"
     },
-    "optionSearch": {
-        "message": "Search",
-        "description": "Name of option group: Search"
-    },
-    "optionSearchTooltip1": {
-        "message": "Watch for specific posts.",
-        "description": "Search tooltip"
-    },
-    "optionSearchTooltip2": {
-        "message": "To check that everything works, open extension's popup in the browser toolbar and click the update button in the top left corner.",
-        "description": "Search tooltip"
-    },
     "optionSearchLegend": {
-        "message": "Watch for specific posts in the subreddit:",
-        "description": "Legend of fieldset with a search inputs"
+        "message": "Watch for specific posts"
     },
     "optionSearchName": {
         "message": "Name:",
@@ -232,6 +219,9 @@
     "optionSearchDelete": {
         "message": "Delete the search",
         "description": "Button: delete the search"
+    },
+    "optionsSearchAddNew": {
+        "message": "Add new search"
     },
     "optionClearData": {
         "message": "Sign out and clear local data",

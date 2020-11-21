@@ -10,7 +10,7 @@
         justify-content: flex-start;
         align-content: center;
     }
-    :global([slot='description']) {
+    label :global([slot='description']) {
         margin: auto 0.5rem;
     }
     .indent {

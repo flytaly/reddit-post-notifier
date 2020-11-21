@@ -21,7 +21,7 @@
         padding: 0.3rem 0.8rem;
     }
     input:checked + label {
-        background-color: var(--accent-color2);
+        background-color: var(--accent-color-fill);
     }
     input:-moz-focusring + label {
         outline: 2px solid var(--outline-color);

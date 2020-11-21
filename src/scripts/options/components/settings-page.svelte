@@ -8,6 +8,7 @@
     import applyTheme from '../../theme';
     import AuthAndMailBlock from './auth-mail-block.svelte';
     import SubredditsBlock from './subreddits-block.svelte';
+    import SearchBlock from './search-block.svelte';
 
     onMount(() => {
         const { hash } = window.location;
@@ -105,5 +106,6 @@
     </sections>
     <sections>
         <h2 id={sections['reddit-search'].id}>{sections['reddit-search'].name}</h2>
+        <SearchBlock queriesList={data.queriesList} queriesData={data.queries} />
     </sections>
 </div>

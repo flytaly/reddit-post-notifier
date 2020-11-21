@@ -66,10 +66,10 @@
         margin-top: 0.4rem;
         width: max-content;
     }
-    .sign-out {
+    /* .sign-out {
         border-color: var(--accent-color);
         color: var(--accent-color);
-    }
+     }  */
 </style>
 
 {#await authDataPromise then { refreshToken }}
@@ -80,10 +80,7 @@
                 <div class="auth-status" class:is-auth={refreshToken}>
                     {getMsg(refreshToken ? 'optionIsAuthMsg' : 'optionNoAuthMsg')}
                 </div>
-                <button
-                    class:sign-out={refreshToken}
-                    on:click={refreshToken ? signOut : authorize}
-                    disabled={isAuthorizing}>
+                <button on:click={refreshToken ? signOut : authorize} disabled={isAuthorizing}>
                     {getBtnMessage(refreshToken, isAuthorizing)}</button>
                 <div class="error">{authError}</div>
             </div>
