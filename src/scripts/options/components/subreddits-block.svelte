@@ -3,18 +3,24 @@
     import storage from '../../storage';
     import OptionItem from './option-item.svelte';
     import LabelContainer from './label-container.svelte';
-    import BellIcon from '../../assets/bell.svg';
     import NotificationLabel from './notification-label.svelte';
 
     export let subredditNotify;
     export let subredditList;
     export let subredditsData;
 
+    if (!Array.isArray(subredditList)) subredditList = [];
+
     let inputRef;
-    let inputString = subredditList.join ? subredditList.join(' ') : '';
+    let inputString = subredditList.join(' ');
+    let errorList = subredditList.reduce((acc, subreddit) => {
+        const error = subredditsData[subreddit]?.error;
+        if (error) acc.push({ subreddit, ...error });
+        return acc;
+    }, []);
 
     const saveInput = async () => {
-        const values = inputString
+        const { valid, invalid } = inputString
             .trim()
             .split(' ')
             .reduce(
@@ -30,13 +36,16 @@
                 { valid: [], invalid: [] },
             );
 
-        if (values.invalid.length) {
-            inputRef.setCustomValidity(`Invalid subreddits names: ${values.invalid.join(' ')}`);
+        if (invalid.length) {
+            inputRef.setCustomValidity(`Invalid subreddits names: ${invalid.join(' ')}`);
         } else {
             inputRef.setCustomValidity('');
+            if (errorList.length) {
+                errorList = errorList.filter((e) => valid.includes(e.subreddit));
+            }
         }
 
-        return storage.saveSubredditList(values.valid);
+        return storage.saveSubredditList(valid);
     };
 
     const changeHandler = debounce(saveInput, 200);
@@ -55,6 +64,16 @@
     .input-info {
         color: var(--grey);
         font-size: 0.9rem;
+    }
+    .error-block {
+        margin-top: 0.5rem;
+    }
+    .error-block b {
+        color: var(--accent-color);
+    }
+    ul {
+        list-style: none;
+        margin: 0;
     }
 </style>
 
@@ -84,9 +103,14 @@
             </span>
         </LabelContainer>
     </div>
-    <!-- TODO: show subreddits errors -->
-    <ul>
-        <li>error</li>
-        <li>error</li>
-    </ul>
+    {#if errorList.length}
+        <div class="error-block">
+            <b>Subreddits with errors:</b>
+            <ul>
+                {#each errorList as { error, subreddit, message }}
+                    <li><b>{`r/${subreddit}: `}</b> <span class="error">{`${error} ${message}`}</span></li>
+                {/each}
+            </ul>
+        </div>
+    {/if}
 </OptionItem>

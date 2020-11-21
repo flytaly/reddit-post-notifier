@@ -28,7 +28,6 @@
         margin-bottom: 0.5rem;
     }
     .controls {
-        min-width: 12rem;
         text-align: right;
         padding-right: 1rem;
     }

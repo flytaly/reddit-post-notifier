@@ -16,7 +16,6 @@
     });
 
     export let data; // storage data
-    console.log('data:', data);
 
     const { sections } = routes.settings;
     const { theme } = data.options;

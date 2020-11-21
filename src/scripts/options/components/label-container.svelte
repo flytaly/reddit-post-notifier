@@ -25,4 +25,5 @@
 <label class:indent class:disabled {title}>
     <slot name="input" />
     <slot name="description" />
+    <slot />
 </label>

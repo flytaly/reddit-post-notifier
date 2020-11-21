@@ -10,6 +10,12 @@
     export let messagesNotify;
 
     let authDataPromise = storage.getAuthData();
+    authDataPromise.then(({ refreshToken }) => {
+        if (!refreshToken) {
+            messages = false;
+            messagesNotify = false;
+        }
+    });
     let authError = '';
     let isAuthorizing = false;
 
