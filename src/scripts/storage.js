@@ -69,8 +69,10 @@ const storage = {
         return queries;
     },
 
-    async getAllData() {
-        return browser.storage.local.get(dataFields);
+    async getAllData(withOptions = false) {
+        const fields = { ...dataFields };
+        if (withOptions) fields.options = {};
+        return browser.storage.local.get(fields);
     },
 
     /**

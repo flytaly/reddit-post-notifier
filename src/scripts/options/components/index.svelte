@@ -4,8 +4,9 @@
     import SettingsPage from './settings-page.svelte';
     import InfoPage from './info-page.svelte';
     import { routes, hashToPage } from '../route';
+    import storage from '../../storage';
 
-    export let options;
+    const storageDataPromise = storage.getAllData(true);
 
     const defaultPage = routes.settings.id;
     let activePage = defaultPage;
@@ -46,10 +47,12 @@
 <div class="main-container">
     <Sidebar {activePage} />
     <div class="page">
-        {#if activePage === routes.settings.id}
-            <SettingsPage {options} />
-        {:else if activePage === routes.info.id}
-            <InfoPage />
-        {/if}
+        {#await storageDataPromise then data}
+            {#if activePage === routes.info.id}
+                <InfoPage />
+            {:else}
+                <SettingsPage {data} />
+            {/if}
+        {/await}
     </div>
 </div>

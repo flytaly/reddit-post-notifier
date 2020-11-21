@@ -63,6 +63,7 @@
         height: 100%;
         min-width: 200px;
         margin: auto 1rem;
+        text-align: center;
     }
     .no-queries a {
         margin-top: 0.4rem;

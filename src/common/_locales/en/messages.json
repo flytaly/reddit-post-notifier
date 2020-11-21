@@ -134,7 +134,7 @@
         "description": "Sign out button"
     },
     "optionMail": {
-        "message": "Mail"
+        "message": "Unread mail"
     },
     "optionMailDescription": {
         "message": "Check mail on reddit to display the number of unread private messages in the popup"
@@ -147,35 +147,26 @@
         "description": "Option: watch for new mail"
     },
     "optionMailNotify": {
-        "message": "and show desktop notifications if there is new mail",
+        "message": "show desktop notifications if there is new mail",
         "description": "Option: show new mail notifications"
     },
-    "optionMailNotify_title": {
-        "message": "Show desktop notifications when you have new unread private messages",
-        "description": "Attribute title of option: show new mail notifications"
-    },
     "optionSubreddits": {
-        "message": "Subreddits",
-        "description": "Name of option group: Subreddits"
+        "message": "Watch for new posts in following subreddits"
     },
     "optionSubredditsTooltip1": {
         "message": "Enter the list of subreddits you want to monitor.",
         "description": "Subreddits tooltip"
     },
     "optionSubredditsTooltip2": {
-        "message": "To check that everything works, open extension's popup in the browser toolbar and click the update button in the top left corner.",
+        "message": "To check that everything works, open extension's popup in the browser toolbar and click the update button.",
         "description": "Subreddits tooltip"
-    },
-    "optionSubredditsLabel": {
-        "message": "Watch for new posts in following subreddits:",
-        "description": "Option: label for the input of subreddits"
     },
     "optionSubredditsDescription": {
         "message": "List of subreddits (without \"r/\") divided by spaces. Example: formula1 learnprogramming",
         "description": "Option: description for the input of subreddits"
     },
     "optionSubredditsNotify": {
-        "message": "Show desktop notifications of new posts in the subreddits ",
+        "message": "show desktop notifications of new posts in the subreddits ",
         "description": "Option: notify about new subreddit posts"
     },
     "optionSearch": {

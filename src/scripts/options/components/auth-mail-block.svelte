@@ -2,7 +2,9 @@
     import storage from '../../storage';
     import { getMsg } from '../../utils';
     import OptionItem from './option-item.svelte';
+    import LabelContainer from './label-container.svelte';
     import auth from '../../background/auth';
+    import NotificationLabel from './notification-label.svelte';
 
     export let messages;
     export let messagesNotify;
@@ -58,20 +60,6 @@
         margin-top: 0.4rem;
         width: max-content;
     }
-    label {
-        display: flex;
-        justify-content: flex-start;
-        align-content: center;
-    }
-    label > span {
-        margin: auto 0.5rem;
-    }
-    .indent {
-        margin-left: 2rem;
-    }
-    .disabled {
-        cursor: not-allowed;
-    }
     .sign-out {
         border-color: var(--accent-color);
         color: var(--accent-color);
@@ -98,8 +86,9 @@
     <OptionItem title={getMsg('optionMail')} column>
         <div slot="description">{getMsg('optionMailDescription')}</div>
         <div slot="controls">
-            <label class:disabled={!refreshToken} title={!refreshToken ? getMsg('optionMailNoAuthTooltip') : ''}>
+            <LabelContainer disabled={!refreshToken} title={!refreshToken ? getMsg('optionMailNoAuthTooltip') : ''}>
                 <input
+                    slot="input"
                     type="checkbox"
                     bind:checked={messages}
                     disabled={!refreshToken}
@@ -107,14 +96,19 @@
                         if (!messages) messagesNotify = false;
                         storage.saveOptions({ messages, messagesNotify });
                     }} />
-                <span>{getMsg('optionMailShow')}</span></label>
-            <label class="indent" class:disabled={!messages}>
+                <span slot="description">{getMsg('optionMailShow')}</span>
+            </LabelContainer>
+            <LabelContainer disabled={!messages} indent>
                 <input
+                    slot="input"
                     type="checkbox"
                     bind:checked={messagesNotify}
                     disabled={!refreshToken || !messages}
                     on:change={() => storage.saveOptions({ messagesNotify })} />
-                <span>{getMsg('optionMailNotify')}</span></label>
+                <span slot="description">
+                    <NotificationLabel checked={messagesNotify} text={getMsg('optionMailNotify')} />
+                </span>
+            </LabelContainer>
         </div>
     </OptionItem>
 {:catch error}

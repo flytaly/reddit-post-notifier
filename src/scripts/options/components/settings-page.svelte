@@ -7,6 +7,7 @@
     import RadioGroup from './radio-group.svelte';
     import applyTheme from '../../theme';
     import AuthAndMailBlock from './auth-mail-block.svelte';
+    import SubredditsBlock from './subreddits-block.svelte';
 
     onMount(() => {
         const { hash } = window.location;
@@ -14,11 +15,12 @@
         document.body.querySelector(hash)?.scrollIntoView();
     });
 
-    export let options;
+    export let data; // storage data
+    console.log('data:', data);
 
     const { sections } = routes.settings;
-    const { theme } = options;
-    let { updateInterval, delPostAfterBodyClick, hideEmptyGroups } = options;
+    const { theme } = data.options;
+    let { updateInterval, delPostAfterBodyClick, hideEmptyGroups } = data.options;
 
     const themeValueList = [
         { value: 'light', id: 'light', label: getMsg('optionThemeLight') }, //
@@ -91,8 +93,18 @@
             </div>
         </OptionItem>
     </sections>
-    <h2 id={sections.mail.id}>{sections.mail.name}</h2>
-    <AuthAndMailBlock messages={options.messages} messagesNotify={options.messagesNotify} />
-    <h2 id={sections.subreddit.id}>{sections.subreddit.name}</h2>
-    <h2 id={sections['reddit-search'].id}>{sections['reddit-search'].name}</h2>
+    <sections>
+        <h2 id={sections.mail.id}>{sections.mail.name}</h2>
+        <AuthAndMailBlock messages={data.options.messages} messagesNotify={data.options.messagesNotify} />
+    </sections>
+    <sections>
+        <h2 id={sections.subreddit.id}>{sections.subreddit.name}</h2>
+        <SubredditsBlock
+            subredditNotify={data.options.subredditNotify}
+            subredditList={data.subredditList}
+            subredditsData={data.subreddits} />
+    </sections>
+    <sections>
+        <h2 id={sections['reddit-search'].id}>{sections['reddit-search'].name}</h2>
+    </sections>
 </div>

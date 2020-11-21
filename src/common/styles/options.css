@@ -2,7 +2,7 @@ body {
     --font-color: #252525;
     --link-color: #016ed8;
     --bg-color: #ffffff;
-    --accent-color: #dd0000;
+    --accent-color: #cc0000;
     --accent-color2: #bfdfff;
     --outline-color: rgba(99, 156, 212, 0.9);
     --grey: #777777;
@@ -11,7 +11,7 @@ body {
     --border-color: #252525;
     --invalid-color: #ff0000;
     --success-color: #409040;
-    --btn-hover-color: rgba(0, 0, 0, 0.1);
+    --btn-hover-color: rgba(100, 100, 100, 0.1);
     --btn-active-color: rgba(0, 0, 0, 0.06);
     --disable-color: #dddddd;
 }
@@ -29,7 +29,7 @@ body.dark-mode {
     --border-color: #aaaaaa;
     --invalid-color: #ff4040;
     --success-color: #70d070;
-    --btn-hover-color: #737373;
+    --btn-hover-color: #666666;
     --btn-active-color: #b1b1b3;
     --disable-color: #555555;
 }
@@ -103,6 +103,8 @@ input[type='text'],
 input[type='number'] {
     min-height: 1.5rem;
     font-size: 1rem;
+    padding-left: 0.4rem;
+    padding-right: 0.4rem;
 }
 
 input[type='checkbox'] {
@@ -143,6 +145,11 @@ input:hover,
 .is-button:hover,
 button:hover {
     background-color: var(--btn-hover-color);
+    box-shadow: 0px 0px 3px 3px var(--btn-hover-color);
+}
+
+input::placeholder {
+    color: var(--grey);
 }
 
 .is-button:active,
