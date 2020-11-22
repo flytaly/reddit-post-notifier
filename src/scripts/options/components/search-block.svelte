@@ -28,7 +28,7 @@
 {#each queriesList as queryObject (queryObject.id)}
     <div
         class="item"
-        transition:fly={{ x: 400, duration: 200, easing: quadOut }}
+        transition:fly|local={{ x: 400, duration: 200, easing: quadOut }}
         animate:flip={{ delay: 200, duration: 300, easing: quadOut }}>
         <SearchFieldset {queryObject} error={queriesData[queryObject.id]?.error} {onDelete} />
     </div>

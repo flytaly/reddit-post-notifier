@@ -73,6 +73,9 @@
     "optionsNavInfo": {
         "message": "Info"
     },
+    "optionsNavHowToUse": {
+        "message": "How to use"
+    },
     "optionsNavShortcuts": {
         "message": "Shortcuts"
     },
