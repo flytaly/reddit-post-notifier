@@ -35,18 +35,18 @@
         <div class="description">
             If you want to monitor
             <b>every</b>
-            post in subreddit go to
+            post in a subreddit go to the
             <a href={`#${routes.settings.sections.subreddit.id}`}>subreddits section</a>
-            and add the subreddit name to the list. Then open popup and click update button.
+            and add the subreddit name to the list. Then open popup and click the update button.
         </div>
     </article>
     <article>
         <header>Watch for specific posts</header>
         <div class="description">
             <div>
-                You can stay up to date with reddit search by adding query in the "search query" field in the
+                You can stay up to date with reddit search by adding a query in the "search query" field in the
                 <a href={`#${routes.settings.sections['reddit-search'].id}`}>reddit search</a>
-                section. Look at
+                section. Look at the
                 <a href="https://www.reddit.com/wiki/search#wiki_field_search" target="_blank">reddit search wiki</a>
                 to learn supported keywords and
                 <a href="https://www.reddit.com/wiki/search#wiki_boolean_operators" target="_blank">
@@ -57,11 +57,11 @@
                 Search query examples:
                 <ul>
                     <li>
-                        <div>any posts that contain words France or Germany:</div>
+                        <div>any posts that contain word France or Germany:</div>
                         <div class="query-example">France OR Germany</div>
                     </li>
                     <li>
-                        <div>posts that have Attack on Titan or its japanese name in their title</div>
+                        <div>posts that have Attack on Titan or its Japanese name in their title</div>
                         <div class="query-example">title:"attack on titan" OR title:"shingeki no kyojin"</div>
                     </li>
                 </ul>
@@ -70,7 +70,7 @@
                 Don’t forget to select checkmark with
                 <span class="icon">
                     {@html Bell}
-                </span>icon to recieve notifications.
+                </span>icon to receive notifications.
             </div>
         </div>
     </article>

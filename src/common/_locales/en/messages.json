@@ -44,15 +44,15 @@
         "description": "Open in new tab link link title"
     },
     "queryListCheckMark_title": {
-        "message": "Mark all posts in the subreddit or search as read",
+        "message": "Remove all posts in the subreddit or search",
         "description": "Attribute title of the check mark icon in query list"
     },
     "postListCheckMark_title": {
-        "message": "Mark the post as read",
+        "message": "Remove the post",
         "description": "Attribute title of the check mark icon in post list"
     },
     "footerButton": {
-        "message": "Mark all posts as read",
+        "message": "Remove all not pinned posts",
         "description": "Footer button"
     },
     "optionsNavSettings": {
