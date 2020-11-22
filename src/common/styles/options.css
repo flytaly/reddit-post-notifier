@@ -80,6 +80,7 @@ body {
 }
 
 h1 {
+    font-size: 2rem;
     text-transform: uppercase;
     margin: 0;
     margin-bottom: 1rem;
@@ -88,6 +89,7 @@ h1 {
 }
 
 h2 {
+    font-size: 1.5rem;
     width: 100%;
     margin-top: 1rem;
     border-bottom: 2px solid var(--delimiter-color);

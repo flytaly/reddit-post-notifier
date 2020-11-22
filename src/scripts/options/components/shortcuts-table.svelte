@@ -6,7 +6,7 @@
     .kbd {
         display: inline-block;
         padding: 3px 5px;
-        font: 11px SFMono-Regular, Consolas, Liberation Mono, Menlo, monospace;
+        font: 0.85rem SFMono-Regular, Consolas, Liberation Mono, Menlo, monospace;
         line-height: normal;
         line-height: 10px;
         color: inherit;
