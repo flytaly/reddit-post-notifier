@@ -7,6 +7,7 @@ export const hashToPage = {
     '#subreddits': 'settings',
     '#reddit-search': 'settings',
     '#info': 'info',
+    '#shortcuts': 'info',
 };
 
 export const routes = {
@@ -35,5 +36,11 @@ export const routes = {
     info: {
         id: 'info',
         name: getMsg('optionsNavInfo'),
+        sections: {
+            shortcuts: {
+                id: 'shortcuts',
+                name: getMsg('optionsNavShortcuts'),
+            },
+        },
     },
 };

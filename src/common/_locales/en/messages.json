@@ -73,6 +73,9 @@
     "optionsNavInfo": {
         "message": "Info"
     },
+    "optionsNavShortcuts": {
+        "message": "Shortcuts"
+    },
     "optionUpdateInterval": {
         "message": "Update interval (in seconds)",
         "description": "Name of option: update interval"
