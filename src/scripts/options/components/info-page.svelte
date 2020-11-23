@@ -6,7 +6,12 @@
     import HowToUse from './how-to-use.svelte';
 
     onMount(() => {
-        if (window.location.hash) document.body.querySelector(window.location.hash)?.scrollIntoView();
+        const { hash } = window.location;
+        if (!hash || hash === `#${routes.info.id}`) {
+            window.scrollTo(0, 0);
+            return;
+        }
+        document.body.querySelector(hash)?.scrollIntoView();
     });
 
     const { sections } = routes.info;

@@ -13,7 +13,10 @@
 
     onMount(() => {
         const { hash } = window.location;
-        if (!hash || hash === `#${routes.settings.id}`) return window.scrollTo(0, 0);
+        if (!hash || hash === `#${routes.settings.id}`) {
+            window.scrollTo(0, 0);
+            return;
+        }
         document.body.querySelector(hash)?.scrollIntoView();
     });
 

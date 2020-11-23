@@ -20,6 +20,9 @@
 
     setPageFromHash();
 
+    let pageTitle = `Reddit Post Notifier`;
+    $: pageTitle = `Reddit Post Notifier | ${activePage === routes.info.id ? 'Information' : 'Settings'} `;
+
     onMount(() => {
         const listener = () => {
             setPageFromHash();
@@ -44,6 +47,10 @@
         max-width: 100%;
     }
 </style>
+
+<svelte:head>
+    <title>{pageTitle}</title>
+</svelte:head>
 
 <div class="main-container">
     <Sidebar {activePage} />
