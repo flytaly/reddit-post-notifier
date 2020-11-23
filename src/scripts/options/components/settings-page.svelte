@@ -9,6 +9,7 @@
     import AuthAndMailBlock from './auth-mail-block.svelte';
     import SubredditsBlock from './subreddits-block.svelte';
     import SearchBlock from './search-block.svelte';
+    import types from '../../types';
 
     onMount(() => {
         const { hash } = window.location;
@@ -18,6 +19,7 @@
 
     export let data; // storage data
 
+    const bgScriptPort = browser.runtime.connect();
     const { sections } = routes.settings;
     const { theme } = data.options;
     let { updateInterval, delPostAfterBodyClick, hideEmptyGroups } = data.options;
@@ -28,10 +30,11 @@
         { value: 'auto', id: 'auto', label: getMsg('optionThemeAuto') },
     ];
 
-    const onUpdateIntervalChange = () => {
+    const onUpdateIntervalChange = async () => {
         const n = parseInt(updateInterval, 10);
         if (n && n >= 2) {
-            return storage.saveOptions({ updateInterval });
+            await storage.saveOptions({ updateInterval });
+            bgScriptPort?.postMessage({ type: types.SCHEDULE_NEXT_UPDATE });
         }
     };
 

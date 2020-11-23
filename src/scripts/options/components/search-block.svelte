@@ -12,7 +12,6 @@
         queriesList = [...queriesList, { id: generateId() }];
     };
     addNewQuery();
-    $: console.log('queriesList:', queriesList);
 
     const onDelete = (id) => {
         queriesList = queriesList.filter((q) => q.id !== id);
