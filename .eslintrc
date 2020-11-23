@@ -1,9 +1,16 @@
 {
     "extends": ["airbnb/base", "prettier"],
     "parserOptions": {
-        "ecmaVersion": 2018,
+        "ecmaVersion": 2020,
         "sourceType": "module"
     },
+    "plugins": ["svelte3"],
+    "overrides": [
+        {
+            "files": ["*.svelte"],
+            "processor": "svelte3/svelte3"
+        }
+    ],
     "env": {
         "browser": true,
         "es6": true,
@@ -32,6 +39,8 @@
         "global-require": "off",
         "import/prefer-default-export": "off",
         "import/no-extraneous-dependencies": "off",
+        "import/no-mutable-exports": "off",
+        "no-underscore-dangle": "off",
         "consistent-return": "off"
     }
 }

@@ -6,6 +6,8 @@ global.browser = browser;
 
 storage.countNumberOfUnreadItems = jest.fn();
 storage.removeQueryData = jest.fn();
+const pruneOriginal = storage.prune;
+storage.prune = jest.fn();
 
 describe('authorization data', () => {
     const RealDate = Date;
@@ -37,7 +39,9 @@ describe('authorization data', () => {
         const expiresInAbsolute = new Date().getTime() + expiresIn * 1000;
         const savedData = await storage.saveAuthData(authDataSnake);
         expect(savedData).toMatchObject({
-            accessToken, refreshToken, expiresIn: expiresInAbsolute,
+            accessToken,
+            refreshToken,
+            expiresIn: expiresInAbsolute,
         });
     });
 
@@ -95,7 +99,7 @@ describe('subreddits', () => {
         expect(response).toEqual(subreddits);
     });
 
-    test('should save subreddit\'s posts', async () => {
+    test("should save subreddit's posts", async () => {
         const newPosts = [
             { data: { name: 'fullname_13', created: '1551734739' } },
             { data: { name: 'fullname_12', created: '1551734740' } },
@@ -147,45 +151,31 @@ describe('subreddits', () => {
 
     test('should remove all posts in all subreddits', async () => {
         browser.storage.local.set.callsFake(async (param) => {
-            Object
-                .keys(param.subreddits)
-                .forEach((subreddit) => expect(param.subreddits[subreddit].posts).toEqual([]));
+            Object.keys(param.subreddits).forEach((subreddit) => expect(param.subreddits[subreddit].posts).toEqual([]));
         });
         await storage.removeAllPosts();
     });
 });
 
-describe('prune', () => {
-    const subInfo = {
-        sub1: { posts: [] },
-        sub2: { posts: [] },
-        sub3: { posts: [] },
-        sub4: { posts: [] },
-    };
-    test('should prune redundant subreddits', async () => {
-        storage.getSubredditData = jest.fn(async () => subInfo);
-        browser.storage.local.set.callsFake(async (arg) => {
-            expect(arg).toEqual({ subreddits: { sub1: subInfo.sub1, sub2: subInfo.sub2 } });
-        });
-        const watchSubreddits = ['sub1', 'sub2'];
-        await storage.prune({ watchSubreddits });
-    });
-});
-
 describe('search queries', () => {
-    const queriesList = [{
-        id: 'id1', name: 'name1', query: 'search_query1', subreddit: 'subreddit1',
-    }, {
-        id: 'id2', name: 'name2', query: 'search_query2', subreddit: 'subreddit2',
-    }];
+    const queriesList = [
+        {
+            id: 'id1',
+            name: 'name1',
+            query: 'search_query1',
+            subreddit: 'subreddit1',
+        },
+        {
+            id: 'id2',
+            name: 'name2',
+            query: 'search_query2',
+            subreddit: 'subreddit2',
+        },
+    ];
     const queries = {
         id1: { posts: [{ data: { id: 'postId_11' } }] },
         id2: {
-            posts: [
-                { data: { id: 'postId_21' } },
-                { data: { id: 'postId_22' } },
-                { data: { id: 'postId_23' } },
-            ],
+            posts: [{ data: { id: 'postId_21' } }, { data: { id: 'postId_22' } }, { data: { id: 'postId_23' } }],
         },
     };
 
@@ -201,7 +191,10 @@ describe('search queries', () => {
 
     test('should save new query', async () => {
         const newQuery = {
-            id: 'id3', name: 'name3', query: 'search_query3', subreddit: 'subreddit3',
+            id: 'id3',
+            name: 'name3',
+            query: 'search_query3',
+            subreddit: 'subreddit3',
         };
         browser.storage.local.set.callsFake(async (arg) => {
             expect(arg).toEqual({ queriesList: [...queriesList, newQuery] });
@@ -211,7 +204,10 @@ describe('search queries', () => {
 
     test('should update query', async () => {
         const updateQuery = {
-            id: 'id2', name: 'new_name2', query: 'new_search_query2', subreddit: 'subreddit2',
+            id: 'id2',
+            name: 'new_name2',
+            query: 'new_search_query2',
+            subreddit: 'subreddit2',
         };
         browser.storage.local.set.callsFake(async (arg) => {
             expect(arg).toEqual({ queriesList: [queriesList[0], updateQuery] });
@@ -269,24 +265,17 @@ describe('search queries', () => {
     });
 
     test('should remove all posts in all search queries', async () => {
+        browser.storage.local.get.callsFake(() => ({ queries: cloneDeep(queries) }));
         browser.storage.local.set.callsFake(async (param) => {
-            Object
-                .keys(param.queries)
-                .forEach((q) => expect(param.queries[q].posts).toEqual([]));
+            Object.keys(param.queries).forEach((q) => expect(param.queries[q].posts).toEqual([]));
         });
         await storage.removeAllPosts();
     });
 });
 
 describe('messages', () => {
-    const oldMessages = [
-        { data: { created: '1552338638' } },
-        { data: { created: '1552338630' } },
-    ];
-    const newMessages = [
-        { data: { created: '1552339005' } },
-        { data: { created: '1552339000' } },
-    ];
+    const oldMessages = [{ data: { created: '1552338638' } }, { data: { created: '1552338630' } }];
+    const newMessages = [{ data: { created: '1552339005' } }, { data: { created: '1552339000' } }];
 
     test('should return information about unread messages', async () => {
         browser.storage.local.get.callsFake(async (param) => {
@@ -298,7 +287,6 @@ describe('messages', () => {
     });
 
     test('should save private messages and total number of unread messages', async () => {
-        // const messages =
         browser.storage.local.set.callsFake(async ({ messages }) => {
             expect(messages.count).toBe(4);
             expect(messages.lastPostCreated).toBe(newMessages[0].data.created);
@@ -306,5 +294,73 @@ describe('messages', () => {
         });
 
         await storage.saveMessageData({ newMessages, count: 4 });
+    });
+});
+
+describe('V3 migration', () => {
+    test('should move list of subreddits outside options object', async () => {
+        const watchSubreddits = ['sub1', 'sub2'];
+        const options = {
+            someKey1: 'value1',
+            someKey2: 'value2',
+            watchSubreddits,
+        };
+
+        storage.getOptions = jest.fn(() => Promise.resolve(options));
+        storage.getSubredditList = jest.fn(() => Promise.resolve([]));
+
+        let saved = false;
+        browser.storage.local.set.callsFake((args) => {
+            expect(args.subredditList).toEqual(watchSubreddits);
+            expect(args.options).toMatchObject({
+                someKey1: 'value1',
+                someKey2: 'value2',
+            });
+            expect(args.options.watchSubreddits).toBeUndefined();
+            saved = true;
+        });
+
+        await storage.migrateToV3();
+        expect(saved).toBeTruthy();
+    });
+});
+
+describe('prune', () => {
+    const subInfo = {
+        sub1: { posts: [] },
+        sub2: { posts: [] },
+        sub3: { posts: [] },
+        sub4: { posts: [] },
+    };
+    const queryInfo = {
+        q1: { posts: [] },
+        q2: { posts: [] },
+        q3: { posts: [] },
+    };
+    beforeAll(() => {
+        storage.prune = pruneOriginal;
+    });
+    afterAll(() => {
+        storage.prune = jest.fn();
+    });
+    test('should prune redundant subreddits', async () => {
+        storage.getSubredditData = jest.fn(async () => subInfo);
+        browser.storage.local.set.callsFake(async (arg) => {
+            expect(arg).toEqual({ subreddits: { sub1: subInfo.sub1, sub2: subInfo.sub2 } });
+        });
+        const subredditList = ['sub1', 'sub2'];
+        await storage.prune({ subredditList });
+    });
+
+    test('should prune redundant queries data', async () => {
+        storage.getQueriesData = jest.fn(async () => queryInfo);
+        let called = false;
+        browser.storage.local.set.callsFake(async (arg) => {
+            expect(arg).toEqual({ queries: { q2: queryInfo.q2 } });
+            called = true;
+        });
+        const queriesIdList = ['q2'];
+        await storage.prune({ queriesIdList });
+        expect(called).toBeTruthy();
     });
 });

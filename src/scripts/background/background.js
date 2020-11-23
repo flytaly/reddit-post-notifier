@@ -1,4 +1,3 @@
-import auth from './auth';
 import storage from '../storage';
 import optionsDefault from '../options-default';
 import app from './app';
@@ -22,8 +21,6 @@ async function update() {
     updating = true;
     popupPort.postMessage({ type: types.UPDATING_START });
 
-    const countItems = await storage.countNumberOfUnreadItems();
-    browser.browserAction.setBadgeText({ text: countItems ? String(countItems) : '' });
     try {
         await app.update();
         await scheduleNextUpdate();
@@ -55,6 +52,9 @@ async function setOptions() {
 
 async function startExtension() {
     await setOptions();
+    browser.browserAction.setBadgeBackgroundColor({ color: 'darkred' });
+    storage.countNumberOfUnreadItems();
+    browser.storage.onChanged.addListener(() => storage.countNumberOfUnreadItems());
 
     if (TARGET === 'chrome') {
         /*
@@ -82,32 +82,10 @@ function connectListener(port) {
     }
     popupPort.port = port;
     popupPort.port.onMessage.addListener(async (message) => {
-        const { type, payload } = message;
+        const { type } = message;
         switch (type) {
-            case types.READ_POST: {
-                await storage.removePost(payload);
-                break;
-            }
-            case types.READ_POSTS: {
-                await storage.removePostsFrom(payload);
-                break;
-            }
-            case types.READ_ALL: {
-                await storage.removeAllPosts();
-                break;
-            }
-            case types.RESET: {
-                await storage.clearStorage();
-                await setOptions();
-                update();
-                break;
-            }
             case types.UPDATE_NOW: {
                 update();
-                break;
-            }
-            case types.START_AUTH_FLOW: {
-                await auth.login();
                 break;
             }
             case types.SCHEDULE_NEXT_UPDATE: {
@@ -122,6 +100,17 @@ function connectListener(port) {
     });
 }
 browser.runtime.onConnect.addListener(connectListener);
+
+function onInstall() {
+    const listener = async (details) => {
+        if (details?.reason === 'update' && parseInt(details?.previousVersion, 10) < 3) {
+            await storage.migrateToV3();
+        }
+    };
+
+    browser.runtime.onInstalled.addListener(listener);
+}
+onInstall();
 
 // requestIdleCallback doesn't work in Chrome
 if (TARGET === 'chrome') {

@@ -1,10 +1,10 @@
 {
     "name": "reddit-post-notifier",
-    "version": "2.0.0",
+    "version": "3.0.0",
     "description": "Browser extension that watches for posts in given subreddits or reddit searches",
     "main": "manifest.json",
     "scripts": {
-        "web-ext:ff": "web-ext run --source-dir dist/firefox  --firefox='/Applications/Firefox beta.app/Contents/MacOS/firefox-bin'",
+        "web-ext:ff": "web-ext run --source-dir dist/firefox",
         "web-ext:chrome": "web-ext run --source-dir dist/chrome --target chromium",
         "watch:ff": "rollup -c -w",
         "watch:chrome": "TARGET='chrome' rollup -c -w",
@@ -30,6 +30,10 @@
     },
     "dependencies": {
         "nprogress": "^0.2.0",
+        "rollup-plugin-node-resolve": "^5.2.0",
+        "rollup-plugin-svelte": "^6.1.0",
+        "rollup-plugin-svg-import": "^1.5.1",
+        "svelte": "^3.29.4",
         "tippy.js": "^6.2.7"
     },
     "devDependencies": {
@@ -45,12 +49,14 @@
         "eslint-config-airbnb": "^18.2.0",
         "eslint-config-prettier": "^6.14.0",
         "eslint-plugin-import": "^2.22.1",
+        "eslint-plugin-svelte3": "^2.7.3",
         "html-loader-jest": "^0.2.1",
         "jest": "^26.6.1",
         "jsdom": "^16.4.0",
         "lodash.clonedeep": "^4.5.0",
         "npm-run-all": "^4.1.5",
         "prettier": "^2.1.2",
+        "prettier-plugin-svelte": "^1.4.1",
         "rollup": "^2.32.1",
         "rollup-plugin-copy-watch": "0.0.1",
         "rollup-plugin-delete": "^2.0.0",

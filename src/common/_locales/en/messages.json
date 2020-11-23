@@ -27,44 +27,108 @@
         "message": "Open options",
         "description": "Attribute title of the options icon"
     },
+    "noQueries": {
+        "message": "You didn't add anything to watch",
+        "description": "No queries popup message"
+    },
+    "openOptions": {
+        "message": "Open options",
+        "description": "Open options page tooltip"
+    },
+    "noPosts": {
+        "message": "No unread posts",
+        "description": "No unread posts note"
+    },
+    "watchListOpenInNew_title": {
+        "message": "Open subreddit or reddit search in new browser tab",
+        "description": "Open in new tab link link title"
+    },
     "queryListCheckMark_title": {
-        "message": "Mark all posts in the subreddit or search as read",
+        "message": "Remove all posts in the subreddit or search",
         "description": "Attribute title of the check mark icon in query list"
     },
     "postListCheckMark_title": {
-        "message": "Mark the post as read",
+        "message": "Remove the post",
         "description": "Attribute title of the check mark icon in post list"
     },
     "footerButton": {
-        "message": "Mark all posts as read",
+        "message": "Remove all not pinned posts",
         "description": "Footer button"
     },
+    "optionsNavSettings": {
+        "message": "Settings"
+    },
+    "optionsNavGeneral": {
+        "message": "General"
+    },
+    "optionsNavMail": {
+        "message": "Mail"
+    },
+    "optionsNavSubreddits": {
+        "message": "Subreddits"
+    },
+    "optionsNavSearch": {
+        "message": "Reddit Search"
+    },
+    "optionsNavInfo": {
+        "message": "Info"
+    },
+    "optionsNavHowToUse": {
+        "message": "How to use"
+    },
+    "optionsNavShortcuts": {
+        "message": "Shortcuts"
+    },
     "optionUpdateInterval": {
-        "message": "Update interval:",
+        "message": "Update interval (in seconds)",
         "description": "Name of option: update interval"
     },
-    "optionUpdateIntervalSeconds": {
-        "message": "seconds",
-        "description": "Seconds"
+    "optionUpdateIntervalDescription": {
+        "message": "Set the update interval at which the extension will check for new updates. To reduce power and internet traffic consumption it's recommended to set update interval at least 60 seconds.",
+        "description": "Update interval description"
     },
-    "optionUpdateIntervalTooltip": {
-        "message": "To reduce power and internet traffic consumption it's recommended to set update interval at least 60 seconds",
-        "description": "Update interval tooltip"
+    "optionTheme": {
+        "message": "Theme"
     },
-    "optionMail": {
-        "message": "Mail & Authorization",
-        "description": "Name of option group: mail"
+    "optionThemeAuto": {
+        "message": "Auto"
     },
-    "optionMailTooltip": {
-        "message": "Check unread mail on reddit. The extension should be authorized to check your mail",
-        "description": "Mail & Authorization tooltip"
+    "optionThemeLight": {
+        "message": "Light"
+    },
+    "optionThemeDark": {
+        "message": "Dark"
+    },
+    "optionDelPostAfterClick": {
+        "message": "Delete post after opening",
+        "description": "Delete post after click option"
+    },
+    "optionDelPostAfterClickDescription": {
+        "message": "After clicking on a post open it in the new tab and then automatically delete."
+    },
+    "optionHideEmptyGroups": {
+        "message": "Hide empty groups",
+        "description": "Hide empty groups checkbox"
+    },
+    "optionHideEmptyGroupsDescription": {
+        "message": "If selected, don't show empty subreddits and reddit searches in the popup."
+    },
+    "optionAuthorization": {
+        "message": "Authorization"
+    },
+    "optionAuthorizationDescription": {
+        "message": "The extension should be authorized to check your mail but it’s not required for everything else."
     },
     "optionNoAuthMsg": {
         "message": "Extension isn't authorized",
         "description": "No authorized message"
     },
     "optionStartAuthBtn": {
-        "message": "click here to authorize",
+        "message": "authorize",
+        "description": "Authorize button"
+    },
+    "optionStartAuthBtnDisabled": {
+        "message": "authorizing",
         "description": "Authorize button"
     },
     "optionIsAuthMsg": {
@@ -75,61 +139,44 @@
         "message": "sign out",
         "description": "Sign out button"
     },
+    "optionMail": {
+        "message": "Unread mail"
+    },
+    "optionMailDescription": {
+        "message": "Check mail on reddit to display the number of unread private messages in the popup"
+    },
+    "optionMailNoAuthTooltip": {
+        "message": "The extension should be authorized to check your mail"
+    },
     "optionMailShow": {
-        "message": "Watch for new reddit mail:",
+        "message": "watch for new reddit mail",
         "description": "Option: watch for new mail"
     },
-    "optionMailShow_title": {
-        "message": "Show number of unread private messages in the popup",
-        "description": "Attribute title of option: watch for new mail"
-    },
     "optionMailNotify": {
-        "message": "and show desktop notifications if there is new mail:",
+        "message": "show desktop notifications if there is new mail",
         "description": "Option: show new mail notifications"
     },
-    "optionMailNotify_title": {
-        "message": "Show desktop notifications when you have new unread private messages",
-        "description": "Attribute title of option: show new mail notifications"
-    },
     "optionSubreddits": {
-        "message": "Subreddits",
-        "description": "Name of option group: Subreddits"
+        "message": "Watch for new posts in subreddits"
     },
     "optionSubredditsTooltip1": {
         "message": "Enter the list of subreddits you want to monitor.",
         "description": "Subreddits tooltip"
     },
     "optionSubredditsTooltip2": {
-        "message": "To check that everything works, open extension's popup in the browser toolbar and click the update button in the top left corner.",
+        "message": "To check that everything works, open extension's popup in the browser toolbar and click the update button.",
         "description": "Subreddits tooltip"
-    },
-    "optionSubredditsLabel": {
-        "message": "Watch for new posts in following subreddits:",
-        "description": "Option: label for the input of subreddits"
     },
     "optionSubredditsDescription": {
         "message": "List of subreddits (without \"r/\") divided by spaces. Example: formula1 learnprogramming",
         "description": "Option: description for the input of subreddits"
     },
     "optionSubredditsNotify": {
-        "message": "Show desktop notifications of new posts in the subreddits ",
+        "message": "show desktop notifications of new posts in the subreddits ",
         "description": "Option: notify about new subreddit posts"
     },
-    "optionSearch": {
-        "message": "Search",
-        "description": "Name of option group: Search"
-    },
-    "optionSearchTooltip1": {
-        "message": "Watch for specific posts.",
-        "description": "Search tooltip"
-    },
-    "optionSearchTooltip2": {
-        "message": "To check that everything works, open extension's popup in the browser toolbar and click the update button in the top left corner.",
-        "description": "Search tooltip"
-    },
     "optionSearchLegend": {
-        "message": "Watch for specific posts in the subreddit:",
-        "description": "Legend of fieldset with a search inputs"
+        "message": "Watch for specific posts"
     },
     "optionSearchName": {
         "message": "Name:",
@@ -178,6 +225,9 @@
     "optionSearchDelete": {
         "message": "Delete the search",
         "description": "Button: delete the search"
+    },
+    "optionsSearchAddNew": {
+        "message": "Add new search"
     },
     "optionClearData": {
         "message": "Sign out and clear local data",

@@ -7,9 +7,12 @@ body {
     --hover-border-color: rgba(0, 0, 0, 0.1);
     --link-color: #016ed8;
     --grey: grey;
+    --disable: rgba(150, 150, 150, 1);
     --green: green;
     --new-mail-color: darkred;
     --footer-font-color: #1a1a1a;
+    --collapse-line-color: #016ed8;
+    --collapse-line-hovered-color: blue;
 }
 
 body.dark-mode {
@@ -20,7 +23,10 @@ body.dark-mode {
     --hover-border-color: #737373;
     --link-color: #98c0ff;
     --grey: lightgrey;
+    --disable: rgba(150, 150, 150, 0.8);
     --green: lightgreen;
     --new-mail-color: #ffcccb;
     --footer-font-color: #fafafb;
+    --collapse-line-color: lightgrey;
+    --collapse-line-hovered-color: lightskyblue;
 }

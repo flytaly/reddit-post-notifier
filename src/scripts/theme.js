@@ -41,17 +41,19 @@ const toggleTheme = (theme, mql) => {
     }
 };
 
-export default async () => {
-    browser.browserAction.setBadgeBackgroundColor({ color: 'darkred' });
-    const { theme } = await storage.getOptions();
+export default async (theme) => {
+    if (!theme) {
+        const opts = await storage.getOptions();
+        // eslint-disable-next-line no-param-reassign
+        theme = opts.theme;
+    }
     const preferDarkQuery = '(prefers-color-scheme: dark)';
     const mql = window.matchMedia(preferDarkQuery);
     toggleTheme(theme, mql);
     if (!listenerAdded) {
         mql.addEventListener('change', async (e) => {
-            // eslint-disable-next-line no-shadow
-            const { theme } = await storage.getOptions();
-            toggleTheme(theme, e);
+            const opts = await storage.getOptions();
+            toggleTheme(opts.theme, e);
         });
         listenerAdded = true;
     }

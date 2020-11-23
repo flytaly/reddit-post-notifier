@@ -95,24 +95,23 @@ describe('popup messages listener', () => {
         expect(popupPort.port).toBe(null);
     });
 
-    test('should call removing post from storage after receiving READ_POST', () => {
-        storage.removePost = jest.fn();
-        const payload = { id: 'id', subreddit: 'subreddit' };
-        messageListener({ type: types.READ_POST, payload });
-        expect(storage.removePost).toHaveBeenCalledWith(payload);
+    test('should call update after receiving UPDATE_NOW', () => {
+        app.update.mockClear();
+        messageListener({ type: types.UPDATE_NOW });
+        expect(app.update).toHaveBeenCalledTimes(1);
     });
 
-    test('should call removing posts from subreddit after receiving READ_POSTS', () => {
-        storage.removePostsFrom = jest.fn();
-        const payload = { subreddit: 'subreddit' };
-        messageListener({ type: types.READ_POSTS, payload });
-        expect(storage.removePostsFrom).toHaveBeenCalledWith(payload);
-    });
-
-    test('should call removing all posts after receiving READ_ALL', () => {
-        storage.removeAllPosts = jest.fn();
-        messageListener({ type: types.READ_ALL });
-        expect(storage.removeAllPosts).toHaveBeenCalled();
+    test('should schedule next update after receiving SCHEDULE_NEXT_UPDATE', async () => {
+        browser.alarms.create.reset();
+        storage.getOptions.mockImplementation(() => ({
+            updateInterval: 300,
+        }));
+        browser.alarms.create.callsFake((_, opts) => {
+            expect(opts?.delayInMinutes).toBe(300 / 60);
+        });
+        messageListener({ type: types.SCHEDULE_NEXT_UPDATE });
+        await new Promise((resolve) => setTimeout(resolve, 1));
+        expect(browser.alarms.create.calledOnce).toBeTruthy();
     });
 });
 
@@ -126,7 +125,7 @@ describe('alarms', () => {
     beforeEach(() => {
         storage.getAuthData.mockImplementationOnce(() => ({ accessToken: 'validToken' }));
         browser.alarms.onAlarm.addListener.resetHistory();
-        browser.alarms.create.resetHistory();
+        browser.alarms.create.reset();
     });
     afterAll(() => {
         window.TARGET = 'firefox';
