@@ -5,6 +5,8 @@
 
 Firefox/Chrome extension that watches for posts in given subreddits or reddit searches and notifies about the new ones.
 
+[![Video demonstration](https://img.youtube.com/vi/PZ69Vljtrg8/0.jpg)](https://www.youtube.com/watch?v=PZ69Vljtrg8)
+
 ## Usage for developers
 
 -   `> npm run start:ff`
