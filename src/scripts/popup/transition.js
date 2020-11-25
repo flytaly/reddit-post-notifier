@@ -26,7 +26,7 @@ export const slideVertical = (node, y, { duration, easing = quadOut }) => {
     const { top } = node.getBoundingClientRect();
     const distance = top - y;
     return {
-        duration: (duration * clamp(Math.abs(distance), 100, 300)) / 100,
+        duration: duration * clamp(Math.abs(distance) / 100, 1, 2),
         css: (t) => {
             const eased = easing(t);
             return `transform: ${transform} translate(0, ${(eased - 1) * distance}px)`;
