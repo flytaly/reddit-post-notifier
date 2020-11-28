@@ -113,6 +113,12 @@
     "optionHideEmptyGroupsDescription": {
         "message": "If selected, don't show empty subreddits and reddit searches in the popup."
     },
+    "optionNotificationAudioId": {
+        "message": "Play sound on notification"
+    },
+    "optionNotificationAudioIdDescription": {
+        "message": "If you don't have sound on notifications, you can choose one from the list"
+    },
     "optionAuthorization": {
         "message": "Authorization"
     },

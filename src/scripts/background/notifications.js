@@ -1,4 +1,14 @@
 import storage from '../storage';
+import { notificationSoundFiles } from '../sounds';
+
+function playAudio(audioId) {
+    const file = notificationSoundFiles[audioId];
+    if (!file) return;
+
+    const audio = new Audio();
+    audio.src = browser.runtime.getURL(file);
+    audio.play();
+}
 
 export const notificationIds = {
     mail: 'mail',
@@ -11,8 +21,13 @@ const linksToOpen = {
     queries: [],
 };
 
-function notify(type, items = []) {
+function notify(type, items = [], soundId) {
     if (!items.length) return;
+
+    function createNotification(id, options) {
+        browser.notifications.create(id, options);
+        if (soundId) playAudio(soundId);
+    }
 
     const opts = {
         type: 'basic',
@@ -29,7 +44,7 @@ function notify(type, items = []) {
         } else {
             nOpts.message = `${items.length} new messages from ${items.map(({ data }) => data.author).join(', ')}`;
         }
-        browser.notifications.create(notificationIds.mail, nOpts);
+        createNotification(notificationIds.mail, nOpts);
     }
 
     if (type === notificationIds.subreddit) {
@@ -38,8 +53,7 @@ function notify(type, items = []) {
             title: 'Reddit: new posts',
             message: `New posts in subreddits: ${items
                 .map(({ subreddit, len }) => `${subreddit} (${len})`)
-                .join(', ')
-            }`,
+                .join(', ')}`,
         };
 
         const links = items.filter((item) => item.link).map((item) => item.link);
@@ -47,23 +61,20 @@ function notify(type, items = []) {
             linksToOpen.subreddits = [...links];
         }
 
-        browser.notifications.create(notificationIds.subreddit, nOpts);
+        createNotification(notificationIds.subreddit, nOpts);
     }
 
     if (type === notificationIds.query) {
         const nOpts = {
             ...opts,
             title: 'Reddit: new posts',
-            message: `New posts in: ${items
-                .map(({ query, len }) => `${query} (${len})`)
-                .join(', ')
-            }`,
+            message: `New posts in: ${items.map(({ query, len }) => `${query} (${len})`).join(', ')}`,
         };
         const links = items.filter((item) => item.link).map((item) => item.link);
         if (links) {
             linksToOpen.queries = [...links];
         }
-        browser.notifications.create(notificationIds.query, nOpts);
+        createNotification(notificationIds.query, nOpts);
     }
 }
 
@@ -80,7 +91,7 @@ browser.notifications.onClicked.addListener(async (id) => {
             linksToOpen.subreddits.forEach((link, index, array) => {
                 browser.tabs.create({
                     url: link,
-                    active: index === (array.length - 1),
+                    active: index === array.length - 1,
                 });
             });
             linksToOpen.subreddits = [];
@@ -93,7 +104,7 @@ browser.notifications.onClicked.addListener(async (id) => {
             linksToOpen.queries.forEach((link, index, array) => {
                 browser.tabs.create({
                     url: link,
-                    active: index === (array.length - 1),
+                    active: index === array.length - 1,
                 });
             });
             linksToOpen.queries = [];

@@ -1,12 +1,14 @@
 <script>
     export let title = '';
     export let column = false;
+    export let labelFor = null;
 </script>
 
 <style>
     article {
         display: flex;
         flex-direction: row;
+        align-items: flex-start;
         font-weight: normal;
         font-size: 0.95rem;
         margin-bottom: 1.5rem;
@@ -37,10 +39,17 @@
 </style>
 
 <article class:column>
-    <div class="description">
-        <header>{title}</header>
-        <slot name="description" />
-    </div>
+    {#if labelFor}
+        <label for={labelFor} class="description">
+            <header>{title}</header>
+            <slot name="description" />
+        </label>
+    {:else}
+        <div class="description">
+            <header>{title}</header>
+            <slot name="description" />
+        </div>
+    {/if}
     <div class="controls">
         <slot name="controls" />
     </div>

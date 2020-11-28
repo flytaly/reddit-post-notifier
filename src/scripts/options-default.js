@@ -10,4 +10,5 @@ export default {
     expandWithItems: 5, // expand groups in popup that have at least 'x' number of posts
     delPostAfterBodyClick: false, // delete post after clicking on it
     hideEmptyGroups: false,
+    notificationSoundId: null,
 };

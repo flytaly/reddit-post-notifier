@@ -10,6 +10,7 @@
     import SubredditsBlock from './subreddits-block.svelte';
     import SearchBlock from './search-block.svelte';
     import types from '../../types';
+    import NotificationSound from './notification-sound.svelte';
 
     onMount(() => {
         const { hash } = window.location;
@@ -25,7 +26,7 @@
     const bgScriptPort = browser.runtime.connect();
     const { sections } = routes.settings;
     const { theme } = data.options;
-    let { updateInterval, delPostAfterBodyClick, hideEmptyGroups } = data.options;
+    let { updateInterval, delPostAfterBodyClick, hideEmptyGroups, notificationSoundId } = data.options;
 
     const themeValueList = [
         { value: 'light', id: 'light', label: getMsg('optionThemeLight') }, //
@@ -63,10 +64,11 @@
     <h1 id={routes.settings.id}>{routes.settings.name}</h1>
     <h2 id={sections.general.id}>{sections.general.name}</h2>
     <sections>
-        <OptionItem title={getMsg('optionUpdateInterval')}>
+        <OptionItem title={getMsg('optionUpdateInterval')} labelFor="updateIntervalInput">
             <div slot="description">{getMsg('optionUpdateIntervalDescription')}</div>
             <div slot="controls">
                 <input
+                    id="updateIntervalInput"
                     type="number"
                     min="2"
                     max="3600"
@@ -80,24 +82,27 @@
                 <RadioGroup initialValue={theme} valueList={themeValueList} onChange={onThemeChange} />
             </div>
         </OptionItem>
-        <OptionItem title={getMsg('optionDelPostAfterClick')}>
+        <OptionItem title={getMsg('optionDelPostAfterClick')} labelFor="deletePostInput">
             <div slot="description">{getMsg('optionDelPostAfterClickDescription')}</div>
             <div slot="controls">
                 <input
+                    id="deletePostInput"
                     type="checkbox"
                     bind:checked={delPostAfterBodyClick}
                     on:change={() => storage.saveOptions({ delPostAfterBodyClick })} />
             </div>
         </OptionItem>
-        <OptionItem title={getMsg('optionHideEmptyGroups')}>
+        <OptionItem title={getMsg('optionHideEmptyGroups')} labelFor="hideEmptyInput">
             <div slot="description">{getMsg('optionHideEmptyGroupsDescription')}</div>
             <div slot="controls">
                 <input
+                    id="hideEmptyInput"
                     type="checkbox"
                     bind:checked={hideEmptyGroups}
                     on:change={() => storage.saveOptions({ hideEmptyGroups })} />
             </div>
         </OptionItem>
+        <NotificationSound {notificationSoundId} />
     </sections>
     <sections>
         <h2 id={sections.mail.id}>{sections.mail.name}</h2>

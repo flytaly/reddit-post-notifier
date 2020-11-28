@@ -77,7 +77,7 @@
     }
 </style>
 
-<OptionItem title={getMsg('optionSubreddits')} column>
+<OptionItem title={getMsg('optionSubreddits')} labelFor="subredditInput" column>
     <div slot="description">
         <span>{getMsg('optionSubredditsTooltip1')}</span>
         <span>{getMsg('optionSubredditsTooltip2')}</span>
@@ -85,6 +85,7 @@
     <div slot="controls">
         <div class="input-wrapper">
             <input
+                id="subredditInput"
                 bind:this={inputRef}
                 type="text"
                 placeholder="formula1 learnprogramming"

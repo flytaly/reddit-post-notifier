@@ -102,7 +102,14 @@ const app = {
             Hence updates inevitably stop after a while.
             Instead, we ask some last posts and then save only new posts depending on their timestamp
             */
-        const { waitTimeout, messages, limit = 10, messageNotify, subredditNotify } = await storage.getOptions();
+        const {
+            waitTimeout,
+            messages,
+            limit = 10,
+            messageNotify,
+            subredditNotify,
+            notificationSoundId,
+        } = await storage.getOptions();
         const {
             queries: queryData,
             queriesList,
@@ -114,7 +121,8 @@ const app = {
 
         if (messages && authData && authData.refreshToken) {
             const newMessages = await app.updateUnreadMsg(messageData);
-            if (messageNotify && newMessages && newMessages.length) notify(notificationIds.mail, newMessages);
+            if (messageNotify && newMessages && newMessages.length)
+                notify(notificationIds.mail, newMessages, notificationSoundId);
             await wait(waitTimeout * 1000);
         }
 
@@ -130,7 +138,7 @@ const app = {
             }
             await wait(waitTimeout * 1000);
         }
-        notify(notificationIds.subreddit, notificationBatch);
+        notify(notificationIds.subreddit, notificationBatch, notificationSoundId);
 
         notificationBatch.length = 0;
         for (const query of queriesList) {
@@ -145,7 +153,7 @@ const app = {
             }
             await wait(waitTimeout * 1000);
         }
-        notify(notificationIds.query, notificationBatch);
+        notify(notificationIds.query, notificationBatch, notificationSoundId);
     },
 };
 
