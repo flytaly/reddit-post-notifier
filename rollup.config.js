@@ -14,7 +14,10 @@ const isDev = isWatchMode;
 const plugins = [
     svg({ stringify: true }),
     svelte({
-        dev: isDev,
+        emitCss: false,
+        compilerOptions: {
+            dev: isDev,
+        },
     }),
     replace({
         TARGET: `'${target}'`,
