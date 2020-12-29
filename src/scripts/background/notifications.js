@@ -4,7 +4,7 @@ import { redditOldUrl, redditUrl } from '../utils';
 
 async function getBaseUrl() {
     const options = await storage.getOptions();
-    return options.openInOldReddit ? redditOldUrl : redditUrl;
+    return options.useOldReddit ? redditOldUrl : redditUrl;
 }
 
 function playAudio(audioId) {

@@ -106,7 +106,7 @@ const app = {
             waitTimeout,
             messages,
             limit = 10,
-            messageNotify,
+            messagesNotify,
             subredditNotify,
             notificationSoundId,
             useOldReddit,
@@ -122,8 +122,9 @@ const app = {
 
         if (messages && authData && authData.refreshToken) {
             const newMessages = await app.updateUnreadMsg(messageData);
-            if (messageNotify && newMessages && newMessages.length)
+            if (messagesNotify && newMessages && newMessages.length) {
                 notify(notificationIds.mail, newMessages, notificationSoundId);
+            }
             await wait(waitTimeout * 1000);
         }
 
