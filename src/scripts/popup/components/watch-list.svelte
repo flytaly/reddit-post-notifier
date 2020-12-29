@@ -33,7 +33,7 @@
             const group = {
                 type: 'subreddit',
                 id: s,
-                href: getSubredditUrl(s),
+                href: getSubredditUrl(s, options.useOldReddit),
                 title: `r/${s} (${length})`,
                 lastPostCreated,
                 size: length,
@@ -51,7 +51,7 @@
             const group = {
                 type: 'search',
                 id: q.id,
-                href: getSearchQueryUrl(q.query, q.subreddit),
+                href: getSearchQueryUrl(q.query, q.subreddit, options.useOldReddit),
                 title: `${q.name || q.query} (${length})`,
                 lastPostCreated,
                 size: length,

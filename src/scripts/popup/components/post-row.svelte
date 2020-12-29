@@ -1,5 +1,6 @@
 <script>
-    import { getMsg, baseUrl } from '../../utils';
+    import { getContext } from 'svelte';
+    import { getMsg, redditUrl, redditOldUrl } from '../../utils';
     import SvgButton from './svg-button.svelte';
     import CheckMarkButton from './check-mark-button.svelte';
     import Pin from '../../assets/pin-outline.svg';
@@ -10,6 +11,9 @@
     export let type = 'subreddit';
     export let subredditOrSearchId;
     export let deleteOnClick = false;
+
+    const options = getContext('OPTIONS');
+    const baseUrl = options.useOldReddit ? redditOldUrl : redditUrl;
 
     const removePost = async (id) => {
         if (type === 'search') {

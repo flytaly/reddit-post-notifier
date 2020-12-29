@@ -26,7 +26,8 @@
     const bgScriptPort = browser.runtime.connect();
     const { sections } = routes.settings;
     const { theme } = data.options;
-    let { updateInterval, delPostAfterBodyClick, hideEmptyGroups, notificationSoundId } = data.options;
+    let { updateInterval, delPostAfterBodyClick, hideEmptyGroups, useOldReddit } = data.options;
+    const { notificationSoundId } = data.options;
 
     const themeValueList = [
         { value: 'light', id: 'light', label: getMsg('optionThemeLight') }, //
@@ -103,6 +104,16 @@
             </div>
         </OptionItem>
         <NotificationSound {notificationSoundId} />
+        <OptionItem title={getMsg('optionUseOldReddit')} labelFor="useOldReddit">
+            <div slot="description">{getMsg('optionUseOldRedditDescription')}</div>
+            <div slot="controls">
+                <input
+                    id="useOldReddit"
+                    type="checkbox"
+                    bind:checked={useOldReddit}
+                    on:change={() => storage.saveOptions({ useOldReddit })} />
+            </div>
+        </OptionItem>
     </sections>
     <sections>
         <h2 id={sections.mail.id}>{sections.mail.name}</h2>

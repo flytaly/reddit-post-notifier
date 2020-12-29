@@ -1,5 +1,11 @@
 import storage from '../storage';
 import { notificationSoundFiles } from '../sounds';
+import { redditOldUrl, redditUrl } from '../utils';
+
+async function getBaseUrl() {
+    const options = await storage.getOptions();
+    return options.openInOldReddit ? redditOldUrl : redditUrl;
+}
 
 function playAudio(audioId) {
     const file = notificationSoundFiles[audioId];
@@ -80,9 +86,8 @@ function notify(type, items = [], soundId) {
 
 browser.notifications.onClicked.addListener(async (id) => {
     if (id === notificationIds.mail) {
-        await browser.tabs.create({
-            url: 'https://www.reddit.com/message/unread/',
-        });
+        const baseUrl = await getBaseUrl();
+        await browser.tabs.create({ url: `${baseUrl}/message/unread/` });
         await storage.removeMessages();
     }
 

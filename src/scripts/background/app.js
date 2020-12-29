@@ -109,6 +109,7 @@ const app = {
             messageNotify,
             subredditNotify,
             notificationSoundId,
+            useOldReddit,
         } = await storage.getOptions();
         const {
             queries: queryData,
@@ -133,7 +134,7 @@ const app = {
                 notificationBatch.push({
                     subreddit,
                     len: newMessages.length,
-                    link: getSubredditUrl(subreddit),
+                    link: getSubredditUrl(subreddit, useOldReddit),
                 });
             }
             await wait(waitTimeout * 1000);
@@ -148,7 +149,7 @@ const app = {
                 notificationBatch.push({
                     query: query.name || query.query,
                     len: newMessages.length,
-                    link: getSearchQueryUrl(query.query, query.subreddit),
+                    link: getSearchQueryUrl(query.query, query.subreddit, useOldReddit),
                 });
             }
             await wait(waitTimeout * 1000);

@@ -11,4 +11,5 @@ export default {
     delPostAfterBodyClick: false, // delete post after clicking on it
     hideEmptyGroups: false,
     notificationSoundId: null,
+    useOldReddit: false, // open links in 'old.reddit.com'
 };

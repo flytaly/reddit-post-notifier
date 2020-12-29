@@ -119,6 +119,12 @@
     "optionNotificationAudioIdDescription": {
         "message": "If you don't have sound on notifications, you can choose one from the list"
     },
+    "optionUseOldReddit": {
+        "message": "Use old reddit to open links"
+    },
+    "optionUseOldRedditDescription": {
+        "message": "Redirect links to old.reddit.com"
+    },
     "optionAuthorization": {
         "message": "Authorization"
     },

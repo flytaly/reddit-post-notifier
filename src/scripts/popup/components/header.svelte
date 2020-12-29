@@ -1,15 +1,21 @@
 <script>
+    import { getContext } from 'svelte';
     import SvgButton from './svg-button.svelte';
     import RefreshIcon from '../../assets/refresh.svg';
     import MailIcon from '../../assets/mail.svg';
     import SettingsIcon from '../../assets/settings.svg';
-    import { getMsg } from '../../utils';
+    import { getMsg, redditOldUrl, redditUrl } from '../../utils';
     import { postMessage } from '../connect';
     import types from '../../types';
     import storage from '../../storage';
 
     export let loading = false;
     export let messagesCount = 0;
+
+    const options = getContext('OPTIONS');
+
+    const baseUrl = options.useOldReddit ? redditOldUrl : redditUrl;
+    const inboxHref = `${baseUrl}/message/inbox/`;
 
     const onOptionClick = async () => {
         await browser.runtime.openOptionsPage();
@@ -81,10 +87,7 @@
 
     <span class="right-buttons">
         <span class={messagesCount ? 'unread' : ''}>
-            <SvgButton
-                href="https://reddit.com/message/inbox/"
-                title={getMsg('headerMail_title')}
-                on:click={() => storage.removeMessages()}>
+            <SvgButton href={inboxHref} title={getMsg('headerMail_title')} on:click={() => storage.removeMessages()}>
                 {#if messagesCount}<span class="unread-number">{messagesCount} </span>{/if}
                 {@html MailIcon}
             </SvgButton>
