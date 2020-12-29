@@ -172,11 +172,7 @@
                     <GroupTitle onCheck={getOnCheckHandler(id, type)} {href} {title} />
                 </div>
                 <div slot="list-row">
-                    <PostRow
-                        post={item}
-                        {type}
-                        subredditOrSearchId={id}
-                        deleteOnClick={options.delPostAfterBodyClick} />
+                    <PostRow post={item} {type} subredditOrSearchId={id} />
                 </div>
             </DropDownList>
         </div>

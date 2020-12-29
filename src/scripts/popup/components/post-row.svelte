@@ -10,10 +10,10 @@
     export let post = {};
     export let type = 'subreddit';
     export let subredditOrSearchId;
-    export let deleteOnClick = false;
 
     const options = getContext('OPTIONS');
     const baseUrl = options.useOldReddit ? redditOldUrl : redditUrl;
+    const href = `${baseUrl}${post.data.permalink}`;
 
     const removePost = async (id) => {
         if (type === 'search') {
@@ -28,10 +28,11 @@
         await storage.savePinnedPost(post);
         return removePost(post.data.id);
     };
-    const onLinkClick = () => {
-        if (deleteOnClick) {
-            removePost(post.data.id);
+    const onLinkClick = async () => {
+        if (options.delPostAfterBodyClick) {
+            await removePost(post.data.id);
         }
+        await browser.tabs.create({ url: href, active: false });
     };
 </script>
 
@@ -59,9 +60,9 @@
     <CheckMarkButton clickHandler={() => removePost(post.data.id)} title={getMsg('postListCheckMark_title')} />
     <a
         class="item-name"
-        href={`${baseUrl}${post.data.permalink}`}
+        {href}
         data-keys-target="post-link"
-        on:click={onLinkClick}
+        on:click|preventDefault|stopPropagation={onLinkClick}
         data-post-id={post.data.id}>
         {post.data.title}</a>
     <span data-keys-target="pin-post">
