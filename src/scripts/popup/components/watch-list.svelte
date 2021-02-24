@@ -108,10 +108,7 @@
         props.id && props.id === getId() //
             ? slideVertical(node, pinContainer.getBoundingClientRect().bottom, props)
             : slideHorizontal(node, props);
-    const postGroupTransition = (node, props) =>
-        emptyGroupsRef
-            ? slideVertical(node, emptyGroupsRef.getBoundingClientRect().top, props)
-            : slideHorizontal(node, props);
+    const postGroupTransition = (node, props) => slideHorizontal(node, props);
 </script>
 
 <style>
