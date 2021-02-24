@@ -30,8 +30,9 @@
     const { notificationSoundId } = data.options;
 
     const themeValueList = [
-        { value: 'light', id: 'light', label: getMsg('optionThemeLight') }, //
+        { value: 'light', id: 'light', label: getMsg('optionThemeLight') },
         { value: 'dark', id: 'dark', label: getMsg('optionThemeDark') },
+        { value: 'purple', id: 'purple', label: getMsg('optionThemePurple') },
         { value: 'auto', id: 'auto', label: getMsg('optionThemeAuto') },
     ];
 
@@ -79,6 +80,7 @@
             </div>
         </OptionItem>
         <OptionItem title={getMsg('optionTheme')}>
+            <div slot="description">{getMsg('optionsThemeDescription')}</div>
             <div slot="controls">
                 <RadioGroup initialValue={theme} valueList={themeValueList} onChange={onThemeChange} />
             </div>

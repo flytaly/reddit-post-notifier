@@ -87,6 +87,9 @@
         "message": "Set the update interval at which the extension will check for new updates. To reduce power and internet traffic consumption it's recommended to set update interval at least 60 seconds.",
         "description": "Update interval description"
     },
+    "optionsThemeDescription": {
+        "message": "The purple theme is based on the 'Shades of Purple' theme which you can find in the browser store."
+    },
     "optionTheme": {
         "message": "Theme"
     },
@@ -99,8 +102,12 @@
     "optionThemeDark": {
         "message": "Dark"
     },
+    "optionThemePurple": {
+        "message": "Purple"
+    },
     "optionDelPostAfterClick": {
         "message": "Delete post after opening",
+
         "description": "Delete post after click option"
     },
     "optionDelPostAfterClickDescription": {

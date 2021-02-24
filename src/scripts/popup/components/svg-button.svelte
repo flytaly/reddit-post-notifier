@@ -43,7 +43,7 @@
         outline: none;
     }
     .svg-button.with-text:active:not([disabled]) {
-        background-color: var(--hover-bg-color2);
+        background-color: var(--active-color);
     }
     .svg-button.with-text :global(svg) {
         width: 14px;

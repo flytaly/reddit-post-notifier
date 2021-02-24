@@ -9,8 +9,8 @@
 
 <style>
     footer {
-        background-color: var(--hover-bg-color);
-        border-top: 1px solid var(--hover-border-color);
+        background-color: var(--footer-bg-color);
+        border-top: 1px solid var(--footer-outline-color);
         display: flex;
         flex-direction: row;
         padding: 0;
@@ -23,7 +23,7 @@
         margin: 0;
         text-align: center;
         color: var(--footer-font-color);
-        background-color: var(--hover-bg-color);
+        background-color: var(--footer-bg-color);
     }
 
     .footer-button:focus,
@@ -33,7 +33,7 @@
 
     .footer-button:focus:active,
     .footer-button:hover:active {
-        background-color: var(--hover-bg-color2);
+        background-color: var(--active-color);
     }
 </style>
 
