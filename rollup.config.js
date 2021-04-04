@@ -6,7 +6,14 @@ import del from 'rollup-plugin-delete';
 import svelte from 'rollup-plugin-svelte';
 import svg from 'rollup-plugin-svg-import';
 
-const target = process.env.TARGET ? process.env.TARGET : 'firefox';
+// const target = process.env.TARGET ? process.env.TARGET : 'firefox';
+let target;
+
+const args = process.argv.slice(2);
+for (let i = 0; i < args.length; i += 1) {
+    if (args[i] === '--target') target = args[i + 1];
+}
+target = target === 'chrome' ? 'chrome' : 'firefox';
 const outputPath = target === 'firefox' ? './dist/firefox/' : './dist/chrome/';
 const isWatchMode = process.env.ROLLUP_WATCH;
 
