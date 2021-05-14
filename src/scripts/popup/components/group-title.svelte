@@ -11,6 +11,8 @@
 
     const linkClickHandler = (e) => {
         e.stopPropagation();
+        // Prevent double opening in Firefox
+        e.preventDefault();
         browser.tabs.create({ url: href, active: true });
     };
 </script>

@@ -67,10 +67,11 @@
                 </ul>
             </div>
             <div>
-                Don’t forget to select checkmark with
+                To receive notifications don't forget to select the checkbox with
                 <span class="icon">
                     {@html Bell}
-                </span>icon to receive notifications.
+                </span>
+                icon.
             </div>
         </div>
     </article>

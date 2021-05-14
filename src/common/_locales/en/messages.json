@@ -40,8 +40,8 @@
         "description": "No unread posts note"
     },
     "watchListOpenInNew_title": {
-        "message": "Open subreddit or reddit search in new browser tab",
-        "description": "Open in new tab link link title"
+        "message": "Open subreddit or reddit search in a new tab",
+        "description": "Open in a new tab link's title"
     },
     "queryListCheckMark_title": {
         "message": "Remove all posts in the subreddit or search",
