@@ -22,17 +22,13 @@ export const notificationIds = {
     query: 'query',
 };
 
-const linksToOpen = {
-    subreddits: [],
-    queries: [],
-};
-
 function notify(type, items = [], soundId) {
     if (!items.length) return;
 
-    function createNotification(id, options) {
+    function createNotification(id, options, payload) {
         browser.notifications.create(id, options);
         if (soundId) playAudio(soundId);
+        if (payload) storage.saveNotificationsData(id, payload);
     }
 
     const opts = {
@@ -50,7 +46,11 @@ function notify(type, items = [], soundId) {
         } else {
             nOpts.message = `${items.length} new messages from ${items.map(({ data }) => data.author).join(', ')}`;
         }
-        createNotification(notificationIds.mail, nOpts);
+
+        getBaseUrl().then((baseUrl) => {
+            const url = `${baseUrl}/message/unread/`;
+            createNotification(`${notificationIds.mail}__${Date.now()}`, nOpts, [url]);
+        });
     }
 
     if (type === notificationIds.subreddit) {
@@ -63,11 +63,7 @@ function notify(type, items = [], soundId) {
         };
 
         const links = items.filter((item) => item.link).map((item) => item.link);
-        if (links) {
-            linksToOpen.subreddits = [...links];
-        }
-
-        createNotification(notificationIds.subreddit, nOpts);
+        createNotification(`${notificationIds.subreddit}__${Date.now()}`, nOpts, [...links]);
     }
 
     if (type === notificationIds.query) {
@@ -77,44 +73,21 @@ function notify(type, items = [], soundId) {
             message: `New posts in: ${items.map(({ query, len }) => `${query} (${len})`).join(', ')}`,
         };
         const links = items.filter((item) => item.link).map((item) => item.link);
-        if (links) {
-            linksToOpen.queries = [...links];
-        }
-        createNotification(notificationIds.query, nOpts);
+        createNotification(`${notificationIds.query}__${Date.now()}`, nOpts, [...links]);
     }
 }
 
-browser.notifications.onClicked.addListener(async (id) => {
-    if (id === notificationIds.mail) {
-        const baseUrl = await getBaseUrl();
-        await browser.tabs.create({ url: `${baseUrl}/message/unread/` });
-        await storage.removeMessages();
-    }
-
-    if (id === notificationIds.subreddit) {
-        if (linksToOpen.subreddits) {
-            linksToOpen.subreddits.forEach((link, index, array) => {
-                browser.tabs.create({
-                    url: link,
-                    active: index === array.length - 1,
-                });
+browser.notifications.onClicked.addListener(async (notifyId) => {
+    const notifyArr = await storage.getNotificationsData();
+    if (notifyArr && notifyArr.length) {
+        const n = notifyArr.find(({ id }) => id === notifyId);
+        if (n && n.data && n.data.length) {
+            n.data.forEach((link, index, array) => {
+                browser.tabs.create({ url: link, active: index === array.length - 1 });
             });
-            linksToOpen.subreddits = [];
-            browser.notifications.clear(notificationIds.subreddit);
         }
-    }
-
-    if (id === notificationIds.query) {
-        if (linksToOpen.queries) {
-            linksToOpen.queries.forEach((link, index, array) => {
-                browser.tabs.create({
-                    url: link,
-                    active: index === array.length - 1,
-                });
-            });
-            linksToOpen.queries = [];
-            browser.notifications.clear(notificationIds.query);
-        }
+        await storage.removeNotificationData(notifyId);
+        browser.notifications.clear(notifyId);
     }
 });
 

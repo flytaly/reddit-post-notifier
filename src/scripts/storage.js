@@ -9,6 +9,7 @@ export const dataFields = {
     subreddits: {},
     messages: {},
     pinnedPostList: [],
+    notifications: [],
 };
 
 const storage = {
@@ -67,6 +68,11 @@ const storage = {
     async getQueriesData() {
         const { queries } = await browser.storage.local.get({ queries: {} });
         return queries;
+    },
+
+    async getNotificationsData() {
+        const { notifications } = await browser.storage.local.get({ notifications: [] });
+        return notifications;
     },
 
     async getAllData(withOptions = false) {
@@ -155,7 +161,7 @@ const storage = {
         return browser.storage.local.set({ queriesList: queriesUpdated });
     },
 
-    // ** Update given subreddit or reddit search data object with new posts or error
+    // Update given subreddit or reddit search data object with new posts or error
     updateWatchDataObject(watchData, posts, error) {
         const result = { ...watchData };
         if (posts) {
@@ -188,6 +194,13 @@ const storage = {
         const current = data[subreddit] || {};
         const updatedSubreddit = storage.updateWatchDataObject(current, posts, error);
         return browser.storage.local.set({ subreddits: { ...data, [subreddit]: updatedSubreddit } });
+    },
+
+    async saveNotificationsData(id, data) {
+        const prev = await storage.getNotificationsData();
+        const notifications = prev.slice(-9); // limit length of the array in the storage
+        notifications.push({ id, data });
+        return browser.storage.local.set({ notifications });
     },
 
     async clearAuthData() {
@@ -271,6 +284,12 @@ const storage = {
         const queriesUpdated = queriesList.filter((q) => !ids.includes(q.id));
         storage.prune({ queriesIdList: queriesUpdated.map((q) => q.id) });
         return browser.storage.local.set({ queriesList: queriesUpdated });
+    },
+
+    async removeNotificationData(id) {
+        const prev = await storage.getNotificationsData();
+        const notifications = prev.filter((n) => n.id !== id);
+        return browser.storage.local.set({ notifications });
     },
 
     /**
