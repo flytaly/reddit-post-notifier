@@ -80,7 +80,7 @@ describe('update posts', () => {
         });
 
         storage.saveQueryData = jest.fn(async (id, data) => {
-            expect(data).toEqual({ posts: newPosts.slice(0, 1) });
+            expect(data).toEqual({ posts: newPosts.slice(0, 1), error: null });
         });
 
         const getNewPost = jest.fn(async () => ({ kind: 'Listing', data: { children: newPosts } }));

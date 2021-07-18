@@ -128,9 +128,11 @@ const storage = {
 
     async savePinnedPost(post) {
         const prev = await storage.getPinnedPostList();
-        return browser.storage.local.set({
-            pinnedPostList: [post, ...prev],
-        });
+        if (prev.findIndex((p) => p.data.id === post.data.id) === -1) {
+            return browser.storage.local.set({
+                pinnedPostList: [post, ...prev],
+            });
+        }
     },
 
     async saveSubredditList(subredditList) {
@@ -162,34 +164,32 @@ const storage = {
     },
 
     // Update given subreddit or reddit search data object with new posts or error
-    updateWatchDataObject(watchData, posts, error) {
+    updateWatchDataObject(watchData, posts, error = null) {
         const result = { ...watchData };
-        if (posts) {
-            const postFiltered = posts.map((p) => filterPostDataProperties(p));
+        if (posts && posts.length) {
             const savedPosts = result.posts || [];
+            const ids = new Set(savedPosts.map((p) => p.data.id));
+            const postFiltered = posts.map((p) => filterPostDataProperties(p)).filter((p) => !ids.has(p.data.id));
             result.posts = [...postFiltered, ...savedPosts];
-            result.error = null;
             if (postFiltered[0]) {
                 result.lastPost = postFiltered[0].data.name;
                 result.lastPostCreated = postFiltered[0].data.created;
             }
         }
-        if (error) {
-            result.error = error;
-        }
 
+        result.error = error;
         result.lastUpdate = Date.now();
         return result;
     },
 
-    async saveQueryData(queryId, { posts, error }) {
+    async saveQueryData(queryId, { posts = [], error = null }) {
         const data = await storage.getQueriesData();
         const current = data[queryId] || {};
         const updatedQuery = storage.updateWatchDataObject(current, posts, error);
         await browser.storage.local.set({ queries: { ...data, [queryId]: updatedQuery } });
     },
 
-    async saveSubredditData(subreddit, { posts, error }) {
+    async saveSubredditData(subreddit, { posts = [], error = null }) {
         const data = await storage.getSubredditData();
         const current = data[subreddit] || {};
         const updatedSubreddit = storage.updateWatchDataObject(current, posts, error);

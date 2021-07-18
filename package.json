@@ -16,7 +16,8 @@
         "zip:chrome": "web-ext build --source-dir dist/chrome",
         "buildzip:ff": "npm-run-all --sequential build:ff zip:ff",
         "buildzip:chrome": "npm-run-all --sequential build:chrome zip:chrome",
-        "test": "jest --coverage",
+        "test": "jest",
+        "test:coverage": "jest --coverage",
         "test:watch": "jest --watch",
         "lint": "eslint src",
         "lint:fix": "eslint src --fix"

@@ -99,11 +99,13 @@ describe('subreddits', () => {
         expect(response).toEqual(subreddits);
     });
 
-    test("should save subreddit's posts", async () => {
+    test("should save subreddit's posts without duplication", async () => {
         const newPosts = [
-            { data: { name: 'fullname_13', created: '1551734739' } },
-            { data: { name: 'fullname_12', created: '1551734740' } },
+            { data: { name: 'fullname_12', created: '1551734739', id: 'postId_12' } },
+            { data: { name: 'fullname_13', created: '1551734740', id: 'postId_13' } },
         ];
+
+        const posts = [...subreddits.sub1.posts, ...newPosts];
 
         browser.storage.local.set.callsFake(async (param) => {
             const subR = param.subreddits;
@@ -115,7 +117,7 @@ describe('subreddits', () => {
             expect(subR.sub1.lastPostCreated).toBe(newPosts[0].data.created);
         });
 
-        await storage.saveSubredditData('sub1', { posts: newPosts });
+        await storage.saveSubredditData('sub1', { posts });
     });
 
     test('should save error', async () => {

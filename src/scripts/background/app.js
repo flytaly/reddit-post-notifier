@@ -44,10 +44,8 @@ const app = {
             return null;
         }
 
-        const newPosts = app.extractNewItems(response, info);
-        if (newPosts) {
-            await storage.saveSubredditData(subreddit, { posts: newPosts });
-        }
+        const newPosts = app.extractNewItems(response, info) || [];
+        await storage.saveSubredditData(subreddit, { posts: newPosts });
         return newPosts;
     },
 
@@ -71,11 +69,8 @@ const app = {
             return null;
         }
 
-        const newPosts = app.extractNewItems(response, data);
-
-        if (newPosts) {
-            await storage.saveQueryData(query.id, { posts: newPosts });
-        }
+        const newPosts = app.extractNewItems(response, data) || [];
+        await storage.saveQueryData(query.id, { posts: newPosts, error: null });
         return newPosts;
     },
 
