@@ -1,50 +1,64 @@
-import replace from '@rollup/plugin-replace';
-import nodeResolve from '@rollup/plugin-node-resolve';
 import commonjs from '@rollup/plugin-commonjs';
-import copy from 'rollup-plugin-copy-watch';
-import del from 'rollup-plugin-delete';
+import resolve from '@rollup/plugin-node-resolve';
+import typescript from '@rollup/plugin-typescript';
+import css from 'rollup-plugin-css-only';
 import svelte from 'rollup-plugin-svelte';
-import svg from 'rollup-plugin-svg-import';
+import sveltePreprocess from 'svelte-preprocess';
+import del from 'rollup-plugin-delete';
+import copy from 'rollup-plugin-copy-watch';
+import replace from '@rollup/plugin-replace';
+import svelteSVG from 'rollup-plugin-svelte-svg';
+import json from '@rollup/plugin-json';
 
+const production = !process.env.ROLLUP_WATCH;
 const target = process.env.target === 'chrome' ? 'chrome' : 'firefox';
-
 const outputPath = target === 'firefox' ? './dist/firefox/' : './dist/chrome/';
-const isWatchMode = process.env.ROLLUP_WATCH;
 
-const isDev = isWatchMode;
+const envKeys = () => {
+    const envRaw = require('dotenv').config().parsed || {};
+    envRaw.NODE_ENV = production ? 'production' : 'development';
+    envRaw.TARGET = target;
+    return Object.keys(envRaw).reduce(
+        (envValues, envValue) => ({
+            ...envValues,
+            [`process.env.${envValue}`]: JSON.stringify(envRaw[envValue]),
+        }),
+        {},
+    );
+};
+
 const plugins = [
-    svg({ stringify: true }),
     svelte({
-        emitCss: false,
+        preprocess: sveltePreprocess({
+            ...require('./svelte.config').preprocessOption,
+            sourceMap: !production,
+        }),
         compilerOptions: {
-            dev: isDev,
+            // enable run-time checks when not in production
+            dev: !production,
         },
     }),
-    replace({
-        TARGET: `'${target}'`,
-        'process.env.NODE_ENV': JSON.stringify(isDev ? 'development' : 'production'),
-    }),
-    nodeResolve({
+    svelteSVG(),
+    // If you have external dependencies installed from
+    // npm, you'll most likely need these plugins. In
+    // some cases you'll need additional configuration -
+    // consult the documentation for details:
+    // https://github.com/rollup/plugins/tree/master/packages/commonjs
+    resolve({
         browser: true,
-        dedupe: ['svelte'],
+        dedupe: ['svelte', 'svelte/transition', 'svelte/internal'],
     }),
     commonjs(),
+    typescript({ sourceMap: !production, inlineSources: !production }),
+    json(),
+    replace({ ...envKeys(), preventAssignment: true }),
 ];
 
-const polyfillPath =
-    target !== 'firefox'
-        ? 'node_modules/webextension-polyfill/dist/browser-polyfill.js'
-        : 'src/firefox/browser-polyfill.js';
-
 const copyPlugin = copy({
-    ...(isWatchMode ? { watch: ['src/common/**/*', 'src/styles/**/*', `src/${target}/*`] } : {}),
+    ...(!production ? { watch: ['files/**/*'] } : {}),
     targets: [
-        // { src: 'src/index.html', dest: 'dist/public' },
-        { src: 'src/common/*', dest: outputPath },
-        { src: 'src/styles/', dest: outputPath },
-        { src: `src/${target}/*`, dest: outputPath },
-        { src: polyfillPath, dest: outputPath },
-        { src: 'node_modules/tippy.js/dist/tippy.css', dest: `${outputPath}styles` },
+        { src: 'files/common/*', dest: outputPath },
+        { src: `files/${target}/*`, dest: `${outputPath}` },
     ],
     copyOnce: true,
 });
@@ -53,32 +67,35 @@ const delPlugin = del({ targets: outputPath, runOnce: true });
 
 export default [
     {
-        input: './src/scripts/popup/popup.js',
+        input: 'src/popup/popup.ts',
         output: {
-            file: `${outputPath}bundles/popup.js`,
+            sourcemap: !production,
+            file: `${outputPath}/bundles/popup.js`,
+            name: 'popup',
             format: 'es',
         },
-        plugins: [copyPlugin, ...plugins, ...(isWatchMode ? [] : [delPlugin])],
+        plugins: [...plugins, copyPlugin, css({ output: 'popup.css' }), ...(!production ? [] : [delPlugin])],
     },
     {
-        input: './src/scripts/options/options.js',
-        output: [
-            {
-                file: `${outputPath}bundles/options.js`,
-                format: 'es',
-            },
-        ],
+        input: 'src/background/background.ts',
+        output: {
+            sourcemap: !production,
+            name: 'background',
+            file: `${outputPath}bundles/background.js`,
+            format: 'iife',
+        },
         plugins,
+        watch: { clearScreen: false },
     },
     {
-        input: './src/scripts/background/background.js',
-        output: [
-            {
-                file: `${outputPath}bundles/background.js`,
-                name: 'background',
-                format: 'iife',
-            },
-        ],
-        plugins,
+        input: 'src/options/options.ts',
+        output: {
+            sourcemap: !production,
+            name: 'options',
+            file: `${outputPath}bundles/options.js`,
+            format: 'es',
+        },
+        plugins: [...plugins, css({ output: 'options.css' })],
+        watch: { clearScreen: false },
     },
 ];

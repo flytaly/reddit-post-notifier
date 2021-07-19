@@ -15,7 +15,7 @@
         "48": "images/icon-48.png",
         "96": "images/icon-96.png"
     },
-    "permissions": ["identity", "storage", "alarms", "notifications", "https://*.reddit.com/*", "https://*.redd.it/*"],
+    "permissions": ["identity", "storage", "alarms", "notifications", "https://*.reddit.com/*"],
     "background": {
         "scripts": ["bundles/background.js"]
     },
