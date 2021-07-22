@@ -8,7 +8,7 @@ module.exports = {
     moduleFileExtensions: ['js', 'svelte', 'mjs', 'ts'],
     setupFilesAfterEnv: ['@testing-library/jest-dom/extend-expect', '<rootDir>/src/test-utils/setupTest.ts'],
     testEnvironment: 'jsdom',
-    collectCoverageFrom: ['<rootDir>/**/*.{ts,svelte}', '!**/node_modules/**'],
+    collectCoverageFrom: ['<rootDir>/src/**/*.{ts,svelte}', '!**/node_modules/**'],
     testMatch: ['<rootDir>/src/**/*.test.ts'],
 };
 

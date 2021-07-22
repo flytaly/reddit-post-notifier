@@ -6,7 +6,7 @@ import storage from '../storage';
 import { AuthError } from './errors';
 import { config } from '../constants';
 
-jest.mock('../storage.ts');
+jest.mock('../storage/index.ts');
 
 const testAuthFetchOptions = (options: RequestInit) => {
     expect(options.method).toBe('POST');

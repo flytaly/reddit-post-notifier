@@ -73,7 +73,7 @@ const storage = {
     //     return browser.storage.local.get(fields);
     // },
 
-    async saveAuthData(data: { access_token?: string; expires_in?: string; refresh_token?: string }) {
+    async saveAuthData(data: { access_token?: string; expires_in?: number | string; refresh_token?: string }) {
         const {
             access_token: accessToken, //
             expires_in: expiresInRelative,
