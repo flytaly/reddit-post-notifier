@@ -12,10 +12,13 @@ module.exports = {
         project: ['./tsconfig.json'],
         extraFileExtensions: ['.svelte'],
     },
+    globals: {
+        mockBrowser: true,
+    },
     env: {
-        es6: true,
         browser: true,
         jest: true,
+        webextensions: true,
     },
     overrides: [
         {
@@ -28,11 +31,13 @@ module.exports = {
         'svelte3/ignore-styles': () => true,
     },
     plugins: ['svelte3', '@typescript-eslint'],
-    ignorePatterns: ['node_modules', '/*.js'],
+    ignorePatterns: ['node_modules', '/*.js', 'src/test-utils/jest'],
     rules: {
+        '@typescript-eslint/explicit-module-boundary-types': 'off',
+        '@typescript-eslint/no-extra-semi': 'off',
         '@typescript-eslint/no-unsafe-assignment': 'off',
         '@typescript-eslint/no-unsafe-call': 'off',
         '@typescript-eslint/no-unsafe-member-access': 'off',
-        '@typescript-eslint/no-extra-semi': 'off',
+        '@typescript-eslint/require-await': 'off',
     },
 };

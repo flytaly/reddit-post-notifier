@@ -14,7 +14,7 @@
         "build:chrome": "rollup -c --environment target:chrome",
         "lint": "eslint src/**/*.{ts,svelte}",
         "validate": "svelte-check",
-        "test": "jest src",
+        "test": "jest",
         "test:coverage": "jest --coverage",
         "test:watch": "npm test -- --watch"
     },
@@ -51,6 +51,8 @@
         "eslint": "^7.31.0",
         "eslint-plugin-svelte3": "^3.2.0",
         "jest": "^26.6.3",
+        "jest-fetch-mock": "^3.0.3",
+        "mockzilla": "^0.9.0",
         "npm-run-all": "^4.1.5",
         "postcss": "^8.3.5",
         "postcss-import": "^14.0.2",
@@ -78,6 +80,7 @@
         "tslib": "^2.3.0",
         "typescript": "^4.3.5",
         "web-ext": "^6.2.0",
+        "web-ext-types": "^3.2.1",
         "webextension-polyfill-ts": "^0.26.0"
     }
 }

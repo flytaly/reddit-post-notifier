@@ -1,29 +1,34 @@
-import { userAgent } from '../../scripts/config';
-import RedditApiClient from '../../scripts/background/api-client';
-import auth from '../../scripts/background/auth';
+import { config } from '../constants';
+import RedditApiClient from './client';
+import auth from './auth';
+import fetchMock from 'jest-fetch-mock';
 
-jest.mock('../../scripts/background/auth.js');
+jest.mock('./auth.ts');
+afterEach(() => jest.clearAllMocks());
+
 const reddit = new RedditApiClient();
 
-afterEach(() => jest.clearAllMocks());
+const jsonResponse = (result: unknown, status = 200) => {
+    const response = { status, json: () => new Promise((resolve) => resolve(result)) } as unknown as Response;
+    return new Promise<Response>((resolve) => resolve(response));
+};
 
 describe('HTTP GET request', () => {
     const response = { data: 'data' };
     const endpoint = '/endpoint';
     const accessToken = 'accessToken';
     const params = { p1: 'v1', p2: 'v2' };
-    auth.getAccessToken = jest.fn(async () => accessToken);
+    beforeAll(() => {
+        auth.getAccessToken = jest.fn(async () => accessToken);
+    });
 
     test('should return JSON response', async () => {
-        global.fetch = jest.fn(async (url, init) => {
+        fetchMock.mockImplementationOnce((url, init) => {
             expect(init.method).toBe('GET');
-            expect(init.headers['User-Agent']).toBe(userAgent);
-            expect(init.headers.Authorization).toBe(`bearer ${accessToken}`);
+            expect(init.headers['User-Agent']).toBe(config.userAgent);
+            expect(init.headers['Authorization']).toBe(`bearer ${accessToken}`);
             expect(url).toBe('https://oauth.reddit.com/endpoint?p1=v1&p2=v2&raw_json=1');
-
-            return {
-                json: jest.fn(async () => response),
-            };
+            return jsonResponse(response);
         });
 
         const result = await reddit.GET(endpoint, params);
@@ -32,22 +37,18 @@ describe('HTTP GET request', () => {
     });
 
     test('should have correct url without params', async () => {
-        global.fetch = jest.fn(async (url /* , init */) => {
+        fetchMock.mockImplementationOnce((url) => {
             expect(url).toBe('https://oauth.reddit.com/endpoint?raw_json=1');
-            return {
-                json: jest.fn(async () => response),
-            };
+            return jsonResponse(response);
         });
         const result = await reddit.GET(endpoint);
         expect(result).toEqual(response);
     });
 
     test('should have correct oauth url', async () => {
-        global.fetch = jest.fn(async (url /* , init */) => {
+        fetchMock.mockImplementationOnce((url) => {
             expect(url).toBe('https://oauth.reddit.com/endpoint?raw_json=1');
-            return {
-                json: jest.fn(async () => response),
-            };
+            return jsonResponse(response);
         });
         const result = await reddit.GET(endpoint);
         expect(result).toEqual(response);
@@ -55,11 +56,59 @@ describe('HTTP GET request', () => {
 
     test('should have correct no-oauth url', async () => {
         auth.getAccessToken = jest.fn(async () => null);
-        global.fetch = jest.fn(async (url /* , init */) => {
+        fetchMock.mockImplementationOnce((url) => {
             expect(url).toBe('https://reddit.com/endpoint.json?raw_json=1');
-            return {
-                json: jest.fn(async () => response),
-            };
+            return jsonResponse(response);
+        });
+        const result = await reddit.GET(endpoint);
+        expect(result).toEqual(response);
+    });
+});
+
+describe('HTTP GET request', () => {
+    const response = { data: 'data' };
+    const endpoint = '/endpoint';
+    const accessToken = 'accessToken';
+    const params = { p1: 'v1', p2: 'v2' };
+    beforeAll(() => {
+        auth.getAccessToken = jest.fn(async () => accessToken);
+    });
+
+    test('should return JSON response', async () => {
+        fetchMock.mockImplementationOnce((url, init) => {
+            expect(init.method).toBe('GET');
+            expect(init.headers['User-Agent']).toBe(config.userAgent);
+            expect(init.headers['Authorization']).toBe(`bearer ${accessToken}`);
+            expect(url).toBe('https://oauth.reddit.com/endpoint?p1=v1&p2=v2&raw_json=1');
+            return jsonResponse(response);
+        });
+        const result = await reddit.GET(endpoint, params);
+        expect(result).toEqual(response);
+    });
+
+    test('should have correct url without params', async () => {
+        fetchMock.mockImplementationOnce((url) => {
+            expect(url).toBe('https://oauth.reddit.com/endpoint?raw_json=1');
+            return jsonResponse(response);
+        });
+        const result = await reddit.GET(endpoint);
+        expect(result).toEqual(response);
+    });
+
+    test('should have correct oauth url', async () => {
+        fetchMock.mockImplementationOnce((url) => {
+            expect(url).toBe('https://oauth.reddit.com/endpoint?raw_json=1');
+            return jsonResponse(response);
+        });
+        const result = await reddit.GET(endpoint);
+        expect(result).toEqual(response);
+    });
+
+    test('should have correct no-oauth url', async () => {
+        auth.getAccessToken = jest.fn(async () => null);
+        fetchMock.mockImplementationOnce((url) => {
+            expect(url).toBe('https://reddit.com/endpoint.json?raw_json=1');
+            return jsonResponse(response);
         });
         const result = await reddit.GET(endpoint);
         expect(result).toEqual(response);

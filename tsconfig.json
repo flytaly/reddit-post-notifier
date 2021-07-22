@@ -3,7 +3,9 @@
     "compilerOptions": {
         "resolveJsonModule": true,
         "types": ["node", "svelte", "jest"],
-        "allowJs": true
+        "allowJs": true,
+        "lib": ["es2020", "dom", "DOM.Iterable"],
+        "target": "ES2019"
     },
     "include": ["src/**/*", "src/types/*"],
     "exclude": ["node_modules/*", "dist/*"]
