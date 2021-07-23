@@ -1,5 +1,7 @@
 import { browser } from 'webextension-polyfill-ts';
 import { IS_FIREFOX, IS_TEST } from '../constants';
+import DEFAULT_OPTIONS from '../options-default';
+import storage from '../storage';
 
 if (IS_FIREFOX) {
     // Support notification-sound extension
@@ -9,8 +11,15 @@ if (IS_FIREFOX) {
     });
 }
 
-export function startExtension(): void {
+/** Make sure that all options fields are saved */
+async function mergeOptions() {
+    const options = await storage.getOptions();
+    await storage.saveOptions({ ...DEFAULT_OPTIONS, ...options });
+}
+
+export async function startExtension() {
+    await mergeOptions();
     void browser.browserAction.setBadgeBackgroundColor({ color: 'darkred' });
 }
 
-if (!IS_TEST) startExtension();
+if (!IS_TEST) void startExtension();

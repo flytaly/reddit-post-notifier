@@ -7,6 +7,9 @@ export function mockDate(date: string | number | Date) {
             super(date);
             return new RealDate(date);
         }
+        static now() {
+            return new RealDate(date).getTime();
+        }
     };
 }
 

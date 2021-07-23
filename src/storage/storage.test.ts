@@ -1,11 +1,13 @@
 /* eslint-disable @typescript-eslint/unbound-method */
 
-// import cloneDeep from 'lodash.clonedeep';
-import { browser } from 'webextension-polyfill-ts';
+import cloneDeep from 'lodash.clonedeep';
 import DEFAULT_OPTIONS from '../options-default';
+import type { RedditPost } from '../reddit-api/reddit-types';
+import { generatePost } from '../test-utils/content-generators';
 import { mockDate, restoreDate } from '../test-utils/mock-date';
 import type { ExtensionOptions } from '../types/env';
 import storage from './index';
+import type { SubredditData } from './storage-types';
 
 describe('authorization data', () => {
     afterEach(() => restoreDate());
@@ -57,90 +59,85 @@ describe('options', () => {
     });
 });
 
-// describe('subreddits', () => {
-//     const subreddits = {
-//         sub1: { posts: [{ data: { name: 'fullname_11', id: 'postId_11' } }], lastPost: 'fullname_11' },
-//         sub2: {
-//             posts: [
-//                 { data: { name: 'fullname_21', id: 'postId_21' } },
-//                 { data: { name: 'fullname_22', id: 'postId_22' } },
-//                 { data: { name: 'fullname_23', id: 'postId_23' } },
-//             ],
-//             lastPost: 'fullname_21',
-//         },
-//     };
+describe('subreddits', () => {
+    const subNames = ['subname1', 'subname2'];
+    const subreddits: Record<string, SubredditData> = {};
 
-//     beforeAll(() => {
-//         browser.storage.local.get.callsFake(async (param) => {
-//             if (!param.queries) expect(param.subreddits).toEqual({});
-//             return { subreddits: cloneDeep(subreddits) };
-//         });
-//     });
+    beforeAll(() => {
+        subNames.forEach((subreddit) => {
+            const posts: RedditPost[] = Array(2)
+                .fill(null)
+                .map(() => ({ data: generatePost({ subreddit }) }));
+            subreddits[subreddit] = { posts };
+        });
+    });
 
-//     test('should return posts of all subreddits', async () => {
-//         const response = await storage.getSubredditData();
-//         expect(response).toEqual(subreddits);
-//     });
+    test("should return subreddit's data with its posts", async () => {
+        mockBrowser.storage.local.get.expect({ subreddits: {} }).andResolve({ subreddits });
+        const response = await storage.getSubredditData();
+        expect(response).toEqual(subreddits);
+    });
 
-//     test("should save subreddit's posts without duplication", async () => {
-//         const newPosts = [
-//             { data: { name: 'fullname_12', created: '1551734739', id: 'postId_12' } },
-//             { data: { name: 'fullname_13', created: '1551734740', id: 'postId_13' } },
-//         ];
+    test("should save subreddit's posts without duplication", async () => {
+        const ts = Date.now();
+        mockDate(ts);
+        const subreddit = subNames[0];
+        const newPosts: RedditPost[] = [{ data: generatePost({ subreddit }) }, { data: generatePost({ subreddit }) }];
+        const posts: RedditPost[] = [...newPosts, ...subreddits[subreddit].posts];
 
-//         const posts = [...subreddits.sub1.posts, ...newPosts];
+        const expectedData: SubredditData = {
+            error: null,
+            lastPost: newPosts[0].data.name,
+            lastPostCreated: newPosts[0].data.created,
+            lastUpdate: ts,
+            posts: [...newPosts, ...subreddits[subreddit].posts],
+        };
 
-//         browser.storage.local.set.callsFake(async (param) => {
-//             const subR = param.subreddits;
-//             expect(subR.sub2).toEqual(subreddits.sub2);
+        mockBrowser.storage.local.get.mock(() => Promise.resolve({ subreddits }));
+        mockBrowser.storage.local.set.expect({ subreddits: { ...subreddits, [subreddit]: expectedData } });
 
-//             const oldPosts = subreddits.sub1.posts;
-//             expect(subR.sub1.posts).toEqual([...newPosts, ...oldPosts]);
-//             expect(subR.sub1.lastPost).toBe(newPosts[0].data.name);
-//             expect(subR.sub1.lastPostCreated).toBe(newPosts[0].data.created);
-//         });
+        await storage.saveSubredditData(subreddit, { posts });
+        restoreDate();
+    });
 
-//         await storage.saveSubredditData('sub1', { posts });
-//     });
+    test('should save error', async () => {
+        const error = { message: 'some error' };
+        const sub = subNames[1];
+        mockBrowser.storage.local.get.mock(() => Promise.resolve({ subreddits }));
+        mockBrowser.storage.local.set.expect({
+            subreddits: { ...subreddits, [sub]: expect.objectContaining({ error }) },
+        });
+        await storage.saveSubredditData(sub, { error });
+    });
 
-//     test('should save error', async () => {
-//         const error = { message: 'some error' };
-//         browser.storage.local.set.callsFake(async (param) => {
-//             const subR = param.subreddits;
-//             expect(subR.sub1).toEqual(subreddits.sub1);
-//             expect(subR.sub2).toEqual(subreddits.sub2);
-//             expect(subR.sub3.error).toEqual(error);
-//         });
+    test('should remove post', async () => {
+        const sub = subNames[0];
+        const subs = cloneDeep(subreddits);
+        const id = subs[sub].posts[1].data.id;
+        const exp = expect.objectContaining({ posts: subreddits[sub].posts.filter((p) => p.data.id !== id) });
+        mockBrowser.storage.local.get.mock(() => Promise.resolve({ subreddits: subs }));
+        mockBrowser.storage.local.set.expect({ subreddits: { ...subs, [sub]: exp } });
+        await storage.removePost({ id, subreddit: sub });
+    });
 
-//         await storage.saveSubredditData('sub3', { error });
-//     });
+    test('should remove all posts in subreddit', async () => {
+        const subreddit = subNames[1];
+        const subs = cloneDeep(subreddits);
+        const exp = expect.objectContaining({ posts: [] });
+        mockBrowser.storage.local.get.mock(() => Promise.resolve({ subreddits: subs }));
+        mockBrowser.storage.local.set.expect({ subreddits: { ...subs, [subreddit]: exp } });
+        await storage.removePostsFrom({ subreddit });
+    });
 
-//     test('should remove post', async () => {
-//         const subreddit = 'sub2';
-//         const deletePostIndex = 1;
-//         browser.storage.local.set.callsFake(async (param) => {
-//             const { posts } = param.subreddits[subreddit];
-//             expect(posts).toEqual(subreddits[subreddit].posts.filter((value, idx) => idx !== deletePostIndex));
-//         });
-//         await storage.removePost({ id: subreddits[subreddit].posts[deletePostIndex].data.id, subreddit });
-//     });
-
-//     test('should remove all posts in subreddit', async () => {
-//         const subreddit = 'sub2';
-//         browser.storage.local.set.callsFake(async (param) => {
-//             const { posts } = param.subreddits[subreddit];
-//             expect(posts).toEqual([]);
-//         });
-//         await storage.removePostsFrom({ subreddit });
-//     });
-
-//     test('should remove all posts in all subreddits', async () => {
-//         browser.storage.local.set.callsFake(async (param) => {
-//             Object.keys(param.subreddits).forEach((subreddit) => expect(param.subreddits[subreddit].posts).toEqual([]));
-//         });
-//         await storage.removeAllPosts();
-//     });
-// });
+    test('should remove all posts in all subreddits', async () => {
+        const inputSubs = cloneDeep(subreddits);
+        const expectedSubs = {};
+        subNames.forEach((s) => (expectedSubs[s] = { posts: [] }));
+        mockBrowser.storage.local.get.mock(() => Promise.resolve({ subreddits: inputSubs }));
+        mockBrowser.storage.local.set.expect(expect.objectContaining({ subreddits: expectedSubs }));
+        await storage.removeAllPosts();
+    });
+});
 
 // describe('search queries', () => {
 //     const queriesList = [

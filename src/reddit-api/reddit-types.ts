@@ -1,6 +1,6 @@
 export type ImageSource = {
-    height: number;
-    width: number;
+    height?: number;
+    width?: number;
     url: string;
 };
 
@@ -10,7 +10,7 @@ export type RedditPostData = {
     created: number;
     id: string;
     name: string;
-    over_18: boolean;
+    over_18?: boolean;
     permalink: string;
     preview?: {
         images: Array<{
@@ -19,7 +19,7 @@ export type RedditPostData = {
             source?: ImageSource;
         }>;
     };
-    selftext: string;
+    selftext?: string;
     subreddit: string;
     title: string;
     url: string;
@@ -42,7 +42,7 @@ export type RedditMessageData = {
 };
 
 export type RedditPost = {
-    kind: 'k3';
+    kind?: 'k3';
     data: RedditPostData;
 };
 
