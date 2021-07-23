@@ -44,7 +44,15 @@ export const debounce = (func: (...args: unknown[]) => unknown, waitMs: number) 
 
 export const getMsg = (msg: string) => browser.i18n.getMessage(msg);
 
-/** Filter out not needed properties */
+// Filter out keys from object
+export function filterKeys<T>(allowedKeys: string[], obj: Record<string, T> = {}): Record<string, T> {
+    return allowedKeys.reduce((acc, key) => {
+        acc[key] = obj[key];
+        return acc;
+    }, {});
+}
+
+/** Filter out not needed properties in the Reddit post */
 export const filterPostDataProperties = (post: RedditPostResponse) => {
     if (!post?.data) return post;
     const filterList: Array<keyof RedditPostData> = [
@@ -62,12 +70,7 @@ export const filterPostDataProperties = (post: RedditPostResponse) => {
         'url',
     ];
 
-    const data = filterList.reduce((acc, property) => {
-        if (post.data[property]) {
-            acc[property] = post.data[property];
-        }
-        return acc;
-    }, {}) as RedditPostData;
+    const data = filterKeys(filterList, post.data) as RedditPostData;
 
     if (data.selftext?.length > 400) {
         data.selftext = data.selftext.slice(0, 400);

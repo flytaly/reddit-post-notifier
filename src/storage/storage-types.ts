@@ -21,3 +21,19 @@ export type SubredditData = {
     lastUpdate?: number;
     posts?: RedditPost[];
 };
+
+export type QueryData = SubredditData;
+
+/** Reddit Search query*/
+export type QueryOpts = {
+    /** Query's id */
+    id: string;
+    /** Reddit Search query*/
+    query: string;
+    /** Optional name of the query */
+    name?: string;
+    /** Subreddit name, multireddit string or empty. If empty, search in the whole reddit. */
+    subreddit?: string;
+    /** Show notification */
+    notify?: boolean;
+};

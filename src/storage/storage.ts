@@ -4,8 +4,8 @@ import { browser } from 'webextension-polyfill-ts';
 import DEFAULT_OPTIONS from '../options-default';
 import type { RedditPost } from '../reddit-api/reddit-types';
 import type { ExtensionOptions } from '../types/env';
-import { filterPostDataProperties } from '../utils';
-import type { AuthData, MessagesField, SubredditData } from './storage-types';
+import { filterKeys, filterPostDataProperties } from '../utils';
+import type { AuthData, MessagesField, QueryData, QueryOpts, SubredditData } from './storage-types';
 
 export const authDataDefault: AuthData = {
     accessToken: '',
@@ -48,10 +48,12 @@ const storage = {
     //     return pinnedPostList;
     // },
 
-    // async getSubredditList() {
-    //     const { subredditList } = await browser.storage.local.get({ subredditList: [] });
-    //     return subredditList;
-    // },
+    async getSubredditList() {
+        const { subredditList } = (await browser.storage.local.get({ subredditList: [] })) as {
+            subredditList: string[];
+        };
+        return subredditList;
+    },
 
     async getSubredditData() {
         const { subreddits } = (await browser.storage.local.get({ subreddits: {} })) as {
@@ -60,15 +62,18 @@ const storage = {
         return subreddits;
     },
 
-    // async getQueriesList() {
-    //     const { queriesList } = await browser.storage.local.get({ queriesList: [] });
-    //     return queriesList;
-    // },
+    async getQueriesList() {
+        const { queriesList } = (await browser.storage.local.get({ queriesList: [] })) as { queriesList: QueryOpts[] };
 
-    // async getQueriesData() {
-    //     const { queries } = await browser.storage.local.get({ queries: {} });
-    //     return queries;
-    // },
+        return queriesList;
+    },
+
+    async getQueriesData() {
+        const { queries } = (await browser.storage.local.get({ queries: {} })) as {
+            queries: Record<string, QueryData>;
+        };
+        return queries;
+    },
 
     // async getNotificationsData() {
     //     const { notifications } = await browser.storage.local.get({ notifications: [] });
@@ -127,33 +132,35 @@ const storage = {
     //     }
     // },
 
-    // async saveSubredditList(subredditList) {
-    //     storage.prune({ subredditList });
-    //     return browser.storage.local.set({ subredditList });
-    // },
+    async saveSubredditList(subredditList: string[]) {
+        await storage.prune({ subredditList });
+        return browser.storage.local.set({ subredditList });
+    },
 
-    // // async saveQuery(query) {
-    // //     const queriesList = await storage.getQueriesList();
-    // //     const updateStatus = {
-    // //         wasUpdated: false,
-    // //         shouldClear: false,
-    // //     };
-    // //     const queriesUpdated = queriesList.map((q) => {
-    // //         const { id, subreddit: prevSubreddit, query: prevQuery } = q;
-    // //         if (id !== query.id) return q;
+    async saveQuery(query: QueryOpts) {
+        const queriesList = await storage.getQueriesList();
+        const updateStatus = {
+            wasUpdated: false,
+            shouldClear: false,
+        };
 
-    // //         if (prevQuery !== query.query || prevSubreddit !== query.subreddit) {
-    // //             updateStatus.shouldClear = true;
-    // //         }
-    // //         updateStatus.wasUpdated = true;
-    // //         return query;
-    // //     });
-    // //     if (!updateStatus.wasUpdated) queriesUpdated.push(query);
-    // //     if (updateStatus.shouldClear) {
-    // //         await storage.removeQueryData(query.id);
-    // //     }
-    // //     return browser.storage.local.set({ queriesList: queriesUpdated });
-    // // },
+        const queriesUpdated = queriesList.map((q: QueryOpts) => {
+            const { id, subreddit: prevSubreddit, query: prevQuery } = q;
+            if (id !== query.id) return q;
+
+            if (prevQuery !== query.query || prevSubreddit !== query.subreddit) {
+                updateStatus.shouldClear = true;
+            }
+            updateStatus.wasUpdated = true;
+            return query;
+        });
+
+        if (!updateStatus.wasUpdated) queriesUpdated.push(query);
+        if (updateStatus.shouldClear) {
+            await storage.removeQueryData(query.id);
+        }
+        return browser.storage.local.set({ queriesList: queriesUpdated });
+    },
 
     /** Update given subreddit or reddit search data object with new posts or error */
     updateWatchDataObject(
@@ -178,12 +185,12 @@ const storage = {
         return result;
     },
 
-    // async saveQueryData(queryId, { posts = [], error = null }) {
-    //     const data = await storage.getQueriesData();
-    //     const current = data[queryId] || {};
-    //     const updatedQuery = storage.updateWatchDataObject(current, posts, error);
-    //     await browser.storage.local.set({ queries: { ...data, [queryId]: updatedQuery } });
-    // },
+    async saveQueryData(queryId, { posts = [], error = null }) {
+        const data = await storage.getQueriesData();
+        const current = data[queryId] || {};
+        const updatedQuery = storage.updateWatchDataObject(current, posts, error);
+        await browser.storage.local.set({ queries: { ...data, [queryId]: updatedQuery } });
+    },
 
     async saveSubredditData(
         subreddit: string,
@@ -202,28 +209,24 @@ const storage = {
     //     return browser.storage.local.set({ notifications });
     // },
 
-    // async clearAuthData() {
-    //     const authData = {};
-    //     authKeys.forEach((key) => {
-    //         authData[key] = null;
-    //     });
-    //     await browser.storage.local.set(authData);
-    // },
+    async clearAuthData() {
+        await browser.storage.local.set(authDataDefault);
+    },
 
-    // async clearStorage() {
-    //     await browser.storage.local.clear();
-    // },
+    async clearStorage() {
+        await browser.storage.local.clear();
+    },
 
     // async removeMessages() {
     //     const { messages } = await browser.storage.local.get({ messages: {} });
     //     await browser.storage.local.set({ messages: { ...messages, messages: [], count: 0 } });
     // },
 
-    // async removeQueryData(queryId) {
-    //     const queries = { ...(await storage.getQueriesData()) };
-    //     queries[queryId] = { posts: [] };
-    //     await browser.storage.local.set({ queries });
-    // },
+    async removeQueryData(queryId: string) {
+        const queries = await storage.getQueriesData();
+        queries[queryId] = { posts: [] };
+        await browser.storage.local.set({ queries });
+    },
 
     async removePost({ id, subreddit, searchId }: { id: string; subreddit?: string; searchId?: string }) {
         if (subreddit) {
@@ -235,9 +238,9 @@ const storage = {
         }
 
         if (searchId) {
-            //     const queries = await storage.getQueriesData();
-            //     queries[searchId].posts = queries[searchId].posts.filter(({ data }) => data.id !== id);
-            //     await browser.storage.local.set({ queries });
+            const queries = await storage.getQueriesData();
+            queries[searchId].posts = queries[searchId].posts.filter(({ data }) => data.id !== id);
+            await browser.storage.local.set({ queries });
         }
     },
 
@@ -255,36 +258,34 @@ const storage = {
             await browser.storage.local.set({ subreddits });
         }
         if (searchId) {
-            // const queries = await storage.getQueriesData();
-            // queries[searchId].posts = [];
-            // await browser.storage.local.set({ queries });
+            const queries = await storage.getQueriesData();
+            queries[searchId].posts = [];
+            await browser.storage.local.set({ queries });
         }
     },
 
     async removeAllPosts() {
         const [subreddits = {}, queries = {}] = await Promise.all([
             storage.getSubredditData(),
-            // storage.getQueriesData(),
+            storage.getQueriesData(),
         ]);
 
         Object.keys(subreddits).forEach((subr) => {
             subreddits[subr].posts = [];
         });
-        // Object.keys(queries).forEach((q) => {
-        //     queries[q].posts = [];
-        // });
-
-        console.log(subreddits);
+        Object.keys(queries).forEach((q) => {
+            queries[q].posts = [];
+        });
 
         await browser.storage.local.set({ subreddits, queries });
     },
 
-    // async removeQueries(ids = []) {
-    //     const queriesList = await storage.getQueriesList();
-    //     const queriesUpdated = queriesList.filter((q) => !ids.includes(q.id));
-    //     storage.prune({ queriesIdList: queriesUpdated.map((q) => q.id) });
-    //     return browser.storage.local.set({ queriesList: queriesUpdated });
-    // },
+    async removeQueries(ids = []) {
+        const queriesList = await storage.getQueriesList();
+        const queriesUpdated = queriesList.filter((q) => !ids.includes(q.id));
+        await storage.prune({ queriesIdList: queriesUpdated.map((q) => q.id) });
+        return browser.storage.local.set({ queriesList: queriesUpdated });
+    },
 
     // async removeNotificationData(id) {
     //     const prev = await storage.getNotificationsData();
@@ -292,36 +293,22 @@ const storage = {
     //     return browser.storage.local.set({ notifications });
     // },
 
-    // /**
-    //  * Remove unused data
-    //  */
-    // async prune({ subredditList, queriesIdList }) {
-    //     if (subredditList) {
-    //         const subreddits = await storage.getSubredditData();
-    //         if (subreddits) {
-    //             const pruned = Object.keys(subreddits).reduce((acc, sub) => {
-    //                 if (subredditList.includes(sub)) {
-    //                     acc[sub] = subreddits[sub];
-    //                 }
-    //                 return acc;
-    //             }, {});
-    //             await browser.storage.local.set({ subreddits: pruned });
-    //         }
-    //     }
+    /** Remove unused data */
+    async prune({ subredditList, queriesIdList }: { subredditList?: string[]; queriesIdList?: string[] }) {
+        if (subredditList) {
+            const subs = await storage.getSubredditData();
+            if (subs) {
+                return browser.storage.local.set({ subreddits: filterKeys(subredditList, subs) });
+            }
+        }
 
-    //     if (queriesIdList) {
-    //         const queries = await storage.getQueriesData();
-    //         if (queries) {
-    //             const prunedQueries = Object.keys(queries).reduce((acc, qId) => {
-    //                 if (queriesIdList.includes(qId)) {
-    //                     acc[qId] = queries[qId];
-    //                 }
-    //                 return acc;
-    //             }, {});
-    //             await browser.storage.local.set({ queries: prunedQueries });
-    //         }
-    //     }
-    // },
+        if (queriesIdList) {
+            const queries = await storage.getQueriesData();
+            if (queries) {
+                return browser.storage.local.set({ queries: filterKeys(queriesIdList, queries) });
+            }
+        }
+    },
 
     // async countNumberOfUnreadItems(updateBadge = true) {
     //     let count = 0;

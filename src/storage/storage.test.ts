@@ -1,13 +1,14 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 /* eslint-disable @typescript-eslint/unbound-method */
 
 import cloneDeep from 'lodash.clonedeep';
 import DEFAULT_OPTIONS from '../options-default';
 import type { RedditPost } from '../reddit-api/reddit-types';
-import { generatePost } from '../test-utils/content-generators';
+import { generatePost, generatePosts, generateQuery } from '../test-utils/content-generators';
 import { mockDate, restoreDate } from '../test-utils/mock-date';
 import type { ExtensionOptions } from '../types/env';
 import storage from './index';
-import type { SubredditData } from './storage-types';
+import type { QueryData, QueryOpts, SubredditData } from './storage-types';
 
 describe('authorization data', () => {
     afterEach(() => restoreDate());
@@ -65,11 +66,22 @@ describe('subreddits', () => {
 
     beforeAll(() => {
         subNames.forEach((subreddit) => {
-            const posts: RedditPost[] = Array(2)
-                .fill(null)
-                .map(() => ({ data: generatePost({ subreddit }) }));
-            subreddits[subreddit] = { posts };
+            subreddits[subreddit] = { posts: generatePosts(2, subreddit) };
         });
+    });
+
+    test('should get and save the list of subreddits', async () => {
+        const subredditList = [...subNames];
+        mockBrowser.storage.local.get.expect({ subredditList: [] }).andResolve({ subredditList: subredditList });
+        await expect(storage.getSubredditList()).resolves.toBe(subredditList);
+
+        mockBrowser.storage.local.set.expect({ subredditList });
+        jest.spyOn(storage, 'prune').mockImplementationOnce(() => Promise.resolve());
+
+        await storage.saveSubredditList(subredditList);
+
+        expect(storage.prune).toHaveBeenCalledWith({ subredditList });
+        (storage.prune as any as jest.SpyInstance).mockRestore();
     });
 
     test("should return subreddit's data with its posts", async () => {
@@ -135,125 +147,120 @@ describe('subreddits', () => {
         subNames.forEach((s) => (expectedSubs[s] = { posts: [] }));
         mockBrowser.storage.local.get.mock(() => Promise.resolve({ subreddits: inputSubs }));
         mockBrowser.storage.local.set.expect(expect.objectContaining({ subreddits: expectedSubs }));
+        jest.spyOn(storage, 'getQueriesData').mockImplementationOnce(() => Promise.resolve({}));
+
         await storage.removeAllPosts();
+
+        (storage.getQueriesData as any as jest.SpyInstance).mockRestore();
     });
 });
 
-// describe('search queries', () => {
-//     const queriesList = [
-//         {
-//             id: 'id1',
-//             name: 'name1',
-//             query: 'search_query1',
-//             subreddit: 'subreddit1',
-//         },
-//         {
-//             id: 'id2',
-//             name: 'name2',
-//             query: 'search_query2',
-//             subreddit: 'subreddit2',
-//         },
-//     ];
-//     const queries = {
-//         id1: { posts: [{ data: { id: 'postId_11' } }] },
-//         id2: {
-//             posts: [{ data: { id: 'postId_21' } }, { data: { id: 'postId_22' } }, { data: { id: 'postId_23' } }],
-//         },
-//     };
+describe('search queries', () => {
+    let queriesList: QueryOpts[];
+    let qData: Record<string, QueryData>;
 
-//     test('should return queries list', async () => {
-//         browser.storage.local.get.callsFake(async (arg) => {
-//             expect(arg).toEqual({ queriesList: [] });
-//             return { queriesList };
-//         });
+    const mockQueries = () =>
+        mockBrowser.storage.local.get.expect({ queries: {} }).andResolve({ queries: cloneDeep(qData) });
+    const mockQueriesList = () => mockBrowser.storage.local.get.expect({ queriesList: [] }).andResolve({ queriesList });
 
-//         const qList = await storage.getQueriesList();
-//         expect(qList).toEqual(queriesList);
-//     });
+    beforeAll(() => {
+        queriesList = [generateQuery(), generateQuery()];
+        qData = {};
+        queriesList.forEach((q) => {
+            qData[q.id] = { posts: generatePosts(2, q.subreddit) };
+        });
+    });
 
-//     test('should save new query', async () => {
-//         const newQuery = {
-//             id: 'id3',
-//             name: 'name3',
-//             query: 'search_query3',
-//             subreddit: 'subreddit3',
-//         };
-//         browser.storage.local.set.callsFake(async (arg) => {
-//             expect(arg).toEqual({ queriesList: [...queriesList, newQuery] });
-//         });
-//         await storage.saveQuery(newQuery);
-//     });
+    test('should save search query data', async () => {
+        const created = Date.now();
+        mockDate(created + 1000);
+        const posts: RedditPost[] = [
+            { data: generatePost({ created }) },
+            { data: generatePost({ created: created - 100 }) },
+        ];
+        const queryId = queriesList[0].id;
+        const updated: QueryData = {
+            error: null,
+            lastPost: posts[0].data.name,
+            lastPostCreated: created,
+            lastUpdate: created + 1000,
+            posts: [...posts, ...qData[queryId].posts],
+        };
+        mockQueries();
+        mockBrowser.storage.local.set.expect({ queries: expect.objectContaining({ [queryId]: updated }) });
+        await storage.saveQueryData(queryId, { posts });
+        restoreDate();
+    });
 
-//     test('should update query', async () => {
-//         const updateQuery = {
-//             id: 'id2',
-//             name: 'new_name2',
-//             query: 'new_search_query2',
-//             subreddit: 'subreddit2',
-//         };
-//         browser.storage.local.set.callsFake(async (arg) => {
-//             expect(arg).toEqual({ queriesList: [queriesList[0], updateQuery] });
-//         });
-//         await storage.saveQuery(updateQuery);
-//     });
+    test('should get the queries list', async () => {
+        mockQueriesList();
+        const qList = await storage.getQueriesList();
+        expect(qList).toEqual(queriesList);
+    });
 
-//     test('should remove query', async () => {
-//         browser.storage.local.set.callsFake(async (arg) => {
-//             expect(arg).toEqual({ queriesList: [queriesList[1]] });
-//         });
-//         await storage.removeQueries([queriesList[0].id]);
-//     });
+    test('should save new query', async () => {
+        const newQuery = generateQuery();
+        mockQueriesList();
+        mockBrowser.storage.local.set.expect({ queriesList: [...queriesList, newQuery] });
+        await storage.saveQuery(newQuery);
+    });
 
-//     test('should save search query data', async () => {
-//         const queryId = 'id1';
-//         const posts = [
-//             { data: { id: 'postId6', created: '1552338638' } },
-//             { data: { id: 'postId7', created: '1552338630' } },
-//         ];
+    test('should update query', async () => {
+        const qId = queriesList[1].id;
+        const updatedQuery: QueryOpts = { ...queriesList[1], query: 'new query' };
+        const updatedList = [...queriesList.filter((q) => q.id !== qId), updatedQuery];
+        mockQueriesList();
+        mockQueries();
+        mockBrowser.storage.local.set.expect({ queries: { ...qData, [qId]: { posts: [] } } });
+        mockBrowser.storage.local.set.expect({ queriesList: updatedList });
+        await storage.saveQuery(updatedQuery);
+    });
 
-//         browser.storage.local.get.callsFake(async (arg) => {
-//             expect(arg).toEqual({ queries: {} });
-//             return { queries: cloneDeep(queries) };
-//         });
-//         browser.storage.local.set.callsFake(async (arg) => {
-//             expect(arg.queries[queryId].lastPostCreated).toEqual('1552338638');
-//             expect(arg.queries[queryId].posts).toEqual([...posts, ...queries[queryId].posts]);
-//         });
+    test('should remove query', async () => {
+        const id = queriesList[1].id;
+        const filtered = queriesList.filter((q) => q.id !== id);
+        mockQueriesList();
+        mockBrowser.storage.local.set.expect({ queriesList: filtered });
+        jest.spyOn(storage, 'prune').mockImplementationOnce(() => Promise.resolve());
 
-//         await storage.saveQueryData(queryId, { posts });
-//     });
+        await storage.removeQueries([id]);
 
-//     test('should remove post', async () => {
-//         browser.storage.local.get.callsFake(async (param) => {
-//             expect(param).toEqual({ queries: {} });
-//             return { queries: cloneDeep(queries) };
-//         });
-//         const searchId = 'id2';
-//         const deletePostIndex = 1;
-//         browser.storage.local.set.callsFake(async (param) => {
-//             const { posts } = param.queries[searchId];
-//             expect(posts).toEqual(queries[searchId].posts.filter((value, idx) => idx !== deletePostIndex));
-//         });
-//         await storage.removePost({ id: queries[searchId].posts[deletePostIndex].data.id, searchId });
-//     });
+        expect(storage.prune).toHaveBeenCalledWith({ queriesIdList: filtered.map((q) => q.id) });
+        (storage.prune as any as jest.SpyInstance).mockRestore();
+    });
 
-//     test('should remove all posts in search query', async () => {
-//         const searchId = 'id2';
-//         browser.storage.local.set.callsFake(async (param) => {
-//             const { posts } = param.queries[searchId];
-//             expect(posts).toEqual([]);
-//         });
-//         await storage.removePostsFrom({ searchId });
-//     });
+    test('should remove post', async () => {
+        mockQueries();
+        const searchId = queriesList[1].id;
+        const postId = qData[searchId].posts[1].data.id;
+        const posts = qData[searchId].posts.filter((p) => p.data.id !== postId);
+        mockBrowser.storage.local.set.expect({
+            queries: expect.objectContaining({ [searchId]: { posts } }),
+        });
+        await storage.removePost({ id: postId, searchId });
+    });
 
-//     test('should remove all posts in all search queries', async () => {
-//         browser.storage.local.get.callsFake(() => ({ queries: cloneDeep(queries) }));
-//         browser.storage.local.set.callsFake(async (param) => {
-//             Object.keys(param.queries).forEach((q) => expect(param.queries[q].posts).toEqual([]));
-//         });
-//         await storage.removeAllPosts();
-//     });
-// });
+    test('should remove all posts in search query', async () => {
+        const searchId = queriesList[0].id;
+        mockQueries();
+        mockBrowser.storage.local.set.expect({
+            queries: expect.objectContaining({
+                [searchId]: { posts: [] },
+            }),
+        });
+        await storage.removePostsFrom({ searchId });
+    });
+
+    test('should remove all posts in all search queries', async () => {
+        mockQueries();
+        const expectedQueries = {};
+        queriesList.forEach((q) => (expectedQueries[q.id] = { posts: [] }));
+        mockBrowser.storage.local.set.expect(expect.objectContaining({ queries: expectedQueries }));
+        jest.spyOn(storage, 'getSubredditData').mockImplementationOnce(() => Promise.resolve({}));
+        await storage.removeAllPosts();
+        (storage.getSubredditData as any as jest.SpyInstance).mockRestore();
+    });
+});
 
 // describe('messages', () => {
 //     const oldMessages = [{ data: { created: '1552338638' } }, { data: { created: '1552338630' } }];
@@ -279,70 +286,32 @@ describe('subreddits', () => {
 //     });
 // });
 
-// describe('V3 migration', () => {
-//     test('should move list of subreddits outside options object', async () => {
-//         const watchSubreddits = ['sub1', 'sub2'];
-//         const options = {
-//             someKey1: 'value1',
-//             someKey2: 'value2',
-//             watchSubreddits,
-//         };
+describe('prune', () => {
+    const subInfo = { s1: { posts: [] }, s2: { posts: [] }, s3: { posts: [] }, s4: { posts: [] } };
+    const queryInfo = { q1: { posts: [] }, q2: { posts: [] }, q3: { posts: [] } };
 
-//         storage.getOptions = jest.fn(() => Promise.resolve(options));
-//         storage.getSubredditList = jest.fn(() => Promise.resolve([]));
+    beforeAll(() => {
+        jest.spyOn(storage, 'getSubredditData').mockImplementation(() => Promise.resolve(subInfo));
+        jest.spyOn(storage, 'getQueriesData').mockImplementation(() => Promise.resolve(queryInfo));
+    });
+    afterAll(() => {
+        (storage.getSubredditData as any as jest.SpyInstance).mockRestore();
+        (storage.getQueriesData as any as jest.SpyInstance).mockRestore();
+    });
 
-//         let saved = false;
-//         browser.storage.local.set.callsFake((args) => {
-//             expect(args.subredditList).toEqual(watchSubreddits);
-//             expect(args.options).toMatchObject({
-//                 someKey1: 'value1',
-//                 someKey2: 'value2',
-//             });
-//             expect(args.options.watchSubreddits).toBeUndefined();
-//             saved = true;
-//         });
+    test('should prune redundant subreddits', async () => {
+        const subredditList = ['s1', 's2'];
+        const subreddits = { s1: subInfo.s1, s2: subInfo.s2 };
+        mockBrowser.storage.local.set.expect({ subreddits });
+        await storage.prune({ subredditList });
+    });
 
-//         await storage.migrateToV3();
-//         expect(saved).toBeTruthy();
-//     });
-// });
-
-// describe('prune', () => {
-//     const subInfo = {
-//         sub1: { posts: [] },
-//         sub2: { posts: [] },
-//         sub3: { posts: [] },
-//         sub4: { posts: [] },
-//     };
-//     const queryInfo = {
-//         q1: { posts: [] },
-//         q2: { posts: [] },
-//         q3: { posts: [] },
-//     };
-//     beforeAll(() => {
-//         storage.prune = pruneOriginal;
-//     });
-//     afterAll(() => {
-//         storage.prune = jest.fn();
-//     });
-//     test('should prune redundant subreddits', async () => {
-//         storage.getSubredditData = jest.fn(async () => subInfo);
-//         browser.storage.local.set.callsFake(async (arg) => {
-//             expect(arg).toEqual({ subreddits: { sub1: subInfo.sub1, sub2: subInfo.sub2 } });
-//         });
-//         const subredditList = ['sub1', 'sub2'];
-//         await storage.prune({ subredditList });
-//     });
-
-//     test('should prune redundant queries data', async () => {
-//         storage.getQueriesData = jest.fn(async () => queryInfo);
-//         let called = false;
-//         browser.storage.local.set.callsFake(async (arg) => {
-//             expect(arg).toEqual({ queries: { q2: queryInfo.q2 } });
-//             called = true;
-//         });
-//         const queriesIdList = ['q2'];
-//         await storage.prune({ queriesIdList });
-//         expect(called).toBeTruthy();
-//     });
-// });
+    test('should prune redundant queries data', async () => {
+        storage.getQueriesData = jest.fn(async () => queryInfo);
+        const queriesIdList = ['q2'];
+        mockBrowser.storage.local.set.expect({
+            queries: { q2: queryInfo.q2 },
+        });
+        await storage.prune({ queriesIdList });
+    });
+});
