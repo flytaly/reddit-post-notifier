@@ -2,13 +2,10 @@
 
 // import cloneDeep from 'lodash.clonedeep';
 import { browser } from 'webextension-polyfill-ts';
+import DEFAULT_OPTIONS from '../options-default';
 import { mockDate, restoreDate } from '../test-utils/mock-date';
+import type { ExtensionOptions } from '../types/env';
 import storage from './index';
-
-// storage.countNumberOfUnreadItems = jest.fn();
-// storage.removeQueryData = jest.fn();
-// const pruneOriginal = storage.prune;
-// storage.prune = jest.fn();
 
 describe('authorization data', () => {
     afterEach(() => restoreDate());
@@ -40,27 +37,25 @@ describe('authorization data', () => {
     });
 });
 
-// describe('options', () => {
-//     const options = { option1: 1, option2: 2 };
-//     beforeAll(() => {
-//         browser.storage.local.get.callsFake(async (key) => {
-//             expect(key).toBe('options');
-//             return { options };
-//         });
-//     });
-//     test('should return options', async () => {
-//         const result = await storage.getOptions();
-//         expect(result).toEqual(options);
-//     });
-//     test('should save options', async () => {
-//         const newOptions = { newOption1: 'value1', newOption2: 'value2' };
-//         browser.storage.local.set.callsFake(async (opts) => {
-//             expect(opts.options).toEqual({ ...options, ...newOptions });
-//             return null;
-//         });
-//         await storage.saveOptions(newOptions);
-//     });
-// });
+describe('options', () => {
+    const options: Partial<ExtensionOptions> = { isAuthorized: true, updateInterval: 120 };
+
+    beforeEach(() =>
+        mockBrowser.storage.local.get //
+            .expect({ options: DEFAULT_OPTIONS })
+            .andResolve({ options }),
+    );
+
+    test('should return options', async () => {
+        const result = await storage.getOptions();
+        expect(result).toMatchObject(options);
+    });
+    test('should save options', async () => {
+        const newOptions: Partial<ExtensionOptions> = { hideEmptyGroups: true };
+        mockBrowser.storage.local.set.expect({ options: { ...options, ...newOptions } });
+        await storage.saveOptions(newOptions);
+    });
+});
 
 // describe('subreddits', () => {
 //     const subreddits = {

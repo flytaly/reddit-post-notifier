@@ -1,20 +1,24 @@
+/* eslint-disable @typescript-eslint/unbound-method */
 import { startExtension } from './background';
+import storage from '../storage';
+import type { ExtensionOptions } from '../types/env';
+import DEFAULT_OPTIONS from '../options-default';
+
+jest.mock('../storage/storage.ts');
 
 describe('Start extension', () => {
-    test('should initialize extension', () => {
+    test('should initialize extension', async () => {
+        const opts: Partial<ExtensionOptions> = { updateInterval: 300 };
+        (storage.getOptions as jest.Mock).mockImplementationOnce(async () => opts);
         mockBrowser.browserAction.setBadgeBackgroundColor.expect({ color: 'darkred' });
-        startExtension();
+
+        await startExtension();
+
+        expect(storage.getOptions).toHaveBeenCalled();
+        const exp = expect.objectContaining({ ...DEFAULT_OPTIONS, ...opts });
+        expect(storage.saveOptions).toHaveBeenCalledWith(exp);
     });
 });
-
-// import browser from './mocks/browser.mock';
-// import requestIdleCallback from './mocks/requestIdleCallback.mock';
-// import storage from '../../scripts/storage';
-// import app from '../../scripts/background/app';
-// import bgScripts from '../../scripts/background/background';
-// import optionsDefault from '../../scripts/options-default';
-// import types from '../../scripts/types';
-// import popupPort from '../../scripts/background/popupPort';
 
 // jest.mock('../../scripts/background/auth.js');
 // jest.mock('../../scripts/background/app.js');
@@ -37,17 +41,6 @@ describe('Start extension', () => {
 //         expect(requestIdleCallback).toHaveBeenCalledWith(startExtension);
 //     });
 
-//     // test('should call setAuth if there is no accessToken in the storage', async () => {
-//     //     storage.getAuthData.mockImplementationOnce(() => ({ }));
-//     //     await startExtension();
-//     //     expect(auth.setAuth).toHaveBeenCalled();
-//     // });
-
-//     // test('should not call setAuth if there is an accessToken in the storage', async () => {
-//     //     storage.getAuthData.mockImplementationOnce(() => ({ accessToken: 'validToken' }));
-//     //     await startExtension();
-//     //     expect(auth.setAuth).not.toHaveBeenCalled();
-//     // });
 // });
 
 // describe('set options', () => {

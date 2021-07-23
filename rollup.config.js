@@ -88,7 +88,7 @@ export default [
         watch: { clearScreen: false },
     },
     {
-        input: 'src/options/options.ts',
+        input: 'src/options/index.ts',
         output: {
             sourcemap: !production,
             name: 'options',
