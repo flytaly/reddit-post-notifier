@@ -1,11 +1,5 @@
-import type { RedditPost } from '../reddit-api/reddit-types';
-
-export type MessagesField = {
-    count?: number;
-    lastPostCreated?: number;
-    lastUpdate?: number;
-    messages?: [];
-};
+import type { RedditMessage, RedditPost } from '../reddit-api/reddit-types';
+import type { ExtensionOptions } from '../types/env';
 
 export type AuthData = {
     accessToken?: string;
@@ -24,6 +18,13 @@ export type SubredditData = {
 
 export type QueryData = SubredditData;
 
+export type MessageData = {
+    count?: number;
+    lastPostCreated?: number;
+    lastUpdate?: number;
+    messages?: RedditMessage[];
+};
+
 /** Reddit Search query*/
 export type QueryOpts = {
     /** Query's id */
@@ -37,3 +38,15 @@ export type QueryOpts = {
     /** Show notification */
     notify?: boolean;
 };
+
+export type StorageFields = {
+    options: ExtensionOptions;
+
+    messages: MessageData;
+    notifications: { id: string; data: string[] }[];
+    pinnedPostList: RedditPost[];
+    queries: Record<string, QueryData>;
+    queriesList: QueryOpts[];
+    subredditList: string[];
+    subreddits: Record<string, SubredditData>;
+} & AuthData;

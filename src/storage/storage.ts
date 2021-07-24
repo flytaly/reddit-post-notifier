@@ -2,10 +2,10 @@
 
 import { browser } from 'webextension-polyfill-ts';
 import DEFAULT_OPTIONS from '../options-default';
-import type { RedditPost } from '../reddit-api/reddit-types';
+import type { RedditMessage, RedditPost } from '../reddit-api/reddit-types';
 import type { ExtensionOptions } from '../types/env';
 import { filterKeys, filterPostDataProperties } from '../utils';
-import type { AuthData, MessagesField, QueryData, QueryOpts, SubredditData } from './storage-types';
+import type { AuthData, QueryOpts, StorageFields, SubredditData } from './storage-types';
 
 export const authDataDefault: AuthData = {
     accessToken: '',
@@ -13,7 +13,9 @@ export const authDataDefault: AuthData = {
     refreshToken: '',
 };
 
-export const dataFields = {
+export const dataFields: StorageFields = {
+    ...authDataDefault,
+    options: DEFAULT_OPTIONS,
     queries: {},
     queriesList: [],
     subredditList: [],
@@ -25,66 +27,53 @@ export const dataFields = {
 
 const storage = {
     async getAuthData() {
-        const result = (await browser.storage.local.get(authDataDefault)) as AuthData;
-        return result;
+        const result = await browser.storage.local.get(authDataDefault);
+        return result as AuthData;
     },
 
     async getMessageData() {
         const { messages } = await browser.storage.local.get({ messages: {} });
-        return messages as MessagesField;
+        return messages as StorageFields['messages'];
     },
 
     async getOptions() {
-        const { options } = (await browser.storage.local.get({ options: DEFAULT_OPTIONS })) as {
-            options: ExtensionOptions;
-        };
-        return options;
+        const { options } = await browser.storage.local.get({ options: DEFAULT_OPTIONS });
+        return options as StorageFields['options'];
     },
 
-    // async getPinnedPostList() {
-    //     const { pinnedPostList } = await browser.storage.local.get({
-    //         pinnedPostList: [],
-    //     });
-    //     return pinnedPostList;
-    // },
+    async getPinnedPostList() {
+        const { pinnedPostList } = await browser.storage.local.get({ pinnedPostList: [] });
+        return pinnedPostList as StorageFields['pinnedPostList'];
+    },
 
     async getSubredditList() {
-        const { subredditList } = (await browser.storage.local.get({ subredditList: [] })) as {
-            subredditList: string[];
-        };
-        return subredditList;
+        const { subredditList } = await browser.storage.local.get({ subredditList: [] });
+        return subredditList as StorageFields['subredditList'];
     },
 
     async getSubredditData() {
-        const { subreddits } = (await browser.storage.local.get({ subreddits: {} })) as {
-            subreddits: Record<string, SubredditData>;
-        };
-        return subreddits;
+        const { subreddits } = await browser.storage.local.get({ subreddits: {} });
+        return subreddits as StorageFields['subreddits'];
     },
 
     async getQueriesList() {
-        const { queriesList } = (await browser.storage.local.get({ queriesList: [] })) as { queriesList: QueryOpts[] };
-
-        return queriesList;
+        const { queriesList } = await browser.storage.local.get({ queriesList: [] });
+        return queriesList as StorageFields['queriesList'];
     },
 
     async getQueriesData() {
-        const { queries } = (await browser.storage.local.get({ queries: {} })) as {
-            queries: Record<string, QueryData>;
-        };
-        return queries;
+        const { queries } = await browser.storage.local.get({ queries: {} });
+        return queries as StorageFields['queries'];
     },
 
-    // async getNotificationsData() {
-    //     const { notifications } = await browser.storage.local.get({ notifications: [] });
-    //     return notifications;
-    // },
+    async getNotificationsData() {
+        const { notifications } = await browser.storage.local.get({ notifications: [] });
+        return notifications as StorageFields['notifications'];
+    },
 
-    // async getAllData(withOptions = false) {
-    //     const fields = { ...dataFields };
-    //     if (withOptions) fields.options = {};
-    //     return browser.storage.local.get(fields);
-    // },
+    async getAllData() {
+        return browser.storage.local.get(dataFields) as Promise<StorageFields>;
+    },
 
     async saveAuthData(data: { access_token?: string; expires_in?: number | string; refresh_token?: string }) {
         const {
@@ -102,35 +91,37 @@ const storage = {
         });
     },
 
-    // async saveMessageData({ newMessages, count }) {
-    //     const data = (await storage.getMessageData()) || {};
-    //     data.messages = data.messages || [];
-    //     if (count === 0) {
-    //         data.messages = [];
-    //     } else if (newMessages) data.messages.unshift(...newMessages);
+    async saveMessageData({ newMessages, count }: { newMessages: RedditMessage[]; count: number }) {
+        const data = await storage.getMessageData();
+        data.messages = data.messages || [];
+        if (count === 0) {
+            data.messages = [];
+        } else if (newMessages) {
+            data.messages = [...newMessages, ...data.messages];
+        }
 
-    //     if (newMessages && newMessages[0]) data.lastPostCreated = newMessages[0].data.created;
+        if (newMessages && newMessages[0]) data.lastPostCreated = newMessages[0].data.created;
 
-    //     data.count = count;
+        data.count = count;
+        data.lastUpdate = Date.now();
 
-    //     data.lastUpdate = Date.now();
-
-    //     await browser.storage.local.set({ messages: data });
-    // },
+        await browser.storage.local.set({ messages: data });
+    },
 
     async saveOptions(data: Partial<ExtensionOptions>) {
-        const optionsPrev = await this.getOptions();
+        const optionsPrev = await storage.getOptions();
         return browser.storage.local.set({ options: { ...optionsPrev, ...data } });
     },
 
-    // async savePinnedPost(post) {
-    //     const prev = await storage.getPinnedPostList();
-    //     if (prev.findIndex((p) => p.data.id === post.data.id) === -1) {
-    //         return browser.storage.local.set({
-    //             pinnedPostList: [post, ...prev],
-    //         });
-    //     }
-    // },
+    async savePinnedPost(post: RedditPost) {
+        const prev = await storage.getPinnedPostList();
+        if (prev.findIndex((p) => p.data.id === post.data.id) !== -1) {
+            return;
+        }
+        return browser.storage.local.set({
+            pinnedPostList: [post, ...prev],
+        });
+    },
 
     async saveSubredditList(subredditList: string[]) {
         await storage.prune({ subredditList });
@@ -202,25 +193,27 @@ const storage = {
         return browser.storage.local.set({ subreddits: { ...data, [subreddit]: updatedSubreddit } });
     },
 
-    // async saveNotificationsData(id, data) {
-    //     const prev = await storage.getNotificationsData();
-    //     const notifications = prev.slice(-9); // limit length of the array in the storage
-    //     notifications.push({ id, data });
-    //     return browser.storage.local.set({ notifications });
-    // },
+    async saveNotificationsData(id: string, data: string[]) {
+        const prev = await storage.getNotificationsData();
+        // limit length of the array in the storage
+        const notifications: StorageFields['notifications'] = prev.slice(-9);
+        notifications.push({ id, data });
+        return browser.storage.local.set({ notifications });
+    },
 
     async clearAuthData() {
-        await browser.storage.local.set(authDataDefault);
+        return browser.storage.local.set(authDataDefault);
     },
 
     async clearStorage() {
-        await browser.storage.local.clear();
+        return browser.storage.local.clear();
     },
 
-    // async removeMessages() {
-    //     const { messages } = await browser.storage.local.get({ messages: {} });
-    //     await browser.storage.local.set({ messages: { ...messages, messages: [], count: 0 } });
-    // },
+    async removeMessages() {
+        const prev = await storage.getMessageData();
+        const messages: StorageFields['messages'] = { ...prev, messages: [], count: 0 };
+        await browser.storage.local.set({ messages });
+    },
 
     async removeQueryData(queryId: string) {
         const queries = await storage.getQueriesData();
@@ -244,12 +237,12 @@ const storage = {
         }
     },
 
-    // async removePinPost(id) {
-    //     const pinnedPostList = await storage.getPinnedPostList();
-    //     return browser.storage.local.set({
-    //         pinnedPostList: pinnedPostList.filter((p) => p.data.id !== id),
-    //     });
-    // },
+    async removePinPost(id: string) {
+        const pinnedPostList = await storage.getPinnedPostList();
+        return browser.storage.local.set({
+            pinnedPostList: pinnedPostList.filter((p) => p.data.id !== id),
+        });
+    },
 
     async removePostsFrom({ subreddit, searchId }: { subreddit?: string; searchId?: string }) {
         if (subreddit) {
@@ -287,11 +280,11 @@ const storage = {
         return browser.storage.local.set({ queriesList: queriesUpdated });
     },
 
-    // async removeNotificationData(id) {
-    //     const prev = await storage.getNotificationsData();
-    //     const notifications = prev.filter((n) => n.id !== id);
-    //     return browser.storage.local.set({ notifications });
-    // },
+    async removeNotificationData(id: string) {
+        const prev = await storage.getNotificationsData();
+        const notifications = prev.filter((n) => n.id !== id);
+        return browser.storage.local.set({ notifications });
+    },
 
     /** Remove unused data */
     async prune({ subredditList, queriesIdList }: { subredditList?: string[]; queriesIdList?: string[] }) {
@@ -310,29 +303,30 @@ const storage = {
         }
     },
 
-    // async countNumberOfUnreadItems(updateBadge = true) {
-    //     let count = 0;
-    //     const { subredditList, queriesList, queries, subreddits, messages } = await browser.storage.local.get();
+    async countNumberOfUnreadItems(updateBadge = true) {
+        let count = 0;
+        const { subredditList, queriesList, queries, subreddits, messages } = await storage.getAllData();
 
-    //     if (subredditList?.length && subreddits) {
-    //         count += subredditList.reduce((acc, curr) => {
-    //             if (subreddits[curr] && subreddits[curr].posts) return acc + subreddits[curr].posts.length;
-    //             return acc;
-    //         }, 0);
-    //     }
+        if (subredditList?.length && subreddits) {
+            count += subredditList.reduce((acc, curr) => {
+                if (subreddits[curr] && subreddits[curr].posts) return acc + subreddits[curr].posts.length;
+                return acc;
+            }, 0);
+        }
 
-    //     if (queriesList && queriesList.length && queries) {
-    //         count += queriesList.reduce((acc, curr) => {
-    //             if (queries[curr.id] && queries[curr.id].posts) return acc + queries[curr.id].posts.length;
-    //             return acc;
-    //         }, 0);
-    //     }
+        if (queriesList && queriesList.length && queries) {
+            count += queriesList.reduce((acc, curr) => {
+                if (queries[curr.id] && queries[curr.id].posts) return acc + queries[curr.id].posts.length;
+                return acc;
+            }, 0);
+        }
 
-    //     if (messages && messages.count) count += messages.count;
+        if (messages && messages.count) count += messages.count;
 
-    //     if (updateBadge) browser.browserAction.setBadgeText({ text: count ? String(count) : '' });
-    //     return count;
-    // },
+        if (updateBadge) void browser.browserAction.setBadgeText({ text: count ? String(count) : '' });
+
+        return count;
+    },
 };
 
 export default storage;

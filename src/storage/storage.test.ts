@@ -3,12 +3,12 @@
 
 import cloneDeep from 'lodash.clonedeep';
 import DEFAULT_OPTIONS from '../options-default';
-import type { RedditPost } from '../reddit-api/reddit-types';
+import type { RedditMessage, RedditMessageData, RedditPost } from '../reddit-api/reddit-types';
 import { generatePost, generatePosts, generateQuery } from '../test-utils/content-generators';
 import { mockDate, restoreDate } from '../test-utils/mock-date';
 import type { ExtensionOptions } from '../types/env';
 import storage from './index';
-import type { QueryData, QueryOpts, SubredditData } from './storage-types';
+import type { MessageData, QueryData, QueryOpts, StorageFields, SubredditData } from './storage-types';
 
 describe('authorization data', () => {
     afterEach(() => restoreDate());
@@ -262,29 +262,43 @@ describe('search queries', () => {
     });
 });
 
-// describe('messages', () => {
-//     const oldMessages = [{ data: { created: '1552338638' } }, { data: { created: '1552338630' } }];
-//     const newMessages = [{ data: { created: '1552339005' } }, { data: { created: '1552339000' } }];
+describe('messages', () => {
+    type PartialMsg = { data: Partial<RedditMessageData> };
+    const oldMsgs: PartialMsg[] = [{ data: { created: 1552338638 } }, { data: { created: 1552338630 } }];
+    const newMsgs: PartialMsg[] = [{ data: { created: 1552339005 } }, { data: { created: 1552339000 } }];
 
-//     test('should return information about unread messages', async () => {
-//         browser.storage.local.get.callsFake(async (param) => {
-//             expect(param).toEqual({ messages: {} });
-//             return { messages: { messages: cloneDeep(oldMessages) } };
-//         });
-//         const messagesData = await storage.getMessageData();
-//         expect(messagesData.messages).toEqual(oldMessages);
-//     });
+    beforeEach(() => {
+        const msgArray = cloneDeep(oldMsgs);
+        mockBrowser.storage.local.get.expect({ messages: {} }).andResolve({
+            messages: { count: msgArray.length, messages: msgArray } as MessageData,
+        });
+    });
+    test('should return information about unread messages', async () => {
+        await expect(storage.getMessageData()).resolves.toEqual({
+            count: oldMsgs.length,
+            messages: oldMsgs,
+        });
+    });
 
-//     test('should save private messages and total number of unread messages', async () => {
-//         browser.storage.local.set.callsFake(async ({ messages }) => {
-//             expect(messages.count).toBe(4);
-//             expect(messages.lastPostCreated).toBe(newMessages[0].data.created);
-//             expect(messages.messages).toEqual([...newMessages, ...oldMessages]);
-//         });
-
-//         await storage.saveMessageData({ newMessages, count: 4 });
-//     });
-// });
+    test('should save private messages and total number of unread messages', async () => {
+        const count = oldMsgs.length + newMsgs.length;
+        const date = mockDate(new Date());
+        const expected: MessageData = {
+            count,
+            lastPostCreated: newMsgs[0].data.created,
+            lastUpdate: date.getTime(),
+            messages: expect.arrayContaining([...newMsgs, ...oldMsgs]) as RedditMessage[],
+        };
+        mockBrowser.storage.local.set.expect({ messages: expected });
+        const newMessages = cloneDeep(newMsgs) as any as RedditMessage[];
+        await storage.saveMessageData({ newMessages, count });
+        restoreDate();
+    });
+    test('should remove messages', async () => {
+        mockBrowser.storage.local.set.expect({ messages: { messages: [], count: 0 } });
+        await storage.removeMessages();
+    });
+});
 
 describe('prune', () => {
     const subInfo = { s1: { posts: [] }, s2: { posts: [] }, s3: { posts: [] }, s4: { posts: [] } };
@@ -313,5 +327,23 @@ describe('prune', () => {
             queries: { q2: queryInfo.q2 },
         });
         await storage.prune({ queriesIdList });
+    });
+});
+
+describe('Count unread', () => {
+    const storageData = {
+        subredditList: ['s1', 's2'],
+        subreddits: { s1: { posts: generatePosts(3) }, s2: {} },
+        queriesList: [generateQuery({ id: 'q1' }), generateQuery({ id: 'q2' }), generateQuery({ id: 'q3' })],
+        queries: { q1: { posts: generatePosts(1) }, q2: { posts: [] }, q3: {} },
+        messages: { count: 3 },
+    } as any as StorageFields;
+    const total = 3 + 1 + 3;
+
+    test('should count unread items', async () => {
+        jest.spyOn(storage, 'getAllData').mockImplementation(() => Promise.resolve(storageData));
+        mockBrowser.browserAction.setBadgeText.expect({ text: String(total) });
+        await expect(storage.countNumberOfUnreadItems()).resolves.toBe(total);
+        (storage.getAllData as any as jest.SpyInstance).mockRestore();
     });
 });

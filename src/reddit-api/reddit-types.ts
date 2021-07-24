@@ -26,28 +26,33 @@ export type RedditPostData = {
 };
 
 export type RedditMessageData = {
-    associated_awarding_id: null;
     author: string;
     author_fullname: string;
     body: string;
+    body_html: string;
     context: string;
     created: number;
     created_utc: number;
+    dest: string;
     id: string;
     link_title: string;
     name: string;
     subject: string;
     subreddit: string;
     type: string;
+    was_comment: boolean;
 };
 
+// https://www.reddit.com/dev/api/
+type RedditObjectType = 't1' | 't2' | 't3' | 't4' | 't5' | 't6';
+
 export type RedditPost = {
-    kind?: 'k3';
+    kind?: RedditObjectType;
     data: RedditPostData;
 };
 
 export type RedditMessage = {
-    kind: 't1';
+    kind?: RedditObjectType;
     data: RedditMessageData;
 };
 

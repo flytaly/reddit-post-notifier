@@ -11,6 +11,7 @@ export function mockDate(date: string | number | Date) {
             return new RealDate(date).getTime();
         }
     };
+    return new RealDate(date);
 }
 
 export function restoreDate() {
