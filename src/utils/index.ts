@@ -1,13 +1,11 @@
 import { browser } from 'webextension-polyfill-ts';
-import type { RedditPostData, RedditPostResponse } from './reddit-api/reddit-types';
+import type { RedditPost, RedditPostData, RedditPostExtended } from '../reddit-api/reddit-types';
 
 /* eslint-disable @typescript-eslint/explicit-module-boundary-types */
-export const mapObjToQueryStr = (params: Record<string, unknown>) =>
+export const mapObjToQueryStr = (params: Record<string, unknown>): string =>
     Object.entries(params)
         .map((pair) => pair.join('='))
         .join('&');
-
-export const wait = (ms = 1000) => new Promise((resolve) => setTimeout(resolve, ms));
 
 export const $: ParentNode['querySelector'] = document.querySelector.bind(document);
 
@@ -53,7 +51,7 @@ export function filterKeys<T>(allowedKeys: string[], obj: Record<string, T> = {}
 }
 
 /** Filter out not needed properties in the Reddit post */
-export const filterPostDataProperties = (post: RedditPostResponse) => {
+export const filterPostDataProperties = (post: RedditPostExtended): RedditPost => {
     if (!post?.data) return post;
     const filterList: Array<keyof RedditPostData> = [
         'author',

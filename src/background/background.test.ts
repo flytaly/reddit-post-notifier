@@ -1,10 +1,12 @@
 /* eslint-disable @typescript-eslint/unbound-method */
 import { startExtension } from './background';
 import storage from '../storage';
-import type { ExtensionOptions } from '../types/env';
+import type { ExtensionOptions } from '../types/extension-options';
 import DEFAULT_OPTIONS from '../options-default';
+import { addNotificationClickListener } from './notifications';
 
 jest.mock('../storage/storage.ts');
+jest.mock('./notifications.ts');
 
 describe('Start extension', () => {
     test('should initialize extension', async () => {
@@ -17,6 +19,7 @@ describe('Start extension', () => {
         expect(storage.getOptions).toHaveBeenCalled();
         const exp = expect.objectContaining({ ...DEFAULT_OPTIONS, ...opts });
         expect(storage.saveOptions).toHaveBeenCalledWith(exp);
+        expect(addNotificationClickListener).toHaveBeenCalled();
     });
 });
 

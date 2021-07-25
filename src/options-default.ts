@@ -1,4 +1,4 @@
-import type { ExtensionOptions } from './types/env';
+import type { ExtensionOptions } from './types/extension-options';
 
 const DEFAULT_OPTIONS: ExtensionOptions = {
     updateInterval: 60,

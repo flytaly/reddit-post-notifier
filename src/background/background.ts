@@ -2,6 +2,7 @@ import { browser } from 'webextension-polyfill-ts';
 import { IS_FIREFOX, IS_TEST } from '../constants';
 import DEFAULT_OPTIONS from '../options-default';
 import storage from '../storage';
+import { addNotificationClickListener } from './notifications';
 
 if (IS_FIREFOX) {
     // Support notification-sound extension
@@ -20,6 +21,7 @@ async function mergeOptions() {
 export async function startExtension() {
     await mergeOptions();
     void browser.browserAction.setBadgeBackgroundColor({ color: 'darkred' });
+    addNotificationClickListener();
 }
 
 if (!IS_TEST) void startExtension();

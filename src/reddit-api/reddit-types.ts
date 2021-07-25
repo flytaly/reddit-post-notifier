@@ -30,17 +30,17 @@ export type RedditMessageData = {
     author_fullname: string;
     body: string;
     body_html: string;
-    context: string;
+    context?: string;
     created: number;
     created_utc: number;
     dest: string;
     id: string;
-    link_title: string;
+    link_title?: string;
     name: string;
     subject: string;
-    subreddit: string;
-    type: string;
-    was_comment: boolean;
+    subreddit?: string;
+    type?: string;
+    was_comment?: boolean;
 };
 
 // https://www.reddit.com/dev/api/
@@ -51,18 +51,37 @@ export type RedditPost = {
     data: RedditPostData;
 };
 
+export type RedditPostExtended = RedditPost & {
+    data: RedditPostData & Record<string, unknown>;
+};
+
 export type RedditMessage = {
     kind?: RedditObjectType;
     data: RedditMessageData;
 };
 
-export type RedditPostResponse = RedditPost & {
-    data: RedditPostData & Record<string, unknown>;
+export type RedditItem = RedditMessage | RedditPost;
+
+export type RedditListingResponse<T> = {
+    kind: 'Listing';
+    data: {
+        after?: string | null;
+        before?: string | null;
+        children: T[];
+        dist?: number;
+        geo_filter?: string;
+        modhash?: string | null;
+    };
 };
 
-export type RedditMessageResponse = RedditMessage & {
-    data: RedditMessageData & Record<string, unknown>;
+export type RedditError = {
+    error?: number;
+    message?: string;
+    reason?: string;
 };
+
+export type RedditMessageResponse = RedditListingResponse<RedditMessage>;
+export type RedditPostResponse = RedditListingResponse<RedditPostExtended>;
 
 export type RedditListingCommon = {
     /** after / before - only one should be specified. these indicate the fullname of an item in the listing to use as the anchor point of the slice. */
@@ -78,6 +97,7 @@ export type RedditListingCommon = {
     /** expand subreddits */
     sr_detail?: boolean;
 };
+
 export type RedditSubredditListing = RedditListingCommon;
 export type RedditMessageListing = RedditListingCommon & { mark?: boolean };
 export type RedditSearchListing = RedditSubredditListing & {
@@ -86,7 +106,7 @@ export type RedditSearchListing = RedditSubredditListing & {
     include_facets?: boolean;
     /** a string no longer than 512 characters */
     q: string;
-    restrict_sr?: boolean;
+    restrict_sr?: 'on';
     sort?: 'relevance' | 'hot' | 'top' | 'new' | 'comments';
     t?: 'hour' | 'day' | 'week' | 'month' | 'year' | 'all';
     type?: 'sr' | 'link' | 'user';

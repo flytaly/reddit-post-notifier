@@ -2,28 +2,11 @@
 
 import { browser } from 'webextension-polyfill-ts';
 import DEFAULT_OPTIONS from '../options-default';
-import type { RedditMessage, RedditPost } from '../reddit-api/reddit-types';
-import type { ExtensionOptions } from '../types/env';
+import type { RedditError, RedditMessage, RedditPost, RedditPostExtended } from '../reddit-api/reddit-types';
+import type { ExtensionOptions } from '../types/extension-options';
 import { filterKeys, filterPostDataProperties } from '../utils';
+import { authDataDefault, dataFields } from './fields';
 import type { AuthData, QueryOpts, StorageFields, SubredditData } from './storage-types';
-
-export const authDataDefault: AuthData = {
-    accessToken: '',
-    expiresIn: 0,
-    refreshToken: '',
-};
-
-export const dataFields: StorageFields = {
-    ...authDataDefault,
-    options: DEFAULT_OPTIONS,
-    queries: {},
-    queriesList: [],
-    subredditList: [],
-    subreddits: {},
-    messages: {},
-    pinnedPostList: [],
-    notifications: [],
-};
 
 const storage = {
     async getAuthData() {
@@ -156,8 +139,8 @@ const storage = {
     /** Update given subreddit or reddit search data object with new posts or error */
     updateWatchDataObject(
         watchData: SubredditData,
-        posts: RedditPost[],
-        error: { message: string } | null = null,
+        posts: RedditPost[] | RedditPostExtended[],
+        error: RedditError | null = null,
     ): SubredditData {
         const result = { ...watchData };
         if (posts && posts.length) {
@@ -176,7 +159,16 @@ const storage = {
         return result;
     },
 
-    async saveQueryData(queryId, { posts = [], error = null }) {
+    async saveQueryData(
+        queryId: string,
+        {
+            posts = [],
+            error = null,
+        }: {
+            posts?: RedditPost[] | RedditPostExtended[];
+            error?: RedditError | null;
+        },
+    ) {
         const data = await storage.getQueriesData();
         const current = data[queryId] || {};
         const updatedQuery = storage.updateWatchDataObject(current, posts, error);
@@ -185,7 +177,7 @@ const storage = {
 
     async saveSubredditData(
         subreddit: string,
-        { posts = [], error = null }: { posts?: RedditPost[]; error?: { message: string } | null } = {},
+        { posts = [], error = null }: { posts?: RedditPost[]; error?: RedditError | null } = {},
     ) {
         const data = await storage.getSubredditData();
         const current: SubredditData = data[subreddit] || {};

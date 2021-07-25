@@ -1,5 +1,5 @@
-import type { RedditMessage, RedditPost } from '../reddit-api/reddit-types';
-import type { ExtensionOptions } from '../types/env';
+import type { RedditError, RedditMessage, RedditPost } from '../reddit-api/reddit-types';
+import type { ExtensionOptions } from '../types/extension-options';
 
 export type AuthData = {
     accessToken?: string;
@@ -8,7 +8,7 @@ export type AuthData = {
 };
 
 export type SubredditData = {
-    error?: { message: string } | null;
+    error?: RedditError | null;
     /**  the newest post's id */
     lastPost?: string;
     lastPostCreated?: number;

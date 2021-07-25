@@ -6,7 +6,7 @@ import DEFAULT_OPTIONS from '../options-default';
 import type { RedditMessage, RedditMessageData, RedditPost } from '../reddit-api/reddit-types';
 import { generatePost, generatePosts, generateQuery } from '../test-utils/content-generators';
 import { mockDate, restoreDate } from '../test-utils/mock-date';
-import type { ExtensionOptions } from '../types/env';
+import type { ExtensionOptions } from '../types/extension-options';
 import storage from './index';
 import type { MessageData, QueryData, QueryOpts, StorageFields, SubredditData } from './storage-types';
 

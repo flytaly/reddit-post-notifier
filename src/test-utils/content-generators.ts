@@ -1,6 +1,5 @@
 import faker from 'faker';
-
-import type { RedditPost, RedditPostData } from '../reddit-api/reddit-types';
+import type { RedditMessage, RedditMessageData, RedditPost, RedditPostData } from '../reddit-api/reddit-types';
 import type { QueryOpts } from '../storage/storage-types';
 
 export const generatePost = (props: Partial<RedditPostData> = {}): RedditPostData => {
@@ -45,5 +44,24 @@ export const generateQuery = (props: Partial<QueryOpts> = {}): QueryOpts => {
         name: faker.lorem.word(),
         subreddit: faker.lorem.word(),
         ...props,
+    };
+};
+
+export const generateMessage = (props: Partial<RedditMessageData> = {}): RedditMessage => {
+    const created = faker.time.recent();
+    return {
+        data: {
+            author: faker.internet.userName(),
+            author_fullname: faker.random.alphaNumeric(8),
+            created,
+            created_utc: created,
+            body: 'body',
+            body_html: 'body_html',
+            subject: 'message_subject',
+            dest: faker.internet.userName(),
+            id: faker.random.alphaNumeric(8),
+            name: faker.random.alphaNumeric(8),
+            ...props,
+        },
     };
 };

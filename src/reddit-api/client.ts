@@ -1,8 +1,15 @@
 // https://www.reddit.com/dev/api/
 import auth from './auth';
-import { mapObjToQueryStr } from '../utils';
+import { mapObjToQueryStr } from '../utils/index';
 import { config } from '../constants';
-import type { RedditMessageListing, RedditSearchListing, RedditSubredditListing } from './reddit-types';
+import type {
+    RedditError,
+    RedditMessageListing,
+    RedditMessageResponse,
+    RedditPostResponse,
+    RedditSearchListing,
+    RedditSubredditListing,
+} from './reddit-types';
 
 export default class RedditApiClient {
     authOrigin: string;
@@ -31,8 +38,10 @@ export default class RedditApiClient {
 
     getSubreddit(subreddit: string) {
         return {
-            new: async (listing?: RedditSubredditListing) => this.GET(`/r/${subreddit}/new`, listing),
-            search: async (listing: RedditSearchListing) => this.search(listing, subreddit),
+            new: async (listing?: RedditSubredditListing) =>
+                this.GET(`/r/${subreddit}/new`, listing) as Promise<RedditPostResponse | RedditError>,
+            search: async (listing: RedditSearchListing) =>
+                this.search(listing, subreddit) as Promise<RedditPostResponse | RedditError>,
         };
     }
 
@@ -40,12 +49,13 @@ export default class RedditApiClient {
         const listingSortByNew: RedditSearchListing = { sort: 'new', ...listing };
         if (subreddit) return this.GET(`/r/${subreddit}/search`, listingSortByNew);
 
-        return this.GET('/search', listingSortByNew);
+        return this.GET('/search', listingSortByNew) as Promise<RedditPostResponse | RedditError>;
     }
 
     get messages() {
         return {
-            unread: async (listing: RedditMessageListing) => this.GET('/message/unread', listing),
+            unread: async (listing?: RedditMessageListing) =>
+                this.GET('/message/unread', listing) as Promise<RedditMessageResponse | RedditError>,
         };
     }
 }
