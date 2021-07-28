@@ -2,6 +2,7 @@
 import { mocked } from 'ts-jest/utils';
 import DEFAULT_OPTIONS from '../options-default';
 import { initializeBgListener, onMessage } from '../port';
+import type { MessageListener } from '../port';
 import storage from '../storage';
 import type { ExtensionOptions } from '../types/extension-options';
 import type { PortMessageId } from '../types/message';
@@ -23,7 +24,7 @@ describe('Start extension', () => {
         (storage.getOptions as jest.Mock).mockImplementationOnce(async () => opts);
         mockBrowser.browserAction.setBadgeBackgroundColor.expect({ color: 'darkred' });
         mockBrowser.storage.onChanged.addListener.spy(() => ({}));
-        const msgCallbacks = new Map<PortMessageId, () => Promise<void>>();
+        const msgCallbacks = new Map<PortMessageId, MessageListener>();
         mocked(onMessageMock).mockImplementation((id, cb) => msgCallbacks.set(id, cb));
 
         await startExtension();

@@ -1,7 +1,7 @@
 import { browser, Runtime } from 'webextension-polyfill-ts';
 import type { PortMessage, PortMessageId, PortMessagePayload } from './types/message';
 
-type MessageListener = (payload?: PortMessagePayload) => Promise<void>;
+export type MessageListener = (payload?: PortMessagePayload) => Promise<void> | void;
 type FromContext = 'popup' | 'options';
 
 const portMap = new Map<string, Runtime.Port>();
