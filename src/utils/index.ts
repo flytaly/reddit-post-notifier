@@ -40,8 +40,6 @@ export const debounce = (func: (...args: unknown[]) => unknown, waitMs: number) 
     };
 };
 
-export const getMsg = (msg: string) => browser.i18n.getMessage(msg);
-
 // Filter out keys from object
 export function filterKeys<T>(allowedKeys: string[], obj: Record<string, T> = {}): Record<string, T> {
     return allowedKeys.reduce((acc, key) => {

@@ -38,8 +38,6 @@ export const debounce = (func, waitMs) => {
     };
 };
 
-export const getMsg = (msg) => browser.i18n.getMessage(msg);
-
 /** Filter out not needed properties */
 export const filterPostDataProperties = (post) => {
     if (!post?.data) return post;

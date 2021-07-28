@@ -16,9 +16,19 @@ export default defineConfig(({ command }) => {
                 host: 'localhost',
             },
         },
+        // esbuild: { minify: false },
         build: {
+            minify: 'terser',
+            terserOptions: {
+                mangle: false,
+                format: { beautify: true },
+                compress: { defaults: false, dead_code: true, unused: true },
+            },
             outDir: r('extension/dist'),
             emptyOutDir: false,
+            cleanCssOptions: {
+                format: 'beautify',
+            },
             rollupOptions: {
                 input: {
                     popup: r('src/views/popup/index.html'),
