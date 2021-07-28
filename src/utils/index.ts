@@ -1,4 +1,3 @@
-import { browser } from 'webextension-polyfill-ts';
 import type { RedditPost, RedditPostData, RedditPostExtended } from '../reddit-api/reddit-types';
 
 /* eslint-disable @typescript-eslint/explicit-module-boundary-types */

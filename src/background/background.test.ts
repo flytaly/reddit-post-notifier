@@ -1,175 +1,53 @@
 /* eslint-disable @typescript-eslint/unbound-method */
-import { startExtension } from './background';
+import { mocked } from 'ts-jest/utils';
+import DEFAULT_OPTIONS from '../options-default';
+import { initializeBgListener, onMessage } from '../port';
 import storage from '../storage';
 import type { ExtensionOptions } from '../types/extension-options';
-import DEFAULT_OPTIONS from '../options-default';
+import type { PortMessageId } from '../types/message';
+import { startExtension } from './background';
 import { addNotificationClickListener } from './notifications';
+import { scheduleNextUpdate, watchAlarms } from './timers';
+import { updateAndSchedule } from './update';
 
 jest.mock('../storage/storage.ts');
+jest.mock('../port.ts');
 jest.mock('./notifications.ts');
+jest.mock('./timers.ts');
+jest.mock('./update.ts');
 
 describe('Start extension', () => {
+    const onMessageMock = mocked(onMessage);
     test('should initialize extension', async () => {
         const opts: Partial<ExtensionOptions> = { updateInterval: 300 };
         (storage.getOptions as jest.Mock).mockImplementationOnce(async () => opts);
         mockBrowser.browserAction.setBadgeBackgroundColor.expect({ color: 'darkred' });
+        mockBrowser.storage.onChanged.addListener.spy(() => ({}));
+        const msgCallbacks = new Map<PortMessageId, () => Promise<void>>();
+        mocked(onMessageMock).mockImplementation((id, cb) => msgCallbacks.set(id, cb));
 
         await startExtension();
 
         expect(storage.getOptions).toHaveBeenCalled();
         const exp = expect.objectContaining({ ...DEFAULT_OPTIONS, ...opts });
         expect(storage.saveOptions).toHaveBeenCalledWith(exp);
+
         expect(addNotificationClickListener).toHaveBeenCalled();
+        expect(storage.countNumberOfUnreadItems).toHaveBeenCalled();
+        expect(initializeBgListener).toHaveBeenCalled();
+        expect(watchAlarms).toHaveBeenCalled();
+        expect(updateAndSchedule).toHaveBeenCalled();
+
+        jest.clearAllMocks();
+
+        expect(msgCallbacks.size).toBe(2);
+        expect(msgCallbacks.has('UPDATE_NOW')).toBeTruthy();
+        expect(msgCallbacks.has('SCHEDULE_NEXT_UPDATE')).toBeTruthy();
+
+        await msgCallbacks.get('UPDATE_NOW')();
+        expect(updateAndSchedule).toHaveBeenCalled();
+
+        await msgCallbacks.get('SCHEDULE_NEXT_UPDATE')();
+        expect(scheduleNextUpdate).toHaveBeenCalled();
     });
 });
-
-// jest.mock('../../scripts/background/auth.js');
-// jest.mock('../../scripts/background/app.js');
-// jest.mock('../../scripts/storage.js');
-
-// const { startExtension, connectListener } = bgScripts;
-
-// beforeAll(() => {
-//     window.matchMedia = jest.fn(() => ({ matches: false, addEventListener: jest.fn() }));
-//     storage.getOptions = jest.fn(async () => optionsDefault);
-// });
-
-// afterEach(() => {
-//     jest.clearAllMocks();
-// });
-
-// describe('background script', () => {
-//     test('should pass entry function into requestIdleCallback', async () => {
-//         expect(requestIdleCallback).toHaveBeenCalled();
-//         expect(requestIdleCallback).toHaveBeenCalledWith(startExtension);
-//     });
-
-// });
-
-// describe('set options', () => {
-//     beforeEach(() => {
-//         storage.getAuthData.mockImplementationOnce(() => ({ accessToken: 'validToken' }));
-//     });
-//     test('should save default options if there are no options in storage', async () => {
-//         storage.getOptions.mockImplementationOnce(async () => null);
-//         await startExtension();
-//         expect(storage.saveOptions).toHaveBeenCalledWith(optionsDefault);
-//     });
-
-//     test('should add and save new default options to existing', async () => {
-//         const opts = { option: 'value' };
-//         storage.getOptions.mockImplementationOnce(async () => opts);
-//         await startExtension();
-//         expect(storage.saveOptions).toHaveBeenCalledWith({ ...optionsDefault, ...opts });
-//     });
-// });
-
-// describe('popup messages listener', () => {
-//     let messageListener = null;
-//     let onDisconnectListener = null;
-//     const port = {
-//         onMessage: {
-//             addListener: jest.fn((f) => {
-//                 messageListener = f;
-//             }),
-//         },
-//         onDisconnect: {
-//             addListener: jest.fn((f) => {
-//                 onDisconnectListener = f;
-//             }),
-//         },
-//     };
-
-//     test('should add listener', () => {
-//         expect(browser.runtime.onConnect.addListener.calledOnceWith(connectListener)).toBeTruthy();
-//     });
-
-//     test('should add message listener', () => {
-//         connectListener(port);
-
-//         expect(port.onMessage.addListener).toHaveBeenCalled();
-//         expect(messageListener).toBeInstanceOf(Function);
-//         expect(port.onDisconnect.addListener).toHaveBeenCalled();
-//         expect(onDisconnectListener).toBeInstanceOf(Function);
-//         expect(popupPort.port).toBe(port);
-//     });
-
-//     test('should set port as null after disconnect', () => {
-//         expect(popupPort.port).toBe(port);
-//         onDisconnectListener();
-//         expect(popupPort.port).toBe(null);
-//     });
-
-//     test('should call update after receiving UPDATE_NOW', () => {
-//         app.update.mockClear();
-//         messageListener({ type: types.UPDATE_NOW });
-//         expect(app.update).toHaveBeenCalledTimes(1);
-//     });
-
-//     test('should schedule next update after receiving SCHEDULE_NEXT_UPDATE', async () => {
-//         browser.alarms.create.reset();
-//         storage.getOptions.mockImplementation(() => ({
-//             updateInterval: 300,
-//         }));
-//         browser.alarms.create.callsFake((_, opts) => {
-//             expect(opts?.delayInMinutes).toBe(300 / 60);
-//         });
-//         messageListener({ type: types.SCHEDULE_NEXT_UPDATE });
-//         await new Promise((resolve) => setTimeout(resolve, 1));
-//         expect(browser.alarms.create.calledOnce).toBeTruthy();
-//     });
-// });
-
-// describe('alarms', () => {
-//     beforeAll(() => {
-//         window.setTimeout = jest.fn();
-//         storage.getOptions.mockImplementation(() => ({
-//             updateInterval: 30,
-//         }));
-//     });
-//     beforeEach(() => {
-//         storage.getAuthData.mockImplementationOnce(() => ({ accessToken: 'validToken' }));
-//         browser.alarms.onAlarm.addListener.resetHistory();
-//         browser.alarms.create.reset();
-//     });
-//     afterAll(() => {
-//         window.TARGET = 'firefox';
-//     });
-
-//     test('should set alarm listener', async () => {
-//         await startExtension();
-//         expect(browser.alarms.onAlarm.addListener.calledOnce).toBeTruthy();
-
-//         const cb = browser.alarms.onAlarm.addListener.args[0][0];
-//         app.update.mockClear();
-//         await cb({ name: types.ALARM_UPDATE });
-//         expect(app.update).toHaveBeenCalledTimes(1);
-//     });
-
-//     test('should set alarm in FF', async () => {
-//         await startExtension();
-//         expect(browser.alarms.create.calledOnce).toBeTruthy();
-//         expect(browser.alarms.create.args[0][0]).toBe(types.ALARM_UPDATE);
-//         expect(browser.alarms.create.args[0][1]).toMatchObject({
-//             delayInMinutes: 30 / 60,
-//         });
-//     });
-//     test('should set setTimeout in Chrome if delay < 60 sec', async () => {
-//         window.TARGET = 'chrome';
-//         await startExtension();
-//         expect(browser.alarms.create.called).toBeFalsy();
-//         expect(setTimeout).toHaveBeenCalled();
-//         expect(setTimeout.mock.calls[0][1]).toBe(30 * 1000);
-//     });
-//     test('should set alarm in Chrome if delay >= 60 sec', async () => {
-//         storage.getOptions.mockImplementation(() => ({
-//             updateInterval: 60,
-//         }));
-//         window.TARGET = 'chrome';
-//         await startExtension();
-//         expect(browser.alarms.create.called).toBeTruthy();
-//         expect(browser.alarms.create.args[0][1]).toMatchObject({
-//             delayInMinutes: 1,
-//         });
-//     });
-// });

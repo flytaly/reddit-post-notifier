@@ -11,11 +11,8 @@ interface ProcessEnv {
     FIREFOX_REDIRECT_URI: string;
     FIREFOX_USER_AGENT: string;
 }
-interface ImportMeta {
-    env: {
-        VITE_APP_TITLE: string;
-        MODE: string;
-        SNOWPACK_PUBLIC_API_URL: string;
-        SNOWPACK_PUBLIC_IMAGES_URL: string;
-    };
-}
+
+// interface ImportMeta {
+//     env: {
+//     };
+// }
