@@ -38,7 +38,7 @@ export default defineConfig(({ command }) => {
         },
         define: getEnvKeys(),
         plugins: [
-            svelte(),
+            svelte({ configFile: r('svelte.config.js') }),
             // rewrite assets to use relative path
             {
                 name: 'assets-rewrite',

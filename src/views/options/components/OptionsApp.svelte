@@ -1,20 +1,20 @@
 <script lang="ts">
-    import { onMount } from 'svelte';
-    import { connectToBg, onMessage, sendToBg } from '../../../port';
-    let msg = '';
-    onMount(() => {
-        connectToBg('options');
-        sendToBg('SCHEDULE_NEXT_UPDATE');
-
-        onMessage('UPDATING_START', () => {
-            msg = 'updating';
-        });
-    });
+    import Sidebar from './Sidebar.svelte';
+    import { pageInfo } from '../routes';
 </script>
 
-<h1 class="">Options</h1>
-<b>{msg}</b>
+<svelte:head>
+    <title>{$pageInfo.title}</title>
+</svelte:head>
+
+<div class="grid grid-cols-[max-content,auto]">
+    <div>
+        <Sidebar current={$pageInfo.sectionId} />
+    </div>
+    <svelte:component this={$pageInfo.cmp} />
+</div>
 
 <style global lang="postcss">
     @import '../../../../node_modules/tippy.js/dist/tippy.css';
+    @import '../../base-styles.pcss';
 </style>

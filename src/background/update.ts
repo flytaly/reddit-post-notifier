@@ -26,6 +26,6 @@ export async function updateAndSchedule() {
         }
     } finally {
         isUpdating = false;
-        sendFromBg('UPDATING_START');
+        sendFromBg('UPDATING_END');
     }
 }

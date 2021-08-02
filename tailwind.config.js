@@ -5,9 +5,20 @@ module.exports = {
     purge: {
         content: ['./**/*.svelte', './**/*.pcss'],
     },
-    darkMode: 'class', // or 'media' or 'class'
+    darkMode: false,
     theme: {
-        extend: {},
+        extend: {
+            textColor: {
+                skin: {
+                    base: 'var(--color-text-base)',
+                },
+            },
+            backgroundColor: {
+                skin: {
+                    base: 'var(--color-bg-base)',
+                },
+            },
+        },
     },
     variants: {
         extend: {},
