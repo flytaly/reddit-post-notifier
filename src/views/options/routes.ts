@@ -1,9 +1,9 @@
 import { readable } from 'svelte/store';
 import getMsg from '../../utils/get-message';
-import Settings from './components/Settings.svelte';
-import Info from './components/Info.svelte';
+import Settings from './components/SettingsPage.svelte';
+import Info from './components/InfoPage.svelte';
 
-type PageId = '#settings' | '#info';
+export type PageId = '#settings' | '#info';
 
 export const sections = {
     '#settings': {

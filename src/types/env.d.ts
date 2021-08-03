@@ -12,7 +12,6 @@ interface ProcessEnv {
     FIREFOX_USER_AGENT: string;
 }
 
-// interface ImportMeta {
-//     env: {
-//     };
-// }
+declare module '*.svg' {
+    export default string;
+}

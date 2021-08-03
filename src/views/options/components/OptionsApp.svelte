@@ -7,9 +7,9 @@
     <title>{$pageInfo.title}</title>
 </svelte:head>
 
-<div class="grid grid-cols-[max-content,auto]">
+<div class="grid grid-cols-[max-content,auto] gap-4 p-3 bg-skin-base text-skin-base min-h-screen">
     <div>
-        <Sidebar current={$pageInfo.sectionId} />
+        <Sidebar current={$pageInfo.page} />
     </div>
     <svelte:component this={$pageInfo.cmp} />
 </div>

@@ -1,8 +1,9 @@
 <script lang="ts">
-    import type { SectionKey } from '../routes';
+    import Logo from '../../../assets/logo.svg';
+    import type { PageId } from '../routes';
     import { sections } from '../routes';
 
-    export let current: SectionKey;
+    export let current: PageId;
 
     let navItems: Array<{ key: string; name: string; level: 1 | 2 }> = [];
 
@@ -12,17 +13,36 @@
     });
 </script>
 
-<aside class="sticky top-4 m-4">
+<aside>
+    <a href="#info" class="self-center">
+        <div class="logo">
+            {@html Logo}
+        </div>
+        <div class="font-bold text-center mb-3">Reddit Post <br /> Notifier</div>
+    </a>
     <nav class="flex flex-col">
         {#each navItems as { key, name, level } (key)}
-            <a href={key} class="my-1" class:current={current === key} class:level2={level === 2}>{name}</a>
+            <a href={key} class="hover:text-accent leading-8" class:current={current === key} class:level2={level === 2}
+                >{name}</a
+            >
         {/each}
     </nav>
 </aside>
 
 <style lang="postcss">
+    aside {
+        @apply sticky flex flex-col top-4 p-4 pt-2 pb-8 shadow-sidebar text-base;
+    }
+
+    .logo {
+        @apply w-[4.5rem] mb-1 mx-auto translate-x-[2px];
+    }
+    .logo :global(.eye) {
+        /* ? @apply doesn't work here for some reason */
+        fill: var(--color-accent);
+    }
     .current {
-        @apply font-bold;
+        @apply text-accent font-bold;
     }
     .level2 {
         @apply ml-4;

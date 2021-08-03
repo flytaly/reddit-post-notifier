@@ -8,6 +8,12 @@ module.exports = {
     darkMode: false,
     theme: {
         extend: {
+            colors: {
+                accent: 'var(--color-accent)',
+            },
+            boxShadow: {
+                sidebar: 'var(--sidebar-shadow)',
+            },
             textColor: {
                 skin: {
                     base: 'var(--color-text-base)',
