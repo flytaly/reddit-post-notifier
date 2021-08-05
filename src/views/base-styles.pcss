@@ -5,8 +5,54 @@
 @layer base {
     :root {
         --color-text-base: theme('colors.gray.900');
-        --color-bg-base: theme('colors.white');
-        --sidebar-shadow: 0 0 2px 0 rgba(0, 0, 0, 0.5);
+        --color-bg-base: #fff;
         --color-accent: theme('colors.red.700');
+        --color-accent2: theme('colors.sky.700');
+        --color-outline: theme('colors.sky.500');
+        --color-gray: theme('colors.gray.500');
+        --color-delimiter: theme('colors.gray.300');
+        --color-border: theme('colors.gray.700');
+        --color-input-bg: theme('colors.gray.50');
+        --color-input-bg-checked: theme('colors.sky.200');
+        --color-input-bg-hover: theme('colors.gray.100');
+
+        /* shadows */
+        --shadow-sidebar: 0 0 3px 0 rgba(0, 0, 0, 0.5);
+        --shadow-input-hover: 0 0 3px 3px var(--color-input-bg-hover);
+    }
+    .dark-theme {
+        --color-text-base: theme('colors.trueGray.200');
+        --color-bg-base: theme('colors.trueGray.800');
+        --color-accent: theme('colors.red.300');
+        --color-accent2: theme('colors.sky.200');
+        --color-outline: theme('colors.sky.300');
+        --color-gray: theme('colors.trueGray.400');
+        --color-delimiter: theme('colors.trueGray.500');
+        --color-border: theme('colors.gray.400');
+        --color-input-bg: theme('colors.gray.600');
+        --color-input-bg-checked: theme('colors.blue.500');
+        --color-input-bg-hover: theme('colors.gray.500');
+
+        /* shadows */
+        --shadow-sidebar: 0 0 3px 0 rgba(255, 255, 255, 0.4);
+        --shadow-input-hover: 0 0 3px 3px var(--color-input-bg-hover);
+    }
+
+    .purple-theme {
+        --color-text-base: theme('colors.trueGray.200');
+        --color-bg-base: #343161;
+        --color-accent: theme('colors.yellow.300');
+        --color-accent2: theme('colors.sky.200');
+        --color-outline: theme('colors.yellow.400');
+        --color-gray: theme('colors.trueGray.400');
+        --color-delimiter: #484476;
+        --color-border: theme('colors.trueGray.400');
+        --color-input-bg: #313250;
+        --color-input-bg-checked: #7e51bb;
+        --color-input-bg-hover: rgba(125, 82, 186, 0.4);
+
+        /* shadows */
+        --shadow-sidebar: 0 0 3px 0 rgba(255, 255, 255, 0.4);
+        --shadow-input-hover: 0 0 3px 3px var(--color-input-bg-hover);
     }
 }

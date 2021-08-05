@@ -9,19 +9,35 @@ module.exports = {
     theme: {
         extend: {
             colors: {
-                accent: 'var(--color-accent)',
+                sky: colors.sky,
+                coolGray: colors.coolGray,
+                trueGray: colors.trueGray,
+                blueGray: colors.blueGray,
+                skin: {
+                    bg: 'var(--color-bg-base)',
+                    accent: 'var(--color-accent)',
+                    accent2: 'var(--color-accent2)',
+                    gray: 'var(--color-gray)',
+                    outline: 'var(--color-outline)',
+                    delimiter: 'var(--color-delimiter)',
+                },
+            },
+            borderColor: {
+                skin: { base: 'var(--color-border)' },
             },
             boxShadow: {
-                sidebar: 'var(--sidebar-shadow)',
+                sidebar: 'var(--shadow-sidebar)',
+                input: 'var(--shadow-input-hover)',
             },
             textColor: {
-                skin: {
-                    base: 'var(--color-text-base)',
-                },
+                skin: { base: 'var(--color-text-base)' },
             },
             backgroundColor: {
                 skin: {
                     base: 'var(--color-bg-base)',
+                    input: 'var(--color-input-bg)',
+                    hover: 'var(--color-input-bg-hover)',
+                    'input-checked': 'var(--color-input-bg-checked)',
                 },
             },
         },

@@ -1,0 +1,24 @@
+@import '../../base-styles.pcss';
+
+* {
+    @apply focus:outline-none
+           focus-visible:ring-2
+           focus-visible:ring-offset-skin-bg
+           focus-visible:ring-skin-outline focus-visible:ring-offset-1;
+}
+
+input,
+input[type='number'] {
+    @apply border
+        border-skin-base
+        focus-visible:border-skin-outline
+        focus-visible:ring-1
+        focus-visible:ring-skin-outline
+        bg-skin-input
+        hover:bg-skin-hover
+        hover:shadow-input
+        px-2
+        py-1
+        text-skin-base
+        text-sm;
+}

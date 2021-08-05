@@ -10,6 +10,13 @@
         "module": "ES2020",
         "sourceRoot": "./src"
     },
-    "include": ["./vite.config.ts", "src/**/*", "src/types/*", "scripts/**/*", "scripts/esbuild.config.ts"],
+    "include": [
+        "./vite.config.ts",
+        "src/**/*",
+        "src/types/*",
+        "src/test-utils/setupTest.ts",
+        "scripts/**/*",
+        "scripts/esbuild.config.ts"
+    ],
     "exclude": ["node_modules/*", "dist/*"]
 }

@@ -12,7 +12,7 @@ export type ExtensionOptions = {
     messagesNotify: boolean;
     subredditNotify: boolean;
     isAuthorized: boolean;
-    theme: 'auto';
+    theme: 'auto' | 'dark' | 'light' | 'purple';
     /**  expand groups in popup that have at least 'x' number of posts */
     expandWithItems: number;
     /** delete the post after clicking on it */

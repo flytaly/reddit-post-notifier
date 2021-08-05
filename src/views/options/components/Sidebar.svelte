@@ -22,8 +22,11 @@
     </a>
     <nav class="flex flex-col">
         {#each navItems as { key, name, level } (key)}
-            <a href={key} class="hover:text-accent leading-8" class:current={current === key} class:level2={level === 2}
-                >{name}</a
+            <a
+                href={key}
+                class="hover:text-skin-accent leading-8"
+                class:current={current === key}
+                class:level2={level === 2}>{name}</a
             >
         {/each}
     </nav>
@@ -31,7 +34,7 @@
 
 <style lang="postcss">
     aside {
-        @apply sticky flex flex-col top-4 p-4 pt-2 pb-8 shadow-sidebar text-base;
+        @apply sticky flex flex-col top-4 p-4 pt-2 pb-8 shadow-sidebar text-sm;
     }
 
     .logo {
@@ -42,7 +45,7 @@
         fill: var(--color-accent);
     }
     .current {
-        @apply text-accent font-bold;
+        @apply text-skin-accent font-bold;
     }
     .level2 {
         @apply ml-4;

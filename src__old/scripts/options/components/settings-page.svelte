@@ -50,18 +50,6 @@
     };
 </script>
 
-<style>
-    input[type='number'] {
-        min-width: 5rem;
-    }
-    .settings-container {
-        display: flex;
-        flex-direction: column;
-        width: 100%;
-        max-width: 100%;
-    }
-</style>
-
 <div class="settings-container">
     <h1 id={routes.settings.id}>{routes.settings.name}</h1>
     <h2 id={sections.general.id}>{sections.general.name}</h2>
@@ -76,7 +64,8 @@
                     max="3600"
                     size="8"
                     bind:value={updateInterval}
-                    on:input={onUpdateIntervalChange} />
+                    on:input={onUpdateIntervalChange}
+                />
             </div>
         </OptionItem>
         <OptionItem title={getMsg('optionTheme')}>
@@ -92,7 +81,8 @@
                     id="deletePostInput"
                     type="checkbox"
                     bind:checked={delPostAfterBodyClick}
-                    on:change={() => storage.saveOptions({ delPostAfterBodyClick })} />
+                    on:change={() => storage.saveOptions({ delPostAfterBodyClick })}
+                />
             </div>
         </OptionItem>
         <OptionItem title={getMsg('optionHideEmptyGroups')} labelFor="hideEmptyInput">
@@ -102,7 +92,8 @@
                     id="hideEmptyInput"
                     type="checkbox"
                     bind:checked={hideEmptyGroups}
-                    on:change={() => storage.saveOptions({ hideEmptyGroups })} />
+                    on:change={() => storage.saveOptions({ hideEmptyGroups })}
+                />
             </div>
         </OptionItem>
         <NotificationSound {notificationSoundId} />
@@ -113,7 +104,8 @@
                     id="useOldReddit"
                     type="checkbox"
                     bind:checked={useOldReddit}
-                    on:change={() => storage.saveOptions({ useOldReddit })} />
+                    on:change={() => storage.saveOptions({ useOldReddit })}
+                />
             </div>
         </OptionItem>
     </sections>
@@ -126,10 +118,23 @@
         <SubredditsBlock
             subredditNotify={data.options.subredditNotify}
             subredditList={data.subredditList}
-            subredditsData={data.subreddits} />
+            subredditsData={data.subreddits}
+        />
     </sections>
     <sections>
         <h2 id={sections['reddit-search'].id}>{sections['reddit-search'].name}</h2>
         <SearchBlock queriesList={data.queriesList} queriesData={data.queries} />
     </sections>
 </div>
+
+<style>
+    input[type='number'] {
+        min-width: 5rem;
+    }
+    .settings-container {
+        display: flex;
+        flex-direction: column;
+        width: 100%;
+        max-width: 100%;
+    }
+</style>
