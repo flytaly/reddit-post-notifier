@@ -8,7 +8,7 @@
 }
 
 input,
-input[type='number'] {
+[type='number'] {
     @apply border
         border-skin-base
         focus-visible:border-skin-outline
@@ -21,4 +21,48 @@ input[type='number'] {
         py-1
         text-skin-base
         text-sm;
+}
+
+.is-button,
+button {
+    @apply appearance-none select-none bg-skin-input text-skin-base border border-skin-base px-3 py-1 shadow-none text-base;
+}
+
+.is-button:hover,
+button:hover {
+    @apply bg-skin-hover shadow-input;
+}
+
+[type='checkbox'] {
+    @apply appearance-none
+        h-5 w-5 text-skin-base
+        border border-skin-base
+        hover:bg-skin-hover
+        hover:shadow-input;
+}
+
+[type='checkbox']:checked {
+    @apply bg-skin-input-checked bg-no-repeat bg-center;
+
+    background-size: 100% 100%;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Cpath d='M6 14a1 1 0 0 1-.707-.293l-3-3a1 1 0 0 1 1.414-1.414l2.157 2.157 6.316-9.023a1 1 0 0 1 1.639 1.146l-7 10a1 1 0 0 1-.732.427A.863.863 0 0 1 6 14z'%3E%3C/path%3E%3C/svg%3E ");
+}
+
+.purple-theme [type='checkbox']:checked,
+.dark-theme [type='checkbox']:checked {
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Cpath fill='white' d='M6 14a1 1 0 0 1-.707-.293l-3-3a1 1 0 0 1 1.414-1.414l2.157 2.157 6.316-9.023a1 1 0 0 1 1.639 1.146l-7 10a1 1 0 0 1-.732.427A.863.863 0 0 1 6 14z'%3E%3C/path%3E%3C/svg%3E ");
+}
+
+select {
+    @apply block appearance-none text-skin-base text-base pl-1 pr-8 bg-skin-input border border-skin-base hover:shadow-input;
+
+    background-image: url('data:image/svg+xml;charset=US-ASCII,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%22292.4%22%20height%3D%22292.4%22%3E%3Cpath%20fill%3D%22%23252525%22%20d%3D%22M287%2069.4a17.6%2017.6%200%200%200-13-5.4H18.4c-5%200-9.3%201.8-12.9%205.4A17.6%2017.6%200%200%200%200%2082.2c0%205%201.8%209.3%205.4%2012.9l128%20127.9c3.6%203.6%207.8%205.4%2012.8%205.4s9.2-1.8%2012.8-5.4L287%2095c3.5-3.5%205.4-7.8%205.4-12.8%200-5-1.9-9.2-5.5-12.8z%22%2F%3E%3C%2Fsvg%3E');
+    background-repeat: no-repeat, repeat;
+    background-position: right 0.7em top 50%, 0 0;
+    background-size: 0.65em auto, 100%;
+}
+
+.purple-theme select,
+.dark-theme select {
+    background-image: url('data:image/svg+xml;charset=US-ASCII,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%22292.4%22%20height%3D%22292.4%22%3E%3Cpath%20fill%3D%22%23e6e6e6%22%20d%3D%22M287%2069.4a17.6%2017.6%200%200%200-13-5.4H18.4c-5%200-9.3%201.8-12.9%205.4A17.6%2017.6%200%200%200%200%2082.2c0%205%201.8%209.3%205.4%2012.9l128%20127.9c3.6%203.6%207.8%205.4%2012.8%205.4s9.2-1.8%2012.8-5.4L287%2095c3.5-3.5%205.4-7.8%205.4-12.8%200-5-1.9-9.2-5.5-12.8z%22%2F%3E%3C%2Fsvg%3E');
 }
