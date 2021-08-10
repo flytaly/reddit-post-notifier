@@ -29,8 +29,12 @@ button {
 }
 
 .is-button:hover,
-button:hover {
+button:not(:disabled):hover {
     @apply bg-skin-hover shadow-input;
+}
+
+:disabled {
+    @apply text-skin-gray cursor-not-allowed opacity-80;
 }
 
 [type='checkbox'] {

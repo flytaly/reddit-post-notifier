@@ -4,6 +4,7 @@
     import storage from '../../../storage/storage';
     import { pageInfo } from '../routes';
     import GeneralSettingsBlock from './GeneralSettingsBlock.svelte';
+    import AuthMailBlock from './AuthMailBlock.svelte';
     import Heading from './Heading.svelte';
 
     let destroy: Unsubscriber;
@@ -22,6 +23,10 @@
         <section>
             <Heading id={'#settings__general'} />
             <GeneralSettingsBlock options={data.options} />
+        </section>
+        <section>
+            <Heading id={'#settings__mail'} />
+            <AuthMailBlock messages={data.options.messages} messagesNotify={data.options.messagesNotify} />
         </section>
         <div class="h-screen" />
     {/await}

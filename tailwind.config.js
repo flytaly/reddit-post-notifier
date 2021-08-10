@@ -20,6 +20,8 @@ module.exports = {
                     gray: 'var(--color-gray)',
                     outline: 'var(--color-outline)',
                     delimiter: 'var(--color-delimiter)',
+                    error: 'var(--color-error)',
+                    success: 'var(--color-success)',
                 },
             },
             borderColor: {
