@@ -3,9 +3,10 @@
     import type { Unsubscriber } from 'svelte/store';
     import storage from '../../../storage/storage';
     import { pageInfo } from '../routes';
+    import Heading from './Heading.svelte';
     import GeneralSettingsBlock from './GeneralSettingsBlock.svelte';
     import AuthMailBlock from './AuthMailBlock.svelte';
-    import Heading from './Heading.svelte';
+    import SubredditsBlock from './SubredditsBlock.svelte';
 
     let destroy: Unsubscriber;
     onMount(() => {
@@ -28,12 +29,20 @@
             <Heading id={'#settings__mail'} />
             <AuthMailBlock messages={data.options.messages} messagesNotify={data.options.messagesNotify} />
         </section>
-        <div class="h-screen" />
+        <section>
+            <Heading id={'#settings__subreddit'} />
+            <SubredditsBlock
+                subredditList={data.subredditList}
+                subredditsData={data.subreddits}
+                subredditNotify={data.options.subredditNotify}
+            />
+        </section>
+        <div class="h-52" />
     {/await}
 </div>
 
 <style lang="postcss">
     section {
-        @apply mb-4;
+        @apply mb-10;
     }
 </style>

@@ -1,16 +1,14 @@
 /* eslint-disable @typescript-eslint/unbound-method */
-import { fireEvent, render, wait, waitFor } from '@testing-library/svelte';
+import { fireEvent, render, waitFor } from '@testing-library/svelte';
 import { mocked } from 'ts-jest/utils';
+import auth from '../../../reddit-api/auth';
 import storage from '../../../storage/storage';
 import type { ExtensionOptions } from '../../../types/extension-options';
 import getMsg from '../../../utils/get-message';
 import AuthMailBlock from '../components/AuthMailBlock.svelte';
-import auth from '../../../reddit-api/auth';
 
 jest.mock('../../../storage/storage.ts');
 jest.mock('../../../utils/get-message.ts');
-jest.mock('../../../utils/apply-theme.ts');
-jest.mock('../../../port');
 jest.mock('../../../reddit-api/auth.ts');
 
 function optionSaved(opt: Partial<ExtensionOptions>) {

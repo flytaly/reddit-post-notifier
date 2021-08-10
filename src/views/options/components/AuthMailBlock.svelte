@@ -68,36 +68,38 @@
     <OptionsItem title={getMsg('optionMail')} column>
         <div slot="description">{getMsg('optionMailDescription')}</div>
         <div slot="controls">
-            <Labeled disabled={!refreshToken} title={!refreshToken ? getMsg('optionMailNoAuthTooltip') : ''}>
-                <input
-                    slot="input"
-                    type="checkbox"
-                    bind:checked={messages}
-                    disabled={!refreshToken}
-                    on:change={() => {
-                        if (!messages) messagesNotify = false;
-                        void storage.saveOptions({ messages, messagesNotify });
-                    }}
-                />
-                <span slot="description">{getMsg('optionMailShow')}</span>
-            </Labeled>
-            <Labeled disabled={!messages} indent>
-                <input
-                    slot="input"
-                    type="checkbox"
-                    bind:checked={messagesNotify}
-                    disabled={!refreshToken || !messages}
-                    on:change={() => storage.saveOptions({ messagesNotify })}
-                />
-                <span slot="description">
-                    <div class="flex items-center">
-                        <span class={`h-4 w-4 mr-2 ${messagesNotify ? 'text-skin-accent' : 'text-skin-base'}`}>
-                            {@html BellIcon}
-                        </span>
-                        {getMsg('optionMailNotify')}
-                    </div>
-                </span>
-            </Labeled>
+            <div class="space-y-2">
+                <Labeled disabled={!refreshToken} title={!refreshToken ? getMsg('optionMailNoAuthTooltip') : ''}>
+                    <input
+                        slot="input"
+                        type="checkbox"
+                        bind:checked={messages}
+                        disabled={!refreshToken}
+                        on:change={() => {
+                            if (!messages) messagesNotify = false;
+                            void storage.saveOptions({ messages, messagesNotify });
+                        }}
+                    />
+                    <span slot="description">{getMsg('optionMailShow')}</span>
+                </Labeled>
+                <Labeled disabled={!messages} indent>
+                    <input
+                        slot="input"
+                        type="checkbox"
+                        bind:checked={messagesNotify}
+                        disabled={!refreshToken || !messages}
+                        on:change={() => storage.saveOptions({ messagesNotify })}
+                    />
+                    <span slot="description">
+                        <div class="flex items-center">
+                            <span class={`h-4 w-4 mr-2 ${messagesNotify ? 'text-skin-accent' : 'text-skin-base'}`}>
+                                {@html BellIcon}
+                            </span>
+                            {getMsg('optionMailNotify')}
+                        </div>
+                    </span>
+                </Labeled>
+            </div>
         </div>
     </OptionsItem>
 {:catch error}

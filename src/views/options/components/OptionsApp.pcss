@@ -23,6 +23,10 @@ input,
         text-sm;
 }
 
+input:invalid {
+    @apply ring-1 ring-skin-error border-skin-error;
+}
+
 .is-button,
 button {
     @apply appearance-none select-none bg-skin-input text-skin-base border border-skin-base px-3 py-1 shadow-none text-base;
