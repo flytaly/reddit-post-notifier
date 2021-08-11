@@ -26,6 +26,10 @@ export const connectToBg = (context: FromContext) => {
     });
 };
 
+export const disconnectFromBg = () => {
+    return bgPort.disconnect();
+};
+
 export const sendToBg = (id: PortMessageId, payload?: PortMessagePayload) => {
     const message: PortMessage = { id, payload };
     bgPort?.postMessage(message);
