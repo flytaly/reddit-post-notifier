@@ -22,6 +22,7 @@ module.exports = {
                     delimiter: 'var(--color-delimiter)',
                     error: 'var(--color-error)',
                     success: 'var(--color-success)',
+                    link: 'var(--color-link)',
                 },
             },
             borderColor: {

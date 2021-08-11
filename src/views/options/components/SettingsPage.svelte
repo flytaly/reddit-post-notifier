@@ -7,6 +7,7 @@
     import GeneralSettingsBlock from './GeneralSettingsBlock.svelte';
     import AuthMailBlock from './AuthMailBlock.svelte';
     import SubredditsBlock from './SubredditsBlock.svelte';
+    import SearchBlock from './SearchBlock.svelte';
 
     let destroy: Unsubscriber;
     onMount(() => {
@@ -36,6 +37,10 @@
                 subredditsData={data.subreddits}
                 subredditNotify={data.options.subredditNotify}
             />
+        </section>
+        <section>
+            <Heading id={'#settings__reddit-search'} />
+            <SearchBlock queriesData={data.queries} queriesList={data.queriesList} />
         </section>
         <div class="h-52" />
     {/await}
