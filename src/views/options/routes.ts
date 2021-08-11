@@ -1,7 +1,7 @@
 import { readable } from 'svelte/store';
 import getMsg from '../../utils/get-message';
 import Settings from './components/SettingsPage.svelte';
-import Info from './components/InfoPage.svelte';
+import Info from './components/info/InfoPage.svelte';
 
 export type PageId = '#settings' | '#info';
 
