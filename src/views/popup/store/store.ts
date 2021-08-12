@@ -1,11 +1,11 @@
-import { readable, writable } from 'svelte/store';
-import storage from '../../../storage';
-import type { StorageFields } from '../../../storage/storage-types';
-import { connectToBg, disconnectFromBg, onMessage } from '../../../port';
 import nProgress from 'nprogress';
-import { dataFields } from '../../../storage/fields';
-import { browser } from 'webextension-polyfill-ts';
+import { readable, writable } from 'svelte/store';
 import type { Storage } from 'webextension-polyfill-ts';
+import { browser } from 'webextension-polyfill-ts';
+import { connectToBg, disconnectFromBg, onMessage } from '../../../port';
+import storage from '../../../storage';
+import { dataFields } from '../../../storage/fields';
+import type { StorageFields } from '../../../storage/storage-types';
 const defaultState = { ...dataFields };
 
 export const isUpdating = readable(false, (set) => {
@@ -18,6 +18,9 @@ export const isUpdating = readable(false, (set) => {
         set(false);
         void nProgress.done();
     });
+    return () => {
+        disconnectFromBg();
+    };
 });
 
 export const storageData = writable(defaultState, () => {
@@ -47,28 +50,9 @@ export const storageData = writable(defaultState, () => {
             storageData.update((prev) => ({ ...prev, subredditList: [...subredditList.newValue] }));
         }
     };
-
     browser.storage.onChanged.addListener(listener);
 
     return () => {
         browser.storage.onChanged.removeListener(listener);
     };
-    //     // Update data on changes
-
-    // Update data on messages
-    // const port = connect();
-    // port.onMessage.addListener(async (message) => {
-    //     const { type /* , payload */ } = message;
-    //     switch (type) {
-    //         case types.UPDATING_START:
-    //             nprogress.start();
-    //             state.update((prev) => ({ ...prev, isLoading: true }));
-    //             break;
-    //         case types.UPDATING_END:
-    //             nprogress.done();
-    //             state.update((prev) => ({ ...prev, isLoading: false }));
-    //             break;
-    //         default:
-    //     }
-    // });
 });

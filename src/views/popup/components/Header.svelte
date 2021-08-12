@@ -11,10 +11,11 @@
     import { isUpdating, storageData } from '../store/store';
     import SvgButton from './SvgButton.svelte';
 
-    export let messagesCount = 0;
-
+    let messagesCount = 0;
     let loading = false;
+
     $: loading = $isUpdating;
+    $: messagesCount = $storageData.messages.count || 0;
 
     const options: ExtensionOptions = $storageData.options;
 

@@ -13,6 +13,7 @@ module.exports = {
                 coolGray: colors.coolGray,
                 trueGray: colors.trueGray,
                 blueGray: colors.blueGray,
+                warmGray: colors.warmGray,
                 skin: {
                     bg: 'var(--color-bg-base)',
                     accent: 'var(--color-accent)',
@@ -23,6 +24,7 @@ module.exports = {
                     error: 'var(--color-error)',
                     success: 'var(--color-success)',
                     link: 'var(--color-link)',
+                    'item-hover': 'var(--color-item-bg-hover)',
                 },
             },
             borderColor: {
