@@ -29,7 +29,11 @@ input:invalid {
 
 .is-button,
 button {
-    @apply appearance-none select-none bg-skin-input text-skin-base border border-skin-base px-3 py-1 shadow-none text-sm;
+    @apply appearance-none select-none
+        bg-skin-input hover:bg-skin-btn-hover active:bg-skin-btn-active
+        border border-skin-base
+        px-3 py-1
+        shadow-none text-sm;
 }
 
 .is-button:hover,

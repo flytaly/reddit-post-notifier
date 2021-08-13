@@ -1,9 +1,13 @@
-<script>
-    // your script goes here
+<script lang="ts">
+    import getMsg from '../../../utils/get-message';
+    import storage from '../../../storage';
 </script>
 
-<footer class="text-center text-skin-gray">--- footer ---</footer>
-
-<style>
-    /* your styles go here */
-</style>
+<footer class="text-center text-skin-base">
+    <button
+        class="w-full p-1 bg-skin-btn hover:bg-skin-btn-hover focus:bg-skin-hover active:bg-skin-btn-active border-t border-skin-delimiter"
+        on:click={() => storage.removeAllPosts()}
+    >
+        {getMsg('footerButton')}
+    </button>
+</footer>

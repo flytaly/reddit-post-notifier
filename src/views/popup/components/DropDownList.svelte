@@ -39,7 +39,7 @@
             }}
         >
             <!-- Vertical Line -->
-            <button class="flex w-5 group" on:click={toggle}
+            <button class="flex w-5 group flex-shrink-0" on:click={toggle}
                 ><span
                     class="w-px ml-1 h-full bg-skin-delimiter group-hover:bg-skin-accent2 group-hover:w-[2px]"
                 /></button

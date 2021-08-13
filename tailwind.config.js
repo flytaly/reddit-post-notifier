@@ -25,6 +25,9 @@ module.exports = {
                     success: 'var(--color-success)',
                     link: 'var(--color-link)',
                     'item-hover': 'var(--color-item-bg-hover)',
+                    btn: 'var(--color-btn)',
+                    'btn-hover': 'var(--color-btn-hover)',
+                    'btn-active': 'var(--color-btn-active)',
                 },
             },
             borderColor: {

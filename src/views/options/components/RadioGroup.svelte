@@ -20,9 +20,9 @@
     label {
         @apply border
             border-skin-base
-            bg-skin-input
-            hover:bg-skin-hover
-            hover:shadow-input
+            bg-skin-btn
+            hover:bg-skin-btn-hover
+            active:bg-skin-btn-active
             px-2
             py-1
             text-skin-base

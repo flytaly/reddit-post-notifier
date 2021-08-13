@@ -29,6 +29,7 @@
         @apply group-hover:scale-110 group-active:scale-95 h-4 w-4 group-disabled:scale-100;
     }
     .with-text {
-        @apply bg-skin-input px-1 border border-skin-base hover:bg-skin-hover disabled:hover:bg-skin-input;
+        @apply px-1 border border-skin-base
+        bg-skin-btn hover:bg-skin-btn-hover disabled:hover:bg-skin-btn active:bg-skin-btn-active;
     }
 </style>
