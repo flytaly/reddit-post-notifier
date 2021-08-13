@@ -8,10 +8,17 @@
     import Header from './Header.svelte';
     import WatchList from './WatchList.svelte';
     import Footer from './Footer.svelte';
+    import { openLinksOnClick } from '../helpers/open-links';
+    import handleKeydownEvent from '../helpers/handle-keys';
 
     onMount(() => {
         void applyTheme();
         nProgress.configure({ showSpinner: false });
+        openLinksOnClick();
+        document.addEventListener('keydown', handleKeydownEvent);
+        return () => {
+            document.removeEventListener('keydown', handleKeydownEvent);
+        };
     });
 
     const optionsHref = browser.runtime.getURL('options.html');
