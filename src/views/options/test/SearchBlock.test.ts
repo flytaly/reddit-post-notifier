@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/unbound-method */
 import { test } from '@jest/globals';
-import { fireEvent, getByLabelText, getByText, render, waitFor } from '@testing-library/svelte';
+import { fireEvent, getByLabelText, render, waitFor } from '@testing-library/svelte';
 import { mocked } from 'ts-jest/utils';
 import storage from '../../../storage';
 import type { QueryData, QueryOpts } from '../../../storage/storage-types';

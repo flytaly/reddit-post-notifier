@@ -5,6 +5,7 @@
     import ArrowUp from '../../../assets/arrowhead-up.svg';
     import { slideHorizontal } from '../helpers/transition';
     import SvgButton from './SvgButton.svelte';
+    import FloatingPreview from './FloatingPreview.svelte';
     import type { RedditPost } from '../../../reddit-api/reddit-types';
 
     export let items: RedditPost[];
@@ -59,9 +60,9 @@
                 {/each}
             </ul>
         </div>
-        <!-- {#if containerElement}
-            <FloatPreview posts={items} {containerElement} />
-        {/if} -->
+        {#if containerElement}
+            <FloatingPreview posts={items} {containerElement} />
+        {/if}
     {/if}
 </div>
 
