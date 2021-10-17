@@ -1,5 +1,5 @@
 <script lang="ts">
-    import { onDestroy, onMount } from 'svelte';
+    import { onDestroy, onMount, tick } from 'svelte';
     import type { Unsubscriber } from 'svelte/store';
     import storage from '../../../storage/storage';
     import { pageInfo } from '../routes';
@@ -10,17 +10,25 @@
     import SearchBlock from './SearchBlock.svelte';
 
     let destroy: Unsubscriber;
+    let dataPromise = storage.getAllData();
+
     onMount(() => {
-        destroy = pageInfo.subscribe(({ sectionId }) => {
-            if (sectionId !== '#settings') document.querySelector(sectionId)?.scrollIntoView();
-            else window.scrollTo(0, 0);
-        });
+        // wait for children sections to mount and then scroll based on hash
+        void (async () => {
+            await dataPromise;
+            await tick();
+            destroy = pageInfo.subscribe(({ sectionId }) => {
+                if (sectionId !== '#settings') {
+                    document.body.querySelector(sectionId)?.scrollIntoView();
+                } else window.scrollTo(0, 0);
+            });
+        })();
     });
-    onDestroy(() => void destroy());
+    onDestroy(() => void destroy?.());
 </script>
 
 <div>
-    {#await storage.getAllData() then data}
+    {#await dataPromise then data}
         <Heading id={'#settings'} level={1} />
         <section>
             <Heading id={'#settings__general'} />

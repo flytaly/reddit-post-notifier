@@ -41,7 +41,7 @@ describe('authorization data', () => {
 });
 
 describe('options', () => {
-    const options: Partial<ExtensionOptions> = { isAuthorized: true, updateInterval: 120 };
+    const options: Partial<ExtensionOptions> = { updateInterval: 120 };
 
     beforeEach(() =>
         mockBrowser.storage.local.get //

@@ -23,6 +23,9 @@
         "message": "Open private mail",
         "description": "Attribute title of the private mail icon"
     },
+    "headerMailNoAuth_title": {
+        "message": "Extension isn't authorized to check mail"
+    },
     "headerOptions_title": {
         "message": "Open options",
         "description": "Attribute title of the options icon"
