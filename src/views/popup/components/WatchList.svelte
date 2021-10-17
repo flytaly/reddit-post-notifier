@@ -7,6 +7,7 @@
     import type { PostGroup, PostGroupType } from '../helpers/post-group';
     import { extractPostGroups } from '../helpers/post-group';
     import { slideHorizontal } from '../helpers/transition';
+    import type { SlideConfig } from '../helpers/transition';
     import { storageData } from '../store/store';
     import DropDownList from './DropDownList.svelte';
     import GroupTitle from './GroupTitle.svelte';
@@ -62,12 +63,12 @@
         void storage.removePostsFrom(type === 'subreddit' ? { subreddit: id } : { searchId: id });
     };
 
-    const pinTransition = (node, props) => slideHorizontal(node, props);
+    const pinTransition = (node: Element, props: SlideConfig) => slideHorizontal(node, props);
     //     props.id && props.id === getId() //
     //         ? slideVertical(node, pinContainer.getBoundingClientRect().bottom, props)
     //         : slideHorizontal(node, props);
 
-    const postGroupTransition = (node: Element, props) => slideHorizontal(node, props);
+    const postGroupTransition = (node: Element, props: SlideConfig) => slideHorizontal(node, props);
 </script>
 
 <div class="flex flex-col" class:big>

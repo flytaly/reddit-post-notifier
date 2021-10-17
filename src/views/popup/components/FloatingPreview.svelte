@@ -98,7 +98,13 @@
 >
     {#if imageInfo}
         {#if imageInfo.loaded}
-            <img src={imageInfo.url} width={imageInfo.width} height={imageInfo.height} alt="preview" />
+            <img
+                src={imageInfo.url}
+                width={imageInfo.width}
+                height={imageInfo.height}
+                alt="preview"
+                class="block min-w-min"
+            />
         {:else}
             <div style={`width: ${imageInfo.width}px; height: ${imageInfo.height}px`} />
         {/if}

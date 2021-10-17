@@ -28,7 +28,7 @@ export enum NotificationId {
 export type NewPostsNotification = { len: number; link: string; name: string };
 export type NotificationBatch = RedditMessage[] | NewPostsNotification[];
 
-function notify(type, items: NotificationBatch = [], soundId?: SoundId) {
+function notify(type: NotificationId, items: NotificationBatch = [], soundId?: SoundId) {
     if (!items.length) return;
 
     async function createNotification(id: string, options: NotificationOpts, payload) {

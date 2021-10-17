@@ -5,7 +5,7 @@ function clamp(n: number, min: number, max: number) {
     return Math.min(Math.max(n, min), max);
 }
 
-type SlideConfig = {
+export type SlideConfig = {
     duration?: number;
     easing?: EasingFunction;
     id?: string;

@@ -22,7 +22,7 @@
     });
 
     const optionsHref = browser.runtime.getURL('options.html');
-    const optionsClick = async (e) => {
+    const optionsClick = async (e: MouseEvent) => {
         e.preventDefault();
         e.stopPropagation();
         await browser.runtime.openOptionsPage();

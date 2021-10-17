@@ -47,7 +47,7 @@
         </SvgButton>
     </span>
 
-    <span class="flex items-center space-x-2">
+    <span class="flex items-center space-x-3">
         <span class="flex text-skin-accent">
             {#if !$storageData.refreshToken}
                 <div class="transform">
