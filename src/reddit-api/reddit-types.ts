@@ -9,6 +9,7 @@ export type RedditPostData = {
     created_utc: number;
     created: number;
     id: string;
+    link_flair_text?: string | null;
     name: string;
     over_18?: boolean;
     permalink: string;

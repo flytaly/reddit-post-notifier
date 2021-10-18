@@ -55,6 +55,7 @@ export const filterPostDataProperties = (post: RedditPostExtended): RedditPost =
         'created_utc',
         'created',
         'id',
+        'link_flair_text',
         'name',
         'over_18',
         'permalink',

@@ -14,6 +14,7 @@ export const generatePost = (props: Partial<RedditPostData> = {}): RedditPostDat
         name: `t3_${faker.lorem.slug(1)}`,
         permalink: `/r/${subreddit}/${title.toLowerCase().split(' ').join('_')}`,
         subreddit,
+        link_flair_text: faker.lorem.slug(3),
         title,
         url: faker.internet.url(),
         preview: {
