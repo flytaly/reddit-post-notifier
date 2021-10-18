@@ -10,6 +10,7 @@
     import Footer from './Footer.svelte';
     import { openLinksOnClick } from '../helpers/open-links';
     import handleKeydownEvent from '../helpers/handle-keys';
+    import SettingsIcon from '../../../assets/settings.svg';
 
     onMount(() => {
         void applyTheme();
@@ -41,7 +42,12 @@
     {:else}
         <div class="flex flex-col items-center justify-center py-2 h-full my-auto mx-4 text-center">
             <span>{getMsg('noQueries')}</span>
-            <a href={optionsHref} on:click={optionsClick}>{getMsg('openOptions')} </a>
+            <a class="flex items-center mt-2 font-medium" href={optionsHref} on:click={optionsClick}>
+                <div class="h-5 w-5 mr-1">
+                    {@html SettingsIcon}
+                </div>
+                <span>{getMsg('openOptions')}</span>
+            </a>
         </div>
     {/if}
 </main>
