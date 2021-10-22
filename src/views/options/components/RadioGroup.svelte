@@ -21,16 +21,17 @@
         @apply border
             border-skin-base
             bg-skin-btn
-            hover:bg-skin-btn-hover
-            active:bg-skin-btn-active
             px-2
             py-1
             text-skin-base
-            text-sm;
+            text-sm
+            transition-colors
+            hover:brightness-90
+            active:brightness-125;
     }
 
     input:checked + label {
-        @apply bg-skin-input-checked;
+        @apply bg-skin-input-checked text-white hover:brightness-110;
     }
 
     input:focus-visible + label {

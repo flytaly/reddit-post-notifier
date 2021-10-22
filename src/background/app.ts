@@ -8,7 +8,7 @@ import type {
     RedditSubredditListing,
 } from '../reddit-api/reddit-types';
 import storage from '../storage';
-import type { MessageData, QueryOpts, StorageFields } from '../storage/storage-types';
+import type { MessageData, QueryOpts, StorageFields, SubredditOpts } from '../storage/storage-types';
 import { getSearchQueryUrl, getSubredditUrl } from '../utils/index';
 import { wait } from '../utils/wait';
 import notify, { NewPostsNotification, NotificationId } from './notifications';
@@ -46,7 +46,7 @@ function extractNewItems<T extends ItemWithDate>(
 }
 
 interface UpdateSubredditProps {
-    subreddit: string;
+    subOpts: SubredditOpts;
     subData: StorageFields['subreddits'];
     listing: Partial<RedditSubredditListing>;
 }
@@ -62,8 +62,9 @@ function isErrorResponse(result: RedditError | RedditListingResponse<unknown>): 
 }
 
 const app = {
-    updateSubreddit: async ({ subreddit, subData, listing }: UpdateSubredditProps) => {
-        const info = subData[subreddit] || {};
+    updateSubreddit: async ({ subOpts, subData, listing }: UpdateSubredditProps) => {
+        const { subreddit, id } = subOpts;
+        const info = subData[id] || {};
 
         // fetch subreddits with error at a slower pace
         if (info.error && Date.now() - info.lastUpdate < 1000 * 60 * 6) return null;
@@ -71,12 +72,12 @@ const app = {
         const response = await reddit.getSubreddit(subreddit).new(listing);
         if (isErrorResponse(response)) {
             console.error(`Error during fetching new posts from r/${subreddit}: `, response);
-            await storage.saveSubredditData(subreddit, { error: response });
+            await storage.saveSubredditData(id, { error: response });
             return null;
         }
 
         const newPosts = extractNewItems(response, info) || [];
-        await storage.saveSubredditData(subreddit, { posts: newPosts });
+        await storage.saveSubredditData(id, { posts: newPosts });
         return newPosts;
     },
 
@@ -140,30 +141,22 @@ const app = {
             refreshToken,
         } = await storage.getAllData();
 
-        const {
-            waitTimeout,
-            messages,
-            limit = 10,
-            messagesNotify,
-            subredditNotify,
-            notificationSoundId,
-            useOldReddit,
-        } = options;
+        const { waitTimeout, messages, limit = 10, messagesNotify, notificationSoundId, useOldReddit } = options;
 
         if (messages && refreshToken) {
             const newMessages = await app.updateUnreadMsg(messageData);
-            if (messagesNotify && newMessages.length) {
+            if (messagesNotify && newMessages?.length) {
                 notify(NotificationId.mail, newMessages, notificationSoundId);
             }
             await wait(waitTimeout * 1000);
         }
 
         let batch: NewPostsNotification[] = [];
-        for (const subreddit of subredditList) {
-            const newPosts = await app.updateSubreddit({ subreddit, subData, listing: { limit } });
-            if (subredditNotify && newPosts?.length) {
-                const link = getSubredditUrl(subreddit, useOldReddit);
-                batch.push({ name: subreddit, len: newPosts.length, link });
+        for (const subOpts of subredditList) {
+            const newPosts = await app.updateSubreddit({ subOpts, subData, listing: { limit } });
+            if (subOpts.notify && newPosts?.length) {
+                const link = getSubredditUrl(subOpts.subreddit, useOldReddit);
+                batch.push({ name: subOpts.subreddit, len: newPosts.length, link });
             }
             await wait(waitTimeout * 1000);
         }

@@ -60,7 +60,7 @@
     };
 
     const getOnCheckHandler = (id: string, type: PostGroupType) => () => {
-        void storage.removePostsFrom(type === 'subreddit' ? { subreddit: id } : { searchId: id });
+        void storage.removePostsFrom(type === 'subreddit' ? { subredditId: id } : { searchId: id });
     };
 
     const pinTransition = (node: Element, props: SlideConfig) => slideHorizontal(node, props);

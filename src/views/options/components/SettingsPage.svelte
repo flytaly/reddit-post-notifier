@@ -40,11 +40,7 @@
         </section>
         <section>
             <Heading id={'#settings__subreddit'} />
-            <SubredditsBlock
-                subredditList={data.subredditList}
-                subredditsData={data.subreddits}
-                subredditNotify={data.options.subredditNotify}
-            />
+            <SubredditsBlock subredditList={data.subredditList} subredditsData={data.subreddits} />
         </section>
         <section>
             <Heading id={'#settings__reddit-search'} />

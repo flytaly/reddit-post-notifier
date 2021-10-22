@@ -31,7 +31,10 @@ module.exports = {
                 },
             },
             borderColor: {
-                skin: { base: 'var(--color-border)' },
+                skin: {
+                    base: 'var(--color-border)',
+                    'input-checked': 'var(--color-input-bg-checked)',
+                },
             },
             boxShadow: {
                 sidebar: 'var(--shadow-sidebar)',

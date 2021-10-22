@@ -54,14 +54,9 @@ button:not(:disabled):hover {
 }
 
 [type='checkbox']:checked {
-    @apply bg-skin-input-checked bg-no-repeat bg-center;
+    @apply bg-skin-input-checked bg-no-repeat bg-center hover:brightness-125;
 
     background-size: 100% 100%;
-    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Cpath d='M6 14a1 1 0 0 1-.707-.293l-3-3a1 1 0 0 1 1.414-1.414l2.157 2.157 6.316-9.023a1 1 0 0 1 1.639 1.146l-7 10a1 1 0 0 1-.732.427A.863.863 0 0 1 6 14z'%3E%3C/path%3E%3C/svg%3E ");
-}
-
-.purple-theme [type='checkbox']:checked,
-.dark-theme [type='checkbox']:checked {
     background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Cpath fill='white' d='M6 14a1 1 0 0 1-.707-.293l-3-3a1 1 0 0 1 1.414-1.414l2.157 2.157 6.316-9.023a1 1 0 0 1 1.639 1.146l-7 10a1 1 0 0 1-.732.427A.863.863 0 0 1 6 14z'%3E%3C/path%3E%3C/svg%3E ");
 }
 

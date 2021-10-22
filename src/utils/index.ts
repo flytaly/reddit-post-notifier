@@ -10,10 +10,13 @@ export const $: ParentNode['querySelector'] = document.querySelector.bind(docume
 
 export const subredditNameRegExp = /^[A-Za-z0-9]\w{1,20}$/;
 
+//** test all subreddits name in multireddit */
+export const testMultireddit = (subs: string) => subs.split('+').every((s) => subredditNameRegExp.test(s));
+
 export const redditUrl = 'https://reddit.com';
 export const redditOldUrl = 'https://old.reddit.com';
 
-export const generateId = () => (Date.now() + crypto.getRandomValues(new Uint32Array(1))[0]).toString(36);
+export const generateId = () => Math.random().toString(36).substring(2) + new Date().getTime().toString(36);
 
 export const getSubredditUrl = (subreddit: string, oldReddit = false): string =>
     `${oldReddit ? redditOldUrl : redditUrl}/r/${subreddit}/new`;

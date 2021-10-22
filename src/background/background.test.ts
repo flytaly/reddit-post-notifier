@@ -27,11 +27,18 @@ describe('Start extension', () => {
         const msgCallbacks = new Map<PortMessageId, MessageListener>();
         mocked(onMessageMock).mockImplementation((id, cb) => msgCallbacks.set(id, cb));
 
+        mockBrowser.runtime.onInstalled.addListener.mock((listener) => {
+            listener({ reason: 'update', previousVersion: '3.2', temporary: false });
+        });
+
         await startExtension();
 
         expect(storage.getOptions).toHaveBeenCalled();
         const exp = expect.objectContaining({ ...DEFAULT_OPTIONS, ...opts });
         expect(storage.saveOptions).toHaveBeenCalledWith(exp);
+
+        // onInstall
+        expect(storage.migrateToV4).toHaveBeenCalled();
 
         expect(addNotificationClickListener).toHaveBeenCalled();
         expect(storage.countNumberOfUnreadItems).toHaveBeenCalled();

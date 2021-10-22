@@ -38,6 +38,7 @@ module.exports = {
         '@typescript-eslint/no-unsafe-assignment': 'off',
         '@typescript-eslint/no-unsafe-call': 'off',
         '@typescript-eslint/no-unsafe-member-access': 'off',
+        '@typescript-eslint/ban-ts-comment': 'off',
         '@typescript-eslint/require-await': 'off',
     },
 };

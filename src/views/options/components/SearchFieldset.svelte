@@ -1,5 +1,5 @@
 <script lang="ts">
-    import { debounce, subredditNameRegExp } from '../../../utils';
+    import { testMultireddit, debounce } from '../../../utils';
     import TooltipIcon from './TooltipIcon.svelte';
     import Labeled from './Labeled.svelte';
     import storage from '../../../storage';
@@ -24,14 +24,12 @@
         query: `search_query_${id}`,
     };
 
-    const checkSubreddits = (subs: string) => subs.split('+').every((s) => subredditNameRegExp.test(s));
-
     const saveInputs = debounce(async () => {
         const _query = query.trim();
         if (!_query) return;
 
         const _subreddit = subreddit.trim().replace(/\s/g, '+');
-        if (_subreddit && !checkSubreddits(_subreddit)) {
+        if (_subreddit && !testMultireddit(_subreddit)) {
             subredditInputRef.setCustomValidity(`Invalid subreddit names`);
             return;
         }

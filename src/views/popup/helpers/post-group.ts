@@ -17,13 +17,13 @@ export const extractPostGroups = (data: StorageFields) => {
     const groupsWithoutPosts: PostGroup[] = [];
 
     data.subredditList.forEach((s) => {
-        const length = data.subreddits[s]?.posts?.length || 0;
-        const lastPostCreated = data.subreddits[s]?.lastPostCreated;
+        const length = data.subreddits[s.id]?.posts?.length || 0;
+        const lastPostCreated = data.subreddits[s.id]?.lastPostCreated;
         const group: PostGroup = {
             type: 'subreddit',
-            id: s,
-            href: getSubredditUrl(s, data.options.useOldReddit),
-            title: `r/${s} (${length})`,
+            id: s.id,
+            href: getSubredditUrl(s.subreddit, data.options.useOldReddit),
+            title: `r/${s.subreddit} (${length})`,
             lastPostCreated,
             size: length,
         };

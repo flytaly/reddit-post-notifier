@@ -39,6 +39,13 @@ export type QueryOpts = {
     notify?: boolean;
 };
 
+export type SubredditOpts = {
+    id: string;
+    subreddit: string;
+    notify?: boolean;
+    disabled?: boolean;
+};
+
 export type StorageFields = {
     options: ExtensionOptions;
 
@@ -47,6 +54,6 @@ export type StorageFields = {
     pinnedPostList: RedditPost[];
     queries: Record<string, QueryData>;
     queriesList: QueryOpts[];
-    subredditList: string[];
+    subredditList: SubredditOpts[];
     subreddits: Record<string, SubredditData>;
 } & AuthData;

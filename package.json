@@ -1,6 +1,6 @@
 {
     "name": "reddit-post-notifier",
-    "version": "3.3.2",
+    "version": "4.0.0",
     "description": "Browser extension that watches for posts in given subreddits or reddit searches",
     "main": "manifest.json",
     "scripts": {

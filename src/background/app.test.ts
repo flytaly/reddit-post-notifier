@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
 /* eslint-disable @typescript-eslint/unbound-method */
 import { mocked } from 'ts-jest/utils';
 import DEFAULT_OPTIONS from '../options-default';
@@ -6,7 +5,7 @@ import RedditApiClient from '../reddit-api/client';
 import type { RedditError, RedditMessage, RedditPost } from '../reddit-api/reddit-types';
 import storage from '../storage';
 import { dataFields } from '../storage/fields';
-import type { StorageFields } from '../storage/storage-types';
+import type { StorageFields, SubredditOpts } from '../storage/storage-types';
 import { generateMessage, generatePost, generateQuery } from '../test-utils/content-generators';
 import type { ExtensionOptions } from '../types/extension-options';
 import { getSearchQueryUrl } from '../utils';
@@ -103,45 +102,43 @@ describe('update subreddits', () => {
     test('should fetch and save new posts', async () => {
         const limit = 20;
         mockStorageData({
-            subredditList: ['sub1'],
-            subreddits: { sub1: { lastPostCreated: ts, posts: posts.slice(2) } },
+            subredditList: [{ id: 'id1', subreddit: 'sub1' }],
+            subreddits: { id1: { lastPostCreated: ts, posts: posts.slice(2) } },
             options: getOpts({ limit }),
         });
         await app.update();
         expect(mockGetSubreddit.mock.calls).toEqual([['sub1']]);
         expect(mockSubredditNew).toHaveBeenCalledWith(expect.objectContaining({ limit }));
-        expect(mockStorage.saveSubredditData).toHaveBeenCalledWith(
-            'sub1',
-            expect.objectContaining({ posts: newPosts }),
-        );
+        expect(mockStorage.saveSubredditData).toHaveBeenCalledWith('id1', expect.objectContaining({ posts: newPosts }));
         expect(mockNotify).not.toHaveBeenCalled();
     });
 
     test('should create notification', async () => {
-        const name = 'sub1';
+        const subreddit = 'sub1';
         mockStorageData({
-            subredditList: [name],
-            subreddits: { sub1: { lastPostCreated: ts, posts: [] } },
-            options: getOpts({ subredditNotify: true }),
+            subredditList: [{ id: 'id1', subreddit, notify: true }],
+            subreddits: { id1: { lastPostCreated: ts, posts: [] } },
+            options: getOpts(),
         });
         await app.update();
 
         // if (batch.length) notify(NotificationId.post, batch, notificationSoundId);
         expect(mockNotify).toHaveBeenCalledWith(
             NotificationId.post,
-            [{ len: newPosts.length, link: `https://reddit.com/r/${name}/new`, name }],
+            [{ len: newPosts.length, link: `https://reddit.com/r/${subreddit}/new`, name: subreddit }],
             null,
         );
     });
 
     test('should save error', async () => {
+        const id = 'itemId';
         mockStorageData({
-            subredditList: ['error_sub'],
+            subredditList: [{ id, subreddit: 'somesubreddit' }],
         });
         const error: RedditError = { error: 404, message: 'Not found', reason: 'banned' };
         mockSubredditNew.mockResolvedValueOnce(error);
         await app.update();
-        expect(mockStorage.saveSubredditData).toHaveBeenCalledWith('error_sub', expect.objectContaining({ error }));
+        expect(mockStorage.saveSubredditData).toHaveBeenCalledWith(id, expect.objectContaining({ error }));
     });
 });
 

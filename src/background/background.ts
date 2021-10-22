@@ -1,9 +1,10 @@
-import { browser } from 'webextension-polyfill-ts';
-import { IS_FIREFOX, IS_TEST } from '../constants';
+import { browser, Runtime } from 'webextension-polyfill-ts';
+import { IS_DEV, IS_FIREFOX, IS_TEST } from '../constants';
 import DEFAULT_OPTIONS from '../options-default';
 import { initializeBgListener, onMessage } from '../port';
 import storage from '../storage';
 import type { PortMessage } from '../types/message';
+import { generateId } from '../utils';
 import { addNotificationClickListener } from './notifications';
 import { scheduleNextUpdate, watchAlarms } from './timers';
 import { isUpdating, updateAndSchedule } from './update';
@@ -22,7 +23,18 @@ async function mergeOptions() {
     await storage.saveOptions({ ...DEFAULT_OPTIONS, ...options });
 }
 
+async function onInstall() {
+    const listener = (info: Runtime.OnInstalledDetailsType) => {
+        if (info.reason === 'update' && parseInt(info.previousVersion || '1') < 4) {
+            void storage.migrateToV4();
+        }
+    };
+    browser.runtime.onInstalled.addListener(listener);
+}
+
 export async function startExtension() {
+    await onInstall();
+
     void browser.browserAction.setBadgeBackgroundColor({ color: 'darkred' });
 
     // Storage
