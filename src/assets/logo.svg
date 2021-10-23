@@ -1,13 +1,11 @@
 <svg version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" viewBox="0 0 61.5 42">
 <style>
-    path { stroke-miterlimit: 10; stroke-width: 4px; fill: none; stroke: currentColor; }
-    circle { stroke-miterlimit:10; stroke-width:4px; }
     .antenna-circle { fill: none; stroke: currentColor; }
-    .eye { fill: red;stroke: none; }
+    .eye { fill: red; stroke: none; }
 </style>
-<path  d="M28,18.5c0-5.9,7.3-17.3,18-12"/>
-<path  d="M1.5,29.9c1-1.1,21-20.9,53-0.9"/>
-<circle class="antenna-circle" cx="53" cy="8.5" r="6.5"/>
-<circle class="eye" cx="15" cy="37.5" r="4.5"/>
-<circle class="eye" cx="41" cy="37.5" r="4.5"/>
+    <path stroke="currentColor" stroke-miterlimit="10px" stroke-width="4px" fill="none" d="M28,18.5c0-5.9,7.3-17.3,18-12"/>
+    <path stroke="currentColor" stroke-miterlimit="10px" stroke-width="4px" fill="none" d="M1.5,29.9c1-1.1,21-20.9,53-0.9"/>
+    <circle stroke-miterlimit="10" stroke-width="4px" class="antenna-circle" cx="53" cy="8.5" r="6.5"/>
+    <circle class="eye" cx="15" cy="37.5" r="4.5"/>
+    <circle class="eye" cx="41" cy="37.5" r="4.5"/>
 </svg>

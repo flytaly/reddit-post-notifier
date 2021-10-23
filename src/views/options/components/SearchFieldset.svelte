@@ -114,7 +114,7 @@
 
         {#if error}
             <div />
-            <div class="text-skin-error">{`Error during last fetch: ${error.error} ${error.message}`}</div>
+            <div class="text-skin-error">{`Error during the latest fetch: ${error.error} ${error.message}`}</div>
         {/if}
     </div>
 

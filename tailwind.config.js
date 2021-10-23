@@ -21,7 +21,10 @@ module.exports = {
                     gray: 'var(--color-gray)',
                     outline: 'var(--color-outline)',
                     delimiter: 'var(--color-delimiter)',
-                    error: 'var(--color-error)',
+                    error: {
+                        DEFAULT: 'var(--color-error)',
+                        bg: 'var(--color-error-bg)',
+                    },
                     success: 'var(--color-success)',
                     link: 'var(--color-link)',
                     'item-hover': 'var(--color-item-bg-hover)',
