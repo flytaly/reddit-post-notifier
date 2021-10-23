@@ -20,6 +20,9 @@ jest.mock('../utils/index.ts', () => ({
 
 const generateIdMock = mocked(generateId);
 
+const mockGet = mockBrowser.storage.local.get;
+const mockSet = mockBrowser.storage.local.set;
+
 describe('authorization data', () => {
     afterEach(() => restoreDate());
 
@@ -38,14 +41,14 @@ describe('authorization data', () => {
         mockDate('2019-02-17T00:25:58.000Z');
         const expiresInAbsolute = new Date().getTime() + expiresIn * 1000;
         const expected = { accessToken, refreshToken, expiresIn: expiresInAbsolute };
-        mockBrowser.storage.local.set.expect(expect.objectContaining(expected));
+        mockSet.expect(expect.objectContaining(expected));
         await storage.saveAuthData(authDataFake);
     });
 
     test('should return authorization data', async () => {
         const result = { accessToken, refreshToken, expiresIn };
         const exp = expect.objectContaining({ accessToken: '', expiresIn: 0, refreshToken: '' });
-        mockBrowser.storage.local.get.expect(exp).andResolve(result);
+        mockGet.expect(exp).andResolve(result);
         await expect(storage.getAuthData()).resolves.toBe(result);
     });
 });
@@ -54,7 +57,7 @@ describe('options', () => {
     const options: Partial<ExtensionOptions> = { updateInterval: 120 };
 
     beforeEach(() =>
-        mockBrowser.storage.local.get //
+        mockGet //
             .expect({ options: DEFAULT_OPTIONS })
             .andResolve({ options }),
     );
@@ -65,7 +68,7 @@ describe('options', () => {
     });
     test('should save options', async () => {
         const newOptions: Partial<ExtensionOptions> = { hideEmptyGroups: true };
-        mockBrowser.storage.local.set.expect({ options: { ...options, ...newOptions } });
+        mockSet.expect({ options: { ...options, ...newOptions } });
         await storage.saveOptions(newOptions);
     });
 });
@@ -76,7 +79,6 @@ describe('subreddits', () => {
         { id: 'id2', subreddit: 'subname2', notify: false },
     ];
     const subreddits: Record<string, SubredditData> = {};
-
     beforeAll(() => {
         subOpts.forEach(({ id, subreddit }) => {
             subreddits[id] = { posts: generatePosts(2, subreddit) };
@@ -95,21 +97,21 @@ describe('subreddits', () => {
         const prevSubData: Record<string, SubredditData> = { sub2: { lastPost: 'postId' } };
         const newSubData = { id_2: { lastPost: 'postId' } };
 
-        mockBrowser.storage.local.get
+        mockGet
             .expect({ options: {}, subredditList: [], subreddits: {} })
             .andResolve({ options: { subredditNotify: true }, subredditList: prevSubList, subreddits: prevSubData });
 
-        mockBrowser.storage.local.set.expect({ subredditList: newSubList, subreddits: newSubData });
+        mockSet.expect({ subredditList: newSubList, subreddits: newSubData });
 
         await storage.migrateToV4();
     });
 
     test('should get and save the list of subreddits', async () => {
         const subredditList = [...subOpts];
-        mockBrowser.storage.local.get.expect({ subredditList: [] }).andResolve({ subredditList: subredditList });
+        mockGet.expect({ subredditList: [] }).andResolve({ subredditList: subredditList });
         await expect(storage.getSubredditList()).resolves.toBe(subredditList);
 
-        mockBrowser.storage.local.set.expect({ subredditList });
+        mockSet.expect({ subredditList });
         jest.spyOn(storage, 'prune').mockImplementationOnce(() => Promise.resolve());
 
         await storage.saveSubredditList(subredditList);
@@ -119,33 +121,43 @@ describe('subreddits', () => {
     });
 
     test("should return subreddit's data with its posts", async () => {
-        mockBrowser.storage.local.get.expect({ subreddits: {} }).andResolve({ subreddits });
+        mockGet.expect({ subreddits: {} }).andResolve({ subreddits });
         const response = await storage.getSubredditData();
         expect(response).toEqual(subreddits);
     });
 
     test('should save new subreddit with options', async () => {
         const newSubreddit: SubredditOpts = { id: 'id', subreddit: 'newSub', disabled: false, notify: true };
-        mockBrowser.storage.local.get.expect({ subredditList: [] }).andResolve({ subredditList: subOpts });
-        mockBrowser.storage.local.set.expect({ subredditList: [...subOpts, newSubreddit] });
+        mockGet.expect({ subredditList: [] }).andResolve({ subredditList: subOpts });
+        mockSet.expect({ subredditList: [...subOpts, newSubreddit] });
         await storage.saveSubredditOpts(newSubreddit);
     });
 
     test('should remove subreddit list and data', async () => {
         const idsToRemove = [subOpts[1].id];
-        mockBrowser.storage.local.get.expect({ subredditList: [] }).andResolve({ subredditList: subOpts });
-        mockBrowser.storage.local.get.expect({ subreddits: {} }).andResolve({ subreddits });
+        mockGet.expect({ subredditList: [] }).andResolve({ subredditList: subOpts });
+        mockGet.expect({ subreddits: {} }).andResolve({ subreddits });
         const subData = cloneDeep(subreddits);
         idsToRemove.forEach((id) => delete subData[id]);
-        mockBrowser.storage.local.set.expect({ subreddits: subData });
-        mockBrowser.storage.local.set.expect({ subredditList: [subOpts[0]] });
+        mockSet.expect({ subreddits: subData });
+        mockSet.expect({ subredditList: [subOpts[0]] });
         await storage.removeSubreddits(idsToRemove);
     });
 
     test('should update subreddit opts', async () => {
-        const updatedSub: SubredditOpts = { ...subOpts[1], notify: !subOpts[1].notify, disabled: true };
-        mockBrowser.storage.local.get.expect({ subredditList: [] }).andResolve({ subredditList: subOpts });
-        mockBrowser.storage.local.set.expect({ subredditList: [subOpts[0], updatedSub, ...subOpts.slice(2)] });
+        const updatedSub: SubredditOpts = {
+            ...subOpts[1],
+            subreddit: 'newSub',
+            notify: !subOpts[1].notify,
+            disabled: true,
+        };
+        mockGet.expect({ subredditList: [] }).andResolve({ subredditList: subOpts });
+        mockSet.expect({ subredditList: [subOpts[0], updatedSub, ...subOpts.slice(2)] });
+
+        const subData = cloneDeep(subreddits);
+        mockGet.expect({ subreddits: {} }).andResolve({ subreddits: subData });
+        mockSet.expect({ subreddits: { ...subData, [updatedSub.id]: { posts: [] } } });
+
         await storage.saveSubredditOpts(updatedSub);
     });
 
@@ -164,8 +176,8 @@ describe('subreddits', () => {
             posts: [...newPosts, ...subreddits[id].posts],
         };
 
-        mockBrowser.storage.local.get.mock(() => Promise.resolve({ subreddits }));
-        mockBrowser.storage.local.set.expect({ subreddits: { ...subreddits, [id]: expectedData } });
+        mockGet.mock(() => Promise.resolve({ subreddits }));
+        mockSet.expect({ subreddits: { ...subreddits, [id]: expectedData } });
 
         await storage.saveSubredditData(id, { posts });
         restoreDate();
@@ -174,8 +186,8 @@ describe('subreddits', () => {
     test('should save error', async () => {
         const error = { message: 'some error' };
         const sub: string = subOpts[1].subreddit;
-        mockBrowser.storage.local.get.mock(() => Promise.resolve({ subreddits }));
-        mockBrowser.storage.local.set.expect({
+        mockGet.mock(() => Promise.resolve({ subreddits }));
+        mockSet.expect({
             subreddits: { ...subreddits, [sub]: expect.objectContaining({ error }) },
         });
         await storage.saveSubredditData(sub, { error });
@@ -186,8 +198,8 @@ describe('subreddits', () => {
         const subs = cloneDeep(subreddits);
         const postId = subs[subId].posts[1].data.id;
         const exp = expect.objectContaining({ posts: subreddits[subId].posts.filter((p) => p.data.id !== postId) });
-        mockBrowser.storage.local.get.mock(() => Promise.resolve({ subreddits: subs }));
-        mockBrowser.storage.local.set.expect({ subreddits: { ...subs, [subId]: exp } });
+        mockGet.mock(() => Promise.resolve({ subreddits: subs }));
+        mockSet.expect({ subreddits: { ...subs, [subId]: exp } });
         await storage.removePost({ id: postId, subreddit: subId });
     });
 
@@ -195,8 +207,8 @@ describe('subreddits', () => {
         const { id } = subOpts[1];
         const subs = cloneDeep(subreddits);
         const exp = expect.objectContaining({ posts: [] });
-        mockBrowser.storage.local.get.mock(() => Promise.resolve({ subreddits: subs }));
-        mockBrowser.storage.local.set.expect({ subreddits: { ...subs, [id]: exp } });
+        mockGet.mock(() => Promise.resolve({ subreddits: subs }));
+        mockSet.expect({ subreddits: { ...subs, [id]: exp } });
         await storage.removePostsFrom({ subredditId: id });
     });
 
@@ -204,8 +216,8 @@ describe('subreddits', () => {
         const inputSubs = cloneDeep(subreddits);
         const expectedSubs = {};
         subOpts.forEach(({ id }) => (expectedSubs[id] = { posts: [] }));
-        mockBrowser.storage.local.get.mock(() => Promise.resolve({ subreddits: inputSubs }));
-        mockBrowser.storage.local.set.expect(expect.objectContaining({ subreddits: expectedSubs }));
+        mockGet.mock(() => Promise.resolve({ subreddits: inputSubs }));
+        mockSet.expect(expect.objectContaining({ subreddits: expectedSubs }));
         jest.spyOn(storage, 'getQueriesData').mockImplementationOnce(() => Promise.resolve({}));
 
         await storage.removeAllPosts();
@@ -218,9 +230,8 @@ describe('search queries', () => {
     let queriesList: QueryOpts[];
     let qData: Record<string, QueryData>;
 
-    const mockQueries = () =>
-        mockBrowser.storage.local.get.expect({ queries: {} }).andResolve({ queries: cloneDeep(qData) });
-    const mockQueriesList = () => mockBrowser.storage.local.get.expect({ queriesList: [] }).andResolve({ queriesList });
+    const mockQueries = () => mockGet.expect({ queries: {} }).andResolve({ queries: cloneDeep(qData) });
+    const mockQueriesList = () => mockGet.expect({ queriesList: [] }).andResolve({ queriesList });
 
     beforeAll(() => {
         queriesList = [generateQuery(), generateQuery()];
@@ -246,7 +257,7 @@ describe('search queries', () => {
             posts: [...posts, ...qData[queryId].posts],
         };
         mockQueries();
-        mockBrowser.storage.local.set.expect({ queries: expect.objectContaining({ [queryId]: updated }) });
+        mockSet.expect({ queries: expect.objectContaining({ [queryId]: updated }) });
         await storage.saveQueryData(queryId, { posts });
         restoreDate();
     });
@@ -260,7 +271,7 @@ describe('search queries', () => {
     test('should save new query', async () => {
         const newQuery = generateQuery();
         mockQueriesList();
-        mockBrowser.storage.local.set.expect({ queriesList: [...queriesList, newQuery] });
+        mockSet.expect({ queriesList: [...queriesList, newQuery] });
         await storage.saveQuery(newQuery);
     });
 
@@ -270,8 +281,8 @@ describe('search queries', () => {
         const updatedList = [...queriesList.filter((q) => q.id !== qId), updatedQuery];
         mockQueriesList();
         mockQueries();
-        mockBrowser.storage.local.set.expect({ queries: { ...qData, [qId]: { posts: [] } } });
-        mockBrowser.storage.local.set.expect({ queriesList: updatedList });
+        mockSet.expect({ queries: { ...qData, [qId]: { posts: [] } } });
+        mockSet.expect({ queriesList: updatedList });
         await storage.saveQuery(updatedQuery);
     });
 
@@ -279,7 +290,7 @@ describe('search queries', () => {
         const id = queriesList[1].id;
         const filtered = queriesList.filter((q) => q.id !== id);
         mockQueriesList();
-        mockBrowser.storage.local.set.expect({ queriesList: filtered });
+        mockSet.expect({ queriesList: filtered });
         jest.spyOn(storage, 'prune').mockImplementationOnce(() => Promise.resolve());
 
         await storage.removeQueries([id]);
@@ -293,7 +304,7 @@ describe('search queries', () => {
         const searchId = queriesList[1].id;
         const postId = qData[searchId].posts[1].data.id;
         const posts = qData[searchId].posts.filter((p) => p.data.id !== postId);
-        mockBrowser.storage.local.set.expect({
+        mockSet.expect({
             queries: expect.objectContaining({ [searchId]: { posts } }),
         });
         await storage.removePost({ id: postId, searchId });
@@ -302,7 +313,7 @@ describe('search queries', () => {
     test('should remove all posts in search query', async () => {
         const searchId = queriesList[0].id;
         mockQueries();
-        mockBrowser.storage.local.set.expect({
+        mockSet.expect({
             queries: expect.objectContaining({
                 [searchId]: { posts: [] },
             }),
@@ -314,7 +325,7 @@ describe('search queries', () => {
         mockQueries();
         const expectedQueries = {};
         queriesList.forEach((q) => (expectedQueries[q.id] = { posts: [] }));
-        mockBrowser.storage.local.set.expect(expect.objectContaining({ queries: expectedQueries }));
+        mockSet.expect(expect.objectContaining({ queries: expectedQueries }));
         jest.spyOn(storage, 'getSubredditData').mockImplementationOnce(() => Promise.resolve({}));
         await storage.removeAllPosts();
         (storage.getSubredditData as any as jest.SpyInstance).mockRestore();
@@ -328,7 +339,7 @@ describe('messages', () => {
 
     beforeEach(() => {
         const msgArray = cloneDeep(oldMsgs);
-        mockBrowser.storage.local.get.expect({ messages: {} }).andResolve({
+        mockGet.expect({ messages: {} }).andResolve({
             messages: { count: msgArray.length, messages: msgArray } as MessageData,
         });
     });
@@ -348,13 +359,13 @@ describe('messages', () => {
             lastUpdate: date.getTime(),
             messages: expect.arrayContaining([...newMsgs, ...oldMsgs]) as RedditMessage[],
         };
-        mockBrowser.storage.local.set.expect({ messages: expected });
+        mockSet.expect({ messages: expected });
         const newMessages = cloneDeep(newMsgs) as any as RedditMessage[];
         await storage.saveMessageData({ newMessages, count });
         restoreDate();
     });
     test('should remove messages', async () => {
-        mockBrowser.storage.local.set.expect({ messages: { messages: [], count: 0 } });
+        mockSet.expect({ messages: { messages: [], count: 0 } });
         await storage.removeMessages();
     });
 });
@@ -375,14 +386,14 @@ describe('prune', () => {
     test('should prune redundant subreddits', async () => {
         const subIdList = ['s1', 's2'];
         const subreddits = { s1: subInfo.s1, s2: subInfo.s2 };
-        mockBrowser.storage.local.set.expect({ subreddits });
+        mockSet.expect({ subreddits });
         await storage.prune({ subIdList });
     });
 
     test('should prune redundant queries data', async () => {
         storage.getQueriesData = jest.fn(async () => queryInfo);
         const queriesIdList = ['q2'];
-        mockBrowser.storage.local.set.expect({
+        mockSet.expect({
             queries: { q2: queryInfo.q2 },
         });
         await storage.prune({ queriesIdList });

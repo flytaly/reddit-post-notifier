@@ -116,7 +116,9 @@ const storage = {
         let wasUpdated = false;
         const updatedList = sOpts.map((current) => {
             if (current.id !== subOpts.id) return current;
-            if (subOpts.subreddit !== current.subreddit) void storage.removeSubredditData[current.id];
+            if (subOpts.subreddit !== current.subreddit) {
+                storage.removeSubredditData(current.id).catch(console.error);
+            }
             wasUpdated = true;
             return subOpts;
         });
@@ -328,7 +330,7 @@ const storage = {
 
         if (subredditList?.length && subreddits) {
             count += subredditList.reduce((acc, curr) => {
-                const id = curr.subreddit;
+                const id = curr.id;
                 if (subreddits[id] && subreddits[id].posts) return acc + subreddits[id].posts.length;
                 return acc;
             }, 0);
