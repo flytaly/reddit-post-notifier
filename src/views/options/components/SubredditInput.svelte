@@ -1,14 +1,14 @@
 <script lang="ts">
-    import storage from '../../../storage';
-    import WarningIcon from '../../../assets/warning.svg';
-    import SaveIcon from '../../../assets/save.svg';
     import DeleteIcon from '../../../assets/delete.svg';
-
+    import SaveIcon from '../../../assets/save.svg';
+    import WarningIcon from '../../../assets/warning.svg';
+    import storage from '../../../storage';
     import type { SubredditOpts } from '../../../storage/storage-types';
     import { debounce, testMultireddit } from '../../../utils';
+    import getMsg from '../../../utils/get-message';
 
     export let subOpts: SubredditOpts;
-    export let deleteHandler: () => Promise<unknown>;
+    export let deleteHandler: (id: string) => Promise<unknown>;
     export let error = '';
 
     let inputStatus: { typing?: boolean; error?: string; saved?: boolean } = { error };
@@ -26,7 +26,7 @@
             return;
         }
         if (!testMultireddit(_subreddit)) {
-            const msg = 'Invalid subreddit (multireddit) name';
+            const msg = 'Invalid subreddit name';
             subredditInputRef.setCustomValidity(msg);
             inputStatus = { error: msg };
             return;
@@ -46,50 +46,89 @@
         inputStatus = { typing: true };
         saveInputsDebounced();
     };
+
+    let labelText = '';
+    const showLabel = (e: Event & { currentTarget: Element }) => {
+        labelText = e.currentTarget['ariaLabel'];
+    };
+    const hideLabel = () => {
+        labelText = '';
+    };
 </script>
 
-<div class="p-1 my-2">
-    <div class="flex space-x-2 items-start">
-        <div class={`w-56 group ${inputStatus.error ? 'bg-skin-error-bg' : 'bg-skin-bg'}`}>
-            <input
-                class="rounded w-full"
-                type="text"
-                bind:this={subredditInputRef}
-                bind:value={subreddit}
-                on:input={inputHandler}
-            />
-            <div class="rounded-b p-1 text-xs   group-focus-within:block">
-                {#if inputStatus.error}
-                    <div class="flex items-center">
-                        <div class="w-4 h-4 mr-1 text-skin-error flex-shrink-0">{@html WarningIcon}</div>
-                        <div>{inputStatus.error}</div>
-                    </div>
-                {:else if inputStatus.saved}
-                    <div class="flex items-center text-skin-success">
-                        <div class="w-4 h-4 mr-1 flex-shrink-0">{@html SaveIcon}</div>
-                        <span class="text-skin-success font-medium">Saved</span>
-                    </div>
-                {:else}
-                    <span>{inputStatus.typing ? '....' : ''} &nbsp;</span>
-                {/if}
-            </div>
-        </div>
-        <label class="flex items-center space-x-1">
-            <input type="checkbox" bind:checked={notify} on:change={saveInputs} />
-            <span>notify</span>
-        </label>
-        <label class="flex items-center space-x-1">
-            <input type="checkbox" bind:checked={disabled} on:change={saveInputs} />
-            <span>disabled</span>
-        </label>
+<div class="subreddit-grid">
+    <div class={`${inputStatus.error ? 'bg-skin-error-bg' : 'bg-skin-bg'} rounded-t`}>
+        <input
+            class="rounded w-full"
+            type="text"
+            bind:this={subredditInputRef}
+            bind:value={subreddit}
+            on:input={inputHandler}
+        />
+    </div>
+    <label
+        class="flex items-center space-x-1 justify-center"
+        aria-label={getMsg('optionSubredditsDisable')}
+        on:focus={showLabel}
+        on:mouseover={showLabel}
+        on:mouseleave={hideLabel}
+    >
+        <input type="checkbox" bind:checked={disabled} on:change={saveInputs} />
+        <span>disabled</span>
+    </label>
+    <label
+        class="flex items-center space-x-1 justify-center"
+        aria-label={getMsg('optionSubredditsNotify')}
+        on:focus={showLabel}
+        on:mouseover={showLabel}
+        on:mouseleave={hideLabel}
+    >
+        <input type="checkbox" bind:checked={notify} on:change={saveInputs} />
+        <span>notify</span>
+    </label>
+    <div>
         <button
-            class="flex item-center m-0 py-0 px-1 bg-transparent border-transparent text-skin-accent"
-            on:click={deleteHandler.bind(null, subOpts.id)}
+            class="flex item-center ml-auto py-0 px-1 bg-transparent border-transparent text-skin-accent"
+            aria-label={getMsg('optionSubredditsDelete')}
+            on:click={() => deleteHandler(subOpts.id)}
+            on:focus={showLabel}
+            on:mouseover={showLabel}
+            on:mouseleave={hideLabel}
         >
             <div class="w-5 h-5">{@html DeleteIcon}</div>
         </button>
     </div>
+
+    <!-- ===== -->
+    <!-- ROW 2 -->
+    <div class={`rounded-b p-1 text-xs ${inputStatus.error ? 'bg-skin-error-bg' : 'bg-blue'}`}>
+        {#if inputStatus.error}
+            <div class="flex items-center">
+                <div class="w-4 h-4 mr-1 text-skin-error flex-shrink-0">{@html WarningIcon}</div>
+                <div>{inputStatus.error}</div>
+            </div>
+        {:else if inputStatus.saved}
+            <div class="flex items-center text-skin-success">
+                <div class="w-4 h-4 mr-1 flex-shrink-0">{@html SaveIcon}</div>
+                <span class="text-skin-success font-medium">Saved</span>
+            </div>
+        {:else}
+            <span>{inputStatus.typing ? '....' : ''} &nbsp;</span>
+        {/if}
+    </div>
+    <div id="inputs-label" class="p-1 text-right col-start-2 col-span-full text-xs italic">
+        <span>{labelText}</span>
+        &nbsp;
+    </div>
+    <div class="col-span-full">
+        <!--   -->
+    </div>
 </div>
 
 <style lang="postcss">
+    .subreddit-grid {
+        @apply grid p-1 items-start gap-x-3 w-full;
+
+        grid-template-columns: minmax(10rem, 20rem) min-content min-content 1fr;
+    }
 </style>

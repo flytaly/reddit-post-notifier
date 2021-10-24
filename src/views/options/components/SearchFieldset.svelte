@@ -5,6 +5,7 @@
     import storage from '../../../storage';
     import getMsg from '../../../utils/get-message';
     import BellIcon from '../../../assets/bell.svg';
+    import DeleteIcon from '../../../assets/delete.svg';
     import type { QueryOpts } from '../../../storage/storage-types';
     import type { RedditError } from '../../../reddit-api/reddit-types';
 
@@ -129,7 +130,13 @@
             </div>
         </span>
     </Labeled>
-    <button class="mt-4 text-skin-accent border-skin-accent" on:click={deleteHandler}
-        >{getMsg('optionSearchDelete')}</button
+    <button
+        class="flex items-center rounded mt-4 ml-auto text-skin-accent  border-transparent hover:border-skin-accent bg-transparent hover:bg-skin-input"
+        on:click={deleteHandler}
     >
+        <div class="w-5 h-5 mr-2">{@html DeleteIcon}</div>
+        <div>
+            {getMsg('optionSearchDelete')}
+        </div>
+    </button>
 </fieldset>

@@ -194,8 +194,14 @@
         "description": "Option: description for the input of subreddits"
     },
     "optionSubredditsNotify": {
-        "message": "show desktop notifications of new posts in the subreddits ",
+        "message": "Show desktop notifications",
         "description": "Option: notify about new subreddit posts"
+    },
+    "optionSubredditsDisable": {
+        "message": "Disable/Enable subreddit updates"
+    },
+    "optionSubredditsDelete": {
+        "message": "Delete the subreddit"
     },
     "optionSearchLegend": {
         "message": "Watch for specific posts"
