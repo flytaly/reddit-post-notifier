@@ -2,6 +2,8 @@
     import DeleteIcon from '../../../assets/delete.svg';
     import SaveIcon from '../../../assets/save.svg';
     import WarningIcon from '../../../assets/warning.svg';
+    import NotifyIcon from '../../../assets/notify.svg';
+    import NotifyOffIcon from '../../../assets/notify-off.svg';
     import storage from '../../../storage';
     import type { SubredditOpts } from '../../../storage/storage-types';
     import { debounce, testMultireddit } from '../../../utils';
@@ -17,6 +19,8 @@
     let { subreddit, disabled, notify } = subOpts;
     let subredditInputRef: HTMLInputElement;
     let savedSubName = subreddit;
+    let isActive = !disabled;
+    $: disabled = !isActive;
 
     const saveInputs = async () => {
         const _subreddit = subreddit.trim().replace(/\s/g, '+');
@@ -67,24 +71,34 @@
         />
     </div>
     <label
-        class="flex items-center space-x-1 justify-center"
         aria-label={getMsg('optionSubredditsDisable')}
         on:focus={showLabel}
         on:mouseover={showLabel}
         on:mouseleave={hideLabel}
     >
-        <input type="checkbox" bind:checked={disabled} on:change={saveInputs} />
-        <span>disabled</span>
+        <input class="peer hidden" type="checkbox" bind:checked={isActive} on:change={saveInputs} />
+        <div class="ios-checkbox" />
     </label>
     <label
-        class="flex items-center space-x-1 justify-center"
+        class="flex items-center justify-center"
         aria-label={getMsg('optionSubredditsNotify')}
         on:focus={showLabel}
         on:mouseover={showLabel}
         on:mouseleave={hideLabel}
     >
-        <input type="checkbox" bind:checked={notify} on:change={saveInputs} />
-        <span>notify</span>
+        <input class="hidden peer" type="checkbox" bind:checked={notify} on:change={saveInputs} />
+        <div
+            class={`flex items-center justify-center select-none
+            text-gray-50 rounded-2xl py-[2px] px-2 hover:brightness-110
+            transition-colors ${notify ? 'bg-skin-input-checked' : 'bg-gray-500'}`}
+        >
+            {#if notify}
+                <div class="w-5 h-5">{@html NotifyIcon}</div>
+            {:else}
+                <div class="w-5 h-5">{@html NotifyOffIcon}</div>
+            {/if}
+            <span>Notify</span>
+        </div>
     </label>
     <div>
         <button
@@ -129,6 +143,6 @@
     .subreddit-grid {
         @apply grid p-1 items-start gap-x-3 w-full;
 
-        grid-template-columns: minmax(10rem, 20rem) min-content min-content 1fr;
+        grid-template-columns: minmax(10rem, 20rem) auto auto 1fr;
     }
 </style>

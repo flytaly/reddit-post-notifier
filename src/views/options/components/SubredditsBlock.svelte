@@ -28,6 +28,12 @@
 </script>
 
 <div>
+    <div class="grid-header">
+        <div>Subreddit name</div>
+        <div>Active</div>
+        <div />
+        <div />
+    </div>
     {#each subredditList as subOpts (subOpts.id)}
         <div class="mb-1" transition:fade|local={{ duration: 200 }} animate:flip={{ delay: 230, duration: 150 }}>
             <SubredditInput {subOpts} error={formatError(subredditsData[subOpts.id]?.error)} {deleteHandler} />
@@ -43,3 +49,11 @@
         <div>Add new subreddit</div>
     </button>
 </div>
+
+<style lang="postcss">
+    .grid-header {
+        @apply grid p-1 items-start gap-x-3 w-full font-bold;
+
+        grid-template-columns: minmax(10rem, 20rem) 3rem 4rem 2rem;
+    }
+</style>
