@@ -102,7 +102,10 @@ describe('update subreddits', () => {
     test('should fetch and save new posts', async () => {
         const limit = 20;
         mockStorageData({
-            subredditList: [{ id: 'id1', subreddit: 'sub1' }],
+            subredditList: [
+                { id: 'id1', subreddit: 'sub1' },
+                { id: 'id2', subreddit: 'sub2', disabled: true },
+            ],
             subreddits: { id1: { lastPostCreated: ts, posts: posts.slice(2) } },
             options: getOpts({ limit }),
         });
@@ -164,8 +167,9 @@ describe('update reddit search', () => {
     test('should fetch posts and save', async () => {
         const q1 = generateQuery({ notify: false });
         const q2 = generateQuery({ notify: true });
+        const qSkip = generateQuery({ disabled: true });
         mockStorageData({
-            queriesList: [q1, q2],
+            queriesList: [q1, qSkip, q2],
             queries: {
                 [q1.id]: { lastPostCreated: ts },
                 [q2.id]: { lastPostCreated: ts + 1000 },

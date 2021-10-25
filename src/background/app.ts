@@ -153,6 +153,8 @@ const app = {
 
         let batch: NewPostsNotification[] = [];
         for (const subOpts of subredditList) {
+            if (subOpts.disabled) continue;
+
             const newPosts = await app.updateSubreddit({ subOpts, subData, listing: { limit } });
             if (subOpts.notify && newPosts?.length) {
                 const link = getSubredditUrl(subOpts.subreddit, useOldReddit);
@@ -164,6 +166,8 @@ const app = {
 
         batch = [];
         for (const query of queriesList) {
+            if (query.disabled) continue;
+
             const newMessages = await app.updateQueries({ query, queryData, listing: { limit } });
             if (query.notify && newMessages?.length) {
                 batch.push({

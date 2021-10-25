@@ -37,6 +37,8 @@ export type QueryOpts = {
     subreddit?: string;
     /** Show notification */
     notify?: boolean;
+    /** Skip updates */
+    disabled?: boolean;
 };
 
 export type SubredditOpts = {
