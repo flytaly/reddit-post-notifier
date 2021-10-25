@@ -402,8 +402,11 @@ describe('prune', () => {
 
 describe('Count unread', () => {
     const storageData = {
-        subredditList: [{ subreddit: 's1' }, { subreddit: 's2' }],
-        subreddits: { s1: { posts: generatePosts(3) }, s2: {} },
+        subredditList: [
+            { id: 'sid1', subreddit: 's1' },
+            { id: 'sid2', subreddit: 's2' },
+        ],
+        subreddits: { sid1: { posts: generatePosts(3) }, sid2: {} },
         queriesList: [generateQuery({ id: 'q1' }), generateQuery({ id: 'q2' }), generateQuery({ id: 'q3' })],
         queries: { q1: { posts: generatePosts(1) }, q2: { posts: [] }, q3: {} },
         messages: { count: 3 },

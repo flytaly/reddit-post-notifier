@@ -181,6 +181,9 @@
     "optionSubreddits": {
         "message": "Watch for new posts in subreddits"
     },
+    "optionSubredditsInput": {
+        "message": "Enter subreddit (multireddit) name"
+    },
     "optionSubredditsTooltip1": {
         "message": "Enter the list of subreddits you want to monitor.",
         "description": "Subreddits tooltip"
@@ -202,6 +205,9 @@
     },
     "optionSubredditsDelete": {
         "message": "Delete the subreddit"
+    },
+    "optionSubredditsAdd": {
+        "message": "Add new subreddit"
     },
     "optionSearchLegend": {
         "message": "Watch for specific posts"

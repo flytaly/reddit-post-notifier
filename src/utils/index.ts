@@ -8,7 +8,7 @@ export const mapObjToQueryStr = (params: Record<string, unknown>): string =>
 
 export const $: ParentNode['querySelector'] = document.querySelector.bind(document);
 
-export const subredditNameRegExp = /^[A-Za-z0-9]\w{1,20}$/;
+export const subredditNameRegExp = /^[A-Za-z0-9]\w{2,20}$/;
 
 //** test all subreddits name in multireddit */
 export const testMultireddit = (subs: string) => subs.split('+').every((s) => subredditNameRegExp.test(s));

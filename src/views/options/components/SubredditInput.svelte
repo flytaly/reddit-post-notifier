@@ -68,6 +68,7 @@
             bind:this={subredditInputRef}
             bind:value={subreddit}
             on:input={inputHandler}
+            aria-label={getMsg('optionSubredditsInput')}
         />
     </div>
     <label
@@ -76,7 +77,13 @@
         on:mouseover={showLabel}
         on:mouseleave={hideLabel}
     >
-        <input class="peer hidden" type="checkbox" bind:checked={isActive} on:change={saveInputs} />
+        <input
+            class="peer hidden"
+            type="checkbox"
+            bind:checked={isActive}
+            on:change={saveInputs}
+            data-testid="isActive"
+        />
         <div class="ios-checkbox" />
     </label>
     <label
@@ -86,7 +93,7 @@
         on:mouseover={showLabel}
         on:mouseleave={hideLabel}
     >
-        <input class="hidden peer" type="checkbox" bind:checked={notify} on:change={saveInputs} />
+        <input class="hidden peer" type="checkbox" bind:checked={notify} on:change={saveInputs} data-testid="notify" />
         <div
             class={`flex items-center justify-center select-none
             text-gray-50 rounded-2xl py-[2px] px-2 hover:brightness-110

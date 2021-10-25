@@ -6,6 +6,7 @@
     import storage from '../../../storage';
     import type { SubredditData, SubredditOpts } from '../../../storage/storage-types';
     import { generateId } from '../../../utils';
+    import getMsg from '../../../utils/get-message';
     import SubredditInput from './SubredditInput.svelte';
 
     export let subredditList: SubredditOpts[];
@@ -46,7 +47,7 @@
         <span class="w-5 h-5 mr-1">
             {@html AddIcon}
         </span>
-        <div>Add new subreddit</div>
+        <div>{getMsg('optionSubredditsAdd')}</div>
     </button>
 </div>
 
