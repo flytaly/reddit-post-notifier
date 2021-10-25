@@ -183,6 +183,16 @@ describe('subreddits', () => {
         restoreDate();
     });
 
+    test('should limit number of posts', async () => {
+        const limit = 5;
+        const posts = generatePosts(7);
+        const subreddits = { sId: { posts: generatePosts(1) } };
+        mockGet.mock(() => Promise.resolve({ subreddits }));
+        const expected = { sId: expect.objectContaining({ posts: posts.slice(0, limit) }) };
+        mockSet.expect({ subreddits: expected });
+        await storage.saveSubredditData('sId', { posts, limit });
+    });
+
     test('should save error', async () => {
         const error = { message: 'some error' };
         const sub: string = subOpts[1].subreddit;

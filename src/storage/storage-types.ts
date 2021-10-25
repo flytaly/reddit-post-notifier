@@ -1,4 +1,4 @@
-import type { RedditError, RedditMessage, RedditPost } from '../reddit-api/reddit-types';
+import type { RedditError, RedditMessage, RedditPost, RedditPostExtended } from '../reddit-api/reddit-types';
 import type { ExtensionOptions } from '../types/extension-options';
 
 export type AuthData = {
@@ -46,6 +46,12 @@ export type SubredditOpts = {
     subreddit: string;
     notify?: boolean;
     disabled?: boolean;
+};
+
+export type SavedPostData = {
+    posts?: RedditPost[] | RedditPostExtended[];
+    error?: RedditError | null;
+    limit?: number;
 };
 
 export type StorageFields = {

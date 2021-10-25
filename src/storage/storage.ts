@@ -2,11 +2,18 @@
 
 import { browser } from 'webextension-polyfill-ts';
 import DEFAULT_OPTIONS from '../options-default';
-import type { RedditError, RedditMessage, RedditPost, RedditPostExtended } from '../reddit-api/reddit-types';
+import type { RedditMessage, RedditPost } from '../reddit-api/reddit-types';
 import type { ExtensionOptions } from '../types/extension-options';
 import { filterKeys, filterPostDataProperties, generateId } from '../utils';
 import { authDataDefault, dataFields } from './fields';
-import type { AuthData, QueryOpts, StorageFields, SubredditData, SubredditOpts } from './storage-types';
+import type {
+    AuthData,
+    QueryOpts,
+    SavedPostData,
+    StorageFields as SF,
+    SubredditData,
+    SubredditOpts,
+} from './storage-types';
 
 const storage = {
     async getAuthData() {
@@ -16,46 +23,46 @@ const storage = {
 
     async getMessageData() {
         const { messages } = await browser.storage.local.get({ messages: {} });
-        return messages as StorageFields['messages'];
+        return messages as SF['messages'];
     },
 
     async getOptions() {
         const { options } = await browser.storage.local.get({ options: DEFAULT_OPTIONS });
-        return options as StorageFields['options'];
+        return options as SF['options'];
     },
 
     async getPinnedPostList() {
         const { pinnedPostList } = await browser.storage.local.get({ pinnedPostList: [] });
-        return pinnedPostList as StorageFields['pinnedPostList'];
+        return pinnedPostList as SF['pinnedPostList'];
     },
 
     async getSubredditList() {
         const { subredditList } = await browser.storage.local.get({ subredditList: [] });
-        return subredditList as StorageFields['subredditList'];
+        return subredditList as SF['subredditList'];
     },
 
     async getSubredditData() {
         const { subreddits } = await browser.storage.local.get({ subreddits: {} });
-        return subreddits as StorageFields['subreddits'];
+        return subreddits as SF['subreddits'];
     },
 
     async getQueriesList() {
         const { queriesList } = await browser.storage.local.get({ queriesList: [] });
-        return queriesList as StorageFields['queriesList'];
+        return queriesList as SF['queriesList'];
     },
 
     async getQueriesData() {
         const { queries } = await browser.storage.local.get({ queries: {} });
-        return queries as StorageFields['queries'];
+        return queries as SF['queries'];
     },
 
     async getNotificationsData() {
         const { notifications } = await browser.storage.local.get({ notifications: [] });
-        return notifications as StorageFields['notifications'];
+        return notifications as SF['notifications'];
     },
 
     async getAllData() {
-        return browser.storage.local.get(dataFields) as Promise<StorageFields>;
+        return browser.storage.local.get(dataFields) as Promise<SF>;
     },
 
     async saveAuthData(data: { access_token?: string; expires_in?: number | string; refresh_token?: string }) {
@@ -123,7 +130,7 @@ const storage = {
             return subOpts;
         });
         if (!wasUpdated) updatedList.push(subOpts);
-        return browser.storage.local.set({ subredditList: updatedList } as Pick<StorageFields, 'subredditList'>);
+        return browser.storage.local.set({ subredditList: updatedList } as Pick<SF, 'subredditList'>);
     },
 
     async saveQuery(query: QueryOpts) {
@@ -154,15 +161,14 @@ const storage = {
     /** Update given subreddit or reddit search data object with new posts or error */
     updateWatchDataObject(
         watchData: SubredditData,
-        posts: RedditPost[] | RedditPostExtended[],
-        error: RedditError | null = null,
+        { posts = [], error = null, limit = 50 }: SavedPostData = {},
     ): SubredditData {
         const result = { ...watchData };
         if (posts && posts.length) {
             const savedPosts = result.posts || [];
             const ids = new Set(savedPosts.map((p) => p.data.id));
             const postFiltered = posts.map((p) => filterPostDataProperties(p)).filter((p) => !ids.has(p.data.id));
-            result.posts = [...postFiltered, ...savedPosts];
+            result.posts = [...postFiltered, ...savedPosts].slice(0, limit);
             if (postFiltered[0]) {
                 result.lastPost = postFiltered[0].data.name;
                 result.lastPostCreated = postFiltered[0].data.created;
@@ -174,36 +180,24 @@ const storage = {
         return result;
     },
 
-    async saveQueryData(
-        queryId: string,
-        {
-            posts = [],
-            error = null,
-        }: {
-            posts?: RedditPost[] | RedditPostExtended[];
-            error?: RedditError | null;
-        },
-    ) {
+    async saveQueryData(queryId: string, postData: SavedPostData) {
         const data = await storage.getQueriesData();
         const current = data[queryId] || {};
-        const updatedQuery = storage.updateWatchDataObject(current, posts, error);
+        const updatedQuery = storage.updateWatchDataObject(current, postData);
         await browser.storage.local.set({ queries: { ...data, [queryId]: updatedQuery } });
     },
 
-    async saveSubredditData(
-        id: string,
-        { posts = [], error = null }: { posts?: RedditPost[]; error?: RedditError | null } = {},
-    ) {
-        const data = await storage.getSubredditData();
-        const current: SubredditData = data[id] || {};
-        const updatedSubreddit: SubredditData = storage.updateWatchDataObject(current, posts, error);
-        return browser.storage.local.set({ subreddits: { ...data, [id]: updatedSubreddit } });
+    async saveSubredditData(id: string, postData: SavedPostData) {
+        const prevData = await storage.getSubredditData();
+        const current: SubredditData = prevData[id] || {};
+        const updatedSubreddit: SubredditData = storage.updateWatchDataObject(current, postData);
+        return browser.storage.local.set({ subreddits: { ...prevData, [id]: updatedSubreddit } });
     },
 
     async saveNotificationsData(id: string, data: string[]) {
         const prev = await storage.getNotificationsData();
         // limit length of the array in the storage
-        const notifications: StorageFields['notifications'] = prev.slice(-9);
+        const notifications: SF['notifications'] = prev.slice(-9);
         notifications.push({ id, data });
         return browser.storage.local.set({ notifications });
     },
@@ -218,7 +212,7 @@ const storage = {
 
     async removeMessages() {
         const prev = await storage.getMessageData();
-        const messages: StorageFields['messages'] = { ...prev, messages: [], count: 0 };
+        const messages: SF['messages'] = { ...prev, messages: [], count: 0 };
         await browser.storage.local.set({ messages });
     },
 
@@ -232,7 +226,7 @@ const storage = {
         const subreddits = await storage.getSubredditData();
         subreddits[id] = { posts: [] };
 
-        await browser.storage.local.set({ subreddits } as Pick<StorageFields, 'subreddits'>);
+        await browser.storage.local.set({ subreddits } as Pick<SF, 'subreddits'>);
     },
 
     async removePost({ id, subreddit, searchId }: { id: string; subreddit?: string; searchId?: string }) {
@@ -291,7 +285,7 @@ const storage = {
         const subredditList = await storage.getSubredditList();
         const updated = subredditList.filter((q) => !ids.includes(q.id));
         await storage.prune({ subIdList: updated.map((s) => s.id) });
-        return browser.storage.local.set({ subredditList: updated } as Pick<StorageFields, 'subredditList'>);
+        return browser.storage.local.set({ subredditList: updated } as Pick<SF, 'subredditList'>);
     },
 
     async removeQueries(ids = [] as string[]) {
@@ -358,7 +352,7 @@ const storage = {
         const data = (await browser.storage.local.get({ options: {}, subredditList: [], subreddits: {} })) as {
             options: { subredditNotify?: boolean };
             subredditList: string[];
-            subreddits: StorageFields['subreddits'];
+            subreddits: SF['subreddits'];
         };
         const notifyDefault = !!data.options.subredditNotify;
         const prevSubList = data.subredditList;
@@ -369,7 +363,7 @@ const storage = {
                 return { id: generateId(), subreddit, notify: notifyDefault } as SubredditOpts;
             });
             /** Port from */
-            const subreddits: StorageFields['subreddits'] = {};
+            const subreddits: SF['subreddits'] = {};
             subredditList.forEach((opts) => {
                 const subData = prevSubData[opts.subreddit];
                 if (subData) {
