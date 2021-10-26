@@ -1,18 +1,20 @@
-import { normalize as normalizeDefault, separator, stemmer as stemmerDefault } from './search-helpers';
+import { intersect, normalize as normalizeDefault, separator, stemmer as stemmerDefault } from './search-helpers';
 
 type StringProcessor = (str: string) => string;
+type TextId = string | number;
 
 interface IndexOpts {
     normalize?: StringProcessor;
     stemmer?: StringProcessor | null | false;
 }
 
+/** Create index of words in the given text and search  */
 export class Index {
     normalize: StringProcessor;
     separator: string | RegExp = separator;
     stemmer?: StringProcessor | null | false;
     /** Map token to array of ids */
-    map: Record<string, (string | number)[]>;
+    map: Record<string, TextId[]>;
 
     constructor(opts: IndexOpts = {}) {
         this.normalize = opts.normalize || normalizeDefault;
@@ -20,7 +22,7 @@ export class Index {
         this.map = {};
     }
 
-    add(id: number | string, str: string) {
+    add(id: TextId, str: string) {
         if (!str || !id) return;
         const tokens = this.tokenizer(str);
         if (!tokens.length) return;
@@ -37,13 +39,20 @@ export class Index {
         }
     }
 
-    /** @returns tokens -  array of tokens */
+    /** @returns tokens - array of tokens */
     tokenizer(str: string): string[] {
         const norm = this.normalize(str);
         return norm.split(this.separator);
     }
 
-    search(query: string) {
-        // TODO:
+    search(query: string): TextId[] {
+        if (!query) return;
+        const queryTokens = this.tokenizer(query);
+        const result: TextId[][] = [];
+        for (let i = 0; i < queryTokens.length; i++) {
+            const token = this.stemmer ? this.stemmer(queryTokens[i]) : queryTokens[i];
+            result.push(this.map[token] || []);
+        }
+        return intersect(result);
     }
 }
