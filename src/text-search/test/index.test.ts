@@ -1,4 +1,4 @@
-import { Index } from './index';
+import { Index } from '../index';
 
 describe('Search Index', () => {
     test('should add tokens to the map', () => {

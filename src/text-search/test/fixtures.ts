@@ -1,4 +1,6 @@
-export const fixtures = [
+import type { SearchableRedditPost } from '../post-filter';
+
+export const fixtures: SearchableRedditPost[] = [
     {
         author: 'Everday33',
         id: 1,
@@ -29,4 +31,4 @@ export const fixtures = [
         selftext: 'The European Shorthair, called the European in FIFe and WCF is a cat breed originating in Sweden',
         link_flair_text: 'cats',
     },
-] as const;
+];

@@ -1,6 +1,6 @@
-import { Index, IndexOpts, TextId } from './index';
-import { DocSearch, Document } from './document';
-import type { DocField } from './document';
+import { Index, IndexOpts, TextId } from '../index';
+import { DocSearch, Document } from '../document';
+import type { DocField } from '../document';
 import { fixtures } from './fixtures';
 
 describe('Document creation', () => {
