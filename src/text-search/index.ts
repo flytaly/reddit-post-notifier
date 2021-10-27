@@ -1,30 +1,37 @@
-import { intersect, normalize as normalizeDefault, separator, stemmer as stemmerDefault } from './search-helpers';
+import {
+    intersect,
+    normalize as normalizeDefault,
+    tokenizer as tokenizerDefault,
+    stemmer as stemmerDefault,
+} from './search-helpers';
 
 type StringProcessor = (str: string) => string;
-type TextId = string | number;
+export type TextId = string | number;
 
-interface IndexOpts {
-    normalize?: StringProcessor;
-    stemmer?: StringProcessor | null | false;
+export interface IndexOpts {
+    normalize?: StringProcessor | false;
+    stemmer?: StringProcessor | false;
+    tokenizer?: ((str: string) => string[]) | false;
 }
 
 /** Create index of words in the given text and search  */
 export class Index {
-    normalize: StringProcessor;
-    separator: string | RegExp = separator;
-    stemmer?: StringProcessor | null | false;
+    normalize?: StringProcessor | false;
+    stemmer?: StringProcessor | false;
+    tokenizer?: ((str: string) => string[]) | false;
     /** Map token to array of ids */
     map: Record<string, TextId[]>;
 
     constructor(opts: IndexOpts = {}) {
-        this.normalize = opts.normalize || normalizeDefault;
-        this.stemmer = opts.stemmer === undefined ? stemmerDefault : opts.stemmer;
+        this.normalize = opts.normalize ?? normalizeDefault;
+        this.stemmer = opts.stemmer ?? stemmerDefault;
+        this.tokenizer = opts.tokenizer ?? tokenizerDefault;
         this.map = {};
     }
 
     add(id: TextId, str: string) {
         if (!str || !id) return;
-        const tokens = this.tokenizer(str);
+        const tokens = this.getTokens(str);
         if (!tokens.length) return;
 
         const duplicates = {};
@@ -39,15 +46,14 @@ export class Index {
         }
     }
 
-    /** @returns tokens - array of tokens */
-    tokenizer(str: string): string[] {
-        const norm = this.normalize(str);
-        return norm.split(this.separator);
+    getTokens(str: string): string[] {
+        str = this.normalize ? this.normalize(str) : str;
+        return this.tokenizer ? this.tokenizer(str) : [str];
     }
 
     search(query: string): TextId[] {
         if (!query) return;
-        const queryTokens = this.tokenizer(query);
+        const queryTokens = this.getTokens(query);
         const result: TextId[][] = [];
         for (let i = 0; i < queryTokens.length; i++) {
             const token = this.stemmer ? this.stemmer(queryTokens[i]) : queryTokens[i];

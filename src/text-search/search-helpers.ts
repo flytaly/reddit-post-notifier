@@ -1,6 +1,8 @@
 // https://www.regular-expressions.info/unicode.html
 export const separator = /[\p{Z}\p{S}\p{P}\p{C}$]+/u;
 
+export const tokenizer = (str: string): string[] => str.split(separator);
+
 export const normalize = (str: string) => str.trim().toLowerCase();
 
 export const engStemming = [

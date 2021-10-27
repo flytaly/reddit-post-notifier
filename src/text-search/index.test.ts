@@ -5,13 +5,13 @@ describe('Search Index', () => {
         const idx = new Index();
         idx.add(1, 'Some text');
         idx.add(2, 'Another text string');
-        idx.add(3, 'Test: Русский текст');
+        idx.add(3, 'Test3: Русский текст');
         expect(idx.map).toMatchObject({
             some: [1],
             text: [1, 2],
             another: [2],
             string: [2],
-            test: [3],
+            test3: [3],
             русский: [3],
             текст: [3],
         });
