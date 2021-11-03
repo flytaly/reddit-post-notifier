@@ -65,7 +65,7 @@ export default defineConfig(({ command }) => {
         resolve: {
             alias: {
                 '@assets': r('src/assets'),
-                '@root': r('src'),
+                '@': r('src'),
             },
         },
         plugins: [

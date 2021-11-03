@@ -1,5 +1,5 @@
 <script lang="ts">
-    import Logo from '../../../assets/logo.svg';
+    import Logo from '@assets/logo.svg';
     import type { PageId } from '../routes';
     import { sections } from '../routes';
 

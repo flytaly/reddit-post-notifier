@@ -1,0 +1,82 @@
+<script lang="ts">
+    import type { SearchableField, FilterRule } from '@/text-search/post-filter';
+    import XCircleIcon from '@assets/x-circle-fill.svg';
+    import { allFields } from '@/text-search/post-filter';
+    import { debounce } from '@/utils';
+    import { inputStatusStore } from './subreddits-store';
+
+    export let filterRule: FilterRule;
+    export let inputHandler: () => void;
+    export let subId: string;
+
+    let debounced = debounce(inputHandler, 700);
+    let debouncedHandler = () => {
+        $inputStatusStore[subId] = { typing: true };
+        debounced();
+    };
+
+    let usedFields: SearchableField[] = [];
+    let unUsedFields: SearchableField[] = [];
+
+    $: usedFields = filterRule.map((r) => r.field);
+    $: unUsedFields = allFields.filter((f) => !usedFields.includes(f));
+
+    const fieldNames: Record<SearchableField, string> = {
+        author: 'author',
+        selftext: 'selftext',
+        link_flair_text: 'flar',
+        title: 'title',
+    };
+
+    const addField = () => {
+        if (unUsedFields.length) {
+            filterRule = [...filterRule, { field: unUsedFields[0], query: '' }];
+        }
+    };
+    const removeField = (field: SearchableField) => {
+        if (filterRule.length > 1) {
+            filterRule = filterRule.filter((g) => g.field !== field);
+            return;
+        }
+        filterRule = filterRule.map((g) => (g.field === field ? { ...g, query: '' } : g));
+    };
+</script>
+
+<fieldset class="border border-skin-gray2 rounded text-sm p-3 space-y-3 shadow-md">
+    <div class="field-grid">
+        {#each filterRule as searchRule, idx}
+            <select
+                class="border-none bg-transparent hover:bg-skin-input hover:shadow-none focus:bg-skin-input rounded"
+                name={`field_${idx}`}
+                bind:value={searchRule.field}
+                on:change={inputHandler}
+            >
+                {#each [searchRule.field, ...unUsedFields] as f}
+                    <option value={f}>{fieldNames[f]}</option>
+                {/each}
+            </select>
+            <div>has the words</div>
+            <input class="w-full rounded" type="text" bind:value={searchRule.query} on:input={debouncedHandler} />
+            <button
+                class="py-0 px-1 text-skin-gray border-none bg-transparent hover:bg-transparent hover:shadow-none hover:text-skin-accent"
+                on:click={() => removeField(searchRule.field)}
+            >
+                <div class="w-4">{@html XCircleIcon}</div>
+            </button>
+            <div class="pl-3">
+                <div class="py-px px-1 ring-1 ring-skin-gray2 text-center text-skin-gray rounded">AND</div>
+            </div>
+        {/each}
+    </div>
+    <button on:click={addField} class="py-0 px-1 bg-transparent border-transparent hover:border-skin-accent2 rounded"
+        >+ add field</button
+    >
+</fieldset>
+
+<style lang="postcss">
+    .field-grid {
+        @apply grid gap-y-3 gap-x-2 items-center content-center;
+
+        grid-template-columns: max-content max-content 1fr auto auto;
+    }
+</style>

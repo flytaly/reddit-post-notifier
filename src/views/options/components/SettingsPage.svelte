@@ -6,7 +6,7 @@
     import Heading from './Heading.svelte';
     import GeneralSettingsBlock from './GeneralSettingsBlock.svelte';
     import AuthMailBlock from './AuthMailBlock.svelte';
-    import SubredditsBlock from './SubredditsBlock.svelte';
+    import SubredditsBlock from './subreddits/SubredditsBlock.svelte';
     import SearchBlock from './SearchBlock.svelte';
 
     let destroy: Unsubscriber;
@@ -40,7 +40,7 @@
         </section>
         <section>
             <Heading id={'#settings__subreddit'} />
-            <SubredditsBlock subredditList={data.subredditList} subredditsData={data.subreddits} />
+            <SubredditsBlock subredditsData={data.subreddits} />
         </section>
         <section>
             <Heading id={'#settings__reddit-search'} />

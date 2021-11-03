@@ -1,10 +1,17 @@
 import type { RedditError, RedditMessage, RedditPost, RedditPostExtended } from '../reddit-api/reddit-types';
+import type { SearchableField, FilterRule } from '../text-search/post-filter';
 import type { ExtensionOptions } from '../types/extension-options';
 
 export type AuthData = {
     accessToken?: string;
     expiresIn?: number;
     refreshToken?: string;
+};
+
+export type PostFilterOptions = {
+    enabled: boolean;
+    rules?: FilterRule[];
+    fields?: SearchableField[];
 };
 
 export type SubredditData = {
@@ -46,9 +53,10 @@ export type SubredditOpts = {
     subreddit: string;
     notify?: boolean;
     disabled?: boolean;
+    filterOpts?: PostFilterOptions;
 };
 
-export type SavedPostData = {
+export type PostsToSaveData = {
     posts?: RedditPost[] | RedditPostExtended[];
     error?: RedditError | null;
     limit?: number;

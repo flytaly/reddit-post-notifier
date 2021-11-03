@@ -3,14 +3,17 @@ import type { RedditPostData } from '../reddit-api/reddit-types';
 import type { DocField, DocSearch } from './document';
 import { Document } from './document';
 
-export type SearchableFields = keyof Pick<RedditPostData, 'author' | 'title' | 'selftext' | 'link_flair_text'>;
-export type SearchableRedditPost = Pick<RedditPostData, SearchableFields> & { id: string | number };
+export type SearchableField = keyof Pick<RedditPostData, 'author' | 'title' | 'selftext' | 'link_flair_text'>;
+export type SearchableRedditPost = Pick<RedditPostData, SearchableField> & { id: string | number };
+export type FilterRule = (DocSearch & { field: SearchableField })[];
+
+export const allFields: SearchableField[] = ['title', 'selftext', 'author', 'link_flair_text'];
 
 //** Filter out posts that don't fit given search queries */
 export function postFilter<T extends SearchableRedditPost>(
     posts: T[],
-    queriesLists: DocSearch[][],
-    fields: SearchableFields[] = ['author', 'link_flair_text', 'selftext', 'title'],
+    queriesLists: FilterRule[],
+    fields: SearchableField[] = allFields,
 ): T[] {
     const usedFields = fields.map((field) => {
         const result: DocField = { field };

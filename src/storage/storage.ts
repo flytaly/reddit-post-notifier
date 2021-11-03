@@ -2,14 +2,15 @@
 
 import { browser } from 'webextension-polyfill-ts';
 import DEFAULT_OPTIONS from '../options-default';
-import type { RedditMessage, RedditPost } from '../reddit-api/reddit-types';
+import type { RedditMessage, RedditPost, RedditPostExtended } from '../reddit-api/reddit-types';
 import type { ExtensionOptions } from '../types/extension-options';
 import { filterKeys, filterPostDataProperties, generateId } from '../utils';
 import { authDataDefault, dataFields } from './fields';
 import type {
     AuthData,
+    QueryData,
     QueryOpts,
-    SavedPostData,
+    PostsToSaveData,
     StorageFields as SF,
     SubredditData,
     SubredditOpts,
@@ -160,14 +161,16 @@ const storage = {
 
     /** Update given subreddit or reddit search data object with new posts or error */
     updateWatchDataObject(
-        watchData: SubredditData,
-        { posts = [], error = null, limit = 50 }: SavedPostData = {},
+        prevData: SubredditData | QueryData,
+        { posts: newPosts = [], error = null, limit = 50 }: PostsToSaveData = {},
     ): SubredditData {
-        const result = { ...watchData };
-        if (posts && posts.length) {
-            const savedPosts = result.posts || [];
+        const result = { ...prevData };
+        if (newPosts && newPosts.length) {
+            const savedPosts = prevData.posts || [];
             const ids = new Set(savedPosts.map((p) => p.data.id));
-            const postFiltered = posts.map((p) => filterPostDataProperties(p)).filter((p) => !ids.has(p.data.id));
+            const postFiltered = newPosts
+                .map((p: RedditPost | RedditPostExtended) => filterPostDataProperties(p))
+                .filter((p) => !ids.has(p.data.id));
             result.posts = [...postFiltered, ...savedPosts].slice(0, limit);
             if (postFiltered[0]) {
                 result.lastPost = postFiltered[0].data.name;
@@ -180,14 +183,14 @@ const storage = {
         return result;
     },
 
-    async saveQueryData(queryId: string, postData: SavedPostData) {
+    async saveQueryData(queryId: string, postData: PostsToSaveData) {
         const data = await storage.getQueriesData();
         const current = data[queryId] || {};
         const updatedQuery = storage.updateWatchDataObject(current, postData);
         await browser.storage.local.set({ queries: { ...data, [queryId]: updatedQuery } });
     },
 
-    async saveSubredditData(id: string, postData: SavedPostData) {
+    async saveSubredditData(id: string, postData: PostsToSaveData) {
         const prevData = await storage.getSubredditData();
         const current: SubredditData = prevData[id] || {};
         const updatedSubreddit: SubredditData = storage.updateWatchDataObject(current, postData);

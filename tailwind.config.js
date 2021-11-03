@@ -16,9 +16,11 @@ module.exports = {
                 warmGray: colors.warmGray,
                 skin: {
                     bg: 'var(--color-bg-base)',
+                    bg2: 'var(--color-bg-second)',
                     accent: 'var(--color-accent)',
                     accent2: 'var(--color-accent2)',
                     gray: 'var(--color-gray)',
+                    gray2: 'var(--color-gray2)',
                     outline: 'var(--color-outline)',
                     delimiter: 'var(--color-delimiter)',
                     error: {

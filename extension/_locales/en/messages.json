@@ -200,6 +200,9 @@
         "message": "Show desktop notifications",
         "description": "Option: notify about new subreddit posts"
     },
+    "optionSubredditsFilter": {
+        "message": "Filter posts"
+    },
     "optionSubredditsDisable": {
         "message": "Disable/Enable subreddit updates"
     },

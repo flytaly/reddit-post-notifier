@@ -6,10 +6,12 @@
     :root {
         --color-text-base: theme('colors.gray.900');
         --color-bg-base: #fff;
+        --color-bg-second: hsl(200, 40%, 97%);
         --color-accent: theme('colors.red.700');
         --color-accent2: theme('colors.sky.700');
         --color-outline: theme('colors.sky.500');
         --color-gray: theme('colors.gray.500');
+        --color-gray2: theme('colors.gray.300');
         --color-delimiter: theme('colors.gray.300');
         --color-border: theme('colors.gray.700');
         --color-input-bg: theme('colors.gray.50');
@@ -31,10 +33,12 @@
     .dark-theme {
         --color-text-base: theme('colors.trueGray.200');
         --color-bg-base: theme('colors.trueGray.800');
+        --color-bg-second: hsl(240, 5%, 20%);
         --color-accent: theme('colors.red.300');
         --color-accent2: theme('colors.sky.200');
         --color-outline: theme('colors.sky.300');
         --color-gray: theme('colors.trueGray.400');
+        --color-gray2: theme('colors.trueGray.600');
         --color-delimiter: theme('colors.trueGray.500');
         --color-border: theme('colors.gray.400');
         --color-input-bg: theme('colors.gray.600');
@@ -55,14 +59,16 @@
     }
 
     .purple-theme {
-        --color-text-base: theme('colors.trueGray.200');
+        --color-text-base: hsl(244, 90%, 98%);
         --color-bg-base: hsl(244, 33%, 28%);
+        --color-bg-second: hsl(244, 33%, 24%);
         --color-accent: theme('colors.yellow.300');
         --color-accent2: theme('colors.sky.200');
         --color-outline: theme('colors.yellow.400');
-        --color-gray: theme('colors.trueGray.400');
+        --color-gray: hsl(244, 20%, 70%);
+        --color-gray2: hsl(244, 20%, 50%);
         --color-delimiter: hsl(265, 44%, 53%);
-        --color-border: theme('colors.trueGray.400');
+        --color-border: hsl(244, 30%, 58%);
         --color-input-bg: hsl(244, 33%, 29%);
         --color-input-bg-checked: hsl(265, 45%, 45%);
         --color-input-bg-hover: hsl(244, 34%, 50%);
@@ -93,5 +99,38 @@
         before:top-1/2 before:left-1  before:-translate-y-1/2  before:transition-all  before:ease-in-out
         peer-checked:before:translate-x-3/4
         peer-checked:before:border-skin-input-checked;
+    }
+
+    .connected-block {
+        @apply ml-6 relative;
+    }
+    .connected-block::before {
+        @apply absolute w-4 h-1/2 right-full rounded-bl-xl border-skin-gray2;
+
+        content: '';
+    }
+    .connected-block::after {
+        @apply absolute w-4 h-1/2 top-1/2 right-full rounded-tl-xl border-skin-gray2;
+
+        content: '';
+    }
+    .connected-block:first-child::after {
+        @apply border-l border-t;
+    }
+    .connected-block:last-child::before {
+        @apply border-l border-b;
+    }
+
+    .connected-block:not(:first-child):not(:last-child)::after {
+        @apply border-l border-t;
+    }
+
+    .connected-block:not(:first-child):not(:last-child)::before {
+        @apply border-l;
+    }
+
+    .connected-block:first-child:last-child::after,
+    .connected-block:first-child:last-child::before {
+        @apply border-none;
     }
 }

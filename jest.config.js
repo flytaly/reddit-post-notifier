@@ -6,7 +6,7 @@ module.exports = {
         '^.+\\.(js|mjs)$': 'babel-jest',
     },
     moduleNameMapper: {
-        '^@root/(.*)$': '<rootDir>/src/$1',
+        '^@/(.*)$': '<rootDir>/src/$1',
         '^@assets/(.*)$': '<rootDir>/src/assets/$1',
     },
     moduleFileExtensions: ['js', 'svelte', 'mjs', 'ts'],
