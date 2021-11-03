@@ -1,6 +1,11 @@
 {
     "extends": "@tsconfig/svelte/tsconfig.json",
     "compilerOptions": {
+        "baseUrl": "./src",
+        "paths": {
+            "@assets/*": ["./assets/*"],
+            "@root/*": ["./*"]
+        },
         "resolveJsonModule": true,
         "types": ["node", "svelte", "jest"],
         "allowJs": false,

@@ -5,6 +5,10 @@ module.exports = {
         '^.+\\.svg$': '<rootDir>/src/test-utils/jest/svelte-svg-transform.js',
         '^.+\\.(js|mjs)$': 'babel-jest',
     },
+    moduleNameMapper: {
+        '^@root/(.*)$': '<rootDir>/src/$1',
+        '^@assets/(.*)$': '<rootDir>/src/assets/$1',
+    },
     moduleFileExtensions: ['js', 'svelte', 'mjs', 'ts'],
     setupFilesAfterEnv: ['@testing-library/jest-dom/extend-expect', '<rootDir>/src/test-utils/setupTest.ts'],
     testEnvironment: 'jsdom',

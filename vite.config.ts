@@ -62,6 +62,12 @@ export default defineConfig(({ command }) => {
             },
         },
         define: getEnvKeys(),
+        resolve: {
+            alias: {
+                '@assets': r('src/assets'),
+                '@root': r('src'),
+            },
+        },
         plugins: [
             svelte({ configFile: r('svelte.config.js') }),
             svgLoader(),
