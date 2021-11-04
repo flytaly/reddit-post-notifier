@@ -2,10 +2,12 @@ import nProgress from 'nprogress';
 import { readable, writable } from 'svelte/store';
 import type { Storage } from 'webextension-polyfill-ts';
 import { browser } from 'webextension-polyfill-ts';
-import { connectToBg, disconnectFromBg, onMessage } from '../../../port';
-import storage from '../../../storage';
-import { dataFields } from '../../../storage/fields';
-import type { StorageFields } from '../../../storage/storage-types';
+
+import { connectToBg, disconnectFromBg, onMessage } from '@/port';
+import storage from '@/storage';
+import { dataFields } from '@/storage/fields';
+import type { StorageFields } from '@/storage/storage-types';
+
 const defaultState = { ...dataFields };
 
 export const isUpdating = readable(false, (set) => {

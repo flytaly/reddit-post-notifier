@@ -1,5 +1,5 @@
 <script lang="ts">
-    import AddIcon from '@assets/add.svg';
+    import { AddIcon } from '@/views/options/icons';
     import type { RedditError } from '@/reddit-api/reddit-types';
     import type { SubredditData } from '@/storage/storage-types';
     import getMsg from '@/utils/get-message';

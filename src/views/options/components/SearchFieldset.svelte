@@ -1,13 +1,12 @@
 <script lang="ts">
-    import { testMultireddit, debounce } from '../../../utils';
-    import TooltipIcon from './TooltipIcon.svelte';
+    import type { RedditError } from '@/reddit-api/reddit-types';
+    import storage from '@/storage';
+    import type { QueryOpts } from '@/storage/storage-types';
+    import { debounce, testMultireddit } from '@/utils';
+    import getMsg from '@/utils/get-message';
+    import { BellIcon, DeleteIcon } from '@/views/options/icons';
     import Labeled from './Labeled.svelte';
-    import storage from '../../../storage';
-    import getMsg from '../../../utils/get-message';
-    import BellIcon from '../../../assets/bell.svg';
-    import DeleteIcon from '../../../assets/delete.svg';
-    import type { QueryOpts } from '../../../storage/storage-types';
-    import type { RedditError } from '../../../reddit-api/reddit-types';
+    import TooltipIcon from './TooltipIcon.svelte';
 
     export let queryObject: QueryOpts;
     export let onDelete: (id: string) => unknown;

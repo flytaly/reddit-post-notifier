@@ -1,11 +1,11 @@
 <script lang="ts">
+    import type { QueryData, QueryOpts } from '@/storage/storage-types';
+    import { generateId } from '@/utils';
+    import getMsg from '@/utils/get-message';
+    import { AddIcon } from '@/views/options/icons';
     import { flip } from 'svelte/animate';
     import { quadOut } from 'svelte/easing';
     import { fade } from 'svelte/transition';
-    import AddIcon from '../../../assets/add.svg';
-    import type { QueryData, QueryOpts } from '../../../storage/storage-types';
-    import { generateId } from '../../../utils';
-    import getMsg from '../../../utils/get-message';
     import SearchFieldset from './SearchFieldset.svelte';
 
     export let queriesList: QueryOpts[];

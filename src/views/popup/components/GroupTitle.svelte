@@ -1,6 +1,6 @@
 <script lang="ts">
-    import getMsg from '../../../utils/get-message';
-    import OpenInNew from '../../../assets/open-in-new.svg';
+    import getMsg from '@/utils/get-message';
+    import OpenInNew from '@/assets/open-in-new.svg';
     import SvgButton from './SvgButton.svelte';
     import { browser } from 'webextension-polyfill-ts';
     import CheckMarkButton from './CheckMarkButton.svelte';

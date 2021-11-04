@@ -7,7 +7,6 @@
             "@/*": ["./*"]
         },
         "resolveJsonModule": true,
-        "types": ["node", "svelte", "jest"],
         "allowJs": false,
         "lib": ["es2020", "dom", "DOM.Iterable"],
         "target": "ES2019",

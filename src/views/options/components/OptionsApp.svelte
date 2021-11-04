@@ -1,9 +1,9 @@
 <script lang="ts">
-    import Sidebar from './Sidebar.svelte';
-    import { pageInfo } from '../routes';
     import { onMount } from 'svelte';
-    import { connectToBg } from '../../../port';
-    import applyTheme from '../../../utils/apply-theme';
+    import { connectToBg } from '@/port';
+    import applyTheme from '@/utils/apply-theme';
+    import { pageInfo } from '../routes';
+    import Sidebar from './Sidebar.svelte';
 
     onMount(() => {
         void applyTheme();

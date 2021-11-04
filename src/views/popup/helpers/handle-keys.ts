@@ -1,4 +1,4 @@
-import { IS_FIREFOX } from '../../../constants';
+import { IS_FIREFOX } from '@/constants';
 
 const focusNextRowElement = (current: HTMLElement, reverse = false) => {
     const rows: NodeListOf<HTMLElement> = document.body.querySelectorAll(`

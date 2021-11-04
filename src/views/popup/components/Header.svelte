@@ -1,14 +1,14 @@
 <script lang="ts">
     import { browser } from 'webextension-polyfill-ts';
-    import MailIcon from '../../../assets/mail.svg';
-    import MailWarningIcon from '../../../assets/mail-warning.svg';
-    import RefreshIcon from '../../../assets/refresh.svg';
-    import SettingsIcon from '../../../assets/settings.svg';
-    import { sendToBg } from '../../../port';
-    import storage from '../../../storage';
-    import type { ExtensionOptions } from '../../../types/extension-options';
-    import { redditOldUrl, redditUrl } from '../../../utils';
-    import getMsg from '../../../utils/get-message';
+    import MailIcon from '@assets/mail.svg';
+    import MailWarningIcon from '@assets/mail-warning.svg';
+    import RefreshIcon from '@assets/refresh.svg';
+    import SettingsIcon from '@assets/settings.svg';
+    import { sendToBg } from '@/port';
+    import storage from '@/storage';
+    import type { ExtensionOptions } from '@/types/extension-options';
+    import { redditOldUrl, redditUrl } from '@/utils';
+    import getMsg from '@/utils/get-message';
     import { isUpdating, storageData } from '../store/store';
     import SvgButton from './SvgButton.svelte';
     import type { SectionKey } from '../../options/routes';

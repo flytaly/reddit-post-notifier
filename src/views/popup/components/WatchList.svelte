@@ -1,19 +1,18 @@
 <script lang="ts">
-    import type { RedditPost } from '../../../reddit-api/reddit-types';
-
-    import storage from '../../../storage';
-    import type { StorageFields } from '../../../storage/storage-types';
-    import getMsg from '../../../utils/get-message';
+    import Pin from '@/assets/pin.svg';
+    import type { RedditPost } from '@/reddit-api/reddit-types';
+    import storage from '@/storage';
+    import type { StorageFields } from '@/storage/storage-types';
+    import getMsg from '@/utils/get-message';
     import type { PostGroup, PostGroupType } from '../helpers/post-group';
     import { extractPostGroups } from '../helpers/post-group';
-    import { slideHorizontal } from '../helpers/transition';
     import type { SlideConfig } from '../helpers/transition';
+    import { slideHorizontal } from '../helpers/transition';
     import { storageData } from '../store/store';
     import DropDownList from './DropDownList.svelte';
     import GroupTitle from './GroupTitle.svelte';
-    import PostRow from './PostRow.svelte';
-    import Pin from '../../../assets/pin.svg';
     import PinPostRow from './PinPostRow.svelte';
+    import PostRow from './PostRow.svelte';
 
     let groupsWithPosts: PostGroup[] = [];
     let groupsWithoutPosts: PostGroup[] = [];

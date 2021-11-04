@@ -1,8 +1,8 @@
 <script lang="ts">
     import { onMount } from 'svelte';
-    import tippy from 'tippy.js';
     import type { Content } from 'tippy.js';
-    import HelpCircle from '../../../assets/help-circle.svg';
+    import tippy from 'tippy.js';
+    import { HelpCircleIcon } from '@/views/options/icons';
 
     export let message: Content;
 
@@ -16,7 +16,7 @@
 </script>
 
 <div bind:this={ref} class="h-4 text-skin-accent2">
-    {@html HelpCircle}
+    {@html HelpCircleIcon}
 </div>
 
 <style>

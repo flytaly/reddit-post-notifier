@@ -1,10 +1,10 @@
 <script lang="ts">
-    import { redditUrl, redditOldUrl } from '../../../utils';
+    import { redditUrl, redditOldUrl } from '@/utils';
     import SvgButton from './SvgButton.svelte';
-    import PinRemove from '../../../assets/pin-remove.svg';
-    import storage from '../../../storage';
+    import PinRemove from '@assets/pin-remove.svg';
+    import storage from '@/storage';
     import { storageData } from '../store/store';
-    import type { RedditPost } from '../../../reddit-api/reddit-types';
+    import type { RedditPost } from '@/reddit-api/reddit-types';
 
     export let post: RedditPost;
 

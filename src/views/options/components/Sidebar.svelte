@@ -1,5 +1,5 @@
 <script lang="ts">
-    import Logo from '@assets/logo.svg';
+    import { LogoIcon } from '@/views/options/icons';
     import type { PageId } from '../routes';
     import { sections } from '../routes';
 
@@ -16,7 +16,7 @@
 <aside>
     <a href="#info" class="self-center">
         <div class="logo">
-            {@html Logo}
+            {@html LogoIcon}
         </div>
         <div class="font-bold text-center mb-3">Reddit Post <br /> Notifier</div>
     </a>

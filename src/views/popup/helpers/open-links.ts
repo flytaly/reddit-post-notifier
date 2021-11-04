@@ -1,5 +1,5 @@
 import { browser } from 'webextension-polyfill-ts';
-import { IS_CHROME } from '../../../constants';
+import { IS_CHROME } from '@/constants';
 
 export function openLinksOnClick() {
     if (IS_CHROME) {

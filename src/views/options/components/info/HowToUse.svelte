@@ -1,5 +1,5 @@
 <script lang="ts">
-    import Bell from '../../../../assets/bell.svg';
+    import { BellIcon } from '@/views/options/icons';
     import type { SectionKey } from '../../routes';
 
     const href = (key: SectionKey) => key;
@@ -46,7 +46,7 @@
             <div>
                 To receive notifications don't forget to select the checkbox with
                 <span class="icon inline-block w-4 h-4">
-                    {@html Bell}
+                    {@html BellIcon}
                 </span>
                 icon.
             </div>

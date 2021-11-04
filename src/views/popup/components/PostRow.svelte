@@ -1,14 +1,15 @@
 <script lang="ts">
-    import { redditUrl, redditOldUrl } from '../../../utils';
-    import SvgButton from './SvgButton.svelte';
-    import CheckMarkButton from './CheckMarkButton.svelte';
-    import Pin from '../../../assets/pin-outline.svg';
-    import storage from '../../../storage';
-    import type { ExtensionOptions } from '../../../types/extension-options';
-    import type { RedditPost } from '../../../reddit-api/reddit-types';
-    import getMsg from '../../../utils/get-message';
     import { browser } from 'webextension-polyfill-ts';
+
+    import Pin from '@/assets/pin-outline.svg';
+    import type { RedditPost } from '@/reddit-api/reddit-types';
+    import storage from '@/storage';
+    import type { ExtensionOptions } from '@/types/extension-options';
+    import { redditOldUrl, redditUrl } from '@/utils';
+    import getMsg from '@/utils/get-message';
     import { storageData } from '../store/store';
+    import CheckMarkButton from './CheckMarkButton.svelte';
+    import SvgButton from './SvgButton.svelte';
 
     export let post: RedditPost;
     export let type = 'subreddit';

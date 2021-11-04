@@ -1,5 +1,5 @@
-import type { StorageFields } from '../../../storage/storage-types';
-import { getSearchQueryUrl, getSubredditUrl } from '../../../utils';
+import type { StorageFields } from '@/storage/storage-types';
+import { getSearchQueryUrl, getSubredditUrl } from '@/utils';
 
 export type PostGroupType = 'subreddit' | 'search';
 

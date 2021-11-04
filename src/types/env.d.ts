@@ -11,7 +11,3 @@ interface ProcessEnv {
     FIREFOX_REDIRECT_URI: string;
     FIREFOX_USER_AGENT: string;
 }
-
-declare module '*.svg' {
-    export default string;
-}

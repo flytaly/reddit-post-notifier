@@ -1,7 +1,6 @@
 <script lang="ts">
     import type { SearchableField, FilterRule } from '@/text-search/post-filter';
-    import XCircleIcon from '@assets/x-circle-fill.svg';
-    import DeleteIcon from '@assets/delete.svg';
+    import { XCircleIcon, DeleteIcon } from '@/views/options/icons';
     import { allFields } from '@/text-search/post-filter';
     import { debounce } from '@/utils';
     import { inputStatusStore } from './subreddits-store';

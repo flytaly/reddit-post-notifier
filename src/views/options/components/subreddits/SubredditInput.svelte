@@ -2,13 +2,7 @@
     import type { PostFilterOptions, SubredditOpts } from '@/storage/storage-types';
     import { debounce, testMultireddit } from '@/utils';
     import getMsg from '@/utils/get-message';
-    import DeleteIcon from '@assets/delete.svg';
-    import FilterOffIcon from '@assets/filter-off.svg';
-    import FilterIcon from '@assets/filter-on.svg';
-    import NotifyOffIcon from '@assets/notify-off.svg';
-    import NotifyIcon from '@assets/notify.svg';
-    import SaveIcon from '@assets/save.svg';
-    import WarningIcon from '@assets/warning.svg';
+    import * as icons from '@/views/options/icons';
     import type { FilterRule, SearchableField } from '@/text-search/post-filter';
     import PostFilterBlock from './PostFilterBlock.svelte';
     import { subredditStore, inputStatusStore } from './subreddits-store';
@@ -160,9 +154,9 @@
             transition-colors ${subOpts.notify ? 'bg-skin-input-checked' : 'bg-gray-500'}`}
         >
             {#if subOpts.notify}
-                <div class="w-5 h-5">{@html NotifyIcon}</div>
+                <div class="w-5 h-5">{@html icons.NotifyIcon}</div>
             {:else}
-                <div class="w-5 h-5">{@html NotifyOffIcon}</div>
+                <div class="w-5 h-5">{@html icons.NotifyOffIcon}</div>
             {/if}
             <span>Notify</span>
         </div>
@@ -181,9 +175,9 @@
             transition-colors ${filterOpts?.enabled ? 'bg-skin-input-checked' : 'bg-gray-500'}`}
         >
             {#if filterOpts?.enabled}
-                <div class="w-5 h-5">{@html FilterIcon}</div>
+                <div class="w-5 h-5">{@html icons.FilterIcon}</div>
             {:else}
-                <div class="w-5 h-5">{@html FilterOffIcon}</div>
+                <div class="w-5 h-5">{@html icons.FilterOffIcon}</div>
             {/if}
             <span>Filter</span>
         </div>
@@ -197,7 +191,7 @@
             on:mouseover={showLabel}
             on:mouseleave={hideLabel}
         >
-            <div class="w-5 h-5">{@html DeleteIcon}</div>
+            <div class="w-5 h-5">{@html icons.DeleteIcon}</div>
         </button>
     </div>
 
@@ -206,12 +200,12 @@
     <div class={`rounded-b p-1 text-xs ${inputStatus.error ? 'bg-skin-error-bg' : 'bg-blue'}`}>
         {#if inputStatus.error}
             <div class="flex items-center">
-                <div class="w-4 h-4 mr-1 text-skin-error flex-shrink-0">{@html WarningIcon}</div>
+                <div class="w-4 h-4 mr-1 text-skin-error flex-shrink-0">{@html icons.WarningIcon}</div>
                 <div>{inputStatus.error}</div>
             </div>
         {:else if inputStatus.saved}
             <div class="flex items-center text-skin-success">
-                <div class="w-4 h-4 mr-1 flex-shrink-0">{@html SaveIcon}</div>
+                <div class="w-4 h-4 mr-1 flex-shrink-0">{@html icons.SaveIcon}</div>
                 <span class="text-skin-success font-medium">Saved</span>
             </div>
         {:else}

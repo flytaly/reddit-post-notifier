@@ -1,15 +1,15 @@
 /* eslint-disable @typescript-eslint/unbound-method */
 import { test } from '@jest/globals';
 import { fireEvent, getByLabelText, render, waitFor } from '@testing-library/svelte';
-import storage from '../../../storage';
-import type { QueryData, QueryOpts } from '../../../storage/storage-types';
+import storage from '@/storage';
+import type { QueryData, QueryOpts } from '@/storage/storage-types';
 import SearchBlock from '../components/SearchBlock.svelte';
 
-jest.mock('../../../storage/storage.ts');
-jest.mock('../../../utils/get-message.ts');
-jest.mock('../../../utils/index.ts', () => ({
+jest.mock('@/storage/storage.ts');
+jest.mock('@/utils/get-message.ts');
+jest.mock('@/utils/index.ts', () => ({
     // @ts-ignore
-    ...jest.requireActual('../../../utils/index.ts'),
+    ...jest.requireActual('@/utils/index.ts'),
     debounce: jest.fn((f: () => unknown) => f),
 }));
 

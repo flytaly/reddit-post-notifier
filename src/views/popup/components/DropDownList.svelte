@@ -2,11 +2,11 @@
     import { flip } from 'svelte/animate';
     import { quadOut } from 'svelte/easing';
     import { slide } from 'svelte/transition';
-    import ArrowUp from '../../../assets/arrowhead-up.svg';
+    import ArrowUp from '@assets/arrowhead-up.svg';
+    import type { RedditPost } from '@/reddit-api/reddit-types';
     import { slideHorizontal } from '../helpers/transition';
     import SvgButton from './SvgButton.svelte';
     import FloatingPreview from './FloatingPreview.svelte';
-    import type { RedditPost } from '../../../reddit-api/reddit-types';
 
     export let items: RedditPost[];
     export let rowOutTransition = slideHorizontal;

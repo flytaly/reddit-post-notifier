@@ -1,15 +1,14 @@
 <script lang="ts">
+    import { sendToBg } from '@/port';
+    import { notificationSoundFiles } from '@/sounds';
+    import storage from '@/storage';
+    import type { ExtensionOptions } from '@/types/extension-options';
+    import applyTheme from '@/utils/apply-theme';
+    import getMsg from '@/utils/get-message';
+    import { PlayIcon } from '@/views/options/icons';
     import { browser } from 'webextension-polyfill-ts';
-
-    import { sendToBg } from '../../../port';
-    import { notificationSoundFiles } from '../../../sounds';
-    import storage from '../../../storage';
-    import type { ExtensionOptions } from '../../../types/extension-options';
-    import applyTheme from '../../../utils/apply-theme';
-    import getMsg from '../../../utils/get-message';
     import OptionsItem from './OptionsItem.svelte';
     import RadioGroup from './RadioGroup.svelte';
-    import PlayIcon from '../../../assets/play.svg';
 
     export let options: ExtensionOptions;
     let { updateInterval, theme, delPostAfterBodyClick, hideEmptyGroups, notificationSoundId, useOldReddit } = options;

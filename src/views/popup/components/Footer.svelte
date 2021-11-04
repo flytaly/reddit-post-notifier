@@ -1,6 +1,6 @@
 <script lang="ts">
-    import getMsg from '../../../utils/get-message';
-    import storage from '../../../storage';
+    import getMsg from '@/utils/get-message';
+    import storage from '@/storage';
 </script>
 
 <footer class="text-center text-skin-base">

@@ -1,18 +1,18 @@
 /* eslint-disable @typescript-eslint/unbound-method */
 import GeneralSettingsBlock from '../components/GeneralSettingsBlock.svelte';
 import { fireEvent, render } from '@testing-library/svelte';
-import DEFAULT_OPTIONS from '../../../options-default';
-import getMsg from '../../../utils/get-message';
-import storage from '../../../storage/storage';
-import { sendToBg } from '../../../port';
-import type { ExtensionOptions } from '../../../types/extension-options';
-import applyTheme from '../../../utils/apply-theme';
-import type { notificationSoundFiles } from '../../../sounds';
+import DEFAULT_OPTIONS from '@/options-default';
+import getMsg from '@/utils/get-message';
+import storage from '@/storage/storage';
+import { sendToBg } from '@/port';
+import type { ExtensionOptions } from '@/types/extension-options';
+import applyTheme from '@/utils/apply-theme';
+import type { notificationSoundFiles } from '@/sounds';
 
-jest.mock('../../../storage/storage.ts');
-jest.mock('../../../utils/get-message.ts');
-jest.mock('../../../utils/apply-theme.ts');
-jest.mock('../../../port');
+jest.mock('@/storage/storage.ts');
+jest.mock('@/utils/get-message.ts');
+jest.mock('@/utils/apply-theme.ts');
+jest.mock('@/port');
 
 function optionSaved(opt: Partial<ExtensionOptions>) {
     expect(storage.saveOptions).toHaveBeenCalledWith(opt);

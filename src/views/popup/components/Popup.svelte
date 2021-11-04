@@ -2,15 +2,15 @@
     import nProgress from 'nprogress';
     import { onMount } from 'svelte';
     import { browser } from 'webextension-polyfill-ts';
-    import applyTheme from '../../../utils/apply-theme';
-    import getMsg from '../../../utils/get-message';
+    import applyTheme from '@/utils/apply-theme';
+    import getMsg from '@/utils/get-message';
     import { storageData } from '../store/store';
     import Header from './Header.svelte';
     import WatchList from './WatchList.svelte';
     import Footer from './Footer.svelte';
     import { openLinksOnClick } from '../helpers/open-links';
     import handleKeydownEvent from '../helpers/handle-keys';
-    import SettingsIcon from '../../../assets/settings.svg';
+    import SettingsIcon from '@/assets/settings.svg';
 
     onMount(() => {
         void applyTheme();

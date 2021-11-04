@@ -1,7 +1,7 @@
 <script lang="ts">
     import { browser } from 'webextension-polyfill-ts';
-    import Logo from '../../../../assets/logo.svg';
-    import { IS_CHROME } from '../../../../constants';
+    import { LogoIcon } from '@/views/options/icons';
+    import { IS_CHROME } from '@/constants';
 
     const { version } = browser.runtime.getManifest();
 
@@ -12,7 +12,7 @@
 
 <article class="flex items-center">
     <div class="logo">
-        {@html Logo}
+        {@html LogoIcon}
     </div>
     <div>
         <div class="text-lg"><b>Reddit Post Notifier </b> <span>{`Version: ${version}`}</span></div>

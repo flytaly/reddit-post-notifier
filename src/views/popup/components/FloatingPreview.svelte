@@ -1,6 +1,6 @@
 <script lang="ts">
     import { onMount } from 'svelte';
-    import type { RedditPost } from '../../../reddit-api/reddit-types';
+    import type { RedditPost } from '@/reddit-api/reddit-types';
 
     export let posts: RedditPost[];
     export let containerElement: HTMLElement;

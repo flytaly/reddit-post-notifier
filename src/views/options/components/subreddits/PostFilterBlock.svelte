@@ -1,9 +1,9 @@
 <script lang="ts">
     import type { PostFilterOptions } from '@/storage/storage-types';
     import type { FilterRule } from '@/text-search/post-filter';
-    import AddIcon from '@assets/add.svg';
     import { quadOut } from 'svelte/easing';
     import { slide } from 'svelte/transition';
+    import { AddIcon } from '@/views/options/icons';
     import PostFilterFields from './PostFilterFields.svelte';
 
     export let ruleList: FilterRule[] = [[{ field: 'title', query: '' }]];

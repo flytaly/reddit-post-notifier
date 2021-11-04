@@ -1,11 +1,10 @@
 <script lang="ts">
-    import auth from '../../../reddit-api/auth';
-    import OptionsItem from './OptionsItem.svelte';
+    import auth from '@/reddit-api/auth';
+    import storage from '@/storage';
+    import getMsg from '@/utils/get-message';
+    import { BellIcon } from '@/views/options/icons';
     import Labeled from './Labeled.svelte';
-    import BellIcon from '../../../assets/bell.svg';
-
-    import storage from '../../../storage';
-    import getMsg from '../../../utils/get-message';
+    import OptionsItem from './OptionsItem.svelte';
 
     export let messages: boolean;
     export let messagesNotify: boolean;

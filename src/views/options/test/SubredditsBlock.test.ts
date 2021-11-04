@@ -9,11 +9,11 @@ import SubredditsBlock from '../components/subreddits/SubredditsBlock.svelte';
 import { tick } from 'svelte';
 
 let idx = 0;
-jest.mock('../../../storage/storage.ts');
-jest.mock('../../../utils/get-message.ts');
-jest.mock('../../../utils/index.ts', () => ({
+jest.mock('@/storage/storage.ts');
+jest.mock('@/utils/get-message.ts');
+jest.mock('@/utils/index.ts', () => ({
     // @ts-ignore
-    ...jest.requireActual('../../../utils/index.ts'),
+    ...jest.requireActual('@/utils/index.ts'),
     debounce: jest.fn((f: () => unknown) => f),
     generateId: jest.fn(() => `fakeId_${idx++}`),
 }));

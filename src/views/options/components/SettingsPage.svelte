@@ -1,7 +1,7 @@
 <script lang="ts">
     import { onDestroy, onMount, tick } from 'svelte';
     import type { Unsubscriber } from 'svelte/store';
-    import storage from '../../../storage/storage';
+    import storage from '@/storage/storage';
     import { pageInfo } from '../routes';
     import Heading from './Heading.svelte';
     import GeneralSettingsBlock from './GeneralSettingsBlock.svelte';
