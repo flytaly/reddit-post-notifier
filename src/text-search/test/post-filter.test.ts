@@ -1,13 +1,15 @@
 import type { DocSearch } from '../document';
-import { fixtures as posts } from './fixtures';
+import { fixtures } from './fixtures';
 import type { TextId } from '../index';
-import type { FilterRule, SearchableField } from '../post-filter';
+import type { FilterRule, SearchableField, SearchableRedditPost } from '../post-filter';
 import { postFilter } from '../post-filter';
 
 const m = (fieldToQueryMap: Partial<Record<SearchableField, string>>) =>
     Object.entries(fieldToQueryMap).map(([field, query]) => ({ field, query })) as FilterRule;
 
-const ids = (...idList: TextId[]) => idList.map((id) => ({ id }));
+const ids = (...idList: TextId[]) => idList.map((id) => ({ data: { id } }));
+
+const posts: SearchableRedditPost[] = fixtures.map((data) => ({ data }));
 
 describe('Post filter', () => {
     test('should filter given posts', () => {

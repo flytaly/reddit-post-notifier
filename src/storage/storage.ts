@@ -163,7 +163,7 @@ const storage = {
     /** Update given subreddit or reddit search data object with new posts or error */
     updateWatchDataObject(
         prevData: SubredditData | QueryData,
-        { posts: newPosts = [], error = null, limit = 50 }: PostsToSaveData = {},
+        { posts: newPosts = [], error = null, limit = 50, lastPostCreated }: PostsToSaveData = {},
     ): SubredditData {
         const result = { ...prevData };
         if (newPosts && newPosts.length) {
@@ -175,7 +175,7 @@ const storage = {
             result.posts = [...postFiltered, ...savedPosts].slice(0, limit);
             if (postFiltered[0]) {
                 result.lastPost = postFiltered[0].data.name;
-                result.lastPostCreated = postFiltered[0].data.created;
+                result.lastPostCreated = lastPostCreated || postFiltered[0].data.created;
             }
         }
 

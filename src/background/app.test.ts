@@ -1,11 +1,12 @@
 /* eslint-disable @typescript-eslint/unbound-method */
+import { postFilter } from '@/text-search/post-filter';
 import { mocked } from 'ts-jest/utils';
 import DEFAULT_OPTIONS from '../options-default';
 import RedditApiClient from '../reddit-api/client';
 import type { RedditError, RedditMessage, RedditPost } from '../reddit-api/reddit-types';
 import storage from '../storage';
 import { dataFields } from '../storage/fields';
-import type { StorageFields, SubredditOpts } from '../storage/storage-types';
+import type { PostFilterOptions, StorageFields } from '../storage/storage-types';
 import { generateMessage, generatePost, generateQuery } from '../test-utils/content-generators';
 import type { ExtensionOptions } from '../types/extension-options';
 import { getSearchQueryUrl } from '../utils';
@@ -16,6 +17,7 @@ jest.mock('../storage/storage.ts');
 jest.mock('../reddit-api/client.ts');
 jest.mock('./notifications.ts');
 jest.mock('../utils/wait.ts');
+jest.mock('@/text-search/post-filter.ts');
 
 const mockStorage = mocked(storage, true);
 const mockClient = mocked(new RedditApiClient(), true);
@@ -142,6 +144,34 @@ describe('update subreddits', () => {
         mockSubredditNew.mockResolvedValueOnce(error);
         await app.update();
         expect(mockStorage.saveSubredditData).toHaveBeenCalledWith(id, expect.objectContaining({ error }));
+    });
+
+    test('should filter posts', async () => {
+        const filterOpts: PostFilterOptions = {
+            enabled: true,
+            fields: ['author'],
+            rules: [[{ field: 'author', query: 'name' }]],
+        };
+        mockStorageData({
+            subredditList: [{ id: 'id1', subreddit: 'sub1', filterOpts }],
+            subreddits: { id1: { lastPostCreated: ts, posts: posts.slice(2) } },
+            options: getOpts(),
+        });
+
+        const _posts = newPosts.slice(1);
+        const lastPostCreated = newPosts[0].data.created;
+
+        mocked(postFilter).mockImplementation(() => _posts);
+
+        await app.update();
+
+        expect(postFilter).toHaveBeenCalledWith(newPosts, filterOpts.rules, filterOpts.fields);
+
+        // should pass date of the latest posts
+        expect(mockStorage.saveSubredditData).toHaveBeenCalledWith(
+            'id1',
+            expect.objectContaining({ lastPostCreated, posts: _posts }),
+        );
     });
 });
 

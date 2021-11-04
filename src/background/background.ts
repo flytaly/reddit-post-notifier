@@ -1,10 +1,9 @@
 import { browser, Runtime } from 'webextension-polyfill-ts';
-import { IS_DEV, IS_FIREFOX, IS_TEST } from '../constants';
+import { IS_FIREFOX, IS_TEST } from '../constants';
 import DEFAULT_OPTIONS from '../options-default';
 import { initializeBgListener, onMessage } from '../port';
 import storage from '../storage';
 import type { PortMessage } from '../types/message';
-import { generateId } from '../utils';
 import { addNotificationClickListener } from './notifications';
 import { scheduleNextUpdate, watchAlarms } from './timers';
 import { isUpdating, updateAndSchedule } from './update';

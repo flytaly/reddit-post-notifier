@@ -60,6 +60,7 @@ export type PostsToSaveData = {
     posts?: RedditPost[] | RedditPostExtended[];
     error?: RedditError | null;
     limit?: number;
+    lastPostCreated?: number | null;
 };
 
 export type StorageFields = {

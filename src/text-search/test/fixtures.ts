@@ -1,6 +1,6 @@
-import type { SearchableRedditPost } from '../post-filter';
+import type { SearchableRedditPostData } from '../post-filter';
 
-export const fixtures: SearchableRedditPost[] = [
+export const fixtures: SearchableRedditPostData[] = [
     {
         author: 'Everday33',
         id: 1,

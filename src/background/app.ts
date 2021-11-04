@@ -9,6 +9,7 @@ import type {
 } from '../reddit-api/reddit-types';
 import storage from '../storage';
 import type { MessageData, QueryOpts, StorageFields, SubredditOpts } from '../storage/storage-types';
+import { postFilter } from '../text-search/post-filter';
 import { getSearchQueryUrl, getSubredditUrl } from '../utils/index';
 import { wait } from '../utils/wait';
 import notify, { NewPostsNotification, NotificationId } from './notifications';
@@ -63,7 +64,7 @@ function isErrorResponse(result: RedditError | RedditListingResponse<unknown>): 
 
 const app = {
     updateSubreddit: async ({ subOpts, subData, listing }: UpdateSubredditProps) => {
-        const { subreddit, id } = subOpts;
+        const { subreddit, id, filterOpts } = subOpts;
         const info = subData[id] || {};
 
         // fetch subreddits with error at a slower pace
@@ -76,8 +77,13 @@ const app = {
             return null;
         }
 
-        const newPosts = extractNewItems(response, info) || [];
-        await storage.saveSubredditData(id, { posts: newPosts });
+        let newPosts = extractNewItems(response, info) || [];
+        let lastPostCreated: number | null = null;
+        if (newPosts.length && filterOpts?.enabled && filterOpts?.rules?.length) {
+            lastPostCreated = newPosts[0].data?.created;
+            newPosts = postFilter(newPosts, filterOpts.rules, filterOpts.fields);
+        }
+        await storage.saveSubredditData(id, { posts: newPosts, lastPostCreated });
         return newPosts;
     },
 
@@ -155,7 +161,11 @@ const app = {
         for (const subOpts of subredditList) {
             if (subOpts.disabled) continue;
 
-            const newPosts = await app.updateSubreddit({ subOpts, subData, listing: { limit } });
+            // increase limit if it's the first update with filters
+            const actualLimit =
+                subOpts.filterOpts?.enabled && !subData[subOpts.id]?.lastUpdate ? Math.max(limit, 25) : limit;
+
+            const newPosts = await app.updateSubreddit({ subOpts, subData, listing: { limit: actualLimit } });
             if (subOpts.notify && newPosts?.length) {
                 const link = getSubredditUrl(subOpts.subreddit, useOldReddit);
                 batch.push({ name: subOpts.subreddit, len: newPosts.length, link });
