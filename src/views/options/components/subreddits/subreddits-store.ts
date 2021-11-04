@@ -13,9 +13,12 @@ function createStore() {
         });
     });
 
-    async function saveOptions(subOpts: SubredditOpts) {
+    async function saveOptions(subOpts: SubredditOpts, clearData?: boolean) {
         update((prev) => prev.map((opts) => (opts.id === subOpts.id ? subOpts : opts)));
         await storage.saveSubredditOpts(subOpts);
+        if (clearData) {
+            await storage.removePostsFrom({ subredditId: subOpts.id });
+        }
     }
 
     async function deleteSubreddit(id: string) {

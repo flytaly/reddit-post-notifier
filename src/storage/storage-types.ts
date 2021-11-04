@@ -9,7 +9,7 @@ export type AuthData = {
 };
 
 export type PostFilterOptions = {
-    enabled: boolean;
+    enabled?: boolean;
     rules?: FilterRule[];
     fields?: SearchableField[];
 };

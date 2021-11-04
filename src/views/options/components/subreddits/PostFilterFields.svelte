@@ -1,18 +1,20 @@
 <script lang="ts">
     import type { SearchableField, FilterRule } from '@/text-search/post-filter';
     import XCircleIcon from '@assets/x-circle-fill.svg';
+    import DeleteIcon from '@assets/delete.svg';
     import { allFields } from '@/text-search/post-filter';
     import { debounce } from '@/utils';
     import { inputStatusStore } from './subreddits-store';
 
     export let filterRule: FilterRule;
-    export let inputHandler: () => void;
+    export let commitChanges: () => void;
+    export let removeFilter: () => void;
     export let subId: string;
 
-    let debounced = debounce(inputHandler, 700);
+    let debounced = debounce(commitChanges, 700);
     let debouncedHandler = () => {
         $inputStatusStore[subId] = { typing: true };
-        debounced();
+        debounced(filterRule);
     };
 
     let usedFields: SearchableField[] = [];
@@ -31,14 +33,17 @@
     const addField = () => {
         if (unUsedFields.length) {
             filterRule = [...filterRule, { field: unUsedFields[0], query: '' }];
+            commitChanges();
         }
     };
+
     const removeField = (field: SearchableField) => {
         if (filterRule.length > 1) {
             filterRule = filterRule.filter((g) => g.field !== field);
-            return;
+        } else {
+            filterRule = filterRule.map((g) => (g.field === field ? { ...g, query: '' } : g));
         }
-        filterRule = filterRule.map((g) => (g.field === field ? { ...g, query: '' } : g));
+        commitChanges();
     };
 </script>
 
@@ -49,7 +54,7 @@
                 class="border-none bg-transparent hover:bg-skin-input hover:shadow-none focus:bg-skin-input rounded"
                 name={`field_${idx}`}
                 bind:value={searchRule.field}
-                on:change={inputHandler}
+                on:change={commitChanges}
             >
                 {#each [searchRule.field, ...unUsedFields] as f}
                     <option value={f}>{fieldNames[f]}</option>
@@ -64,13 +69,26 @@
                 <div class="w-4">{@html XCircleIcon}</div>
             </button>
             <div class="pl-3">
-                <div class="py-px px-1 ring-1 ring-skin-gray2 text-center text-skin-gray rounded">AND</div>
+                {#if idx < filterRule.length - 1}
+                    <div class="py-px px-1 ring-1 ring-skin-gray2 text-center text-skin-gray rounded">AND</div>
+                {/if}
             </div>
         {/each}
     </div>
-    <button on:click={addField} class="py-0 px-1 bg-transparent border-transparent hover:border-skin-accent2 rounded"
-        >+ add field</button
-    >
+    <div class="flex justify-between">
+        <button
+            on:click={addField}
+            class="py-0 px-1 bg-transparent border-transparent hover:border-skin-accent2 rounded">+ add field</button
+        >
+        <button
+            on:click={removeFilter}
+            class="flex items-center p-0 bg-transparent border-transparent hover:text-skin-accent hover:border-skin-accent rounded"
+            title="Delete filter"
+        >
+            <div class="h-4 w-4 mr-1">{@html DeleteIcon}</div>
+            <div>remove filter</div>
+        </button>
+    </div>
 </fieldset>
 
 <style lang="postcss">

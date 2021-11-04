@@ -9,7 +9,7 @@
     import NotifyIcon from '@assets/notify.svg';
     import SaveIcon from '@assets/save.svg';
     import WarningIcon from '@assets/warning.svg';
-    import type { FilterRule } from '@/text-search/post-filter';
+    import type { FilterRule, SearchableField } from '@/text-search/post-filter';
     import PostFilterBlock from './PostFilterBlock.svelte';
     import { subredditStore, inputStatusStore } from './subreddits-store';
     import type { InputStatus } from './subreddits-store';
@@ -28,9 +28,31 @@
 
     $: filterOpts = subOpts.filterOpts;
     $: ruleList = filterOpts?.rules || [[{ field: 'title', query: '' }]];
+
     $: inputStatus = $inputStatusStore[subOpts.id] || {};
 
-    const saveInputs = async () => {
+    function processFilterOpts(filter?: PostFilterOptions) {
+        const result: PostFilterOptions = {
+            rules: [],
+        };
+
+        const fields = new Set<SearchableField>();
+
+        if (filter?.rules?.length) {
+            filter.rules.forEach((rule) => {
+                rule.forEach(({ field, query }) => {
+                    if (query) fields.add(field);
+                });
+            });
+            result.rules = filter.rules;
+        }
+        result.fields = Array.from(fields);
+        result.enabled = Boolean(result.fields.length);
+
+        return result;
+    }
+
+    const saveInputs = async (filter?: PostFilterOptions) => {
         const _subreddit = subOpts.subreddit?.trim().replace(/\s/g, '+');
         if (!_subreddit || !testMultireddit(_subreddit)) {
             const msg = 'Invalid subreddit name';
@@ -40,17 +62,17 @@
             return;
         }
         subredditInputRef.setCustomValidity('');
-        await subredditStore.saveOptions({
-            id: subOpts.id,
-            subreddit: _subreddit,
-            disabled: !isActive,
-            notify: subOpts.notify,
-            filterOpts: {
-                ...filterOpts,
-                enabled: filterOpts?.enabled,
-                rules: ruleList,
+
+        await subredditStore.saveOptions(
+            {
+                id: subOpts.id,
+                subreddit: _subreddit,
+                disabled: !isActive,
+                notify: subOpts.notify,
+                filterOpts: processFilterOpts(filter ? filter : subOpts.filterOpts),
             },
-        });
+            !!filter,
+        );
 
         $inputStatusStore[subOpts.id] = { saved: true };
     };
@@ -79,6 +101,11 @@
     };
 
     const toggleFilters = () => {
+        if (!showFilterBlock && !subOpts.filterOpts) {
+            subOpts.filterOpts = {
+                rules: [[{ field: 'title', query: '' }]],
+            };
+        }
         showFilterBlock = !showFilterBlock;
     };
 </script>
@@ -106,7 +133,7 @@
             class="peer hidden"
             type="checkbox"
             bind:checked={isActive}
-            on:change={saveInputs}
+            on:change={() => saveInputs()}
             data-testid="isActive"
         />
         <div class="ios-checkbox" />
@@ -124,7 +151,7 @@
             class="hidden peer"
             type="checkbox"
             bind:checked={subOpts.notify}
-            on:change={saveInputs}
+            on:change={() => saveInputs()}
             data-testid="notify"
         />
         <div
@@ -199,7 +226,7 @@
         <!--   -->
     </div>
     {#if showFilterBlock}
-        <PostFilterBlock bind:ruleList {saveInputs} subId={subOpts.id} />
+        <PostFilterBlock {ruleList} {saveInputs} subId={subOpts.id} />
     {/if}
 </div>
 
