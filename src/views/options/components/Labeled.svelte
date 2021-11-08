@@ -15,7 +15,7 @@
     label {
         display: flex;
         justify-content: flex-start;
-        align-content: center;
+        align-items: center;
     }
     label :global([slot='description']) {
         margin: auto 0.5rem;

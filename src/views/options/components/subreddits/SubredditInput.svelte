@@ -80,7 +80,7 @@
 
     let labelText = '';
     const showLabel = (e: Event & { currentTarget: Element }) => {
-        labelText = e.currentTarget['ariaLabel'];
+        labelText = e.currentTarget.getAttribute('aria-label');
     };
     const hideLabel = () => {
         labelText = '';
@@ -133,7 +133,7 @@
         <div class="ios-checkbox" />
     </label>
     <label
-        class="flex items-center justify-center"
+        class="flex items-center justify-center text-sm"
         aria-label={getMsg('optionSubredditsNotify')}
         on:focus={showLabel}
         on:mouseover={showLabel}
@@ -150,15 +150,16 @@
         />
         <div
             class={`flex items-center justify-center select-none
-            text-gray-50 rounded-2xl py-[2px] px-2 hover:brightness-110
-            transition-colors ${subOpts.notify ? 'bg-skin-input-checked' : 'bg-gray-500'}`}
+            text-gray-50 rounded-2xl py-[2px] px-2 hover:brightness-110 transition-colors ${
+                subOpts.notify ? 'bg-skin-input-checked' : 'bg-gray-500'
+            }`}
         >
             {#if subOpts.notify}
                 <div class="w-5 h-5">{@html icons.NotifyIcon}</div>
             {:else}
                 <div class="w-5 h-5">{@html icons.NotifyOffIcon}</div>
             {/if}
-            <span>Notify</span>
+            <span class="ml-[2px]">Notify</span>
         </div>
     </label>
     <button
@@ -179,7 +180,7 @@
             {:else}
                 <div class="w-5 h-5">{@html icons.FilterOffIcon}</div>
             {/if}
-            <span>Filter</span>
+            <span class="ml-[2px]">Filter</span>
         </div>
     </button>
     <div>

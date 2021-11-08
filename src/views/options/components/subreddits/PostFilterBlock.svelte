@@ -36,7 +36,7 @@
                 <PostFilterFields removeFilter={() => removeRule(index)} {commitChanges} {subId} bind:filterRule />
             </div>
             {#if ruleList.length - 1 !== index}
-                <div>OR</div>
+                <div class="text-sm py-1">OR</div>
             {/if}
         {/each}
     </div>

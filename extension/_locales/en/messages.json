@@ -256,7 +256,7 @@
         "description": "Search wiki link"
     },
     "optionSearchNotify": {
-        "message": "Show desktop notifications of new posts in the search",
+        "message": "Show notifications of new posts",
         "description": "Option: show notifications of new posts in the search"
     },
     "optionSearchDelete": {
