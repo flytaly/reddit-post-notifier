@@ -4,7 +4,7 @@
     import type { QueryOpts } from '@/storage/storage-types';
     import { debounce, testMultireddit } from '@/utils';
     import getMsg from '@/utils/get-message';
-    import { BellIcon, DeleteIcon, NotifyIcon, NotifyOffIcon } from '@/views/options/icons';
+    import { BellIcon, DeleteIcon } from '@/views/options/icons';
     import Labeled from './Labeled.svelte';
     import TooltipIcon from './TooltipIcon.svelte';
 

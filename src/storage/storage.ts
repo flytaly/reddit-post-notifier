@@ -256,15 +256,26 @@ const storage = {
         });
     },
 
-    async removePostsFrom({ subredditId, searchId }: { subredditId?: string; searchId?: string }) {
+    async removePostsFrom({
+        subredditId,
+        searchId,
+        clearTS,
+    }: {
+        subredditId?: string;
+        searchId?: string;
+        /** clear the last post timestamp  */
+        clearTS?: boolean;
+    }) {
         if (subredditId) {
             const subreddits = await storage.getSubredditData();
             subreddits[subredditId].posts = [];
+            if (clearTS) subreddits[subredditId].lastPostCreated = null;
             await browser.storage.local.set({ subreddits });
         }
         if (searchId) {
             const queries = await storage.getQueriesData();
             queries[searchId].posts = [];
+            if (clearTS) queries[searchId].lastPostCreated = null;
             await browser.storage.local.set({ queries });
         }
     },

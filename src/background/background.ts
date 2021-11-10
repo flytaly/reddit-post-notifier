@@ -1,5 +1,5 @@
 import { browser, Runtime } from 'webextension-polyfill-ts';
-import { IS_FIREFOX, IS_TEST } from '../constants';
+import { IS_DEV, IS_FIREFOX, IS_TEST } from '../constants';
 import DEFAULT_OPTIONS from '../options-default';
 import { initializeBgListener, onMessage } from '../port';
 import storage from '../storage';
@@ -59,3 +59,5 @@ export async function startExtension() {
 }
 
 if (!IS_TEST) void startExtension();
+
+if (IS_DEV) void browser.runtime.openOptionsPage();

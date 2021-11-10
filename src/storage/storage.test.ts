@@ -204,7 +204,7 @@ describe('subreddits', () => {
     });
 
     test('should remove post', async () => {
-        const { id: subId, subreddit } = subOpts[0];
+        const { id: subId } = subOpts[0];
         const subs = cloneDeep(subreddits);
         const postId = subs[subId].posts[1].data.id;
         const exp = expect.objectContaining({ posts: subreddits[subId].posts.filter((p) => p.data.id !== postId) });

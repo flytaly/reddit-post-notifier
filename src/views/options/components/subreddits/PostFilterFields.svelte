@@ -9,6 +9,7 @@
     export let commitChanges: () => void;
     export let removeFilter: () => void;
     export let subId: string;
+    export let index: number;
 
     let debounced = debounce(commitChanges, 700);
     let debouncedHandler = () => {
@@ -46,7 +47,8 @@
     };
 </script>
 
-<fieldset class="border border-skin-gray2 rounded text-sm p-3 space-y-3 shadow-md">
+<fieldset class="border border-skin-gray2 rounded text-sm p-3  shadow-md">
+    <legend class="text-xs font-mono">Filter rule {index + 1 || ''}</legend>
     <div class="field-grid">
         {#each filterRule as searchRule, idx}
             <select
@@ -69,12 +71,14 @@
             </button>
             <div class="pl-3">
                 {#if idx < filterRule.length - 1}
-                    <div class="py-px px-1 ring-1 ring-skin-gray2 text-center text-skin-gray rounded">AND</div>
+                    <div class="py-px px-1 ring-1 ring-skin-gray2 text-center font-mono text-skin-gray rounded">
+                        AND
+                    </div>
                 {/if}
             </div>
         {/each}
     </div>
-    <div class="flex justify-between">
+    <div class="flex justify-between mt-3">
         <button
             on:click={addField}
             class="py-0 px-1 bg-transparent border-transparent hover:border-skin-accent2 rounded">+ add field</button

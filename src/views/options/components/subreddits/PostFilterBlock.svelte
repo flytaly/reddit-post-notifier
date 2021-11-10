@@ -33,10 +33,16 @@
     <div class="flex flex-col">
         {#each ruleList as filterRule, index}
             <div class="connected-block">
-                <PostFilterFields removeFilter={() => removeRule(index)} {commitChanges} {subId} bind:filterRule />
+                <PostFilterFields
+                    removeFilter={() => removeRule(index)}
+                    {commitChanges}
+                    {subId}
+                    bind:filterRule
+                    {index}
+                />
             </div>
             {#if ruleList.length - 1 !== index}
-                <div class="text-sm py-1">OR</div>
+                <div class="text-sm font-mono py-1">OR</div>
             {/if}
         {/each}
     </div>

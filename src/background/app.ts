@@ -163,7 +163,7 @@ const app = {
 
             // increase limit if it's the first update with filters
             const actualLimit =
-                subOpts.filterOpts?.enabled && !subData[subOpts.id]?.lastUpdate ? Math.max(limit, 25) : limit;
+                subOpts.filterOpts?.enabled && !subData[subOpts.id]?.lastPostCreated ? Math.max(limit, 25) : limit;
 
             const newPosts = await app.updateSubreddit({ subOpts, subData, listing: { limit: actualLimit } });
             if (subOpts.notify && newPosts?.length) {
