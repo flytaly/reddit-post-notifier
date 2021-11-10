@@ -4,6 +4,7 @@ import { fireEvent, getByLabelText, render, waitFor } from '@testing-library/sve
 import storage from '@/storage';
 import type { QueryData, QueryOpts } from '@/storage/storage-types';
 import SearchBlock from '../components/SearchBlock.svelte';
+import getMsg from '../../../utils/get-message';
 
 jest.mock('@/storage/storage.ts');
 jest.mock('@/utils/get-message.ts');
@@ -35,7 +36,7 @@ describe('Search settings block', () => {
         expect(getInput('Name:')).toHaveValue(queriesList[0].name);
         expect(getInput('Subreddit:')).toHaveValue(queriesList[0].subreddit);
         expect(getInput('Search query:')).toHaveValue(queriesList[0].query);
-        expect(getInput('show desktop notifications')).toBeChecked();
+        expect(getInput(getMsg('optionSearchNotify'))).toBeChecked();
 
         await fireEvent.input(getInput('Subreddit:'), { target: { value: 'Sub2' } });
 
