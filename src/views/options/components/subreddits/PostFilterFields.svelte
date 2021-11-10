@@ -30,6 +30,11 @@
         title: 'title',
     };
 
+    const matchType = (field: SearchableField) => {
+        if (field === 'author') return 'is';
+        return 'has the words';
+    };
+
     const addField = () => {
         if (unUsedFields.length) {
             filterRule = [...filterRule, { field: unUsedFields[0], query: '' }];
@@ -61,7 +66,7 @@
                     <option value={f}>{fieldNames[f]}</option>
                 {/each}
             </select>
-            <div>has the words</div>
+            <div class="mx-2">{matchType(searchRule.field)}</div>
             <input class="w-full rounded" type="text" bind:value={searchRule.query} on:input={debouncedHandler} />
             <button
                 class="py-0 px-1 text-skin-gray border-none bg-transparent hover:bg-transparent hover:shadow-none hover:text-skin-accent"

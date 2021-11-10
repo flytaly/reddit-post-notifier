@@ -20,9 +20,11 @@ export function postFilter<T extends SearchableRedditPost>(
 ): T[] {
     const usedFields = fields.map((field) => {
         const result: DocField = { field };
-        // match author and flair without stemming and normalization
-        if (field === 'author' || field === 'link_flair_text')
-            result.options = { normalize: false, stemmer: false, tokenizer: false };
+
+        // match author field without any modifications
+        if (field === 'author') result.options = { normalize: false, stemmer: false, tokenizer: false };
+        // disable stemming for flair
+        if (field === 'link_flair_text') result.options = { stemmer: false };
         return result;
     });
 

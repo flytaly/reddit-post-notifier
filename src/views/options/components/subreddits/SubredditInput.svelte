@@ -180,7 +180,7 @@
             {:else}
                 <div class="w-5 h-5">{@html icons.FilterOffIcon}</div>
             {/if}
-            <span class="ml-[2px]">Filter</span>
+            <span class="ml-[2px]">Filters ({filterOpts?.rules?.length || 0})</span>
         </div>
     </button>
     <div>
