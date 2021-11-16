@@ -14,6 +14,7 @@ import type {
     StorageFields as SF,
     SubredditData,
     SubredditOpts,
+    FollowingUser,
 } from './storage-types';
 
 const storage = {
@@ -55,6 +56,10 @@ const storage = {
     async getQueriesData() {
         const { queries } = await browser.storage.local.get({ queries: {} });
         return queries as SF['queries'];
+    },
+
+    getUsersList() {
+        return browser.storage.local.get({ usersList: [] } as Pick<SF, 'usersList'>);
     },
 
     async getNotificationsData() {
@@ -158,6 +163,10 @@ const storage = {
             await storage.removeQueryData(query.id);
         }
         return browser.storage.local.set({ queriesList: queriesUpdated });
+    },
+
+    saveUsersList(usersList: FollowingUser[]) {
+        return browser.storage.local.set({ usersList } as Pick<SF, 'usersList'>);
     },
 
     /** Update given subreddit or reddit search data object with new posts or error */

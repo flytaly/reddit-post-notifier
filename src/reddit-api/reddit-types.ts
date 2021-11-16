@@ -26,6 +26,24 @@ export type RedditPostData = {
     url: string;
 };
 
+export type RedditCommentData = {
+    author: string;
+    author_fullname: string;
+    author_is_blocked: boolean;
+    body: string;
+    body_html: string;
+    created: number;
+    created_utc: number;
+    id: string;
+    link_id: string;
+    link_permalink: string;
+    link_title: string;
+    name: string;
+    over_18: boolean;
+    permalink: string;
+    subreddit: string;
+};
+
 export type RedditMessageData = {
     author: string;
     author_fullname: string;
@@ -45,10 +63,17 @@ export type RedditMessageData = {
 };
 
 // https://www.reddit.com/dev/api/
-type RedditObjectType = 't1' | 't2' | 't3' | 't4' | 't5' | 't6';
+export enum RedditObjectKind {
+    'comment' = 't1',
+    'account' = 't2',
+    'link' = 't3',
+    'message' = 't4',
+    'subreddit' = 't5',
+    'award' = 't6',
+}
 
 export type RedditPost = {
-    kind?: RedditObjectType;
+    kind?: RedditObjectKind.link;
     data: RedditPostData;
 };
 
@@ -56,8 +81,13 @@ export type RedditPostExtended = RedditPost & {
     data: RedditPostData & Record<string, unknown>;
 };
 
+export type RedditComment = {
+    kind?: RedditObjectKind.comment;
+    data: RedditCommentData;
+};
+
 export type RedditMessage = {
-    kind?: RedditObjectType;
+    kind?: RedditObjectKind.message;
     data: RedditMessageData;
 };
 
@@ -83,6 +113,8 @@ export type RedditError = {
 
 export type RedditMessageResponse = RedditListingResponse<RedditMessage>;
 export type RedditPostResponse = RedditListingResponse<RedditPostExtended>;
+export type RedditCommentResponse = RedditListingResponse<RedditComment>;
+export type RedditUserOverviewResponse = RedditListingResponse<RedditComment | RedditPostExtended>;
 
 export type RedditListingCommon = {
     /** after / before - only one should be specified. these indicate the fullname of an item in the listing to use as the anchor point of the slice. */
@@ -100,6 +132,15 @@ export type RedditListingCommon = {
 };
 
 export type RedditSubredditListing = RedditListingCommon;
+export type RedditUserListing = RedditListingCommon & {
+    /** an integer between 2 and 10 */
+    context?: number;
+    sort?: 'hot' | 'new' | 'top' | 'controversial';
+    t?: 'hour' | 'day' | 'week' | 'month' | 'year' | 'all';
+    type?: 'link' | 'comments';
+    /** the name of an existing user */
+    username?: string;
+};
 export type RedditMessageListing = RedditListingCommon & { mark?: boolean };
 export type RedditSearchListing = RedditSubredditListing & {
     /**  a string no longer than 5 characters */

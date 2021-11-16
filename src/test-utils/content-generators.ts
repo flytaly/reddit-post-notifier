@@ -1,5 +1,11 @@
 import faker from 'faker';
-import type { RedditMessage, RedditMessageData, RedditPost, RedditPostData } from '../reddit-api/reddit-types';
+import {
+    RedditMessage,
+    RedditMessageData,
+    RedditObjectKind,
+    RedditPost,
+    RedditPostData,
+} from '../reddit-api/reddit-types';
 import type { QueryOpts } from '../storage/storage-types';
 
 export const generatePost = (props: Partial<RedditPostData> = {}): RedditPostData => {
@@ -34,7 +40,10 @@ export const generatePosts = (num = 2, subreddit?: string) => {
     if (!subreddit) subreddit = faker.lorem.word();
     const posts: RedditPost[] = Array(num)
         .fill(null)
-        .map(() => ({ data: generatePost({ subreddit }) }));
+        .map(() => ({
+            kind: RedditObjectKind.link,
+            data: generatePost({ subreddit }),
+        }));
     return posts;
 };
 

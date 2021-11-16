@@ -52,7 +52,7 @@ const auth = {
             response_type: 'code',
             redirect_uri: encodeURIComponent(redirectUri),
             client_id: clientId,
-            scope: `${scopes.read.id} ${scopes.privatemessages.id}`,
+            scope: `${scopes.read.id} ${scopes.privatemessages.id} ${scopes.history.id}`,
             state: authState,
             duration: 'permanent',
         };

@@ -1,4 +1,10 @@
-import type { RedditError, RedditMessage, RedditPost, RedditPostExtended } from '../reddit-api/reddit-types';
+import type {
+    RedditComment,
+    RedditError,
+    RedditMessage,
+    RedditPost,
+    RedditPostExtended,
+} from '../reddit-api/reddit-types';
 import type { SearchableField, FilterRule } from '../text-search/post-filter';
 import type { ExtensionOptions } from '../types/extension-options';
 
@@ -63,6 +69,16 @@ export type PostsToSaveData = {
     lastPostCreated?: number | null;
 };
 
+export type FollowingUser = {
+    username: string;
+    data?: (RedditPost | RedditComment)[];
+    watch?: 'overview' | 'comments' | 'submitted';
+    notify?: boolean;
+    lastPostCreated?: number | null;
+    lastUpdate?: number | null;
+    error?: RedditError | null;
+};
+
 export type StorageFields = {
     options: ExtensionOptions;
 
@@ -73,4 +89,5 @@ export type StorageFields = {
     queriesList: QueryOpts[];
     subredditList: SubredditOpts[];
     subreddits: Record<string, SubredditData>;
+    usersList?: FollowingUser[];
 } & AuthData;

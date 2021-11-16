@@ -1,16 +1,18 @@
 /* eslint-disable no-await-in-loop */
-import RedditApiClient from '../reddit-api/client';
-import type {
+import RedditApiClient, { UserActivityResponse } from '../reddit-api/client';
+import {
     RedditError,
     RedditListingResponse,
+    RedditObjectKind,
     RedditPostExtended,
     RedditSearchListing,
     RedditSubredditListing,
+    RedditUserOverviewResponse,
 } from '../reddit-api/reddit-types';
 import storage from '../storage';
-import type { MessageData, QueryOpts, StorageFields, SubredditOpts } from '../storage/storage-types';
+import type { FollowingUser, MessageData, QueryOpts, StorageFields, SubredditOpts } from '../storage/storage-types';
 import { postFilter } from '../text-search/post-filter';
-import { getSearchQueryUrl, getSubredditUrl } from '../utils/index';
+import { filterPostDataProperties, getSearchQueryUrl, getSubredditUrl } from '../utils/index';
 import { wait } from '../utils/wait';
 import notify, { NewPostsNotification, NotificationId } from './notifications';
 
@@ -127,6 +129,58 @@ const app = {
         return newMessages;
     },
 
+    updateUserObject(response: UserActivityResponse, user: FollowingUser): NewPostsNotification | undefined {
+        if (isErrorResponse(response)) {
+            console.error(`Error during fetching ${user.username}'s activities`, response);
+            user.error = response;
+            return;
+        }
+        if (!response.data?.children?.length) return;
+
+        const newItems = extractNewItems(response, user);
+        if (!newItems) return;
+        const itemsToSave = newItems.map((p) => {
+            if (p.kind === RedditObjectKind.link) return filterPostDataProperties(p);
+
+            return p;
+        });
+
+        user.data = [...itemsToSave, ...(user.data || [])];
+        user.error = null;
+        user.lastPostCreated = itemsToSave[0].data.created;
+        if (user.notify) return { len: newItems.length, link: '', name: user.username };
+    },
+
+    updateUsersList: async (usersList: FollowingUser[]) => {
+        const notifyBatch: NewPostsNotification[] = [];
+        for (let i = 0; i < usersList.length; i++) {
+            const user = usersList[i];
+            const username = user.username;
+
+            const fetchUser = reddit.user(username);
+            let response: RedditError | RedditUserOverviewResponse;
+            switch (user.watch) {
+                case 'comments':
+                    response = await fetchUser.comments();
+                    break;
+                case 'submitted':
+                    response = await fetchUser.submitted();
+                    break;
+                default:
+                    response = await fetchUser.overview();
+            }
+            const notify = app.updateUserObject(response, user);
+            if (notify) notifyBatch.push(notify);
+            user.lastUpdate = Date.now();
+            if (i < usersList.length - 1) await wait(1000);
+        }
+        await storage.saveUsersList(usersList);
+
+        if (notifyBatch.length) {
+            // TODO: notify
+        }
+    },
+
     /**
      * Update extension data and save into storage
      *
@@ -145,9 +199,15 @@ const app = {
             messages: messageData,
             options,
             refreshToken,
+            usersList,
         } = await storage.getAllData();
 
         const { waitTimeout, messages, limit = 10, messagesNotify, notificationSoundId, useOldReddit } = options;
+
+        if (usersList) {
+            await app.updateUsersList(usersList);
+            await wait(waitTimeout * 1000);
+        }
 
         if (messages && refreshToken) {
             const newMessages = await app.updateUnreadMsg(messageData);

@@ -3,11 +3,11 @@ import { postFilter } from '@/text-search/post-filter';
 import { mocked } from 'ts-jest/utils';
 import DEFAULT_OPTIONS from '../options-default';
 import RedditApiClient from '../reddit-api/client';
-import type { RedditError, RedditMessage, RedditPost } from '../reddit-api/reddit-types';
+import { RedditComment, RedditError, RedditMessage, RedditObjectKind, RedditPost } from '../reddit-api/reddit-types';
 import storage from '../storage';
 import { dataFields } from '../storage/fields';
-import type { PostFilterOptions, StorageFields } from '../storage/storage-types';
-import { generateMessage, generatePost, generateQuery } from '../test-utils/content-generators';
+import type { FollowingUser, PostFilterOptions, StorageFields } from '../storage/storage-types';
+import { generateMessage, generatePost, generatePosts, generateQuery } from '../test-utils/content-generators';
 import type { ExtensionOptions } from '../types/extension-options';
 import { getSearchQueryUrl } from '../utils';
 import app from './app';
@@ -219,5 +219,65 @@ describe('update reddit search', () => {
             [{ len: 1, link: getSearchQueryUrl(q2.query, q2.subreddit, false), name: q2.name }],
             null,
         );
+    });
+});
+
+describe('update user', () => {
+    const mockUser = mocked(mockClient.user);
+    const mockUserOverview = mocked(mockClient.user('').overview);
+    const mockUserComments = mocked(mockClient.user('').comments);
+    const mockUserSubmitted = mocked(mockClient.user('').submitted);
+
+    test("should update users' activities ", async () => {
+        const oldPosts = generatePosts(2);
+        const overview = generatePosts(3);
+        const comments = generatePosts(2).map((p) => {
+            return {
+                kind: RedditObjectKind.comment,
+                data: p.data,
+            } as unknown as RedditComment;
+        });
+
+        const posts = generatePosts(2);
+
+        mockStorageData({
+            usersList: [
+                { username: 'user1', data: oldPosts, watch: 'overview' },
+                { username: 'user2', watch: 'comments' },
+                { username: 'user3', watch: 'submitted' },
+            ],
+            options: getOpts(),
+        });
+
+        const kind = 'Listing' as const;
+        mockUserOverview.mockResolvedValue({ kind, data: { children: overview } });
+        mockUserComments.mockResolvedValue({ kind, data: { children: comments } });
+        mockUserSubmitted.mockResolvedValue({ kind, data: { children: posts } });
+
+        await app.update();
+        expect(mockUser).toHaveBeenCalledWith('user1');
+        expect(mockUser).toHaveBeenCalledWith('user2');
+        expect(mockUser).toHaveBeenCalledWith('user3');
+        expect(mockUserOverview).toHaveBeenCalled();
+        expect(mockUserComments).toHaveBeenCalled();
+        expect(mockUserSubmitted).toHaveBeenCalled();
+
+        expect(storage.saveUsersList).toHaveBeenCalledWith([
+            expect.objectContaining({
+                username: 'user1',
+                data: [...overview, ...oldPosts],
+                lastPostCreated: overview[0].data.created,
+            } as FollowingUser),
+            expect.objectContaining({
+                username: 'user2',
+                data: comments,
+                lastPostCreated: comments[0].data.created,
+            } as FollowingUser),
+            expect.objectContaining({
+                username: 'user3',
+                data: posts,
+                lastPostCreated: posts[0].data.created,
+            } as FollowingUser),
+        ]);
     });
 });
