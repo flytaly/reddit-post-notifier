@@ -1,9 +1,9 @@
 <script lang="ts">
+    import storage from '@/storage';
     import type { StorageFields } from '@/storage/storage-types';
     import type { ExtensionOptions } from '@/types/extension-options';
-    import storage from '@/storage';
-    import FollowUserInput from './FollowUserInput.svelte';
     import { AddIcon } from '@/views/options/icons';
+    import FollowUserInput from './FollowUserInput.svelte';
 
     export let options: ExtensionOptions;
     export let usersList: StorageFields['usersList'] = [];
@@ -15,7 +15,14 @@
     if (!usersList.length) addUser();
 
     const saveInputs = () => {
-        void storage.saveUsersList(usersList.filter((u) => u.username));
+        const saved = new Set<string>();
+        void storage.saveUsersList(
+            usersList.filter((u) => {
+                if (!u.username || saved.has(u.username)) return false;
+                saved.add(u.username);
+                return true;
+            }),
+        );
     };
 
     const removeUser = (index: number) => {
@@ -28,17 +35,16 @@
     <div class="user-input-grid">
         <div>Username</div>
         <div class="text-center">
-            <span> Commentes </span>
+            <span>Commentes</span>
         </div>
         <div class="text-center">
-            <span> Posts </span>
+            <span>Posts</span>
         </div>
         <div class="text-center">Notification</div>
         <div class="ml-auto">Delete</div>
         <div class="col-span-full my-2" />
         {#each usersList as userInfo, index}
             <FollowUserInput bind:userInfo commitChanges={saveInputs} onDelete={() => removeUser(index)} />
-            <div class="col-span-full mt-1 mb-3" />
         {/each}
     </div>
     <button

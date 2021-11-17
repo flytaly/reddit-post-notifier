@@ -1,5 +1,5 @@
 /* eslint-disable no-await-in-loop */
-import RedditApiClient, { UserActivityResponse } from '../reddit-api/client';
+import RedditApiClient from '../reddit-api/client';
 import {
     RedditError,
     RedditListingResponse,
@@ -62,6 +62,38 @@ interface UpdateQueryProps {
 
 function isErrorResponse(result: RedditError | RedditListingResponse<unknown>): result is RedditError {
     return result['data'] === undefined;
+}
+
+export async function updateFollowingUser(user: FollowingUser): Promise<{ user: FollowingUser; newItemsLen?: number }> {
+    user = { ...user };
+    const fetchUser = reddit.user(user.username);
+    let response: RedditError | RedditUserOverviewResponse;
+    switch (user.watch) {
+        case 'comments':
+            response = await fetchUser.comments();
+            break;
+        case 'submitted':
+            response = await fetchUser.submitted();
+            break;
+        default:
+            response = await fetchUser.overview();
+    }
+
+    if (isErrorResponse(response)) {
+        console.error(`Error during fetching ${user.username}'s activities`, response);
+        user.error = response;
+        return { user };
+    }
+    if (!response.data?.children?.length) return { user };
+
+    const newItems = extractNewItems(response, user);
+    if (!newItems) return { user };
+    const itemsToSave = newItems.map((p) => (p.kind === RedditObjectKind.link ? filterPostDataProperties(p) : p));
+
+    user.data = [...itemsToSave, ...(user.data || [])].slice(0, 50);
+    user.error = null;
+    user.lastPostCreated = itemsToSave[0].data.created;
+    return { user, newItemsLen: itemsToSave.length };
 }
 
 const app = {
@@ -129,48 +161,15 @@ const app = {
         return newMessages;
     },
 
-    updateUserObject(response: UserActivityResponse, user: FollowingUser): NewPostsNotification | undefined {
-        if (isErrorResponse(response)) {
-            console.error(`Error during fetching ${user.username}'s activities`, response);
-            user.error = response;
-            return;
-        }
-        if (!response.data?.children?.length) return;
-
-        const newItems = extractNewItems(response, user);
-        if (!newItems) return;
-        const itemsToSave = newItems.map((p) => {
-            if (p.kind === RedditObjectKind.link) return filterPostDataProperties(p);
-
-            return p;
-        });
-
-        user.data = [...itemsToSave, ...(user.data || [])];
-        user.error = null;
-        user.lastPostCreated = itemsToSave[0].data.created;
-        if (user.notify) return { len: newItems.length, link: '', name: user.username };
-    },
-
     updateUsersList: async (usersList: FollowingUser[]) => {
         const notifyBatch: NewPostsNotification[] = [];
         for (let i = 0; i < usersList.length; i++) {
-            const user = usersList[i];
-            const username = user.username;
+            const { user, newItemsLen } = await updateFollowingUser(usersList[i]);
 
-            const fetchUser = reddit.user(username);
-            let response: RedditError | RedditUserOverviewResponse;
-            switch (user.watch) {
-                case 'comments':
-                    response = await fetchUser.comments();
-                    break;
-                case 'submitted':
-                    response = await fetchUser.submitted();
-                    break;
-                default:
-                    response = await fetchUser.overview();
-            }
-            const notify = app.updateUserObject(response, user);
-            if (notify) notifyBatch.push(notify);
+            usersList[i] = user;
+
+            if (user.notify && newItemsLen) notifyBatch.push({ len: newItemsLen, link: '', name: user.username });
+
             user.lastUpdate = Date.now();
             if (i < usersList.length - 1) await wait(1000);
         }

@@ -1,14 +1,14 @@
 <script lang="ts">
+    import storage from '@/storage/storage';
     import { onDestroy, onMount, tick } from 'svelte';
     import type { Unsubscriber } from 'svelte/store';
-    import storage from '@/storage/storage';
     import { pageInfo } from '../routes';
-    import Heading from './Heading.svelte';
-    import GeneralSettingsBlock from './GeneralSettingsBlock.svelte';
     import AuthMailBlock from './AuthMailBlock.svelte';
-    import SubredditsBlock from './subreddits/SubredditsBlock.svelte';
-    import SearchBlock from './SearchBlock.svelte';
     import FollowUsersBlock from './FollowUsersBlock.svelte';
+    import GeneralSettingsBlock from './GeneralSettingsBlock.svelte';
+    import Heading from './Heading.svelte';
+    import SearchBlock from './SearchBlock.svelte';
+    import SubredditsBlock from './subreddits/SubredditsBlock.svelte';
 
     let destroy: Unsubscriber;
     let dataPromise = storage.getAllData();
@@ -51,7 +51,7 @@
             <Heading id="#settings__follow-user" />
             <FollowUsersBlock options={data.options} usersList={data.usersList} />
         </section>
-        <div class="h-52" />
+        <div class="h-[80vh]" />
     {/await}
 </div>
 

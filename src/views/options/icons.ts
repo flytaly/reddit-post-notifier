@@ -11,3 +11,4 @@ export { default as PlayIcon } from '@assets/play.svg';
 export { default as SaveIcon } from '@assets/save.svg';
 export { default as WarningIcon } from '@assets/warning.svg';
 export { default as XCircleIcon } from '@assets/x-circle-fill.svg';
+export { default as LoadingIcon } from '@assets/loading.svg';
