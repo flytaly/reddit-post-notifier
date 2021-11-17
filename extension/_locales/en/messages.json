@@ -73,6 +73,9 @@
     "optionsNavSearch": {
         "message": "Reddit Search"
     },
+    "optionsNavUsers": {
+        "message": "Follow users"
+    },
     "optionsNavInfo": {
         "message": "Info"
     },

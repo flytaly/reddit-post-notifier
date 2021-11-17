@@ -1,0 +1,61 @@
+<script lang="ts">
+    import type { StorageFields } from '@/storage/storage-types';
+    import type { ExtensionOptions } from '@/types/extension-options';
+    import storage from '@/storage';
+    import FollowUserInput from './FollowUserInput.svelte';
+    import { AddIcon } from '@/views/options/icons';
+
+    export let options: ExtensionOptions;
+    export let usersList: StorageFields['usersList'] = [];
+
+    const addUser = () => {
+        usersList = [...usersList, { username: '', data: [], watch: 'overview' }];
+    };
+
+    if (!usersList.length) addUser();
+
+    const saveInputs = () => {
+        void storage.saveUsersList(usersList.filter((u) => u.username));
+    };
+
+    const removeUser = (index: number) => {
+        usersList = usersList.filter((_, idx) => index !== idx);
+        saveInputs();
+    };
+</script>
+
+<div>
+    <div class="user-input-grid">
+        <div>Username</div>
+        <div class="text-center">
+            <span> Commentes </span>
+        </div>
+        <div class="text-center">
+            <span> Posts </span>
+        </div>
+        <div class="text-center">Notification</div>
+        <div class="ml-auto">Delete</div>
+        <div class="col-span-full my-2" />
+        {#each usersList as userInfo, index}
+            <FollowUserInput bind:userInfo commitChanges={saveInputs} onDelete={() => removeUser(index)} />
+            <div class="col-span-full mt-1 mb-3" />
+        {/each}
+    </div>
+    <button
+        class="flex items-center rounded p-1 bg-transparent  border-transparent hover:border-skin-accent2 text-skin-accent2"
+        on:click={addUser}
+    >
+        <span class="w-5 h-5 mr-1">
+            {@html AddIcon}
+        </span>
+        <div>Add user to follow</div>
+    </button>
+</div>
+
+<style lang="postcss">
+    .user-input-grid {
+        @apply grid grid-cols-5 gap-x-5 items-center;
+
+        grid-template-columns: repeat(4, max-content) 1fr;
+    }
+</style>

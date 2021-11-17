@@ -21,6 +21,9 @@ export const sections = {
     '#settings__reddit-search': {
         name: getMsg('optionsNavSearch'),
     },
+    '#settings__follow-user': {
+        name: getMsg('optionsNavUsers'),
+    },
     '#info': {
         name: getMsg('optionsNavInfo'),
     },

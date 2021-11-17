@@ -17,4 +17,5 @@ export const dataFields: StorageFields = {
     messages: {},
     pinnedPostList: [],
     notifications: [],
+    usersList: [],
 };

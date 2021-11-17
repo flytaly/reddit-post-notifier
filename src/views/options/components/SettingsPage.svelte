@@ -8,6 +8,7 @@
     import AuthMailBlock from './AuthMailBlock.svelte';
     import SubredditsBlock from './subreddits/SubredditsBlock.svelte';
     import SearchBlock from './SearchBlock.svelte';
+    import FollowUsersBlock from './FollowUsersBlock.svelte';
 
     let destroy: Unsubscriber;
     let dataPromise = storage.getAllData();
@@ -45,6 +46,10 @@
         <section>
             <Heading id={'#settings__reddit-search'} />
             <SearchBlock queriesData={data.queries} queriesList={data.queriesList} />
+        </section>
+        <section>
+            <Heading id="#settings__follow-user" />
+            <FollowUsersBlock options={data.options} usersList={data.usersList} />
         </section>
         <div class="h-52" />
     {/await}
