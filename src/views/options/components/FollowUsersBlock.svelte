@@ -3,8 +3,11 @@
     import type { StorageFields } from '@/storage/storage-types';
     import type { ExtensionOptions } from '@/types/extension-options';
     import { AddIcon } from '@/views/options/icons';
+    import DEFAULT_OPTIONS from '../../../options-default';
     import { storageData } from '../../popup/store/store';
     import FollowUserInput from './FollowUserInput.svelte';
+    import OptionsItem from './OptionsItem.svelte';
+    import RadioGroup from './RadioGroup.svelte';
 
     let options: ExtensionOptions = $storageData.options;
     let usersList: StorageFields['usersList'] = $storageData.usersList;
@@ -33,13 +36,46 @@
         $storageData.usersList = usersList.filter((_, idx) => index !== idx);
         saveInputs();
     };
+
+    const themeValueList: Array<{ value: string; id: string; label: string }> = [
+        { value: String(60), id: '1m', label: '1m' },
+        { value: String(5 * 60), id: '5m', label: '5m' },
+        { value: String(10 * 60), id: '10m', label: '10m' },
+        { value: String(15 * 60), id: '15m', label: '15m' },
+        { value: String(30 * 60), id: '30m', label: '30m' },
+        { value: String(60 * 60), id: '1h', label: '1h' },
+    ];
+    const changeIntervalHandler = (value: string) => {
+        void storage.saveOptions({
+            pollUserInterval: parseInt(value) || DEFAULT_OPTIONS.updateInterval,
+        });
+    };
 </script>
 
 <div>
+    <OptionsItem title="Minimum update interval">
+        <div slot="description">
+            Considering that most users don't post and comment very often, it's reasonable to poll it slower than
+            subreddits. The value will be ignored if it's lower than the global update interval.
+        </div>
+        <div slot="controls">
+            <div class="flex flex-col">
+                <RadioGroup
+                    onChange={changeIntervalHandler}
+                    valueList={themeValueList}
+                    currentValue={String($storageData.options.pollUserInterval)}
+                />
+                <div class="mt-4">
+                    Global update interval is {Math.round((options.updateInterval / 60) * 10) / 10} min
+                </div>
+            </div>
+        </div>
+    </OptionsItem>
+
     <div class="user-input-grid">
         <div>Username</div>
         <div class="text-center">
-            <span>Commentes</span>
+            <span>Comments</span>
         </div>
         <div class="text-center">
             <span>Posts</span>

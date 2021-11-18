@@ -21,4 +21,6 @@ export type ExtensionOptions = {
     notificationSoundId: null | SoundId;
     /** open links in 'old.reddit.com' */
     useOldReddit: boolean;
+    /** seconds between updates of following user's posts (ignored if < updateInterval) */
+    pollUserInterval: number;
 };

@@ -93,6 +93,7 @@ export async function updateFollowingUser(user: FollowingUser): Promise<{ user: 
     user.data = [...itemsToSave, ...(user.data || [])].slice(0, 50);
     user.error = null;
     user.lastPostCreated = itemsToSave[0].data.created;
+    user.lastUpdate = Date.now();
     return { user, newItemsLen: itemsToSave.length };
 }
 
@@ -161,16 +162,25 @@ const app = {
         return newMessages;
     },
 
-    updateUsersList: async (usersList: FollowingUser[]) => {
+    /** @param pollInterval - amount of ms that should pass until next update  */
+    updateUsersList: async (usersList: FollowingUser[], pollInterval = 0) => {
         const notifyBatch: NewPostsNotification[] = [];
+        let updated = 0;
         for (let i = 0; i < usersList.length; i++) {
+            const ts = Date.now();
+
+            if (ts - (usersList[i].lastUpdate || 0) < pollInterval) {
+                continue;
+            }
+
             const { user, newItemsLen } = await updateFollowingUser(usersList[i]);
 
             usersList[i] = user;
 
             if (user.notify && newItemsLen) notifyBatch.push({ len: newItemsLen, link: '', name: user.username });
 
-            user.lastUpdate = Date.now();
+            user.lastUpdate = ts;
+            updated += 1;
             if (i < usersList.length - 1) await wait(1000);
         }
         await storage.saveUsersList(usersList);
@@ -178,6 +188,8 @@ const app = {
         if (notifyBatch.length) {
             // TODO: notify
         }
+
+        return updated;
     },
 
     /**
@@ -189,7 +201,7 @@ const app = {
      * Hence updates inevitably stop after a while. Instead, we ask some last posts
      * and then save only new posts depending on their timestamp
      * */
-    update: async () => {
+    update: async (isForcedByUser = false) => {
         const {
             queries: queryData,
             queriesList,
@@ -201,11 +213,19 @@ const app = {
             usersList,
         } = await storage.getAllData();
 
-        const { waitTimeout, messages, limit = 10, messagesNotify, notificationSoundId, useOldReddit } = options;
+        const {
+            waitTimeout,
+            messages,
+            limit = 10,
+            messagesNotify,
+            notificationSoundId,
+            useOldReddit,
+            pollUserInterval,
+        } = options;
 
         if (usersList) {
-            await app.updateUsersList(usersList);
-            await wait(waitTimeout * 1000);
+            const updated = await app.updateUsersList(usersList, isForcedByUser ? 0 : pollUserInterval * 1000);
+            if (updated) await wait(waitTimeout * 1000);
         }
 
         if (messages && refreshToken) {

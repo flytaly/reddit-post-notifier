@@ -52,7 +52,7 @@ export async function startExtension() {
         if (isUpdating) p.postMessage({ id: 'UPDATING_START' } as PortMessage);
     });
 
-    onMessage('UPDATE_NOW', () => updateAndSchedule());
+    onMessage('UPDATE_NOW', () => updateAndSchedule(true));
     onMessage('SCHEDULE_NEXT_UPDATE', () => scheduleNextUpdate());
 
     await updateAndSchedule();

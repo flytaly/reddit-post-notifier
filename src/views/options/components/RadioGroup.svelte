@@ -4,7 +4,7 @@
     export let currentValue: string;
     export let valueList: Array<{ value: string; id: string; label: string }>;
     export let onChange: (value: string) => unknown;
-    export let name: string;
+    export let name = '';
 </script>
 
 <form class="flex overflow-visible" on:change={() => onChange(currentValue)}>

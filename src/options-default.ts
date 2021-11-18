@@ -14,6 +14,7 @@ const DEFAULT_OPTIONS: ExtensionOptions = {
     hideEmptyGroups: false,
     notificationSoundId: null,
     useOldReddit: false,
+    pollUserInterval: 10 * 60,
 };
 
 export default DEFAULT_OPTIONS;

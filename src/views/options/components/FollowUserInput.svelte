@@ -189,7 +189,7 @@
                 <div class="flex justify-between">
                     <div class="mt-2">{`${userInfo.username}' latest activities on reddit: `}</div>
                     <button
-                        class="p-0 border-none bg-transparent h-4 w-4"
+                        class="p-0 mr-2 border-none bg-transparent h-4 w-4"
                         on:click={() => {
                             showUserData = false;
                         }}
