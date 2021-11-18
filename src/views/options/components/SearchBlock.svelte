@@ -1,20 +1,22 @@
 <script lang="ts">
-    import type { QueryData, QueryOpts } from '@/storage/storage-types';
+    import type { QueryOpts } from '@/storage/storage-types';
     import { generateId } from '@/utils';
     import getMsg from '@/utils/get-message';
     import { AddIcon } from '@/views/options/icons';
-    import { flip } from 'svelte/animate';
     import { quadOut } from 'svelte/easing';
     import { fade } from 'svelte/transition';
+    import { storageData } from '../../popup/store/store';
     import SearchFieldset from './SearchFieldset.svelte';
 
-    export let queriesList: QueryOpts[];
-    export let queriesData: Record<string, QueryData>;
+    export let queriesListStore: QueryOpts[];
+
+    let queriesList = queriesListStore || [];
 
     const addNewQuery = () => {
         queriesList = [...queriesList, { id: generateId() }];
     };
-    addNewQuery();
+
+    if (!queriesList.length) addNewQuery();
 
     const onDelete = (id: string) => {
         queriesList = queriesList.filter((q) => q.id !== id);
@@ -22,12 +24,8 @@
 </script>
 
 {#each queriesList as queryObject (queryObject.id)}
-    <div
-        class="mb-4"
-        transition:fade|local={{ duration: 200, easing: quadOut }}
-        animate:flip={{ delay: 230, duration: 150, easing: quadOut }}
-    >
-        <SearchFieldset {queryObject} error={queriesData[queryObject.id]?.error} {onDelete} />
+    <div class="mb-4" transition:fade|local={{ duration: 200, easing: quadOut }}>
+        <SearchFieldset {queryObject} error={$storageData.queries[queryObject.id]?.error} {onDelete} />
     </div>
 {/each}
 

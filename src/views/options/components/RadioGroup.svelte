@@ -1,12 +1,10 @@
 <script lang="ts">
     /* Accessible radio buttons group */
 
-    export let initialValue: string;
+    export let currentValue: string;
     export let valueList: Array<{ value: string; id: string; label: string }>;
     export let onChange: (value: string) => unknown;
     export let name: string;
-
-    let currentValue = initialValue;
 </script>
 
 <form class="flex overflow-visible" on:change={() => onChange(currentValue)}>

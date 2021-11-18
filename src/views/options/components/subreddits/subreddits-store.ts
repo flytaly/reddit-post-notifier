@@ -6,6 +6,7 @@ import { writable } from 'svelte/store';
 const genEmpty = (): SubredditOpts => ({ id: generateId(), subreddit: '' });
 
 function createStore() {
+    // const { set, subscribe, update } = writable<SubredditOpts[]>([], () => {
     const { set, subscribe, update } = writable<SubredditOpts[]>([], () => {
         void storage.getSubredditList().then((list) => {
             const empty = genEmpty();

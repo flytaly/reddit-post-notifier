@@ -4,7 +4,10 @@ import { fireEvent, getByLabelText, render, waitFor } from '@testing-library/sve
 import storage from '@/storage';
 import type { QueryData, QueryOpts } from '@/storage/storage-types';
 import SearchBlock from '../components/SearchBlock.svelte';
-import getMsg from '../../../utils/get-message';
+import getMsg from '@/utils/get-message';
+import { mocked } from 'ts-jest/utils';
+import { dataFields } from '@/storage/fields';
+import { tick } from 'svelte';
 
 jest.mock('@/storage/storage.ts');
 jest.mock('@/utils/get-message.ts');
@@ -22,14 +25,22 @@ describe('Search settings block', () => {
         id1: { error: null },
     };
 
+    beforeEach(() => {
+        mockBrowser.storage.onChanged.addListener.spy(() => ({}));
+        mockBrowser.storage.onChanged.removeListener.spy(() => ({}));
+    });
+
+    beforeAll(() => {
+        mocked(storage).getAllData.mockResolvedValue({ ...dataFields, queries: queriesData, queriesList });
+    });
+
     test('render and save', async () => {
         //
-        const { getAllByTestId } = render(SearchBlock, {
-            queriesList,
-            queriesData,
-        });
+        const { getAllByTestId } = render(SearchBlock, { queriesListStore: queriesList });
+        await tick();
+
         const forms = getAllByTestId('search-fieldset');
-        expect(forms).toHaveLength(2);
+        expect(forms).toHaveLength(1);
 
         const getInput = (label: string) => getByLabelText(forms[0], label, { exact: false });
 
@@ -44,22 +55,24 @@ describe('Search settings block', () => {
     });
 
     test('should add and delete fieldsets', async () => {
-        const { getAllByTestId, getAllByText, getByText } = render(SearchBlock, { queriesList, queriesData });
+        const { getAllByTestId, getAllByText, getByText, queryAllByTestId } = render(SearchBlock, {
+            queriesListStore: queriesList,
+        });
         const delBtns = getAllByText('Delete the search');
-        expect(delBtns).toHaveLength(2);
+        expect(delBtns).toHaveLength(1);
 
-        expect(getAllByTestId('search-fieldset')).toHaveLength(2);
+        expect(getAllByTestId('search-fieldset')).toHaveLength(1);
 
-        await fireEvent.click(delBtns[1]);
+        await fireEvent.click(delBtns[0]);
         await waitFor(() => {
-            const formsAfterDeleting = getAllByTestId('search-fieldset');
-            expect(formsAfterDeleting).toHaveLength(1);
+            const formsAfterDeleting = queryAllByTestId('search-fieldset');
+            expect(formsAfterDeleting).toHaveLength(0);
         });
 
         await fireEvent.click(getByText('Add new search'));
         await waitFor(() => {
             const formsAfterDeleting = getAllByTestId('search-fieldset');
-            expect(formsAfterDeleting).toHaveLength(2);
+            expect(formsAfterDeleting).toHaveLength(1);
         });
     });
 });

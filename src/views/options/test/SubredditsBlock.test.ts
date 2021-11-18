@@ -7,6 +7,7 @@ import type { SubredditData, SubredditOpts } from '@/storage/storage-types';
 import getMsg from '@/utils/get-message';
 import SubredditsBlock from '../components/subreddits/SubredditsBlock.svelte';
 import { tick } from 'svelte';
+import { dataFields } from '../../../storage/fields';
 
 let idx = 0;
 jest.mock('@/storage/storage.ts');
@@ -32,14 +33,24 @@ describe('Subreddit settings', () => {
         errorId: { error: { error: 404, message: 'Not Found', reason: 'banned' } },
     };
 
+    beforeEach(() => {
+        mockBrowser.storage.onChanged.addListener.spy(() => ({}));
+        mockBrowser.storage.onChanged.removeListener.spy(() => ({}));
+    });
+
     beforeAll(() => {
+        mocked(storage).getAllData.mockResolvedValue({
+            ...dataFields,
+        });
         getSubMock.mockImplementation(async () => cloneDeep(subList));
     });
 
     test('save subreddits and show error', async () => {
-        const { getByText, getAllByLabelText, getAllByTestId } = render(SubredditsBlock, {
-            subredditsData: cloneDeep(subData),
+        mocked(storage).getAllData.mockResolvedValue({
+            ...dataFields,
+            subreddits: cloneDeep(subData),
         });
+        const { getByText, getAllByLabelText, getAllByTestId } = render(SubredditsBlock);
         await tick();
         const inputs = getAllByLabelText(getMsg('optionSubredditsInput')) as HTMLInputElement[];
         const notifyElems = getAllByTestId('notify') as HTMLInputElement[];
@@ -70,7 +81,7 @@ describe('Subreddit settings', () => {
     });
 
     test('should call storage with other input states', async () => {
-        const { getAllByLabelText } = render(SubredditsBlock, { subredditsData: {} });
+        const { getAllByLabelText } = render(SubredditsBlock);
         await tick();
 
         // NOTIFY
@@ -97,9 +108,9 @@ describe('Subreddit settings', () => {
     });
 
     test('should add and remove subreddits', async () => {
-        const { getAllByLabelText, getByText, container } = render(SubredditsBlock, {
-            subredditsData: {},
-        });
+        mocked(storage).getAllData.mockResolvedValueOnce({ ...dataFields });
+
+        const { getAllByLabelText, getByText } = render(SubredditsBlock);
         await tick();
 
         const len = getAllByLabelText(getMsg('optionSubredditsInput')).length;
@@ -118,9 +129,8 @@ describe('Subreddit settings', () => {
     });
 
     test('should save only subreddit or multireddit', async () => {
-        const { getAllByLabelText, getByText } = render(SubredditsBlock, {
-            subredditsData: {},
-        });
+        const { getAllByLabelText, getByText, container } = render(SubredditsBlock);
+
         await tick();
 
         const inputs = getAllByLabelText(getMsg('optionSubredditsInput')) as HTMLInputElement[];
@@ -129,8 +139,9 @@ describe('Subreddit settings', () => {
 
         for (const subreddit of ['!not', '12', 'aww+3']) {
             await fireEvent.input(input, { target: { value: subreddit } });
-
-            expect(getByText('Invalid subreddit name')).toBeInTheDocument();
+            await waitFor(() => {
+                expect(getByText(/Invalid subreddit name/)).toBeInTheDocument();
+            });
             expect(storage.saveSubredditOpts).not.toHaveBeenCalledWith(expect.objectContaining({ subreddit }));
         }
     });

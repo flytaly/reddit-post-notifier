@@ -9,9 +9,7 @@
     import { browser } from 'webextension-polyfill-ts';
     import OptionsItem from './OptionsItem.svelte';
     import RadioGroup from './RadioGroup.svelte';
-
-    export let options: ExtensionOptions;
-    let { updateInterval, theme, delPostAfterBodyClick, hideEmptyGroups, notificationSoundId, useOldReddit } = options;
+    import { storageData } from '@/views/options/store';
 
     const themeValueList: Array<{ value: ExtensionOptions['theme']; id: string; label: string }> = [
         { value: 'light', id: 'light', label: getMsg('optionThemeLight') },
@@ -21,6 +19,7 @@
     ];
 
     const onUpdateIntervalChange = async () => {
+        const { updateInterval } = $storageData.options;
         if (updateInterval && updateInterval >= 2) {
             await storage.saveOptions({ updateInterval });
             sendToBg('SCHEDULE_NEXT_UPDATE');
@@ -33,7 +32,7 @@
     };
 
     const playSound = () => {
-        const file = notificationSoundFiles[notificationSoundId];
+        const file = notificationSoundFiles[$storageData.options.notificationSoundId];
         if (file) {
             const audio = new Audio();
             audio.src = browser.runtime.getURL(file);
@@ -51,7 +50,7 @@
             min="2"
             max="3600"
             size="8"
-            bind:value={updateInterval}
+            bind:value={$storageData.options.updateInterval}
             on:input={onUpdateIntervalChange}
         />
     </div>
@@ -60,7 +59,12 @@
 <OptionsItem title={getMsg('optionTheme')}>
     <div slot="description">{getMsg('optionsThemeDescription')}</div>
     <div slot="controls">
-        <RadioGroup initialValue={theme} valueList={themeValueList} onChange={onThemeChange} name="theme" />
+        <RadioGroup
+            bind:currentValue={$storageData.options.theme}
+            valueList={themeValueList}
+            onChange={onThemeChange}
+            name="theme"
+        />
     </div>
 </OptionsItem>
 
@@ -70,8 +74,8 @@
         <input
             id="deletePostInput"
             type="checkbox"
-            bind:checked={delPostAfterBodyClick}
-            on:change={() => storage.saveOptions({ delPostAfterBodyClick })}
+            bind:checked={$storageData.options.delPostAfterBodyClick}
+            on:change={() => storage.saveOptions({ delPostAfterBodyClick: $storageData.options.delPostAfterBodyClick })}
         />
     </div>
 </OptionsItem>
@@ -82,8 +86,8 @@
         <input
             id="hideEmptyInput"
             type="checkbox"
-            bind:checked={hideEmptyGroups}
-            on:change={() => storage.saveOptions({ hideEmptyGroups })}
+            bind:checked={$storageData.options.hideEmptyGroups}
+            on:change={() => storage.saveOptions({ hideEmptyGroups: $storageData.options.hideEmptyGroups })}
         />
     </div>
 </OptionsItem>
@@ -95,8 +99,8 @@
             <select
                 name="sound"
                 id="soundSelect"
-                bind:value={notificationSoundId}
-                on:change={() => storage.saveOptions({ notificationSoundId })}
+                bind:value={$storageData.options.notificationSoundId}
+                on:change={() => storage.saveOptions({ notificationSoundId: $storageData.options.notificationSoundId })}
             >
                 <option value={null}>No sound</option>
                 {#each Object.keys(notificationSoundFiles) as soundFileId, idx}
@@ -116,8 +120,8 @@
         <input
             id="useOldReddit"
             type="checkbox"
-            bind:checked={useOldReddit}
-            on:change={() => storage.saveOptions({ useOldReddit })}
+            bind:checked={$storageData.options.useOldReddit}
+            on:change={() => storage.saveOptions({ useOldReddit: $storageData.options.useOldReddit })}
         />
     </div>
 </OptionsItem>

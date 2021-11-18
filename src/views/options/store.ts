@@ -14,5 +14,6 @@ function createStore() {
     };
 }
 
+export { storageData } from '@/views/popup/store/store';
 // used for throttling requests from settings page
 export const isBlocked = createStore();

@@ -15,7 +15,9 @@
     <title>{$pageInfo.title}</title>
 </svelte:head>
 
-<div class="grid grid-cols-[max-content,auto] gap-4 p-3 justify-center bg-skin-base text-skin-base min-h-screen">
+<div
+    class="grid grid-cols-[max-content,minmax(auto,42rem)] gap-4 p-3 justify-center min-h-screen bg-skin-base text-skin-base w-screen"
+>
     <div>
         <Sidebar current={$pageInfo.page} />
     </div>

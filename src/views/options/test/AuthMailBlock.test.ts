@@ -6,6 +6,9 @@ import storage from '@/storage/storage';
 import type { ExtensionOptions } from '@/types/extension-options';
 import getMsg from '@/utils/get-message';
 import AuthMailBlock from '../components/AuthMailBlock.svelte';
+import { dataFields } from '@/storage/fields';
+import DEFAULT_OPTIONS from '@/options-default';
+import { tick } from 'svelte';
 
 jest.mock('@/storage/storage.ts');
 jest.mock('@/utils/get-message.ts');
@@ -17,18 +20,26 @@ function optionSaved(opt: Partial<ExtensionOptions>) {
 
 const mockStorage = mocked(storage);
 describe('Mail and authorization settings', () => {
+    beforeEach(() => {
+        mockBrowser.storage.onChanged.addListener.spy(() => ({}));
+        mockBrowser.storage.onChanged.removeListener.spy(() => ({}));
+    });
+
     afterEach(() => jest.clearAllMocks());
 
     test('Is authorized state', async () => {
-        mockStorage.getAuthData.mockImplementation(async () => ({ refreshToken: 'token' }));
-        const { getByText, getByLabelText } = render(AuthMailBlock, { messages: true, messagesNotify: true });
-        let btn: HTMLElement;
-
-        await waitFor(async () => {
-            btn = getByText(getMsg('optionSignOutBtn'));
-            expect(btn).toBeInTheDocument();
-            expect(getByText(getMsg('optionIsAuthMsg'))).toBeInTheDocument();
+        mockStorage.getAllData.mockResolvedValueOnce({
+            ...dataFields,
+            refreshToken: 'refreshToken',
+            options: { ...DEFAULT_OPTIONS, messages: true, messagesNotify: true },
         });
+        const { getByText, getByLabelText } = render(AuthMailBlock);
+
+        await tick();
+
+        const btn = getByText(getMsg('optionSignOutBtn'));
+        expect(btn).toBeInTheDocument();
+        expect(getByText(getMsg('optionIsAuthMsg'))).toBeInTheDocument();
 
         const watchmail = getByLabelText(getMsg('optionMailShow'), { exact: false });
         const notify = getByLabelText(getMsg('optionMailNotify'), { exact: false });
@@ -46,16 +57,15 @@ describe('Mail and authorization settings', () => {
     });
 
     test('Not authorized state', async () => {
-        mockStorage.getAuthData.mockImplementation(async () => ({ refreshToken: undefined }));
-        const { getByText, getByLabelText } = render(AuthMailBlock, { messages: false, messagesNotify: false });
+        mockStorage.getAllData.mockResolvedValueOnce({ ...dataFields });
+        const { getByText, getByLabelText } = render(AuthMailBlock);
+        await tick();
 
-        await waitFor(async () => {
-            const btn = getByText(getMsg('optionStartAuthBtn'));
-            expect(btn).toBeInTheDocument();
-            expect(getByText(getMsg('optionNoAuthMsg'))).toBeInTheDocument();
-            await fireEvent.click(btn);
-            expect(auth.login).toHaveBeenCalled();
-        });
+        const btn = getByText(getMsg('optionStartAuthBtn'));
+        expect(btn).toBeInTheDocument();
+        expect(getByText(getMsg('optionNoAuthMsg'))).toBeInTheDocument();
+        await fireEvent.click(btn);
+        expect(auth.login).toHaveBeenCalled();
 
         const watchmail = getByLabelText(getMsg('optionMailShow'), { exact: false });
         const notify = getByLabelText(getMsg('optionMailNotify'), { exact: false });

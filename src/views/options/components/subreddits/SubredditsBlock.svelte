@@ -1,15 +1,12 @@
 <script lang="ts">
     import { AddIcon } from '@/views/options/icons';
     import type { RedditError } from '@/reddit-api/reddit-types';
-    import type { SubredditData } from '@/storage/storage-types';
     import getMsg from '@/utils/get-message';
     import { flip } from 'svelte/animate';
     import { fade } from 'svelte/transition';
     import SubredditInput from './SubredditInput.svelte';
     import { subredditStore } from './subreddits-store';
-
-    // export let subredditList: SubredditOpts[];
-    export let subredditsData: Record<string, SubredditData>;
+    import { storageData } from '../../../popup/store/store';
 
     const formatError = (e: RedditError) =>
         e ? `Error during the latest fetch: ${e.error} ${e.message} ${e.reason ? '(' + e.reason + ')' : ''}` : '';
@@ -25,7 +22,7 @@
     </div>
     {#each $subredditStore as subOpts (subOpts.id)}
         <div class="mb-1" transition:fade|local={{ duration: 200 }} animate:flip={{ delay: 230, duration: 150 }}>
-            <SubredditInput bind:subOpts error={formatError(subredditsData[subOpts.id]?.error)} />
+            <SubredditInput bind:subOpts error={formatError($storageData.subreddits[subOpts.id]?.error)} />
         </div>
     {/each}
     <button

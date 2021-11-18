@@ -10,7 +10,9 @@
 
     export let subOpts: SubredditOpts;
     export let error = '';
-    $inputStatusStore[subOpts.id] = { error };
+    $: if (error) {
+        $inputStatusStore[subOpts.id] = { error };
+    }
 
     let inputStatus: InputStatus = {};
     let isActive = !subOpts.disabled;

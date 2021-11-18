@@ -3,6 +3,7 @@
     import { onDestroy, onMount, tick } from 'svelte';
     import type { Unsubscriber } from 'svelte/store';
     import { pageInfo } from '../routes';
+    import { storageData } from '../store';
     import AuthMailBlock from './AuthMailBlock.svelte';
     import FollowUsersBlock from './FollowUsersBlock.svelte';
     import GeneralSettingsBlock from './GeneralSettingsBlock.svelte';
@@ -28,31 +29,32 @@
     onDestroy(() => void destroy?.());
 </script>
 
-<div>
-    {#await dataPromise then data}
+<div class="w-full">
+    {#if $storageData.isLoaded}
         <Heading id={'#settings'} level={1} />
         <section>
             <Heading id={'#settings__general'} />
-            <GeneralSettingsBlock options={data.options} />
+            <GeneralSettingsBlock />
         </section>
+
         <section>
             <Heading id={'#settings__mail'} />
-            <AuthMailBlock messages={data.options.messages} messagesNotify={data.options.messagesNotify} />
+            <AuthMailBlock />
         </section>
         <section>
             <Heading id={'#settings__subreddit'} />
-            <SubredditsBlock subredditsData={data.subreddits} />
+            <SubredditsBlock />
         </section>
         <section>
             <Heading id={'#settings__reddit-search'} />
-            <SearchBlock queriesData={data.queries} queriesList={data.queriesList} />
+            <SearchBlock queriesListStore={$storageData.queriesList} />
         </section>
         <section>
             <Heading id="#settings__follow-user" />
-            <FollowUsersBlock options={data.options} usersList={data.usersList} />
+            <FollowUsersBlock />
         </section>
         <div class="h-[80vh]" />
-    {/await}
+    {/if}
 </div>
 
 <style lang="postcss">

@@ -3,13 +3,17 @@
     import type { StorageFields } from '@/storage/storage-types';
     import type { ExtensionOptions } from '@/types/extension-options';
     import { AddIcon } from '@/views/options/icons';
+    import { storageData } from '../../popup/store/store';
     import FollowUserInput from './FollowUserInput.svelte';
 
-    export let options: ExtensionOptions;
-    export let usersList: StorageFields['usersList'] = [];
+    let options: ExtensionOptions = $storageData.options;
+    let usersList: StorageFields['usersList'] = $storageData.usersList;
+
+    $: options = $storageData.options;
+    $: usersList = $storageData.usersList;
 
     const addUser = () => {
-        usersList = [...usersList, { username: '', data: [], watch: 'overview' }];
+        $storageData.usersList = [...usersList, { username: '', data: [], watch: 'overview' }];
     };
 
     if (!usersList.length) addUser();
@@ -26,7 +30,7 @@
     };
 
     const removeUser = (index: number) => {
-        usersList = usersList.filter((_, idx) => index !== idx);
+        $storageData.usersList = usersList.filter((_, idx) => index !== idx);
         saveInputs();
     };
 </script>

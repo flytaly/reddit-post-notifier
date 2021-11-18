@@ -24,7 +24,7 @@
 
 <style lang="postcss">
     article {
-        @apply flex flex-row items-start font-normal text-sm  mb-6;
+        @apply flex flex-row items-start font-normal text-sm  mb-6 overflow-hidden;
     }
     .column {
         flex-direction: column;
@@ -33,7 +33,7 @@
         @apply text-skin-gray flex-grow pr-4 mb-2;
     }
     :not(.column) .description :global([slot='description']) {
-        max-width: 80%;
+        max-width: 90%;
     }
     header {
         @apply text-skin-base font-bold text-base mb-2;

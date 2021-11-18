@@ -8,7 +8,10 @@ import storage from '@/storage';
 import { dataFields } from '@/storage/fields';
 import type { StorageFields } from '@/storage/storage-types';
 
-const defaultState = { ...dataFields };
+const defaultState = {
+    ...dataFields,
+    isLoaded: false,
+};
 
 export const isUpdating = readable(false, (set) => {
     connectToBg('popup');
@@ -28,29 +31,18 @@ export const isUpdating = readable(false, (set) => {
 export const storageData = writable(defaultState, () => {
     // Restore data from storage
     void storage.getAllData().then((data) => {
-        storageData.update((prev) => ({ ...prev, ...data }));
+        storageData.update((prev) => ({ ...prev, ...data, isLoaded: true }));
     });
 
     const listener = (changes: { [s in keyof StorageFields]: Storage.StorageChange }) => {
-        const { pinnedPostList, subredditList, subreddits, queries, queriesList, messages } = changes;
-        if (pinnedPostList?.newValue) {
-            storageData.update((prev) => ({ ...prev, pinnedPostList: [...pinnedPostList.newValue] }));
-        }
-        if (subreddits?.newValue) {
-            storageData.update((prev) => ({ ...prev, subreddits: { ...subreddits.newValue } }));
-        }
-        if (queries?.newValue) {
-            storageData.update((prev) => ({ ...prev, queries: { ...queries.newValue } }));
-        }
-        if (messages?.newValue) {
-            storageData.update((prev) => ({ ...prev, messages: { ...messages.newValue } }));
-        }
-        if (queriesList?.newValue) {
-            storageData.update((prev) => ({ ...prev, queriesList: [...queriesList.newValue] }));
-        }
-        if (subredditList?.newValue) {
-            storageData.update((prev) => ({ ...prev, subredditList: [...subredditList.newValue] }));
-        }
+        changes;
+
+        const obj: Partial<StorageFields> = {};
+        Object.keys(changes).map((changeKey: keyof StorageFields) => {
+            // @ts-ignore
+            obj[changeKey] = changes[changeKey]?.newValue;
+        });
+        storageData.update((prev) => ({ ...prev, ...obj }));
     };
     browser.storage.onChanged.addListener(listener);
 

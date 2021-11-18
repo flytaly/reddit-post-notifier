@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/unbound-method */
 import GeneralSettingsBlock from '../components/GeneralSettingsBlock.svelte';
-import { fireEvent, render } from '@testing-library/svelte';
+import { fireEvent, render, waitFor } from '@testing-library/svelte';
 import DEFAULT_OPTIONS from '@/options-default';
 import getMsg from '@/utils/get-message';
 import storage from '@/storage/storage';
@@ -8,25 +8,47 @@ import { sendToBg } from '@/port';
 import type { ExtensionOptions } from '@/types/extension-options';
 import applyTheme from '@/utils/apply-theme';
 import type { notificationSoundFiles } from '@/sounds';
+import { dataFields } from '@/storage/fields';
+import { mocked } from 'ts-jest/utils';
+import { tick } from 'svelte';
 
 jest.mock('@/storage/storage.ts');
 jest.mock('@/utils/get-message.ts');
 jest.mock('@/utils/apply-theme.ts');
 jest.mock('@/port');
 
+const mockedStorage = mocked(storage);
+const mockStorageData = (opts?: Partial<ExtensionOptions>) => {
+    mockedStorage.getAllData.mockResolvedValue({
+        ...dataFields,
+        options: { ...DEFAULT_OPTIONS, ...(opts || {}) },
+    });
+};
+
 function optionSaved(opt: Partial<ExtensionOptions>) {
     expect(storage.saveOptions).toHaveBeenCalledWith(opt);
 }
 
 describe('General Options', () => {
-    afterEach(() => jest.clearAllMocks());
+    beforeEach(() => {
+        mockBrowser.storage.onChanged.addListener.spy(() => ({}));
+        mockBrowser.storage.onChanged.removeListener.spy(() => ({}));
+    });
+
+    afterEach(() => {
+        return jest.clearAllMocks();
+    });
 
     test('Update interval', async () => {
-        //
-        const { getByLabelText } = render(GeneralSettingsBlock, { options: DEFAULT_OPTIONS });
+        const updateInterval = 120;
+        mockStorageData({ updateInterval });
+
+        const { getByLabelText } = render(GeneralSettingsBlock);
         const input = getByLabelText(getMsg('optionUpdateInterval'), { exact: false });
         expect(input).toBeInTheDocument();
-        expect(input).toHaveValue(DEFAULT_OPTIONS.updateInterval);
+        await waitFor(() => {
+            expect(input).toHaveValue(updateInterval);
+        });
         await fireEvent.input(input, { target: { value: 90 } });
         optionSaved({ updateInterval: 90 });
         expect(sendToBg).toHaveBeenCalledWith('SCHEDULE_NEXT_UPDATE');
@@ -43,12 +65,14 @@ describe('General Options', () => {
             expect(applyTheme).toHaveBeenCalledWith(theme);
             optionSaved({ theme });
         };
-        const { getByLabelText } = render(GeneralSettingsBlock, { options: DEFAULT_OPTIONS });
+        mockStorageData({ theme: 'purple' });
+        const { getByLabelText } = render(GeneralSettingsBlock);
         const auto = getByLabelText(getMsg('optionThemeAuto'));
         const form: HTMLFormElement = auto.closest('form');
-        expect(form).toBeInTheDocument();
-        expect(form).toHaveFormValues({ theme: 'auto' });
-
+        await waitFor(() => {
+            expect(form).toBeInTheDocument();
+            expect(form).toHaveFormValues({ theme: 'purple' });
+        });
         await fireEvent.click(getByLabelText(getMsg('optionThemeLight')));
         check('light');
         await fireEvent.click(getByLabelText(getMsg('optionThemeDark')));
@@ -60,7 +84,9 @@ describe('General Options', () => {
     });
 
     test('delete after click', async () => {
-        const { getByLabelText } = render(GeneralSettingsBlock, { options: DEFAULT_OPTIONS });
+        mockStorageData();
+        const { getByLabelText } = render(GeneralSettingsBlock);
+        await tick();
 
         const input = getByLabelText(getMsg('optionDelPostAfterClick'), { exact: false });
         expect(input).not.toBeChecked();
@@ -69,7 +95,9 @@ describe('General Options', () => {
     });
 
     test('hide empty groups', async () => {
-        const { getByLabelText } = render(GeneralSettingsBlock, { options: DEFAULT_OPTIONS });
+        mockStorageData();
+        const { getByLabelText } = render(GeneralSettingsBlock);
+        await tick();
         const input = getByLabelText(getMsg('optionHideEmptyGroupsDescription'), { exact: false });
         expect(input).not.toBeChecked();
         await fireEvent.click(input);
@@ -77,7 +105,9 @@ describe('General Options', () => {
     });
 
     test('notification sound', async () => {
-        const { getByLabelText } = render(GeneralSettingsBlock, { options: DEFAULT_OPTIONS });
+        mockStorageData();
+        const { getByLabelText } = render(GeneralSettingsBlock);
+        await tick();
         const select = getByLabelText(getMsg('optionNotificationAudioId'), { exact: false });
         expect(select).toHaveValue('null');
         const id = 'sound_01' as keyof typeof notificationSoundFiles;
@@ -88,7 +118,9 @@ describe('General Options', () => {
     });
 
     test('use old reddit', async () => {
-        const { getByLabelText } = render(GeneralSettingsBlock, { options: DEFAULT_OPTIONS });
+        mockStorageData();
+        const { getByLabelText } = render(GeneralSettingsBlock);
+        await tick();
         const checkbox = getByLabelText(getMsg('optionUseOldReddit'), { exact: false });
         expect(checkbox).not.toBeChecked();
         await fireEvent.click(checkbox);
