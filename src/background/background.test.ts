@@ -45,6 +45,7 @@ describe('Start extension', () => {
         expect(initializeBgListener).toHaveBeenCalled();
         expect(watchAlarms).toHaveBeenCalled();
         expect(updateAndSchedule).toHaveBeenCalled();
+        expect(mocked(updateAndSchedule).mock.calls.flat(1)).toHaveLength(0);
 
         jest.clearAllMocks();
 
@@ -53,7 +54,7 @@ describe('Start extension', () => {
         expect(msgCallbacks.has('SCHEDULE_NEXT_UPDATE')).toBeTruthy();
 
         await msgCallbacks.get('UPDATE_NOW')();
-        expect(updateAndSchedule).toHaveBeenCalled();
+        expect(updateAndSchedule).toHaveBeenCalledWith(true);
 
         await msgCallbacks.get('SCHEDULE_NEXT_UPDATE')();
         expect(scheduleNextUpdate).toHaveBeenCalled();

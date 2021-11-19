@@ -1,5 +1,6 @@
 /* eslint-disable @typescript-eslint/unbound-method */
 import { postFilter } from '@/text-search/post-filter';
+import { cloneDeep } from 'lodash';
 import { mocked } from 'ts-jest/utils';
 import DEFAULT_OPTIONS from '../options-default';
 import RedditApiClient from '../reddit-api/client';
@@ -8,6 +9,7 @@ import storage from '../storage';
 import { dataFields } from '../storage/fields';
 import type { FollowingUser, PostFilterOptions, StorageFields } from '../storage/storage-types';
 import { generateMessage, generatePost, generatePosts, generateQuery } from '../test-utils/content-generators';
+import { mockDate, restoreDate } from '../test-utils/mock-date';
 import type { ExtensionOptions } from '../types/extension-options';
 import { getSearchQueryUrl } from '../utils';
 import app from './app';
@@ -227,6 +229,7 @@ describe('update user', () => {
     const mockUserOverview = mocked(mockClient.user('').overview);
     const mockUserComments = mocked(mockClient.user('').comments);
     const mockUserSubmitted = mocked(mockClient.user('').submitted);
+    afterEach(() => jest.clearAllMocks());
 
     test("should update users' activities ", async () => {
         const oldPosts = generatePosts(2);
@@ -279,5 +282,53 @@ describe('update user', () => {
                 lastPostCreated: posts[0].data.created,
             } as FollowingUser),
         ]);
+    });
+
+    describe('throttle requests', () => {
+        const ts = Date.now();
+        const usersList: FollowingUser[] = [
+            { username: 'u1', lastUpdate: ts - 1000 * 65 },
+            { username: 'u2', lastUpdate: ts - 1000 * 300 },
+            { username: 'u3', lastUpdate: ts - 1000 * 600 },
+            { username: 'u4' },
+        ];
+
+        beforeAll(() => mockDate(ts));
+        afterAll(() => restoreDate());
+
+        test('should skip updating users that were updated recently', async () => {
+            mockStorageData({
+                usersList: cloneDeep(usersList),
+                options: getOpts({ pollUserInterval: 600 }),
+            });
+            await app.update();
+            expect(mockUser.mock.calls.flat(1)).toEqual(['u3', 'u4']);
+        });
+        test('should skip all except new ones', async () => {
+            mockStorageData({
+                usersList: cloneDeep(usersList),
+                options: getOpts({ pollUserInterval: 900 }),
+            });
+            await app.update();
+            expect(mockUser.mock.calls.flat(1)).toEqual(['u4']);
+        });
+
+        test('should not skip', async () => {
+            mockStorageData({
+                usersList: cloneDeep(usersList),
+                options: getOpts({ pollUserInterval: 60 }),
+            });
+            await app.update();
+            expect(mockUser.mock.calls.flat(1)).toEqual(['u1', 'u2', 'u3', 'u4']);
+        });
+
+        test('should not skip if update was initiated by the user', async () => {
+            mockStorageData({
+                usersList: cloneDeep(usersList),
+                options: getOpts({ pollUserInterval: 900 }),
+            });
+            await app.update(true);
+            expect(mockUser.mock.calls.flat(1)).toEqual(['u1', 'u2', 'u3', 'u4']);
+        });
     });
 });
