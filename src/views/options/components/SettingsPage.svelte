@@ -2,7 +2,7 @@
     import storage from '@/storage/storage';
     import { onDestroy, onMount, tick } from 'svelte';
     import type { Unsubscriber } from 'svelte/store';
-    import { pageInfo } from '../routes';
+    import { pageInfo, sections } from '../routes';
     import { storageData } from '../store';
     import AuthMailBlock from './AuthMailBlock.svelte';
     import FollowUsersBlock from './FollowUsersBlock.svelte';
@@ -31,7 +31,10 @@
 
 <div class="w-full">
     {#if $storageData.isLoaded}
-        <Heading id={'#settings'} level={1} />
+        <h1 class="text-2xl uppercase font-bold tracking-widest text-skin-gray mb-4">
+            {sections['#settings'].name}
+        </h1>
+
         <section>
             <Heading id={'#settings__general'} />
             <GeneralSettingsBlock />

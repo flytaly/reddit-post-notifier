@@ -105,10 +105,8 @@
 
         <div />
         <div class="-mt-1">
-            <a
-                class="text-skin-link underline text-sm"
-                href="https://www.reddit.com/wiki/search#wiki_field_search"
-                target="_blank">{getMsg('optionSearchWiki')}</a
+            <a class="underline text-sm" href="https://www.reddit.com/wiki/search#wiki_field_search" target="_blank"
+                >{getMsg('optionSearchWiki')}</a
             >
         </div>
 

@@ -4,6 +4,7 @@
     import applyTheme from '@/utils/apply-theme';
     import { pageInfo } from '../routes';
     import Sidebar from './Sidebar.svelte';
+    import ShortInfo from './info/ShortInfo.svelte';
 
     onMount(() => {
         void applyTheme();
@@ -15,11 +16,16 @@
     <title>{$pageInfo.title}</title>
 </svelte:head>
 
-<div class="grid grid-cols-[max-content,minmax(auto,42rem)] gap-4 p-3 justify-center  bg-skin-base text-skin-base">
-    <div>
+<div
+    class="grid grid-cols-[max-content,minmax(auto,42rem)] gap-x-4 p-3 pt-0 justify-center  bg-skin-base text-skin-base"
+>
+    <div class="sticky top-0">
         <Sidebar current={$pageInfo.page} />
     </div>
     <div class="w-full max-w-2xl">
+        <div class="mt-4 mb-5">
+            <ShortInfo />
+        </div>
         <svelte:component this={$pageInfo.cmp} />
     </div>
 </div>

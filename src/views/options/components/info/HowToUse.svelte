@@ -55,10 +55,6 @@
 </div>
 
 <style lang="postcss">
-    a {
-        @apply text-skin-link;
-    }
-
     header {
         @apply font-bold text-base mb-2;
     }

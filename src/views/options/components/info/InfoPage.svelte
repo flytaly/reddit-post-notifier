@@ -1,12 +1,10 @@
 <script lang="ts">
     import { onDestroy, onMount } from 'svelte';
-    import ShortcutsTable from './ShortcutsTable.svelte';
-    import ShortInfo from './ShortInfo.svelte';
-    import HowToUse from './HowToUse.svelte';
-
-    import { pageInfo } from '../../routes';
     import type { Unsubscriber } from 'svelte/store';
+    import { pageInfo } from '../../routes';
     import Heading from '../Heading.svelte';
+    import HowToUse from './HowToUse.svelte';
+    import ShortcutsTable from './ShortcutsTable.svelte';
 
     let destroy: Unsubscriber;
     onMount(() => {
@@ -18,10 +16,6 @@
     onDestroy(() => void destroy());
 </script>
 
-<section class="mb-8">
-    <Heading id="#info" level={1} />
-    <ShortInfo />
-</section>
 <section class="mb-8">
     <Heading id="#info__how-to-use" />
     <HowToUse />

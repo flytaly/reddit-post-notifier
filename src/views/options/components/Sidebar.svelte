@@ -14,19 +14,15 @@
 </script>
 
 <aside>
-    <a href="#info" class="self-center">
+    <a href="#settings" class="self-center text-skin-base hover:text-skin-base">
         <div class="logo">
             {@html LogoIcon}
         </div>
-        <div class="font-bold text-center mb-3">Reddit Post <br /> Notifier</div>
     </a>
     <nav class="flex flex-col">
         {#each navItems as { key, name, level } (key)}
-            <a
-                href={key}
-                class="hover:text-skin-accent leading-8"
-                class:current={current === key}
-                class:level2={level === 2}>{name}</a
+            <a href={key} class="leading-8 text-skin-base" class:current={current === key} class:level2={level === 2}
+                >{name}</a
             >
         {/each}
     </nav>
@@ -43,6 +39,9 @@
     .logo :global(.eye) {
         /* ? @apply doesn't work here for some reason */
         fill: var(--color-accent);
+    }
+    .logo:hover :global(.eye) {
+        fill: var(--color-accent2);
     }
     .current {
         @apply text-skin-accent font-bold;
