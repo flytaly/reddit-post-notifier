@@ -1,6 +1,6 @@
 <script lang="ts">
     import storage from '@/storage';
-    import type { StorageFields } from '@/storage/storage-types';
+    import type { FollowingUser, StorageFields } from '@/storage/storage-types';
     import type { ExtensionOptions } from '@/types/extension-options';
     import { AddIcon } from '@/views/options/icons';
     import DEFAULT_OPTIONS from '../../../options-default';
@@ -15,25 +15,39 @@
     $: options = $storageData.options;
     $: usersList = $storageData.usersList;
 
-    const addUser = () => {
-        $storageData.usersList = [...usersList, { username: '', data: [], watch: 'overview' }];
+    /** save number of inputs to restore them after rerender cased by saving in the storage */
+    let prevLen = usersList.length;
+
+    const addUsers = (num = 1) => {
+        const newUsers = Array.from({ length: num }).map(() => ({
+            username: '',
+            data: [],
+            watch: 'overview',
+        })) as FollowingUser[];
+
+        $storageData.usersList = [...usersList, ...newUsers];
+        prevLen = $storageData.usersList.length;
     };
 
-    if (!usersList.length) addUser();
+    $: if (!usersList.length || usersList.length < prevLen) addUsers(Math.max(prevLen - usersList.length || 1));
 
     const saveInputs = () => {
         const saved = new Set<string>();
-        void storage.saveUsersList(
-            usersList.filter((u) => {
-                if (!u.username || saved.has(u.username)) return false;
-                saved.add(u.username);
-                return true;
-            }),
-        );
+
+        const unique = usersList.filter((u) => {
+            if (!u.username || saved.has(u.username)) return false;
+            saved.add(u.username);
+            return true;
+        });
+
+        usersList.length = unique.length;
+
+        void storage.saveUsersList(unique);
     };
 
     const removeUser = (index: number) => {
-        $storageData.usersList = usersList.filter((_, idx) => index !== idx);
+        usersList = usersList.filter((_, idx) => index !== idx);
+        prevLen = usersList.length;
         saveInputs();
     };
 
@@ -89,7 +103,7 @@
     </div>
     <button
         class="flex items-center rounded p-1 bg-transparent  border-transparent hover:border-skin-accent2 text-skin-accent2"
-        on:click={addUser}
+        on:click={() => addUsers()}
     >
         <span class="w-5 h-5 mr-1">
             {@html AddIcon}
