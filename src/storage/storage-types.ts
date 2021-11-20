@@ -12,6 +12,7 @@ export type AuthData = {
     accessToken?: string;
     expiresIn?: number;
     refreshToken?: string;
+    scope?: string;
 };
 
 export type PostFilterOptions = {

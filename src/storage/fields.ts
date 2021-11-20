@@ -5,6 +5,7 @@ export const authDataDefault: AuthData = {
     accessToken: '',
     expiresIn: 0,
     refreshToken: '',
+    scope: '',
 };
 
 export const dataFields: StorageFields = {

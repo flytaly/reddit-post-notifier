@@ -2,6 +2,7 @@
 
 import { browser } from 'webextension-polyfill-ts';
 import DEFAULT_OPTIONS from '../options-default';
+import type { TokenResponseBody } from '../reddit-api/auth';
 import type { RedditMessage, RedditPost, RedditPostExtended } from '../reddit-api/reddit-types';
 import type { ExtensionOptions } from '../types/extension-options';
 import { filterKeys, filterPostDataProperties, generateId } from '../utils';
@@ -15,6 +16,7 @@ import type {
     SubredditData,
     SubredditOpts,
     FollowingUser,
+    StorageFields,
 } from './storage-types';
 
 const storage = {
@@ -71,11 +73,13 @@ const storage = {
         return browser.storage.local.get(dataFields) as Promise<SF>;
     },
 
-    async saveAuthData(data: { access_token?: string; expires_in?: number | string; refresh_token?: string }) {
+    // async saveAuthData(data: { access_token?: string; expires_in?: number | string; refresh_token?: string }) {
+    async saveAuthData(data: TokenResponseBody) {
         const {
             access_token: accessToken, //
             expires_in: expiresInRelative,
             refresh_token: refreshToken,
+            scope,
         } = data;
 
         const expiresIn: number | undefined = expiresInRelative && new Date().getTime() + +expiresInRelative * 1000;
@@ -84,7 +88,8 @@ const storage = {
             ...(accessToken && { accessToken }),
             ...(refreshToken && { refreshToken }),
             ...(expiresIn && { expiresIn }),
-        });
+            scope: scope,
+        } as StorageFields);
     },
 
     async saveMessageData({ newMessages, count }: { newMessages: RedditMessage[]; count: number }) {

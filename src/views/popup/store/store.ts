@@ -35,8 +35,6 @@ export const storageData = writable(defaultState, () => {
     });
 
     const listener = (changes: { [s in keyof StorageFields]: Storage.StorageChange }) => {
-        changes;
-
         const obj: Partial<StorageFields> = {};
         Object.keys(changes).map((changeKey: keyof StorageFields) => {
             // @ts-ignore

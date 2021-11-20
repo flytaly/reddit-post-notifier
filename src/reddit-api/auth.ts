@@ -7,7 +7,7 @@ import { browser } from 'webextension-polyfill-ts';
 
 const { clientId, clientSecret, redirectUri, userAgent } = config;
 
-type TokenResponseBody = {
+export type TokenResponseBody = {
     access_token: string;
     refresh_token: string;
     expires_in: string;
@@ -132,16 +132,13 @@ const auth = {
         return body.access_token;
     },
 
-    /**
-     * Start OAUTH2 authorization flow
-     * @return accessToken
-     */
+    /** Start OAUTH2 authorization flow */
     async login() {
-        this.authState = this.generateAuthState();
-        const code = await this.getAuthCode(this.authState);
+        auth.authState = auth.generateAuthState();
+        const code = await auth.getAuthCode(auth.authState);
         if (!code) throw new AuthError("Couldn't get auth code");
 
-        const authData = await this.getTokens(code);
+        const authData = await auth.getTokens(code);
         await storage.saveAuthData(authData);
     },
 };

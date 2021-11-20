@@ -142,7 +142,11 @@
     <div class="ios-checkbox" />
     <span>Posts</span>
 </label>
-<label class="flex items-center justify-center text-sm ml-1" tabindex="0">
+<label
+    class="flex items-center justify-center text-sm ml-1"
+    tabindex="0"
+    title="Show notification on new user activities"
+>
     <input class="hidden peer" type="checkbox" bind:checked={userInfo.notify} on:change={commitChanges} />
     <div
         class={`flex items-center justify-center select-none
@@ -176,7 +180,7 @@
             on:click={() => void fetchUser()}
             disabled={$isBlocked}
         >
-            click to fetch and display the latest user's activities
+            click here to fetch and display the latest user's activities
         </button>
         <div class="ml-2">
             {#if isLoading}

@@ -42,6 +42,7 @@ const authSuccessBody = {
     access_token: 'fakeToken',
     refresh_token: 'fakeRefreshToken',
     expires_in: new Date(Date.now() + 3600),
+    scope: 'scope',
 };
 
 const jsonResponse = (result: unknown, status = 200) => {

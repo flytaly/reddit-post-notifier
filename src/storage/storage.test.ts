@@ -29,25 +29,26 @@ describe('authorization data', () => {
     const accessToken = 'accessToken';
     const refreshToken = 'refreshToken';
     const expiresIn = 3600;
+    const scope = 'scope';
 
     test('should save authorization data', async () => {
         const authDataFake = {
             access_token: accessToken,
-            expires_in: expiresIn,
+            expires_in: String(expiresIn),
             refresh_token: refreshToken,
             token_type: 'tokenType',
-            scope: 'scope',
+            scope,
         };
         mockDate('2019-02-17T00:25:58.000Z');
         const expiresInAbsolute = new Date().getTime() + expiresIn * 1000;
-        const expected = { accessToken, refreshToken, expiresIn: expiresInAbsolute };
+        const expected = { accessToken, refreshToken, expiresIn: expiresInAbsolute, scope: 'scope' };
         mockSet.expect(expect.objectContaining(expected));
         await storage.saveAuthData(authDataFake);
     });
 
     test('should return authorization data', async () => {
         const result = { accessToken, refreshToken, expiresIn };
-        const exp = expect.objectContaining({ accessToken: '', expiresIn: 0, refreshToken: '' });
+        const exp = expect.objectContaining({ accessToken: '', expiresIn: 0, refreshToken: '', scope: '' });
         mockGet.expect(exp).andResolve(result);
         await expect(storage.getAuthData()).resolves.toBe(result);
     });
