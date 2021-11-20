@@ -13,7 +13,7 @@ import { mockDate, restoreDate } from '../test-utils/mock-date';
 import type { ExtensionOptions } from '../types/extension-options';
 import { getSearchQueryUrl } from '../utils';
 import app from './app';
-import notify, { NotificationId } from './notifications';
+import notify, { NewPostsNotification, NotificationId } from './notifications';
 
 jest.mock('../storage/storage.ts');
 jest.mock('../reddit-api/client.ts');
@@ -282,6 +282,46 @@ describe('update user', () => {
                 lastPostCreated: posts[0].data.created,
             } as FollowingUser),
         ]);
+    });
+
+    describe('notifications', () => {
+        const usersList: FollowingUser[] = [
+            { username: 'user1', watch: 'overview', notify: true },
+            { username: 'user2', watch: 'comments', notify: true },
+            { username: 'user3', watch: 'submitted', notify: true },
+            { username: 'user4', watch: 'submitted', notify: false },
+        ];
+        const posts = generatePosts(3);
+        const comments = posts as unknown as RedditComment[];
+        const len = posts.length;
+
+        beforeAll(() => {
+            mockUserOverview.mockResolvedValue({ kind: 'Listing', data: { children: posts } });
+            mockUserComments.mockResolvedValue({ kind: 'Listing', data: { children: comments } });
+            mockUserSubmitted.mockResolvedValue({ kind: 'Listing', data: { children: posts } });
+        });
+        afterEach(() => jest.clearAllMocks());
+
+        test('should notify (new reddit)', async () => {
+            mockStorageData({ usersList: cloneDeep(usersList), options: getOpts({ notificationSoundId: 'sound_02' }) });
+            await app.update();
+            const expected: NewPostsNotification[] = [
+                { len, link: `https://reddit.com/user/user1`, name: 'user1' },
+                { len, link: `https://reddit.com/user/user2/comments`, name: 'user2' },
+                { len, link: `https://reddit.com/user/user3/posts`, name: 'user3' },
+            ];
+            expect(mockNotify).toHaveBeenCalledWith(NotificationId.user, expected, 'sound_02');
+        });
+        test('should notify (old reddit)', async () => {
+            mockStorageData({ usersList: cloneDeep(usersList), options: getOpts({ useOldReddit: true }) });
+            await app.update();
+            const expected: NewPostsNotification[] = [
+                { len, link: `https://old.reddit.com/user/user1`, name: 'user1' },
+                { len, link: `https://old.reddit.com/user/user2/comments`, name: 'user2' },
+                { len, link: `https://old.reddit.com/user/user3/submitted`, name: 'user3' },
+            ];
+            expect(mockNotify).toHaveBeenCalledWith(NotificationId.user, expected, null);
+        });
     });
 
     describe('throttle requests', () => {

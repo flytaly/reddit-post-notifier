@@ -23,6 +23,7 @@ type NotificationOpts = Notifications.CreateNotificationOptions;
 export enum NotificationId {
     mail = 'mail',
     post = 'post',
+    user = 'user',
 }
 
 export type NewPostsNotification = { len: number; link: string; name: string };
@@ -31,12 +32,12 @@ export type NotificationBatch = RedditMessage[] | NewPostsNotification[];
 function notify(type: NotificationId, items: NotificationBatch = [], soundId?: SoundId) {
     if (!items.length) return;
 
-    async function createNotification(id: string, options: NotificationOpts, payload) {
+    async function createNotification(id: string, options: NotificationOpts, links: string[]) {
         await browser.notifications.create(id, options);
         if (soundId) {
             void playAudio(soundId);
         }
-        if (payload) void storage.saveNotificationsData(id, payload);
+        if (links) void storage.saveNotificationsData(id, links);
     }
 
     const opts = {
@@ -69,6 +70,17 @@ function notify(type: NotificationId, items: NotificationBatch = [], soundId?: S
 
         const links = items.filter((item) => item.link).map((item) => item.link);
         void createNotification(`${NotificationId.post}__${Date.now()}`, nOpts, [...links]);
+    }
+
+    if (type === NotificationId.user) {
+        items = items as NewPostsNotification[];
+        const nOpts = {
+            ...opts,
+            title: 'Reddit: new users activities',
+            message: items.map(({ len, name }) => `${name} (${len})`).join(', '),
+        };
+        const links = items.filter((item) => item.link).map((item) => item.link);
+        void createNotification(`${NotificationId.post}__${Date.now()}`, nOpts, links);
     }
 }
 

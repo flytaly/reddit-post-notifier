@@ -29,6 +29,19 @@ export const getSearchQueryUrl = (query: string, subreddit = '', oldReddit = fal
     return `${oldReddit ? redditOldUrl : redditUrl}${endpoint}`;
 };
 
+export const getUserProfileUrl = (
+    username: string,
+    type: 'overview' | 'submitted' | 'comments' = 'overview',
+    oldReddit = false,
+) => {
+    const base = `${oldReddit ? redditOldUrl : redditUrl}/user/${username}`;
+    if (type === 'comments') return `${base}/comments`;
+    if (type === 'submitted') {
+        return oldReddit ? `${base}/submitted` : `${base}/posts`;
+    }
+    return base;
+};
+
 export const debounce = (func: (...args: unknown[]) => unknown, waitMs: number) => {
     let waiting = false;
     let tmId;

@@ -12,7 +12,8 @@ import {
 import storage from '../storage';
 import type { FollowingUser, MessageData, QueryOpts, StorageFields, SubredditOpts } from '../storage/storage-types';
 import { postFilter } from '../text-search/post-filter';
-import { filterPostDataProperties, getSearchQueryUrl, getSubredditUrl } from '../utils/index';
+import type { ExtensionOptions } from '../types/extension-options';
+import { filterPostDataProperties, getSearchQueryUrl, getSubredditUrl, getUserProfileUrl } from '../utils/index';
 import { wait } from '../utils/wait';
 import notify, { NewPostsNotification, NotificationId } from './notifications';
 
@@ -162,8 +163,8 @@ const app = {
         return newMessages;
     },
 
-    /** @param pollInterval - amount of ms that should pass until next update  */
-    updateUsersList: async (usersList: FollowingUser[], pollInterval = 0) => {
+    updateUsersList: async (usersList: FollowingUser[], options: ExtensionOptions, ignorePollInterval = false) => {
+        const pollInterval = ignorePollInterval ? 0 : options.pollUserInterval * 1000;
         const notifyBatch: NewPostsNotification[] = [];
         let updated = 0;
         for (let i = 0; i < usersList.length; i++) {
@@ -177,7 +178,10 @@ const app = {
 
             usersList[i] = user;
 
-            if (user.notify && newItemsLen) notifyBatch.push({ len: newItemsLen, link: '', name: user.username });
+            if (user.notify && newItemsLen) {
+                const link = getUserProfileUrl(user.username, user.watch, options.useOldReddit);
+                notifyBatch.push({ len: newItemsLen, link, name: user.username });
+            }
 
             user.lastUpdate = ts;
             updated += 1;
@@ -185,9 +189,7 @@ const app = {
         }
         await storage.saveUsersList(usersList);
 
-        if (notifyBatch.length) {
-            // TODO: notify
-        }
+        if (notifyBatch.length) notify(NotificationId.user, notifyBatch, options.notificationSoundId);
 
         return updated;
     },
@@ -213,18 +215,10 @@ const app = {
             usersList,
         } = await storage.getAllData();
 
-        const {
-            waitTimeout,
-            messages,
-            limit = 10,
-            messagesNotify,
-            notificationSoundId,
-            useOldReddit,
-            pollUserInterval,
-        } = options;
+        const { waitTimeout, messages, limit = 10, messagesNotify, notificationSoundId, useOldReddit } = options;
 
         if (usersList) {
-            const updated = await app.updateUsersList(usersList, isForcedByUser ? 0 : pollUserInterval * 1000);
+            const updated = await app.updateUsersList(usersList, options, isForcedByUser);
             if (updated) await wait(waitTimeout * 1000);
         }
 
