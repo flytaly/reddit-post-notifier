@@ -91,7 +91,7 @@ export type RedditMessage = {
     data: RedditMessageData;
 };
 
-export type RedditItem = RedditMessage | RedditPost;
+export type RedditItem = RedditPost | RedditComment;
 
 export type RedditListingResponse<T> = {
     kind: 'Listing';

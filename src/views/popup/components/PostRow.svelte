@@ -1,19 +1,20 @@
 <script lang="ts">
-    import { browser } from 'webextension-polyfill-ts';
-
     import Pin from '@/assets/pin-outline.svg';
-    import type { RedditPost } from '@/reddit-api/reddit-types';
+    import type { RedditItem } from '@/reddit-api/reddit-types';
     import storage from '@/storage';
     import type { ExtensionOptions } from '@/types/extension-options';
     import { redditOldUrl, redditUrl } from '@/utils';
     import getMsg from '@/utils/get-message';
+    import { browser } from 'webextension-polyfill-ts';
+    import { getItemTitle, idToUserIdx } from '../helpers';
     import { storageData } from '../store/store';
     import CheckMarkButton from './CheckMarkButton.svelte';
     import SvgButton from './SvgButton.svelte';
 
-    export let post: RedditPost;
-    export let type = 'subreddit';
-    export let subredditOrSearchId: string;
+    export let post: RedditItem;
+    export let type: 'subreddit' | 'search' | 'user' = 'subreddit';
+    export let itemId: string;
+    export let showSubreddit = false;
 
     let options: ExtensionOptions = $storageData.options;
     $: options = $storageData.options;
@@ -22,17 +23,23 @@
     const href = `${baseUrl}${post.data.permalink}`;
 
     const removePost = async (id: string) => {
-        if (type === 'search') {
-            await storage.removePost({ id, searchId: subredditOrSearchId });
-        } else {
-            await storage.removePost({ id, subreddit: subredditOrSearchId });
+        switch (type) {
+            case 'search':
+                return storage.removePost({ id, searchId: itemId });
+            case 'user': {
+                return storage.removeUserPost({ postId: id, userIndex: idToUserIdx(itemId) });
+            }
+            default:
+                return storage.removePost({ id, subreddit: itemId });
         }
     };
+
     const onPinClick = async (ev: MouseEvent) => {
         ev.stopPropagation();
         await storage.savePinnedPost(post);
         return removePost(post.data.id);
     };
+
     const onLinkClick = async () => {
         if (options.delPostAfterBodyClick) {
             await removePost(post.data.id);
@@ -50,7 +57,10 @@
         on:click|preventDefault|stopPropagation={onLinkClick}
         data-post-id={post.data.id}
     >
-        {post.data.title}</a
+        {#if showSubreddit}
+            <span class="text-skin-base text-xs mr-1">{`r/${post.data.subreddit}`}</span>
+        {/if}
+        {getItemTitle(post)}</a
     >
     <span data-keys-target="pin-post">
         <SvgButton on:click={onPinClick} title={'Pin the post'}>

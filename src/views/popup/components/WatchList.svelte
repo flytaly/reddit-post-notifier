@@ -1,9 +1,9 @@
 <script lang="ts">
     import Pin from '@/assets/pin.svg';
-    import type { RedditPost } from '@/reddit-api/reddit-types';
     import storage from '@/storage';
     import type { StorageFields } from '@/storage/storage-types';
     import getMsg from '@/utils/get-message';
+    import { getGroupItems } from '../helpers/post-group';
     import type { PostGroup, PostGroupType } from '../helpers/post-group';
     import { extractPostGroups } from '../helpers/post-group';
     import type { SlideConfig } from '../helpers/transition';
@@ -13,10 +13,11 @@
     import GroupTitle from './GroupTitle.svelte';
     import PinPostRow from './PinPostRow.svelte';
     import PostRow from './PostRow.svelte';
+    import { idToUserIdx } from '../helpers';
 
     let groupsWithPosts: PostGroup[] = [];
     let groupsWithoutPosts: PostGroup[] = [];
-    let expanded = new Set();
+    let expanded = new Set<string>();
     let initialLoading = true;
     let data: StorageFields;
 
@@ -48,18 +49,13 @@
         }
     };
 
-    const getGroupItems = (id: string, type: PostGroupType): RedditPost[] => {
-        if (type === 'subreddit') {
-            return data.subreddits[id].posts;
-        }
-        if (type === 'search') {
-            return data.queries[id].posts;
-        }
-        return [];
-    };
-
     const getOnCheckHandler = (id: string, type: PostGroupType) => () => {
-        void storage.removePostsFrom(type === 'subreddit' ? { subredditId: id } : { searchId: id });
+        if (type === 'search') return storage.removePostsFrom({ searchId: id });
+        if (type === 'subreddit') return storage.removePostsFrom({ subredditId: id });
+        if (type === 'user')
+            return storage.removePostsFrom({
+                followUserIndex: idToUserIdx(id),
+            });
     };
 
     const pinTransition = (node: Element, props: SlideConfig) => slideHorizontal(node, props);
@@ -95,11 +91,11 @@
     </div>
 
     <!-- UNREAD POSTS BLOCK -->
-    {#each groupsWithPosts as { type, id, href, title } (id)}
+    {#each groupsWithPosts as { type, id, href, title, isMultireddit } (id)}
         <div out:postGroupTransition={{ duration: 150 }}>
             <DropDownList
                 toggle={getToggleHandler(id)}
-                items={getGroupItems(id, type)}
+                items={getGroupItems(data, id, type)}
                 isExpanded={expanded.has(id)}
                 rowOutTransition={pinTransition}
             >
@@ -107,7 +103,7 @@
                     <GroupTitle onCheck={getOnCheckHandler(id, type)} {href} {title} />
                 </div>
                 <div slot="list-row" let:item>
-                    <PostRow post={item} {type} subredditOrSearchId={id} />
+                    <PostRow showSubreddit={isMultireddit} post={item} {type} itemId={id} />
                 </div>
             </DropDownList>
         </div>
@@ -127,7 +123,7 @@
 
 <style lang="postcss">
     .big {
-        @apply min-h-[19rem] min-w-[25rem];
+        @apply min-h-[19rem] min-w-[28rem];
     }
 
     .delimiter {

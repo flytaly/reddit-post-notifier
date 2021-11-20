@@ -227,7 +227,13 @@ describe('subreddits', () => {
         const inputSubs = cloneDeep(subreddits);
         const expectedSubs = {};
         subOpts.forEach(({ id }) => (expectedSubs[id] = { posts: [] }));
-        mockGet.mock(() => Promise.resolve({ subreddits: inputSubs }));
+        mockGet.mock(() =>
+            Promise.resolve({
+                subreddits: inputSubs,
+                queries: {},
+                usersList: [],
+            } as StorageFields),
+        );
         mockSet.expect(expect.objectContaining({ subreddits: expectedSubs }));
         jest.spyOn(storage, 'getQueriesData').mockImplementationOnce(() => Promise.resolve({}));
 
@@ -333,7 +339,13 @@ describe('search queries', () => {
     });
 
     test('should remove all posts in all search queries', async () => {
-        mockQueries();
+        mockGet.mock(() =>
+            Promise.resolve({
+                subreddits: {},
+                queries: cloneDeep(qData),
+                usersList: [],
+            } as StorageFields),
+        );
         const expectedQueries = {};
         queriesList.forEach((q) => (expectedQueries[q.id] = { posts: [] }));
         mockSet.expect(expect.objectContaining({ queries: expectedQueries }));

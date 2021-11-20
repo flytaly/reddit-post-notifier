@@ -3,7 +3,7 @@
 import { browser } from 'webextension-polyfill-ts';
 import DEFAULT_OPTIONS from '../options-default';
 import type { TokenResponseBody } from '../reddit-api/auth';
-import type { RedditMessage, RedditPost, RedditPostExtended } from '../reddit-api/reddit-types';
+import type { RedditItem, RedditMessage, RedditPost, RedditPostExtended } from '../reddit-api/reddit-types';
 import type { ExtensionOptions } from '../types/extension-options';
 import { filterKeys, filterPostDataProperties, generateId } from '../utils';
 import { authDataDefault, dataFields } from './fields';
@@ -60,8 +60,9 @@ const storage = {
         return queries as SF['queries'];
     },
 
-    getUsersList() {
-        return browser.storage.local.get({ usersList: [] } as Pick<SF, 'usersList'>);
+    async getUsersList() {
+        const { usersList } = await browser.storage.local.get({ usersList: [] } as Pick<SF, 'usersList'>);
+        return usersList as SF['usersList'];
     },
 
     async getNotificationsData() {
@@ -114,7 +115,7 @@ const storage = {
         return browser.storage.local.set({ options: { ...optionsPrev, ...data } });
     },
 
-    async savePinnedPost(post: RedditPost) {
+    async savePinnedPost(post: RedditItem) {
         const prev = await storage.getPinnedPostList();
         if (prev.findIndex((p) => p.data.id === post.data.id) !== -1) {
             return;
@@ -263,6 +264,14 @@ const storage = {
         }
     },
 
+    async removeUserPost({ userIndex, postId }: { userIndex: number; postId: string }) {
+        const usersList = await storage.getUsersList();
+        if (usersList[userIndex]?.data) {
+            usersList[userIndex].data = usersList[userIndex].data.filter((item) => item.data.id !== postId);
+            await storage.saveUsersList(usersList);
+        }
+    },
+
     async removePinPost(id: string) {
         const pinnedPostList = await storage.getPinnedPostList();
         return browser.storage.local.set({
@@ -273,10 +282,12 @@ const storage = {
     async removePostsFrom({
         subredditId,
         searchId,
+        followUserIndex,
         clearTS,
     }: {
         subredditId?: string;
         searchId?: string;
+        followUserIndex?: number;
         /** clear the last post timestamp  */
         clearTS?: boolean;
     }) {
@@ -292,13 +303,17 @@ const storage = {
             if (clearTS) queries[searchId].lastPostCreated = null;
             await browser.storage.local.set({ queries });
         }
+        if (followUserIndex !== undefined) {
+            const usersList = await storage.getUsersList();
+            usersList;
+            usersList[followUserIndex].data = [];
+            if (clearTS) usersList[followUserIndex].lastPostCreated = null;
+            await storage.saveUsersList(usersList);
+        }
     },
 
     async removeAllPosts() {
-        const [subreddits = {}, queries = {}] = await Promise.all([
-            storage.getSubredditData(),
-            storage.getQueriesData(),
-        ]);
+        const { queries, subreddits, usersList } = await storage.getAllData();
 
         Object.keys(subreddits).forEach((subr) => {
             subreddits[subr].posts = [];
@@ -306,8 +321,11 @@ const storage = {
         Object.keys(queries).forEach((q) => {
             queries[q].posts = [];
         });
+        usersList.forEach((u) => {
+            u.data = [];
+        });
 
-        await browser.storage.local.set({ subreddits, queries });
+        await browser.storage.local.set({ subreddits, queries, usersList });
     },
 
     async removeSubreddits(ids = [] as string[]) {

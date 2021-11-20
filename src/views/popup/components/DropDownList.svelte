@@ -1,14 +1,14 @@
 <script lang="ts">
+    import type { RedditItem } from '@/reddit-api/reddit-types';
+    import ArrowUp from '@assets/arrowhead-up.svg';
     import { flip } from 'svelte/animate';
     import { quadOut } from 'svelte/easing';
     import { slide } from 'svelte/transition';
-    import ArrowUp from '@assets/arrowhead-up.svg';
-    import type { RedditPost } from '@/reddit-api/reddit-types';
     import { slideHorizontal } from '../helpers/transition';
-    import SvgButton from './SvgButton.svelte';
     import FloatingPreview from './FloatingPreview.svelte';
+    import SvgButton from './SvgButton.svelte';
 
-    export let items: RedditPost[];
+    export let items: RedditItem[];
     export let rowOutTransition = slideHorizontal;
     export let isExpanded = false; // initial state
     export let toggle: (e: MouseEvent) => void;
@@ -40,11 +40,9 @@
             }}
         >
             <!-- Vertical Line -->
-            <button class="flex w-5 group flex-shrink-0" on:click={toggle}
-                ><span
-                    class="w-px ml-1 h-full bg-skin-delimiter group-hover:bg-skin-accent2 group-hover:w-[2px]"
-                /></button
-            >
+            <button class="flex w-5 group flex-shrink-0" on:click={toggle}>
+                <span class="w-px ml-1 h-full bg-skin-delimiter group-hover:bg-skin-accent2 group-hover:w-[2px]" />
+            </button>
 
             <ul class="flex flex-col flex-grow" data-floatpreview-target="true">
                 {#each items as item (item.data.id)}

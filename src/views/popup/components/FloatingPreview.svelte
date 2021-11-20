@@ -1,8 +1,9 @@
 <script lang="ts">
     import { onMount } from 'svelte';
-    import type { RedditPost } from '@/reddit-api/reddit-types';
+    import { RedditObjectKind } from '@/reddit-api/reddit-types';
+    import type { RedditItem } from '@/reddit-api/reddit-types';
 
-    export let posts: RedditPost[];
+    export let posts: RedditItem[];
     export let containerElement: HTMLElement;
 
     let previewElement: HTMLElement;
@@ -18,26 +19,32 @@
         }
     }
 
-    function setData(post: RedditPost) {
+    function setData(post: RedditItem) {
         imageInfo = null;
-        if (post.data.selftext) {
-            postText = post.data.selftext.length > 400 ? `${post.data.selftext.slice(0, 400)}...` : post.data.selftext;
-        } else {
-            const image = post?.data?.preview?.images[0];
-            if (image?.resolutions?.length) {
-                const { url, width, height } = image.resolutions[1] || image.resolutions[0];
-                if (url) {
-                    imageInfo = { url, width, height, loaded: false };
-                    const imgElem = new Image();
-                    imgElem.onload = () => {
-                        if (imageInfo?.url === url) {
-                            imageInfo.loaded = true;
-                        }
-                    };
-                    imgElem.src = url;
+        if (post.kind === RedditObjectKind.link) {
+            if (post.data.selftext) {
+                postText =
+                    post.data.selftext.length > 400 ? `${post.data.selftext.slice(0, 400)}...` : post.data.selftext;
+            } else {
+                const image = post?.data?.preview?.images[0];
+                if (image?.resolutions?.length) {
+                    const { url, width, height } = image.resolutions[1] || image.resolutions[0];
+                    if (url) {
+                        imageInfo = { url, width, height, loaded: false };
+                        const imgElem = new Image();
+                        imgElem.onload = () => {
+                            if (imageInfo?.url === url) {
+                                imageInfo.loaded = true;
+                            }
+                        };
+                        imgElem.src = url;
+                    }
                 }
+                postText = !imageInfo ? post.data.url : null;
             }
-            postText = !imageInfo ? post.data.url : null;
+        }
+        if (post.kind === RedditObjectKind.comment) {
+            postText = post.data.body?.length > 400 ? `${post.data.body.slice(0, 400)}...` : post.data.body;
         }
     }
 

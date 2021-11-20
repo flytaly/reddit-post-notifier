@@ -36,7 +36,7 @@
 </script>
 
 <Header />
-<main class="flex flex-col flex-1 min-w-[15rem] min-h-[6rem]">
+<main class="flex flex-col flex-1 min-w-[18rem] min-h-[6rem]">
     {#if havePosts}
         <WatchList />
     {:else}

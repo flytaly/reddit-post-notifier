@@ -1,12 +1,13 @@
 <script lang="ts">
-    import { redditUrl, redditOldUrl } from '@/utils';
-    import SvgButton from './SvgButton.svelte';
-    import PinRemove from '@assets/pin-remove.svg';
+    import type { RedditItem } from '@/reddit-api/reddit-types';
     import storage from '@/storage';
+    import { redditOldUrl, redditUrl } from '@/utils';
+    import PinRemove from '@assets/pin-remove.svg';
+    import { getItemTitle } from '../helpers';
     import { storageData } from '../store/store';
-    import type { RedditPost } from '@/reddit-api/reddit-types';
+    import SvgButton from './SvgButton.svelte';
 
-    export let post: RedditPost;
+    export let post: RedditItem;
 
     const baseUrl = $storageData.options.useOldReddit ? redditOldUrl : redditUrl;
 </script>
@@ -18,8 +19,8 @@
         data-keys-target="post-link"
         data-post-id={post.data.id}
     >
-        <span class="text-skin-base pr-2">{`r/${post.data.subreddit}`}</span>
-        <span>{post.data.title}</span>
+        <span class="text-skin-base pr-2 text-xs">{`r/${post.data.subreddit}`}</span>
+        <span>{getItemTitle(post)}</span>
     </a>
     <span data-keys-target="pin-post">
         <SvgButton on:click={() => void storage.removePinPost(post.data.id)} title={'Remove the post'}>

@@ -101,7 +101,8 @@
 
 <div class="flex border border-skin-base bg-skin-input rounded">
     <input
-        size="14"
+        size="13"
+        maxlength="20"
         class="border-none rounded m-0"
         type="text"
         value={username}
