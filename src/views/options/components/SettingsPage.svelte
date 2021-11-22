@@ -50,7 +50,7 @@
         </section>
         <section>
             <Heading id={'#settings__reddit-search'} />
-            <SearchBlock queriesListStore={$storageData.queriesList} />
+            <SearchBlock />
         </section>
         <section>
             <Heading id="#settings__follow-user" />

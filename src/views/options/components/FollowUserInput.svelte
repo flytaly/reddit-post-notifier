@@ -3,8 +3,9 @@
     import type { FollowingUser } from '@/storage/storage-types';
     import getMsg from '@/utils/get-message';
     import * as icons from '@/views/options/icons';
-    import type { RedditCommentData, RedditPostData } from '../../../reddit-api/reddit-types';
+    import { RefreshIcon2 } from '@/views/options/icons';
     import { isBlocked } from '../store';
+    import RedditItemsList from './RedditItemsList.svelte';
 
     export let userInfo: FollowingUser;
     export let commitChanges: () => void;
@@ -64,38 +65,19 @@
 
     let showUserData = false;
     let isLoading = false;
-    let activities: { type: string; subreddit: string; text: string; date: string; link: string }[] = [];
-    $: if (showUserData && userInfo.data?.length) {
-        activities = userInfo.data.slice(0, 5).map(({ kind, data }) => {
-            const link = 'https://reddit.com/' + data.permalink;
-            const date = new Date(data.created * 1000).toLocaleDateString();
-            if (kind === 't3')
-                return {
-                    type: 'Post',
-                    subreddit: `r/${data.subreddit}`,
-                    text: (data as RedditPostData).title,
-                    date,
-                    link,
-                };
-            if (kind === 't1')
-                return {
-                    type: 'Comment',
-                    subreddit: `r/${data.subreddit}`,
-                    text: (data as RedditCommentData).body,
-                    date,
-                    link,
-                };
-        });
-    }
 
     async function fetchUser() {
         isLoading = true;
         isBlocked.block();
-        const { user } = await updateFollowingUser(userInfo);
-        userInfo = user;
+        try {
+            const { user } = await updateFollowingUser({ ...userInfo, data: [], lastPostCreated: 0 });
+            userInfo = user;
+            showUserData = true;
+            commitChanges();
+        } catch (e: unknown) {
+            errorMsg = (e as { message?: string }).message || '';
+        }
         isLoading = false;
-        showUserData = true;
-        commitChanges();
     }
 </script>
 
@@ -177,11 +159,14 @@
 <div class="col-span-full mt-1 mb-3">
     {#if userInfo.username?.length}
         <button
-            class="text-skin-accent2 py-0 px-1 border-transparent bg-transparent hover:bg-transparent text-xs m-0  "
+            class="flex items-center text-skin-accent2 p-0 border-transparent bg-transparent hover:bg-transparent text-xs"
             on:click={() => void fetchUser()}
             disabled={$isBlocked}
         >
-            click here to fetch and display the latest user's activities
+            <div class="w-5 h-5 mr-1">
+                {@html RefreshIcon2}
+            </div>
+            <span>fetch and display the latest user's activities </span>
         </button>
         <div class="ml-2">
             {#if isLoading}
@@ -191,36 +176,13 @@
                 </div>
             {/if}
             {#if showUserData && !errorMsg}
-                <div class="flex justify-between">
-                    <div class="mt-2">{`${userInfo.username}' latest activities on reddit: `}</div>
-                    <button
-                        class="p-0 mr-2 border-none bg-transparent h-4 w-4"
-                        on:click={() => {
-                            showUserData = false;
-                        }}
-                        title="close"
-                    >
-                        {@html icons.XCircleIcon}
-                    </button>
-                </div>
-                <div class="user-items-grid">
-                    {#each activities as item}
-                        <span>{item.date}</span>
-                        <div>
-                            <span>{item.type}</span>
-                            <span>in</span>
-                            <b>{item.subreddit}</b>
-                            <span>: </span>
-                        </div>
-                        <a
-                            class="overflow-hidden whitespace-nowrap overflow-ellipsis break-all  hover:underline"
-                            href={item.link}
-                            target="_blank">{item.text}</a
-                        >
-                    {:else}
-                        <div>Empty. The user didn't submit anything.</div>
-                    {/each}
-                </div>
+                <RedditItemsList
+                    title={`${userInfo.username}' latest activities on reddit: `}
+                    items={userInfo.data}
+                    onClose={() => {
+                        showUserData = false;
+                    }}
+                />
             {/if}
             {#if errorMsg}
                 <span class="text-skin-error">{errorMsg}</span>
@@ -228,11 +190,3 @@
         </div>
     {/if}
 </div>
-
-<style lang="postcss">
-    .user-items-grid {
-        @apply grid gap-x-4 gap-y-0 mt-2;
-
-        grid-template-columns: auto auto 1fr;
-    }
-</style>

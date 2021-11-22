@@ -1,14 +1,14 @@
 /* eslint-disable @typescript-eslint/unbound-method */
-import { fireEvent, render, waitFor } from '@testing-library/svelte';
-import { mocked } from 'ts-jest/utils';
+import DEFAULT_OPTIONS from '@/options-default';
 import auth from '@/reddit-api/auth';
+import { dataFields } from '@/storage/fields';
 import storage from '@/storage/storage';
 import type { ExtensionOptions } from '@/types/extension-options';
 import getMsg from '@/utils/get-message';
-import AuthMailBlock from '../components/AuthMailBlock.svelte';
-import { dataFields } from '@/storage/fields';
-import DEFAULT_OPTIONS from '@/options-default';
+import { fireEvent, render } from '@testing-library/svelte';
 import { tick } from 'svelte';
+import { mocked } from 'ts-jest/utils';
+import AuthMailBlock from '../components/AuthMailBlock.svelte';
 
 jest.mock('@/storage/storage.ts');
 jest.mock('@/utils/get-message.ts');

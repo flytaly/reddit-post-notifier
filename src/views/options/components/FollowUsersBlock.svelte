@@ -40,7 +40,7 @@
         isAuthorizing = false;
     };
 
-    /** save number of inputs to restore them after rerender cased by saving in the storage */
+    /** save number of inputs to restore them after rerender caused by saving in the storage */
     let prevLen = usersList.length;
 
     const addUsers = (num = 1) => {
@@ -55,7 +55,7 @@
         prevLen = $storageData.usersList.length;
     };
 
-    $: if (!usersList.length || usersList.length < prevLen) addUsers(Math.max(prevLen - usersList.length || 1));
+    $: if (!usersList.length || usersList.length < prevLen) addUsers(Math.max(prevLen - usersList.length, 1));
 
     const saveInputs = () => {
         const saved = new Set<string>();

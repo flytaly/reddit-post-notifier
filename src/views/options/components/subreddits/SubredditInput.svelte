@@ -1,31 +1,53 @@
 <script lang="ts">
-    import type { PostFilterOptions, SubredditOpts } from '@/storage/storage-types';
+    import app from '@/background/app';
+    import type { PostFilterOptions, SubredditData, SubredditOpts } from '@/storage/storage-types';
+    import type { FilterRule, SearchableField } from '@/text-search/post-filter';
     import { debounce, testMultireddit } from '@/utils';
     import getMsg from '@/utils/get-message';
     import * as icons from '@/views/options/icons';
-    import type { FilterRule, SearchableField } from '@/text-search/post-filter';
+    import { RefreshIcon2 } from '@/views/options/icons';
+    import { formatError } from '../../format-error';
+    import { isBlocked } from '../../store';
+    import RedditItemsList from '../RedditItemsList.svelte';
     import PostFilterBlock from './PostFilterBlock.svelte';
-    import { subredditStore, inputStatusStore } from './subreddits-store';
     import type { InputStatus } from './subreddits-store';
+    import { inputStatusStore, subredditStore } from './subreddits-store';
 
     export let subOpts: SubredditOpts;
-    export let error = '';
-    $: if (error) {
-        $inputStatusStore[subOpts.id] = { error };
-    }
+    export let subData: SubredditData = {};
 
     let inputStatus: InputStatus = {};
     let isActive = !subOpts.disabled;
     let filterOpts: PostFilterOptions;
     let ruleList: FilterRule[];
+    let fetchError = '';
+    let showPosts = false;
+    let isLoading = false;
 
     let showFilterBlock = false;
     let subredditInputRef: HTMLInputElement;
 
     $: filterOpts = subOpts.filterOpts;
     $: ruleList = filterOpts?.rules || [[{ field: 'title', query: '' }]];
-
     $: inputStatus = $inputStatusStore[subOpts.id] || {};
+    $: fetchError = formatError(subData.error);
+
+    const fetchPosts = async () => {
+        if (!subOpts.subreddit) return;
+        isLoading = true;
+        showPosts = false;
+        isBlocked.block();
+        try {
+            await app.updateSubreddit({
+                subOpts,
+                subData: { ...subData, lastPostCreated: 0, posts: [], error: null },
+            });
+        } catch (e: unknown) {
+            fetchError = (e as { message?: string }).message || '';
+        }
+        isLoading = false;
+        showPosts = true;
+    };
 
     function processFilterOpts(filter?: PostFilterOptions) {
         const result: PostFilterOptions = {
@@ -70,6 +92,7 @@
             !!filter,
         );
 
+        fetchError = '';
         $inputStatusStore[subOpts.id] = { saved: true };
     };
 
@@ -102,20 +125,42 @@
                 rules: [[{ field: 'title', query: '' }]],
             };
         }
+
+        if (!showFilterBlock && showPosts) showPosts = false;
         showFilterBlock = !showFilterBlock;
     };
 </script>
 
 <div class="subreddit-grid rounded-md my-4" class:expanded={showFilterBlock}>
-    <div class={`${inputStatus.error ? 'bg-skin-error-bg' : 'bg-transparent'} rounded-t h-full`}>
+    <div
+        class={`flex border rounded p-0 border-skin-base ${
+            inputStatus.error || fetchError ? 'border-skin-error bg-skin-error-bg' : 'bg-transparent'
+        } rounded-t h-full`}
+    >
         <input
-            class="rounded w-full"
+            class="rounded w-full border-none"
             type="text"
             bind:this={subredditInputRef}
             bind:value={subOpts.subreddit}
             on:input={inputHandler}
             aria-label={getMsg('optionSubredditsInput')}
         />
+        <button class="min-w-[5rem] py-0 px-2 border-0 border-l rounded w-min text-xs" on:click={() => saveInputs()}>
+            {#if inputStatus.saved}
+                <div class="flex items-center text-skin-success">
+                    <div class="w-4 h-4 mr-1 flex-shrink-0">{@html icons.SaveIcon}</div>
+                    <span class="text-skin-success font-medium">Saved</span>
+                </div>
+            {:else if inputStatus.error}
+                <div class="flex justify-center">
+                    <div class="h-5 w-5 text-skin-error">
+                        {@html icons.WarningIcon}
+                    </div>
+                </div>
+            {:else}
+                <span>{inputStatus.typing ? '...' : ''} &nbsp;</span>
+            {/if}
+        </button>
     </div>
     <label
         aria-label={getMsg('optionSubredditsDisable')}
@@ -200,20 +245,26 @@
 
     <!-- ===== -->
     <!-- ROW 2 -->
-    <div class={`rounded-b p-1 text-xs ${inputStatus.error ? 'bg-skin-error-bg' : 'bg-blue'}`}>
-        {#if inputStatus.error}
-            <div class="flex items-center">
-                <div class="w-4 h-4 mr-1 text-skin-error flex-shrink-0">{@html icons.WarningIcon}</div>
-                <div>{inputStatus.error}</div>
+    <div>
+        <div class={`rounded-b p-1 text-xs ${inputStatus.error || fetchError ? 'bg-skin-error-bg' : 'bg-blue'}`}>
+            {#if inputStatus.error || fetchError}
+                <div class="flex items-center">
+                    <div class="w-4 h-4 mr-1 text-skin-error flex-shrink-0">{@html icons.WarningIcon}</div>
+                    <div>{inputStatus.error || fetchError}</div>
+                </div>
+            {/if}
+        </div>
+        <button
+            class="flex items-center text-skin-accent2 p-0 border-transparent bg-transparent hover:bg-transparent text-xs"
+            on:click={() => void fetchPosts()}
+            title="click to fetch and show the lates post from the subreddit"
+            disabled={$isBlocked || !subOpts.subreddit}
+        >
+            <div class="w-5 h-5 mr-1">
+                {@html RefreshIcon2}
             </div>
-        {:else if inputStatus.saved}
-            <div class="flex items-center text-skin-success">
-                <div class="w-4 h-4 mr-1 flex-shrink-0">{@html icons.SaveIcon}</div>
-                <span class="text-skin-success font-medium">Saved</span>
-            </div>
-        {:else}
-            <span> {inputStatus.typing ? '....' : ''} &nbsp;</span>
-        {/if}
+            <span>fetch and display the latest subreddit's posts</span>
+        </button>
     </div>
     <div id="inputs-label" class="p-1 text-right col-start-2 col-span-full text-xs italic">
         <span>{labelText}</span>
@@ -222,6 +273,29 @@
     <div class="col-span-full">
         <!--   -->
     </div>
+
+    {#if isLoading}
+        <div class="flex space-x-1 mt-2">
+            <div class="w-4 h-4 animate-spin" title="loading">{@html icons.LoadingIcon}</div>
+            <span>Loading</span>
+        </div>
+    {/if}
+
+    {#if showPosts}
+        <div class="col-span-full border p-1 border-skin-delimiter ">
+            <RedditItemsList
+                title={`The latest posts in the subreddit. ${
+                    subOpts.filterOpts.enabled ? 'With filters.' : 'Without filters.'
+                }`}
+                items={subData.posts || []}
+                limit={10}
+                onClose={() => {
+                    showPosts = false;
+                }}
+            />
+        </div>
+    {/if}
+
     {#if showFilterBlock}
         <PostFilterBlock {ruleList} {saveInputs} subId={subOpts.id} />
     {/if}

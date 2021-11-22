@@ -7,7 +7,7 @@ import type { SubredditData, SubredditOpts } from '@/storage/storage-types';
 import getMsg from '@/utils/get-message';
 import SubredditsBlock from '../components/subreddits/SubredditsBlock.svelte';
 import { tick } from 'svelte';
-import { dataFields } from '../../../storage/fields';
+import { dataFields } from '@/storage/fields';
 
 let idx = 0;
 jest.mock('@/storage/storage.ts');
@@ -41,15 +41,13 @@ describe('Subreddit settings', () => {
     beforeAll(() => {
         mocked(storage).getAllData.mockResolvedValue({
             ...dataFields,
+            subredditList: cloneDeep(subList),
+            subreddits: cloneDeep(subData),
         });
         getSubMock.mockImplementation(async () => cloneDeep(subList));
     });
 
     test('save subreddits and show error', async () => {
-        mocked(storage).getAllData.mockResolvedValue({
-            ...dataFields,
-            subreddits: cloneDeep(subData),
-        });
         const { getByText, getAllByLabelText, getAllByTestId } = render(SubredditsBlock);
         await tick();
         const inputs = getAllByLabelText(getMsg('optionSubredditsInput')) as HTMLInputElement[];
@@ -66,7 +64,10 @@ describe('Subreddit settings', () => {
             expect(notifyElems[idx].checked).toEqual(s.notify);
             expect(isActiveElems[idx].checked).toEqual(!s.disabled);
         });
-        expect(getByText(/404 Not Found \(banned\)/)).toBeInTheDocument();
+
+        await waitFor(() => {
+            expect(getByText(/404 Not Found \(banned\)/)).toBeInTheDocument();
+        });
 
         const latest = inputs[subList.length];
         expect(latest.value).toBe('');
@@ -108,8 +109,6 @@ describe('Subreddit settings', () => {
     });
 
     test('should add and remove subreddits', async () => {
-        mocked(storage).getAllData.mockResolvedValueOnce({ ...dataFields });
-
         const { getAllByLabelText, getByText } = render(SubredditsBlock);
         await tick();
 
@@ -117,19 +116,17 @@ describe('Subreddit settings', () => {
 
         const AddBtn = getByText(getMsg('optionSubredditsAdd'), { exact: false });
         await fireEvent.click(AddBtn);
-
-        expect(getAllByLabelText(getMsg('optionSubredditsInput'))).toHaveLength(len + 1);
-
+        await waitFor(() => {
+            expect(getAllByLabelText(getMsg('optionSubredditsInput'))).toHaveLength(len + 1);
+        });
         const DelBtn = getAllByLabelText(getMsg('optionSubredditsDelete'));
         await fireEvent.click(DelBtn[0]);
+
         expect(storage.removeSubreddits).toHaveBeenCalledWith([subList[0].id]);
-        await waitFor(() => expect(getAllByLabelText(getMsg('optionSubredditsInput'))).toHaveLength(len - 1), {
-            timeout: 300,
-        });
     });
 
     test('should save only subreddit or multireddit', async () => {
-        const { getAllByLabelText, getByText, container } = render(SubredditsBlock);
+        const { getAllByLabelText, getByText } = render(SubredditsBlock);
 
         await tick();
 

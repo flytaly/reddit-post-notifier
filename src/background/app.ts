@@ -10,7 +10,14 @@ import {
     RedditUserOverviewResponse,
 } from '../reddit-api/reddit-types';
 import storage from '../storage';
-import type { FollowingUser, MessageData, QueryOpts, StorageFields, SubredditOpts } from '../storage/storage-types';
+import type {
+    FollowingUser,
+    MessageData,
+    QueryData,
+    QueryOpts,
+    SubredditData,
+    SubredditOpts,
+} from '../storage/storage-types';
 import { postFilter } from '../text-search/post-filter';
 import type { ExtensionOptions } from '../types/extension-options';
 import { filterPostDataProperties, getSearchQueryUrl, getSubredditUrl, getUserProfileUrl } from '../utils/index';
@@ -51,14 +58,14 @@ function extractNewItems<T extends ItemWithDate>(
 
 interface UpdateSubredditProps {
     subOpts: SubredditOpts;
-    subData: StorageFields['subreddits'];
-    listing: Partial<RedditSubredditListing>;
+    subData?: SubredditData;
+    listing?: Partial<RedditSubredditListing>;
 }
 
 interface UpdateQueryProps {
     query: QueryOpts;
-    queryData: StorageFields['queries'];
-    listing: Partial<RedditSearchListing>;
+    queryData?: QueryData;
+    listing?: Partial<RedditSearchListing>;
 }
 
 function isErrorResponse(result: RedditError | RedditListingResponse<unknown>): result is RedditError {
@@ -99,9 +106,9 @@ export async function updateFollowingUser(user: FollowingUser): Promise<{ user: 
 }
 
 const app = {
-    updateSubreddit: async ({ subOpts, subData, listing }: UpdateSubredditProps) => {
+    updateSubreddit: async ({ subOpts, subData = {}, listing }: UpdateSubredditProps) => {
         const { subreddit, id, filterOpts } = subOpts;
-        const info = subData[id] || {};
+        const info = subData;
 
         // fetch subreddits with error at a slower pace
         if (info.error && Date.now() - info.lastUpdate < 1000 * 60 * 6) return null;
@@ -123,11 +130,11 @@ const app = {
         return newPosts;
     },
 
-    updateQueries: async ({ query, queryData, listing }: UpdateQueryProps) => {
+    updateQuery: async ({ query, queryData, listing = {} }: UpdateQueryProps) => {
         const { id, subreddit, query: q } = query;
         if (!q || !id) return null;
 
-        const data = queryData[id] || {};
+        const data = queryData || {};
 
         if (data.error && Date.now() - data.lastUpdate < 1000 * 60 * 10) return null;
         const response = subreddit
@@ -238,7 +245,11 @@ const app = {
             const actualLimit =
                 subOpts.filterOpts?.enabled && !subData[subOpts.id]?.lastPostCreated ? Math.max(limit, 25) : limit;
 
-            const newPosts = await app.updateSubreddit({ subOpts, subData, listing: { limit: actualLimit } });
+            const newPosts = await app.updateSubreddit({
+                subOpts,
+                subData: subData[subOpts.id],
+                listing: { limit: actualLimit },
+            });
             if (subOpts.notify && newPosts?.length) {
                 const link = getSubredditUrl(subOpts.subreddit, useOldReddit);
                 batch.push({ name: subOpts.subreddit, len: newPosts.length, link });
@@ -248,10 +259,11 @@ const app = {
         if (batch.length) notify(NotificationId.post, batch, notificationSoundId);
 
         batch = [];
+
         for (const query of queriesList) {
             if (query.disabled) continue;
 
-            const newMessages = await app.updateQueries({ query, queryData, listing: { limit } });
+            const newMessages = await app.updateQuery({ query, queryData: queryData[query.id], listing: { limit } });
             if (query.notify && newMessages?.length) {
                 batch.push({
                     name: query.name || query.query,
