@@ -3,12 +3,26 @@
 
 import cloneDeep from 'lodash.clonedeep';
 import DEFAULT_OPTIONS from '../options-default';
-import type { RedditMessage, RedditMessageData, RedditPost } from '../reddit-api/reddit-types';
+import type {
+    RedditComment,
+    RedditCommentData,
+    RedditMessage,
+    RedditMessageData,
+    RedditPost,
+} from '../reddit-api/reddit-types';
 import { generatePost, generatePosts, generateQuery } from '../test-utils/content-generators';
 import { mockDate, restoreDate } from '../test-utils/mock-date';
 import type { ExtensionOptions } from '../types/extension-options';
 import storage from './index';
-import type { MessageData, QueryData, QueryOpts, StorageFields, SubredditData, SubredditOpts } from './storage-types';
+import type {
+    FollowingUser,
+    MessageData,
+    QueryData,
+    QueryOpts,
+    StorageFields,
+    SubredditData,
+    SubredditOpts,
+} from './storage-types';
 import { generateId } from '../utils/index';
 import { mocked } from 'ts-jest/utils';
 
@@ -429,12 +443,13 @@ describe('Count unread', () => {
             { id: 'sid1', subreddit: 's1' },
             { id: 'sid2', subreddit: 's2' },
         ],
-        subreddits: { sid1: { posts: generatePosts(3) }, sid2: {} },
+        subreddits: { sid1: { posts: generatePosts(3) }, sid2: {} } as StorageFields['subreddits'],
         queriesList: [generateQuery({ id: 'q1' }), generateQuery({ id: 'q2' }), generateQuery({ id: 'q3' })],
-        queries: { q1: { posts: generatePosts(1) }, q2: { posts: [] }, q3: {} },
+        queries: { q1: { posts: generatePosts(1) }, q2: { posts: [] }, q3: {} } as StorageFields['queries'],
+        usersList: [{ username: 'u1', data: [{}, {}] }],
         messages: { count: 3 },
-    } as any as StorageFields;
-    const total = 3 + 1 + 3;
+    } as StorageFields;
+    const total = 3 + 1 + 2 + 3;
 
     test('should count unread items', async () => {
         jest.spyOn(storage, 'getAllData').mockImplementation(() => Promise.resolve(storageData));

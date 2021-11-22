@@ -367,22 +367,23 @@ const storage = {
 
     async countNumberOfUnreadItems(updateBadge = true) {
         let count = 0;
-        const { subredditList, queriesList, queries, subreddits, messages } = await storage.getAllData();
+        const { subredditList, queriesList, queries, subreddits, messages, usersList } = await storage.getAllData();
 
-        if (subredditList?.length && subreddits) {
-            count += subredditList.reduce((acc, curr) => {
-                const id = curr.id;
-                if (subreddits[id] && subreddits[id].posts) return acc + subreddits[id].posts.length;
-                return acc;
-            }, 0);
+        if (subreddits) {
+            subredditList?.forEach((s) => {
+                count += subreddits[s.id]?.posts?.length || 0;
+            });
         }
 
-        if (queriesList && queriesList.length && queries) {
-            count += queriesList.reduce((acc, curr) => {
-                if (queries[curr.id] && queries[curr.id].posts) return acc + queries[curr.id].posts.length;
-                return acc;
-            }, 0);
+        if (queries) {
+            queriesList?.forEach((q) => {
+                count += queries[q.id]?.posts?.length || 0;
+            });
         }
+
+        usersList?.forEach((u) => {
+            count += u.data?.length || 0;
+        });
 
         if (messages && messages.count) count += messages.count;
 
