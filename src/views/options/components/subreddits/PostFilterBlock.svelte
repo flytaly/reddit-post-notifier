@@ -28,7 +28,10 @@
 <div transition:slide={{ duration: 150, easing: quadOut }} class="mt-2 w-full col-span-full space-y-2">
     <div class="ml-6">
         <div class="font-medium text-sm">Post filters</div>
-        <div class="text-sm">Check if the subreddit's posts fit at least one of the rules below.</div>
+        <div class="text-sm">
+            Check if the subreddit's posts fit at least one of the rules below. Filter words in the title and post's
+            text fields are case-insensitive and can be stemmed (dogs = dog).
+        </div>
     </div>
     <div class="flex flex-col">
         {#each ruleList as filterRule, index}

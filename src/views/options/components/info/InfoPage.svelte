@@ -3,7 +3,7 @@
     import type { Unsubscriber } from 'svelte/store';
     import { pageInfo } from '../../routes';
     import Heading from '../Heading.svelte';
-    import HowToUse from './HowToUse.svelte';
+    import HelpBlock from './HelpBlock.svelte';
     import ShortcutsTable from './ShortcutsTable.svelte';
 
     let destroy: Unsubscriber;
@@ -17,8 +17,8 @@
 </script>
 
 <section class="mb-8">
-    <Heading id="#info__how-to-use" />
-    <HowToUse />
+    <Heading id="#info__help" />
+    <HelpBlock />
 </section>
 <section class="mb-8">
     <Heading id="#info__shortcuts" />

@@ -91,6 +91,9 @@
 </script>
 
 <div>
+    <div class="my-4 text-sm">
+        Check the latest posts and/or comments of a user. Toggle "Notify" to enable/disable desktop notifications.
+    </div>
     <OptionsItem title="Minimum update interval">
         <div slot="description">
             Considering that most users don't post and comment very often, it's reasonable to poll it slower than

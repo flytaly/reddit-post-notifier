@@ -27,8 +27,8 @@ export const sections = {
     '#info': {
         name: getMsg('optionsNavInfo'),
     },
-    '#info__how-to-use': {
-        name: getMsg('optionsNavHowToUse'),
+    '#info__help': {
+        name: getMsg('optionsNavHelp'),
     },
     '#info__shortcuts': {
         name: getMsg('optionsNavShortcuts'),
