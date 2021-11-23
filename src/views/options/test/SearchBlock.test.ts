@@ -3,11 +3,12 @@ import { test } from '@jest/globals';
 import { fireEvent, getByLabelText, render, waitFor } from '@testing-library/svelte';
 import storage from '@/storage';
 import type { QueryData, QueryOpts } from '@/storage/storage-types';
-import SearchBlock from '../components/SearchBlock.svelte';
+import SearchBlock from '../components/search/SearchBlock.svelte';
 import getMsg from '@/utils/get-message';
 import { mocked } from 'ts-jest/utils';
 import { dataFields } from '@/storage/fields';
 import { tick } from 'svelte';
+import cloneDeep from 'lodash.clonedeep';
 
 jest.mock('@/storage/storage.ts');
 jest.mock('@/utils/get-message.ts');
@@ -16,6 +17,8 @@ jest.mock('@/utils/index.ts', () => ({
     ...jest.requireActual('@/utils/index.ts'),
     debounce: jest.fn((f: () => unknown) => f),
 }));
+
+const mockedStorage = mocked(storage);
 
 describe('Search settings block', () => {
     const queriesList: QueryOpts[] = [
@@ -28,6 +31,7 @@ describe('Search settings block', () => {
     beforeEach(() => {
         mockBrowser.storage.onChanged.addListener.spy(() => ({}));
         mockBrowser.storage.onChanged.removeListener.spy(() => ({}));
+        mockedStorage.getQueriesList.mockResolvedValue(cloneDeep(queriesList));
     });
 
     beforeAll(() => {
@@ -35,8 +39,7 @@ describe('Search settings block', () => {
     });
 
     test('render and save', async () => {
-        //
-        const { getAllByTestId } = render(SearchBlock, { queriesListStore: queriesList });
+        const { getAllByTestId } = render(SearchBlock);
         await tick();
 
         const forms = getAllByTestId('search-fieldset');
@@ -54,10 +57,10 @@ describe('Search settings block', () => {
         expect(storage.saveQuery).toHaveBeenCalledWith({ ...queriesList[0], subreddit: 'Sub2' });
     });
 
-    test('should add and delete fieldsets', async () => {
-        const { getAllByTestId, getAllByText, getByText, queryAllByTestId } = render(SearchBlock, {
-            queriesListStore: queriesList,
-        });
+    test('should add and delete fieldset', async () => {
+        const { getAllByTestId, getAllByText, getByText, queryAllByTestId } = render(SearchBlock);
+        await tick();
+
         const delBtns = getAllByText('Delete the search');
         expect(delBtns).toHaveLength(1);
 

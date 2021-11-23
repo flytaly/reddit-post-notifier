@@ -8,7 +8,7 @@
     import FollowUsersBlock from './FollowUsersBlock.svelte';
     import GeneralSettingsBlock from './GeneralSettingsBlock.svelte';
     import Heading from './Heading.svelte';
-    import SearchBlock from './SearchBlock.svelte';
+    import SearchBlock from './search/SearchBlock.svelte';
     import SubredditsBlock from './subreddits/SubredditsBlock.svelte';
 
     let destroy: Unsubscriber;
