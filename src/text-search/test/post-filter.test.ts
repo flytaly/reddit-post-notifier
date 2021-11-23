@@ -1,8 +1,7 @@
-import type { DocSearch } from '../document';
-import { fixtures } from './fixtures';
 import type { TextId } from '../index';
 import type { FilterRule, SearchableField, SearchableRedditPost } from '../post-filter';
 import { postFilter } from '../post-filter';
+import { fixtures } from './fixtures';
 
 const m = (fieldToQueryMap: Partial<Record<SearchableField, string>>) =>
     Object.entries(fieldToQueryMap).map(([field, query]) => ({ field, query })) as FilterRule;
@@ -32,7 +31,7 @@ describe('Post filter', () => {
         filtered = postFilter(posts, [m({ author: 'JakeCakes' })], ['author']);
         expect(filtered).toMatchObject(ids(2, 3, 4));
 
-        // shouldn't  stemm author query
+        // shouldn't stem author query
         filtered = postFilter(posts, [m({ author: 'JakeCake' })], ['author']);
         expect(filtered).toMatchObject([]);
 
@@ -40,7 +39,7 @@ describe('Post filter', () => {
         filtered = postFilter(posts, [m({ link_flair_text: 'dogs' })], ['link_flair_text']);
         expect(filtered).toMatchObject(ids(2, 3));
 
-        // shouldn't stemm flair query
+        // shouldn't stem flair query
         filtered = postFilter(posts, [m({ link_flair_text: 'dog' })], ['link_flair_text']);
         expect(filtered).toMatchObject([]);
 

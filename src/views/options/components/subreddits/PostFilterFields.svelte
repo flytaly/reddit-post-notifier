@@ -26,7 +26,7 @@
     const fieldNames: Record<SearchableField, string> = {
         author: 'author',
         selftext: 'selftext',
-        link_flair_text: 'flar',
+        link_flair_text: 'flair',
         title: 'title',
     };
 

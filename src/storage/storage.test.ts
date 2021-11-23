@@ -1,30 +1,15 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 /* eslint-disable @typescript-eslint/unbound-method */
-
 import cloneDeep from 'lodash.clonedeep';
+import { mocked } from 'ts-jest/utils';
 import DEFAULT_OPTIONS from '../options-default';
-import type {
-    RedditComment,
-    RedditCommentData,
-    RedditMessage,
-    RedditMessageData,
-    RedditPost,
-} from '../reddit-api/reddit-types';
+import type { RedditMessage, RedditMessageData, RedditPost } from '../reddit-api/reddit-types';
 import { generatePost, generatePosts, generateQuery } from '../test-utils/content-generators';
 import { mockDate, restoreDate } from '../test-utils/mock-date';
 import type { ExtensionOptions } from '../types/extension-options';
-import storage from './index';
-import type {
-    FollowingUser,
-    MessageData,
-    QueryData,
-    QueryOpts,
-    StorageFields,
-    SubredditData,
-    SubredditOpts,
-} from './storage-types';
 import { generateId } from '../utils/index';
-import { mocked } from 'ts-jest/utils';
+import storage from './index';
+import type { MessageData, QueryData, QueryOpts, StorageFields, SubredditData, SubredditOpts } from './storage-types';
 
 jest.mock('../utils/index.ts', () => ({
     // @ts-ignore

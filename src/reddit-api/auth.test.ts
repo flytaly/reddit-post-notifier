@@ -116,7 +116,7 @@ describe('Token Refreshing', () => {
         expect(token).toBe(refreshSuccessBody.access_token);
     });
 
-    test('should throw AuthError if error happend during refreshing', async () => {
+    test('should throw AuthError if error happens during refreshing', async () => {
         fetchMock.mockImplementationOnce(() => jsonResponse({}, 400));
         await expect(() => auth.renewAccessToken('')).rejects.toThrowError(AuthError);
     });

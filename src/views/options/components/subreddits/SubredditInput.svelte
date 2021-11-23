@@ -33,7 +33,7 @@
     $: fetchError = formatError(subData.error);
 
     const fetchPosts = async () => {
-        if (!subOpts.subreddit) return;
+        if (!subOpts.subreddit || inputStatus.error) return;
         isLoading = true;
         showPosts = false;
         isBlocked.block();
@@ -257,8 +257,8 @@
         <button
             class="flex items-center text-skin-accent2 p-0 border-transparent bg-transparent hover:bg-transparent text-xs"
             on:click={() => void fetchPosts()}
-            title="click to fetch and show the lates post from the subreddit"
-            disabled={$isBlocked || !subOpts.subreddit}
+            title="click to fetch and show the latest post from the subreddit"
+            disabled={$isBlocked || !subOpts.subreddit || !!inputStatus.error}
         >
             <div class="w-5 h-5 mr-1">
                 {@html RefreshIcon2}

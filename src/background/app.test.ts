@@ -140,7 +140,7 @@ describe('update subreddits', () => {
     test('should save error', async () => {
         const id = 'itemId';
         mockStorageData({
-            subredditList: [{ id, subreddit: 'somesubreddit' }],
+            subredditList: [{ id, subreddit: 'someSubreddit' }],
         });
         const error: RedditError = { error: 404, message: 'Not found', reason: 'banned' };
         mockSubredditNew.mockResolvedValueOnce(error);
