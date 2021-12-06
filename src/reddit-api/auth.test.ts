@@ -31,7 +31,7 @@ function testUrl(url: string) {
         response_type: 'code',
         redirect_uri: config.redirectUri,
         client_id: config.clientId,
-        scope: `${scopes.read.id} ${scopes.privatemessages.id} ${scopes.history.id}`,
+        scope: `${scopes.identity.id} ${scopes.read.id} ${scopes.privatemessages.id} ${scopes.history.id}`,
         state: auth.authState,
         duration: 'permanent',
     });
