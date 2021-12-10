@@ -12,7 +12,6 @@
         "target": "ES2019",
         "outDir": "./dist",
         "module": "ES2020",
-        "sourceRoot": "./src"
     },
     "include": [
         "./vite.config.ts",

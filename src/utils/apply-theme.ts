@@ -11,7 +11,7 @@ const themeToClassMap = {
 } as const;
 
 const setClasses = (theme: ExtensionOptions['theme']) => {
-    const add = themeToClassMap[theme];
+    const add = themeToClassMap[theme] as string | undefined;
 
     const remove: string[] = Object.keys(themeToClassMap)
         .filter((t) => t !== theme)

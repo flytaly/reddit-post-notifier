@@ -50,7 +50,7 @@ export default class RedditApiClient {
         return {
             new: async (listing?: RedditSubredditListing) =>
                 this.GET(`/r/${subreddit}/new`, listing) as R<RedditPostResponse>,
-            search: async (listing: RedditSearchListing) => this.search(listing, subreddit) as R<RedditPostResponse>,
+            search: async (listing: RedditSearchListing) => this.search(listing, subreddit),
         };
     }
 
@@ -67,7 +67,7 @@ export default class RedditApiClient {
 
     search(listing: RedditSearchListing, subreddit: string | null = null) {
         const listingSortByNew: RedditSearchListing = { sort: 'new', ...listing };
-        if (subreddit) return this.GET(`/r/${subreddit}/search`, listingSortByNew);
+        if (subreddit) return this.GET(`/r/${subreddit}/search`, listingSortByNew) as R<RedditPostResponse>;
 
         return this.GET('/search', listingSortByNew) as R<RedditPostResponse>;
     }

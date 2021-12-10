@@ -1,14 +1,14 @@
 /* eslint-disable no-await-in-loop */
 import RedditApiClient from '../reddit-api/client';
-import {
+import type {
     RedditError,
     RedditListingResponse,
-    RedditObjectKind,
     RedditPostExtended,
     RedditSearchListing,
     RedditSubredditListing,
     RedditUserOverviewResponse,
 } from '../reddit-api/reddit-types';
+import { RedditObjectKind } from '../reddit-api/reddit-types';
 import storage from '../storage';
 import type {
     FollowingUser,
@@ -22,7 +22,8 @@ import { postFilter } from '../text-search/post-filter';
 import type { ExtensionOptions } from '../types/extension-options';
 import { filterPostDataProperties, getSearchQueryUrl, getSubredditUrl, getUserProfileUrl } from '../utils/index';
 import { wait } from '../utils/wait';
-import notify, { NewPostsNotification, NotificationId } from './notifications';
+import type { NewPostsNotification } from './notifications';
+import notify, { NotificationId } from './notifications';
 
 const reddit = new RedditApiClient();
 

@@ -19,7 +19,7 @@ export const connectToBg = (context: FromContext) => {
     bgPort = browser.runtime.connect({ name: context });
     bgPort.onMessage.addListener((message: PortMessage) => {
         console.info(` ${context} received message`, message);
-        messageListeners.get(message.id)?.(message.payload);
+        void messageListeners.get(message.id)?.(message.payload);
     });
     bgPort.onDisconnect.addListener(() => {
         bgPort = null;
@@ -46,7 +46,7 @@ export function initializeBgListener(onConnect?: (port: Runtime.Port) => void) {
 
         incoming.onMessage.addListener((message: PortMessage) => {
             console.info(`background received message from ${portId} `, message);
-            messageListeners.get(message.id)?.(message.payload);
+            void messageListeners.get(message.id)?.(message.payload);
         });
 
         incoming.onDisconnect.addListener(() => {

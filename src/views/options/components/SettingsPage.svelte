@@ -12,7 +12,7 @@
     import SubredditsBlock from './subreddits/SubredditsBlock.svelte';
 
     let destroy: Unsubscriber;
-    let dataPromise = storage.getAllData();
+    const dataPromise = storage.getAllData();
 
     onMount(() => {
         // wait for children sections to mount and then scroll based on hash

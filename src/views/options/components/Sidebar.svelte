@@ -5,7 +5,7 @@
 
     export let current: PageId;
 
-    let navItems: Array<{ key: string; name: string; level: 1 | 2 }> = [];
+    const navItems: Array<{ key: string; name: string; level: 1 | 2 }> = [];
 
     Object.entries(sections).forEach(([key, b]) => {
         const [, l2] = key.split('__');

@@ -1,6 +1,7 @@
 import { browser, Notifications } from 'webextension-polyfill-ts';
 import type { RedditMessage } from '../reddit-api/reddit-types';
-import { notificationSoundFiles, SoundId } from '../sounds';
+import type { SoundId } from '../sounds';
+import { notificationSoundFiles } from '../sounds';
 import storage from '../storage';
 import { redditOldUrl, redditUrl } from '../utils';
 

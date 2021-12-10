@@ -4,16 +4,14 @@
 
     export let clickHandler: (e: MouseEvent) => void | null = null;
     export let title = null;
+    const handler = (e: MouseEvent) => {
+        e.stopPropagation();
+        clickHandler(e);
+    };
 </script>
 
 <span class="mr-1 text-skin-gray hover:text-skin-success hover:scale-105" data-keys-target="check-mark">
-    <SvgButton
-        on:click={(e) => {
-            e.stopPropagation();
-            clickHandler(e);
-        }}
-        {title}
-    >
+    <SvgButton on:click={handler} {title}>
         {@html CheckMark}
     </SvgButton>
 </span>

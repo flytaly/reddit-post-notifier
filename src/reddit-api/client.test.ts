@@ -117,10 +117,10 @@ describe('HTTP GET request', () => {
 
 describe('API', () => {
     const response = { data: 'data' };
-    let GET;
+    let GET: ReturnType<typeof jest.spyOn>;
 
     beforeAll(() => {
-        GET = jest.spyOn(reddit, 'GET').mockImplementation(async () => response);
+         GET = jest.spyOn(reddit, 'GET').mockImplementation(async () => response);
     });
 
     afterAll(() => {

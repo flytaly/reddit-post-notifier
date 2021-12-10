@@ -22,6 +22,8 @@ const generateIdMock = mocked(generateId);
 const mockGet = mockBrowser.storage.local.get;
 const mockSet = mockBrowser.storage.local.set;
 
+type ExpRecord = Record<string, any>
+
 describe('authorization data', () => {
     afterEach(() => restoreDate());
 
@@ -41,13 +43,18 @@ describe('authorization data', () => {
         mockDate('2019-02-17T00:25:58.000Z');
         const expiresInAbsolute = new Date().getTime() + expiresIn * 1000;
         const expected = { accessToken, refreshToken, expiresIn: expiresInAbsolute, scope: 'scope' };
-        mockSet.expect(expect.objectContaining(expected));
+        mockSet.expect(expect.objectContaining(expected) as ExpRecord);
         await storage.saveAuthData(authDataFake);
     });
 
     test('should return authorization data', async () => {
         const result = { accessToken, refreshToken, expiresIn };
-        const exp = expect.objectContaining({ accessToken: '', expiresIn: 0, refreshToken: '', scope: '' });
+        const exp: ExpRecord  = expect.objectContaining({
+            accessToken: '',
+            expiresIn: 0,
+            refreshToken: '',
+            scope: '',
+        });
         mockGet.expect(exp).andResolve(result);
         await expect(storage.getAuthData()).resolves.toBe(result);
     });
@@ -233,7 +240,7 @@ describe('subreddits', () => {
                 usersList: [],
             } as StorageFields),
         );
-        mockSet.expect(expect.objectContaining({ subreddits: expectedSubs }));
+        mockSet.expect(expect.objectContaining({ subreddits: expectedSubs }) as ExpRecord);
         jest.spyOn(storage, 'getQueriesData').mockImplementationOnce(() => Promise.resolve({}));
 
         await storage.removeAllPosts();
@@ -347,7 +354,7 @@ describe('search queries', () => {
         );
         const expectedQueries = {};
         queriesList.forEach((q) => (expectedQueries[q.id] = { posts: [] }));
-        mockSet.expect(expect.objectContaining({ queries: expectedQueries }));
+        mockSet.expect(expect.objectContaining({ queries: expectedQueries }) as ExpRecord);
         jest.spyOn(storage, 'getSubredditData').mockImplementationOnce(() => Promise.resolve({}));
         await storage.removeAllPosts();
         (storage.getSubredditData as any as jest.SpyInstance).mockRestore();

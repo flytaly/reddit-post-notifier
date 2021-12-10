@@ -33,6 +33,7 @@ module.exports = {
     plugins: ['svelte3', '@typescript-eslint'],
     ignorePatterns: ['node_modules', '/*.js', 'src/test-utils/jest'],
     rules: {
+        'prefer-const': 'warn',
         '@typescript-eslint/explicit-module-boundary-types': 'off',
         '@typescript-eslint/no-extra-semi': 'off',
         '@typescript-eslint/no-unsafe-assignment': 'off',

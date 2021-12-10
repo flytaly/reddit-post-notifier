@@ -39,7 +39,7 @@ const auth = {
         const now = new Date();
         const expires = new Date(expiresIn - 60000 * 4); // 4 mins before expire
 
-        const token: string = expires > now && accessToken ? accessToken : await this.renewAccessToken(refreshToken);
+        const token: string = expires > now && accessToken ? accessToken : await auth.renewAccessToken(refreshToken);
         return token;
     },
 
@@ -61,7 +61,7 @@ const auth = {
 
     async getAuthCode(authState: string) {
         const response = await browser.identity.launchWebAuthFlow({
-            url: this.getAuthURL(authState),
+            url: auth.getAuthURL(authState),
             interactive: true,
         });
         const responseURL = new URL(response);
@@ -96,7 +96,7 @@ const auth = {
             code,
         };
 
-        const response = await fetch(this.accessTokenURL, this.fetchAuthInit(params));
+        const response = await fetch(auth.accessTokenURL, auth.fetchAuthInit(params));
         if (response.status !== 200) {
             throw new AuthError(`Couldn't receive tokens. ${response.status}: ${response.statusText || ''}`);
         }
@@ -117,7 +117,7 @@ const auth = {
             grant_type: 'refresh_token',
             refresh_token: refreshToken,
         };
-        const response = await fetch(this.accessTokenURL, this.fetchAuthInit(params));
+        const response = await fetch(auth.accessTokenURL, auth.fetchAuthInit(params));
 
         if (response.status !== 200) {
             throw new AuthError(`Couldn't refresh access token. ${response.status}: ${response.statusText || ''}`);

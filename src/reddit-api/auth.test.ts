@@ -11,7 +11,7 @@ jest.mock('../storage/index.ts');
 const testAuthFetchOptions = (options: RequestInit) => {
     expect(options.method).toBe('POST');
     expect(options.headers).toHaveProperty('Authorization');
-    const [type, credentials] = options.headers['Authorization'].split(' ');
+    const [type, credentials] = options.headers['Authorization'].split(' ') as [string, string];
     expect(type).toBe('Basic');
     expect(Buffer.from(credentials, 'base64').toString()).toBe(`${config.clientId}:${config.clientSecret}`);
 };
@@ -123,7 +123,7 @@ describe('Token Refreshing', () => {
 });
 
 describe('Get Access Token', () => {
-    let renewAccessToken;
+    let renewAccessToken: ReturnType<typeof jest.spyOn>;
     const renewedToken = 'renewedToken';
     const authData = {
         accessToken: 'oldAccessToken',

@@ -51,9 +51,6 @@ export default defineConfig(({ command }) => {
             },
             outDir: r('extension/dist'),
             emptyOutDir: false,
-            cleanCssOptions: {
-                format: 'beautify',
-            },
             rollupOptions: {
                 input: {
                     popup: r('src/views/popup/index.html'),

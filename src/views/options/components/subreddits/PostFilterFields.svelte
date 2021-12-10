@@ -1,4 +1,5 @@
 <script lang="ts">
+    /* eslint-disable @typescript-eslint/no-unsafe-argument */
     import type { SearchableField, FilterRule } from '@/text-search/post-filter';
     import { XCircleIcon, DeleteIcon } from '@/views/options/icons';
     import { allFields } from '@/text-search/post-filter';
@@ -11,8 +12,8 @@
     export let subId: string;
     export let index: number;
 
-    let debounced = debounce(commitChanges, 700);
-    let debouncedHandler = () => {
+    const debounced = debounce(commitChanges, 700);
+    const debouncedHandler = () => {
         $inputStatusStore[subId] = { typing: true };
         debounced(filterRule);
     };

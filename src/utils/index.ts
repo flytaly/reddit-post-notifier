@@ -44,7 +44,7 @@ export const getUserProfileUrl = (
 
 export const debounce = (func: (...args: unknown[]) => unknown, waitMs: number) => {
     let waiting = false;
-    let tmId;
+    let tmId: ReturnType<typeof setTimeout>;
     return (...args: unknown[]) => {
         if (waiting) clearTimeout(tmId);
         waiting = true;
