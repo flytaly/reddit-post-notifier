@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/unbound-method */
 import { postFilter } from '@/text-search/post-filter';
 import { cloneDeep } from 'lodash';
-import { mocked } from 'ts-jest/utils';
+import { mocked } from 'jest-mock';
 import DEFAULT_OPTIONS from '../options-default';
 import RedditApiClient from '../reddit-api/client';
 import { RedditObjectKind } from '../reddit-api/reddit-types';

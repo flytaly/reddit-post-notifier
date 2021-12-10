@@ -5,7 +5,7 @@ import storage from '@/storage';
 import type { QueryData, QueryOpts } from '@/storage/storage-types';
 import SearchBlock from '../components/search/SearchBlock.svelte';
 import getMsg from '@/utils/get-message';
-import { mocked } from 'ts-jest/utils';
+import { mocked } from 'jest-mock';
 import { dataFields } from '@/storage/fields';
 import { tick } from 'svelte';
 import cloneDeep from 'lodash.clonedeep';
@@ -30,7 +30,6 @@ describe('Search settings block', () => {
 
     beforeEach(() => {
         mockBrowser.storage.onChanged.addListener.spy(() => ({}));
-        mockBrowser.storage.onChanged.removeListener.spy(() => ({}));
         mockedStorage.getQueriesList.mockResolvedValue(cloneDeep(queriesList));
     });
 

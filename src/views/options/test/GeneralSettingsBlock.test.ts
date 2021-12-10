@@ -9,7 +9,7 @@ import type { ExtensionOptions } from '@/types/extension-options';
 import applyTheme from '@/utils/apply-theme';
 import type { notificationSoundFiles } from '@/sounds';
 import { dataFields } from '@/storage/fields';
-import { mocked } from 'ts-jest/utils';
+import { mocked } from 'jest-mock';
 import { tick } from 'svelte';
 
 jest.mock('@/storage/storage.ts');
@@ -32,7 +32,6 @@ function optionSaved(opt: Partial<ExtensionOptions>) {
 describe('General Options', () => {
     beforeEach(() => {
         mockBrowser.storage.onChanged.addListener.spy(() => ({}));
-        mockBrowser.storage.onChanged.removeListener.spy(() => ({}));
     });
 
     afterEach(() => {

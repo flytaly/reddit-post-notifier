@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/unbound-method */
 import { fireEvent, render, waitFor } from '@testing-library/svelte';
 import { cloneDeep } from 'lodash';
-import { mocked } from 'ts-jest/utils';
+import { mocked } from 'jest-mock';
 import storage from '@/storage/storage';
 import type { SubredditData, SubredditOpts } from '@/storage/storage-types';
 import getMsg from '@/utils/get-message';
@@ -35,7 +35,6 @@ describe('Subreddit settings', () => {
 
     beforeEach(() => {
         mockBrowser.storage.onChanged.addListener.spy(() => ({}));
-        mockBrowser.storage.onChanged.removeListener.spy(() => ({}));
     });
 
     beforeAll(() => {

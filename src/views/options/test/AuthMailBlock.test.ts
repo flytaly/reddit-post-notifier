@@ -7,7 +7,7 @@ import type { ExtensionOptions } from '@/types/extension-options';
 import getMsg from '@/utils/get-message';
 import { fireEvent, render } from '@testing-library/svelte';
 import { tick } from 'svelte';
-import { mocked } from 'ts-jest/utils';
+import { mocked } from 'jest-mock';
 import AuthMailBlock from '../components/AuthMailBlock.svelte';
 
 jest.mock('@/storage/storage.ts');
@@ -22,7 +22,6 @@ const mockStorage = mocked(storage);
 describe('Mail and authorization settings', () => {
     beforeEach(() => {
         mockBrowser.storage.onChanged.addListener.spy(() => ({}));
-        mockBrowser.storage.onChanged.removeListener.spy(() => ({}));
     });
 
     afterEach(() => jest.clearAllMocks());

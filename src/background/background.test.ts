@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/unbound-method */
-import { mocked } from 'ts-jest/utils';
+import { mocked } from 'jest-mock';
 import DEFAULT_OPTIONS from '../options-default';
 import { initializeBgListener, onMessage } from '../port';
 import type { MessageListener } from '../port';
