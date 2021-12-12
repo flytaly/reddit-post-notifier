@@ -58,7 +58,7 @@
         data-post-id={post.data.id}
     >
         {#if showSubreddit}
-            <span class="text-skin-base text-xs mr-1">{`r/${post.data.subreddit}`}</span>
+            <span class="text-skin-text text-xs mr-1">{`r/${post.data.subreddit}`}</span>
         {/if}
         {getItemTitle(post)}</a
     >

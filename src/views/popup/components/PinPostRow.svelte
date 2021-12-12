@@ -19,7 +19,7 @@
         data-keys-target="post-link"
         data-post-id={post.data.id}
     >
-        <span class="text-skin-base pr-2 text-xs">{`r/${post.data.subreddit}`}</span>
+        <span class="text-skin-text pr-2 text-xs">{`r/${post.data.subreddit}`}</span>
         <span>{getItemTitle(post)}</span>
     </a>
     <span data-keys-target="pin-post">

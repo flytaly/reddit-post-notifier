@@ -75,7 +75,7 @@
                 target="_blank"
             >
                 {#if item.flair}
-                    <span class="text-skin-base">
+                    <span class="text-skin-text">
                         {`[${String(item.flair || '')}] `}
                     </span>
                 {/if}

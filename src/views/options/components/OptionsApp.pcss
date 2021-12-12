@@ -8,7 +8,7 @@
 }
 
 body {
-    @apply text-skin-base bg-skin-base;
+    @apply text-skin-text bg-skin-bg;
 }
 
 a {
@@ -19,21 +19,22 @@ input,
 [type='number'] {
     @apply border
         border-skin-base
+        rounded-sm
         focus-visible:border-skin-outline
         focus-visible:ring-1
         ring-offset-1
         focus-visible:ring-skin-outline
         bg-skin-input
-        hover:bg-skin-hover
+        hover:bg-skin-input-hover
         /* hover:shadow-input */
         px-2
         /* py-1 */
-        text-skin-base
+        text-skin-text
         text-sm;
 }
 
 input:invalid {
-    @apply ring-1 ring-skin-error border-skin-error;
+    @apply ring-1 ring-offset-0 ring-skin-error border-skin-error;
 }
 
 .is-button,
@@ -43,9 +44,11 @@ button {
         hover:bg-skin-btn-hover
         hover:brightness-110 active:brightness-125
         border border-skin-base
+        rounded-sm
         px-3 py-1
         shadow-none text-sm;
 }
+
 
 :disabled {
     @apply text-skin-gray cursor-not-allowed opacity-80;
@@ -53,9 +56,9 @@ button {
 
 [type='checkbox'] {
     @apply appearance-none
-        h-5 w-5 text-skin-base
+        h-5 w-5 text-skin-text
         border border-skin-base
-        hover:bg-skin-hover
+        hover:bg-skin-input-hover
         hover:shadow-input;
 }
 
@@ -67,7 +70,7 @@ button {
 }
 
 select {
-    @apply block appearance-none text-skin-base text-base pl-1 pr-8 bg-skin-input border border-skin-base hover:shadow-input;
+    @apply block appearance-none text-skin-text text-base pl-1 pr-8 bg-skin-input border border-skin-base hover:shadow-input rounded-sm; 
 
     background-image: url('data:image/svg+xml;charset=US-ASCII,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%22292.4%22%20height%3D%22292.4%22%3E%3Cpath%20fill%3D%22%23252525%22%20d%3D%22M287%2069.4a17.6%2017.6%200%200%200-13-5.4H18.4c-5%200-9.3%201.8-12.9%205.4A17.6%2017.6%200%200%200%200%2082.2c0%205%201.8%209.3%205.4%2012.9l128%20127.9c3.6%203.6%207.8%205.4%2012.8%205.4s9.2-1.8%2012.8-5.4L287%2095c3.5-3.5%205.4-7.8%205.4-12.8%200-5-1.9-9.2-5.5-12.8z%22%2F%3E%3C%2Fsvg%3E');
     background-repeat: no-repeat, repeat;

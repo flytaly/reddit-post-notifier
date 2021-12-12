@@ -158,7 +158,7 @@
                 <div class="flex items-center">
                     <span
                         class={`h-4 w-4 mr-2 flex-shrink-0 ${
-                            queryObject.notify ? 'text-skin-accent' : 'text-skin-base'
+                            queryObject.notify ? 'text-skin-accent' : 'text-skin-text'
                         }`}
                     >
                         {@html BellIcon}

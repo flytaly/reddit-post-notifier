@@ -17,7 +17,7 @@
 </svelte:head>
 
 <div
-    class="grid grid-cols-[max-content,minmax(auto,42rem)] gap-x-4 p-3 pt-0 justify-center  bg-skin-base text-skin-base"
+    class="grid grid-cols-[max-content,minmax(auto,42rem)] gap-x-4 p-3 pt-0 justify-center" 
 >
     <div class="sticky top-0">
         <Sidebar current={$pageInfo.page} />

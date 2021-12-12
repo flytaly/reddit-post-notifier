@@ -85,7 +85,7 @@
     <input
         size="13"
         maxlength="20"
-        class="border-none rounded m-0"
+        class="border-none rounded-l rounded-r-none m-0"
         type="text"
         value={username}
         on:input={(e) => {
@@ -94,7 +94,7 @@
         }}
         on:change={saveUsername}
     />
-    <button class="py-0 px-2 border-0 border-l rounded min-w-[4rem] text-xs" on:click={saveWatchTarget}>
+    <button class="py-0 px-2 border-0 border-l rounded-l-none rounded-r min-w-[4rem] text-xs" on:click={saveWatchTarget}>
         {saveBtnMessage}
     </button>
 </div>
@@ -148,7 +148,7 @@
 
 <div class="ml-auto">
     <button
-        class="flex item-center ml-auto py-0 px-1 bg-transparent border-transparent text-skin-accent"
+        class="flex item-center ml-auto py-0 px-1 bg-transparent border-transparent text-skin-accent hover:bg-transparent hover:scale-105 transition-transform"
         aria-label={getMsg('optionSubredditsDelete')}
         on:click={onDelete}
     >

@@ -1,20 +1,10 @@
 const colors = require('tailwindcss/colors');
 
 module.exports = {
-    mode: 'jit',
-    purge: {
-        content: ['./**/*.svelte', './**/*.pcss'],
-    },
-    darkMode: false,
+    content: ['./**/*.svelte', './**/*.pcss'],
     theme: {
         extend: {
             colors: {
-                sky: colors.sky,
-                rose: colors.rose,
-                coolGray: colors.coolGray,
-                trueGray: colors.trueGray,
-                blueGray: colors.blueGray,
-                warmGray: colors.warmGray,
                 skin: {
                     bg: 'var(--color-bg-base)',
                     bg2: 'var(--color-bg-second)',
@@ -24,6 +14,7 @@ module.exports = {
                     gray2: 'var(--color-gray2)',
                     outline: 'var(--color-outline)',
                     delimiter: 'var(--color-delimiter)',
+                    text: 'var(--color-text-base)',
                     error: {
                         DEFAULT: 'var(--color-error)',
                         bg: 'var(--color-error-bg)',
@@ -31,6 +22,9 @@ module.exports = {
                     success: 'var(--color-success)',
                     link: 'var(--color-link)',
                     'item-hover': 'var(--color-item-bg-hover)',
+                    'input-checked': 'var(--color-input-bg-checked)',
+                    'input-hover': 'var(--color-input-bg-hover)',
+                    input: 'var(--color-input-bg)',
                     btn: 'var(--color-btn)',
                     'btn-hover': 'var(--color-btn-hover)',
                     'btn-active': 'var(--color-btn-active)',
@@ -39,30 +33,14 @@ module.exports = {
             borderColor: {
                 skin: {
                     base: 'var(--color-border)',
-                    'input-checked': 'var(--color-input-bg-checked)',
                 },
             },
             boxShadow: {
                 sidebar: 'var(--shadow-sidebar)',
                 input: 'var(--shadow-input-hover)',
             },
-            textColor: {
-                skin: { base: 'var(--color-text-base)' },
-            },
-            backgroundColor: {
-                skin: {
-                    base: 'var(--color-bg-base)',
-                    input: 'var(--color-input-bg)',
-                    hover: 'var(--color-input-bg-hover)',
-                    'input-checked': 'var(--color-input-bg-checked)',
-                },
-            },
         },
     },
-    variants: {
-        extend: {},
-    },
-    // plugins: [require('@tailwindcss/forms')],
     future: {
         purgeLayersByDefault: true,
         removeDeprecatedGapUtilities: true,

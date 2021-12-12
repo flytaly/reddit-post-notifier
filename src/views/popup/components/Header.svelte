@@ -69,7 +69,7 @@
                     on:click={() => void storage.removeMessages()}
                     w="1.1rem"
                 >
-                    <span class={`${messagesCount ? 'text-skin-accent' : 'text-skin-base'}`}>
+                    <span class={`${messagesCount ? 'text-skin-accent' : 'text-skin-text'}`}>
                         {@html MailIcon}
                     </span>
                 </SvgButton>

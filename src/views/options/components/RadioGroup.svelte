@@ -7,35 +7,26 @@
     export let name = '';
 </script>
 
-<form class="flex overflow-visible" on:change={() => onChange(currentValue)}>
+<form class="flex overflow-visible py-1 bg-skin-input" on:change={() => onChange(currentValue)}>
     {#each valueList as { value, id, label }}
-        <input class="absolute opacity-0" type="radio" bind:group={currentValue} {value} {id} {name} />
-        <label for={id}>{label}</label>
+        <div class="overflow-visible group px-[2px]">
+            <input class="absolute opacity-0 peer" type="radio" bind:group={currentValue} {value} {id} {name} />
+            <label
+                class="border border-skin-base bg-skin-input px-2 py-1
+                text-skin-text text-sm
+                transition-colors
+                hover:brightness-90 active:brightness-125
+                group-first:rounded-l group-last:rounded-r
+                peer-checked:bg-skin-input-checked
+                peer-checked:text-white
+                peer-checked:hover:brightness-110
+                peer-focus-visible:border-skin-outline
+                peer-focus-visible:ring
+                peer-focus-visible:ring-offset-1
+                peer-focus-visible:ring-skin-outline
+            "
+                for={id}>{label}</label
+            >
+        </div>
     {/each}
 </form>
-
-<style lang="postcss">
-    label {
-        @apply border
-            border-skin-base
-            bg-skin-btn
-            px-2
-            py-1
-            text-skin-base
-            text-sm
-            transition-colors
-            hover:brightness-90
-            active:brightness-125;
-    }
-
-    input:checked + label {
-        @apply bg-skin-input-checked text-white hover:brightness-110;
-    }
-
-    input:focus-visible + label {
-        @apply border-skin-outline
-            ring
-            ring-offset-1
-            ring-skin-outline;
-    }
-</style>

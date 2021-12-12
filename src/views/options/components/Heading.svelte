@@ -11,7 +11,7 @@
         {sections[id].name}
     </h1>
 {:else}
-    <h2 class="text-xl font-bold border-b border-skin-delimiter mb-4" id={id.slice(1)}>
+    <h2 class="text-xl font-bold border-b border-skin-delimiter text-skin-text mb-4" id={id.slice(1)}>
         {sections[id].name}
     </h2>
 {/if}

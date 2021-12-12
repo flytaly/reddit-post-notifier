@@ -138,14 +138,14 @@
         } rounded-t h-full`}
     >
         <input
-            class="rounded w-full border-none"
+            class="rounded-l rounded-r-none w-full border-none" 
             type="text"
             bind:this={subredditInputRef}
             bind:value={subOpts.subreddit}
             on:input={inputHandler}
             aria-label={getMsg('optionSubredditsInput')}
         />
-        <button class="min-w-[5rem] py-0 px-2 border-0 border-l rounded w-min text-xs" on:click={() => saveInputs()}>
+        <button class="min-w-[5rem] py-0 px-2 border-0 border-l rounded-r rounded-l-none w-min text-xs" on:click={() => saveInputs()}>
             {#if inputStatus.saved}
                 <div class="flex items-center text-skin-success">
                     <div class="w-4 h-4 mr-1 flex-shrink-0">{@html icons.SaveIcon}</div>
@@ -232,7 +232,7 @@
     </button>
     <div>
         <button
-            class="flex item-center ml-auto py-0 px-1 bg-transparent border-transparent text-skin-accent"
+            class="flex item-center ml-auto py-0 px-1 bg-transparent border-transparent text-skin-accent hover:bg-transparent hover:scale-105 transition-transform"
             aria-label={getMsg('optionSubredditsDelete')}
             on:click={() => subredditStore.deleteSubreddit(subOpts.id)}
             on:focus={showLabel}

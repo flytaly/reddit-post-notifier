@@ -122,7 +122,7 @@
     .preview {
         @apply absolute max-w-[18rem] max-h-[13rem] p-1
                 text-xs break-words overflow-hidden
-                bg-skin-base
+                bg-skin-bg
                 border border-skin-base
                 z-50;
     }

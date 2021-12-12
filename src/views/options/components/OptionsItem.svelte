@@ -36,6 +36,6 @@
         max-width: 90%;
     }
     header {
-        @apply text-skin-base font-bold text-base mb-2;
+        @apply text-skin-text font-bold text-base mb-2;
     }
 </style>

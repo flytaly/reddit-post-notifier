@@ -52,7 +52,7 @@
     /* Github markdown keys styles */
     .kbd {
         @apply inline-block px-[5px] py-[2px]
-               text-xs font-mono leading-normal text-skin-base
+               text-xs font-mono leading-normal text-skin-text
                align-middle
                bg-skin-input
                border border-skin-base rounded-md;

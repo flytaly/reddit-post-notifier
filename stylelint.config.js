@@ -15,5 +15,8 @@ module.exports = {
                 ignorePseudoClasses: ['global'],
             },
         ],
+        'hue-degree-notation': 'off',
+        'color-function-notation': 'legacy',
+        'alpha-value-notation': 'off'
     },
 };

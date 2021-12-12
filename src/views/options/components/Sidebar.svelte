@@ -14,14 +14,14 @@
 </script>
 
 <aside>
-    <a href="#settings" class="self-center text-skin-base hover:text-skin-base">
+    <a href="#settings" class="self-center text-skin-text hover:text-skin-text">
         <div class="logo">
             {@html LogoIcon}
         </div>
     </a>
     <nav class="flex flex-col">
         {#each navItems as { key, name, level } (key)}
-            <a href={key} class="leading-8 text-skin-base" class:current={current === key} class:level2={level === 2}
+            <a href={key} class="leading-8 text-skin-text" class:current={current === key} class:level2={level === 2}
                 >{name}</a
             >
         {/each}

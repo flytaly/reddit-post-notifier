@@ -91,7 +91,7 @@
                 />
                 <span slot="description">
                     <div class="flex items-center">
-                        <span class={`h-4 w-4 mr-2 ${messagesNotify ? 'text-skin-accent' : 'text-skin-base'}`}>
+                        <span class={`h-4 w-4 mr-2 ${messagesNotify ? 'text-skin-accent' : 'text-skin-text'}`}>
                             {@html BellIcon}
                         </span>
                         {getMsg('optionMailNotify')}
