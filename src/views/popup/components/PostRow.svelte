@@ -48,7 +48,7 @@
     };
 </script>
 
-<div class="flex items-center w-full py-[0.125rem] pr-3">
+<div class="flex items-center w-full py-[0.125rem] pr-3" data-post-id={post.data.id}>
     <CheckMarkButton clickHandler={() => removePost(post.data.id)} title={getMsg('postListCheckMark_title')} />
     <a
         class="text-skin-link flex-grow px-1 py-[0.125rem]"
