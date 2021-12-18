@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/unbound-method */
 import fetchMock from 'jest-fetch-mock';
 import auth from './auth';
-import scopes from './scopes';
+import scopes, { RedditScope } from './scopes';
 import storage from '../storage';
 import { AuthError } from './errors';
 import { config } from '../constants';
@@ -51,6 +51,7 @@ const jsonResponse = (result: unknown, status = 200) => {
 };
 
 describe('Token Retrieval', () => {
+    const id = 'fake_id';
     function mockAuthFlow() {
         mockBrowser.identity.launchWebAuthFlow.mock(async ({ interactive, url }) => {
             expect(interactive).toBeTruthy();
@@ -68,17 +69,17 @@ describe('Token Retrieval', () => {
             expect(body.code).toBe(fakeCode);
             return jsonResponse(authSuccessBody);
         });
-        await auth.login();
-        expect(storage.saveAuthData).toHaveBeenCalledWith(authSuccessBody);
+        await auth.login('fake_id');
+        expect(storage.saveAuthData).toHaveBeenCalledWith(authSuccessBody, id);
     });
 
     test('should throw AuthError when retrieving tokens', async () => {
         mockAuthFlow();
         fetchMock.mockImplementationOnce(() => jsonResponse({ error: 'invalid_grant' }));
-        await expect(auth.login()).rejects.toThrowError(AuthError);
+        await expect(auth.login(id)).rejects.toThrowError(AuthError);
 
         fetchMock.mockImplementationOnce(() => jsonResponse({}, 404));
-        await expect(auth.login()).rejects.toThrowError(AuthError);
+        await expect(auth.login(id)).rejects.toThrowError(AuthError);
     });
 
     test('should throw AuthError when retrieving code', async () => {
@@ -86,15 +87,16 @@ describe('Token Retrieval', () => {
         let redirectUri = `${config.redirectUri}?error=${error}&state=${auth.authState}`;
 
         mockBrowser.identity.launchWebAuthFlow.mock(async () => redirectUri);
-        await expect(auth.login()).rejects.toThrowError(new AuthError(error));
+        await expect(auth.login(id)).rejects.toThrowError(new AuthError(error, id));
 
         redirectUri = `${config.redirectUri}?state=${auth.authState}`;
         mockBrowser.identity.launchWebAuthFlow.mock(async () => redirectUri);
-        await expect(auth.login()).rejects.toThrowError(new AuthError("Couldn't get auth code"));
+        await expect(auth.login(id)).rejects.toThrowError(new AuthError("Couldn't get auth code", id));
     });
 });
 
 describe('Token Refreshing', () => {
+    const id = 'fake_id';
     const refreshToken = 'refreshToken';
 
     test('should refresh token and save', async () => {
@@ -111,14 +113,14 @@ describe('Token Refreshing', () => {
             return jsonResponse(refreshSuccessBody);
         });
 
-        const token = await auth.renewAccessToken(refreshToken);
-        expect(storage.saveAuthData).toHaveBeenCalledWith(refreshSuccessBody);
+        const token = await auth.renewAccessToken(refreshToken, id);
+        expect(storage.saveAuthData).toHaveBeenCalledWith(refreshSuccessBody, id);
         expect(token).toBe(refreshSuccessBody.access_token);
     });
 
     test('should throw AuthError if error happens during refreshing', async () => {
         fetchMock.mockImplementationOnce(() => jsonResponse({}, 400));
-        await expect(() => auth.renewAccessToken('')).rejects.toThrowError(AuthError);
+        await expect(() => auth.renewAccessToken('', id)).rejects.toThrowError(AuthError);
     });
 });
 
@@ -143,38 +145,50 @@ describe('Get Access Token', () => {
     });
 
     test('should return old access token', async () => {
-        storage.getAuthData = jest.fn(async () => ({
-            ...authData,
-            expiresIn: new Date().getTime() + 1000 * 3600,
+        storage.getAccounts = jest.fn(async () => ({
+            id1: { id: 'id1', auth: { ...authData, expiresIn: new Date().getTime() + 1000 * 3600 } },
         }));
         const token = await auth.getAccessToken();
-        expect(storage.getAuthData).toHaveBeenCalled();
+        expect(storage.getAccounts).toHaveBeenCalled();
         expect(token).toBe(authData.accessToken);
     });
 
     test('should return renewed accessToken', async () => {
-        storage.getAuthData = jest.fn(async () => ({
-            ...authData,
-            expiresIn: new Date().getTime(),
+        storage.getAccounts = jest.fn(async () => ({
+            id1: { id: 'id1', auth: { ...authData, expiresIn: new Date().getTime() } },
+            id2: { id: 'id2', auth: { expiresIn: new Date().getTime() + 1000 * 3600 } },
         }));
-
         const token = await auth.getAccessToken();
-        expect(storage.getAuthData).toHaveBeenCalled();
-        expect(auth.renewAccessToken).toHaveBeenCalledWith(authData.refreshToken);
+        expect(storage.getAccounts).toHaveBeenCalled();
+        expect(auth.renewAccessToken).toHaveBeenCalledWith(authData.refreshToken, 'id1');
         expect(token).toBe(renewedToken);
     });
 
     test('should return renewed accessToken if there is no token in storage', async () => {
         const refreshToken = '___refreshToken___';
 
-        storage.getAuthData = jest.fn(async () => ({
-            expiresIn: new Date().getTime() + 1000 * 3600,
-            refreshToken,
+        storage.getAccounts = jest.fn(async () => ({
+            id1: { id: 'id1', auth: { refreshToken, expiresIn: new Date().getTime() + 1000 * 3600 } },
         }));
 
         const token = await auth.getAccessToken();
-        expect(storage.getAuthData).toHaveBeenCalled();
-        expect(auth.renewAccessToken).toHaveBeenCalledWith(refreshToken);
+        expect(storage.getAccounts).toHaveBeenCalled();
+        expect(auth.renewAccessToken).toHaveBeenCalledWith(refreshToken, 'id1');
         expect(token).toBe(renewedToken);
+    });
+
+    test('should return tokens with correct scope', async () => {
+        const expiresIn = new Date().getTime() + 1000 * 3600;
+        const scopes: RedditScope[] = ['privatemessages'];
+        storage.getAccounts = jest.fn(async () => ({
+            id1: { id: 'id1', auth: { refreshToken: 't1', accessToken: 'a1', expiresIn } },
+            id2: { id: 'id2', auth: { refreshToken: 't2', accessToken: 'a2', expiresIn, scope: 'read' } },
+            id3: {
+                id: 'id3',
+                auth: { refreshToken: 't3', accessToken: 'a3', expiresIn, scope: 'read privatemessages' },
+            },
+        }));
+        const token = await auth.getAccessToken({ withScopes: scopes });
+        expect(token).toBe('a3');
     });
 });

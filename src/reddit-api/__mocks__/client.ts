@@ -21,6 +21,7 @@ export const mockUser = jest.fn(() => ({
     comments: mockUserComments,
     submitted: mockUserSubmitted,
 }));
+const mockSetAccessToken = jest.fn();
 
 const mock = jest.fn().mockImplementation(() => {
     return {
@@ -28,6 +29,7 @@ const mock = jest.fn().mockImplementation(() => {
         search: mockSearch,
         messages: { unread: mockUnread },
         user: mockUser,
+        setAccessToken: mockSetAccessToken,
     };
 });
 

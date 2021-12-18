@@ -1,8 +1,12 @@
 export class AuthError extends Error {
-    constructor(message: string) {
+    message: string;
+    id: string;
+
+    constructor(message: string, id: string) {
         super();
         this.name = 'AuthError';
         this.message = message;
+        this.id = id;
     }
 }
 

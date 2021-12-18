@@ -3,24 +3,26 @@ import { postFilter } from '@/text-search/post-filter';
 import { cloneDeep } from 'lodash';
 import { mocked } from 'jest-mock';
 import DEFAULT_OPTIONS from '../options-default';
-import RedditApiClient from '../reddit-api/client';
+import RedditApiClient from '@/reddit-api/client';
+import auth from '@/reddit-api/auth';
 import { RedditObjectKind } from '../reddit-api/reddit-types';
 import type { RedditComment, RedditError, RedditMessage, RedditPost } from '../reddit-api/reddit-types';
 import storage from '../storage';
 import { dataFields } from '../storage/fields';
-import type { FollowingUser, PostFilterOptions, StorageFields } from '../storage/storage-types';
+import type { AuthUser, FollowingUser, PostFilterOptions, StorageFields } from '../storage/storage-types';
 import { generateMessage, generatePost, generatePosts, generateQuery } from '../test-utils/content-generators';
 import { mockDate, restoreDate } from '../test-utils/mock-date';
 import type { ExtensionOptions } from '../types/extension-options';
 import { getSearchQueryUrl } from '../utils';
-import app from './app';
+import NotifierApp from './app';
 import notify, { NewPostsNotification, NotificationId } from './notifications';
 
-jest.mock('../storage/storage.ts');
-jest.mock('../reddit-api/client.ts');
-jest.mock('./notifications.ts');
-jest.mock('../utils/wait.ts');
+jest.mock('@/storage/storage.ts');
+jest.mock('@/reddit-api/client.ts');
+jest.mock('@/reddit-api/auth.ts');
+jest.mock('@/utils/wait.ts');
 jest.mock('@/text-search/post-filter.ts');
+jest.mock('./notifications.ts');
 
 const mockStorage = mocked(storage, true);
 const mockClient = mocked(new RedditApiClient(), true);
@@ -33,6 +35,10 @@ function mockStorageData(data?: Partial<StorageFields>) {
     mockStorage.getAllData.mockImplementationOnce(() => Promise.resolve(allData(data)));
 }
 
+beforeAll(() => {
+    mocked(auth.getAccessToken).mockImplementation(async () => 'access_token');
+});
+
 describe('update messages', () => {
     let ts: number;
     let messages: RedditMessage[];
@@ -40,7 +46,7 @@ describe('update messages', () => {
     const refreshToken = 'refreshToken';
 
     beforeAll(() => {
-        jest.clearAllMocks();
+        /* jest.clearAllMocks();
         ts = Date.now();
         const genMsgsByDate = (stamps: number[]) => stamps.map((created) => generateMessage({ created }));
         messages = genMsgsByDate([ts + 2000, ts + 1000, ts, ts - 1000]);
@@ -48,24 +54,26 @@ describe('update messages', () => {
         mockClient.messages.unread.mockResolvedValue({
             kind: 'Listing',
             data: { children: messages },
-        });
+        }); */
     });
 
     test('should update and save new private messages', async () => {
-        mockStorageData({
-            refreshToken,
-            options: getOpts({ messages: true, messagesNotify: false }),
-            messages: { lastPostCreated: ts },
-        });
-        await app.update();
-        expect(mockStorage.saveMessageData).toHaveBeenCalledWith({ newMessages, count: messages.length });
-        expect(mockNotify).not.toHaveBeenCalled();
+        // TODO:
+        expect(false).toBeTruthy();
+        // mockStorageData({
+        //     refreshToken,
+        //     options: getOpts({ messages: true, messagesNotify: false }),
+        //     messages: { lastPostCreated: ts },
+        // });
+        // await (new NotifierApp()).update();
+        // expect(mockStorage.saveMessageData).toHaveBeenCalledWith({ newMessages, count: messages.length });
+        // expect(mockNotify).not.toHaveBeenCalled();
     });
 
-    test('should call notification creation', async () => {
+    /* test('should call notification creation', async () => {
         const options = getOpts({ messages: true, messagesNotify: true, notificationSoundId: 'sound_00' });
         mockStorageData({ refreshToken, options, messages: { lastPostCreated: ts } });
-        await app.update();
+        await (new NotifierApp()).update();
         expect(mockNotify).toHaveBeenCalledWith(NotificationId.mail, newMessages, 'sound_00');
     });
 
@@ -74,11 +82,11 @@ describe('update messages', () => {
         mockStorage.getAuthData.mockImplementationOnce(async () => ({ refreshToken: null }));
         mockStorage.saveMessageData.mockClear();
         const stub = jest.spyOn(app, 'updateUnreadMsg');
-        await app.update();
+        await (new NotifierApp()).update();
         expect(mockStorage.saveMessageData).not.toHaveBeenCalled();
         expect(stub).not.toHaveBeenCalled();
         stub.mockRestore();
-    });
+    }); */
 });
 
 describe('update subreddits', () => {
@@ -104,8 +112,21 @@ describe('update subreddits', () => {
         mockGetSubreddit.mockClear();
     });
 
+    test('should set access token', async () => {
+        const accounts: Record<string, AuthUser> = { ac1: { id: 'ac1', auth: {} } };
+        mockStorageData({ accounts });
+        const app = new NotifierApp();
+        await new NotifierApp().update();
+        expect(mocked(auth.getAccessToken)).toHaveBeenCalledWith({
+            users: accounts,
+            withScopes: ['identity', 'read', 'privatemessages', 'history'],
+        });
+        expect(mocked(mockClient.setAccessToken)).toHaveBeenCalledWith('access_token');
+    });
+
     test('should fetch and save new posts', async () => {
         const limit = 20;
+        const accounts: Record<string, AuthUser> = { ac1: { id: 'ac1', auth: {} } };
         mockStorageData({
             subredditList: [
                 { id: 'id1', subreddit: 'sub1' },
@@ -113,8 +134,10 @@ describe('update subreddits', () => {
             ],
             subreddits: { id1: { lastPostCreated: ts, posts: posts.slice(2) } },
             options: getOpts({ limit }),
+            accounts,
         });
-        await app.update();
+        await new NotifierApp().update();
+
         expect(mockGetSubreddit.mock.calls).toEqual([['sub1']]);
         expect(mockSubredditNew).toHaveBeenCalledWith(expect.objectContaining({ limit }));
         expect(mockStorage.saveSubredditData).toHaveBeenCalledWith('id1', expect.objectContaining({ posts: newPosts }));
@@ -128,7 +151,8 @@ describe('update subreddits', () => {
             subreddits: { id1: { lastPostCreated: ts, posts: [] } },
             options: getOpts(),
         });
-        await app.update();
+
+        await new NotifierApp().update();
 
         // if (batch.length) notify(NotificationId.post, batch, notificationSoundId);
         expect(mockNotify).toHaveBeenCalledWith(
@@ -145,7 +169,7 @@ describe('update subreddits', () => {
         });
         const error: RedditError = { error: 404, message: 'Not found', reason: 'banned' };
         mockSubredditNew.mockResolvedValueOnce(error);
-        await app.update();
+        await new NotifierApp().update();
         expect(mockStorage.saveSubredditData).toHaveBeenCalledWith(id, expect.objectContaining({ error }));
     });
 
@@ -166,7 +190,7 @@ describe('update subreddits', () => {
 
         mocked(postFilter).mockImplementation(() => _posts);
 
-        await app.update();
+        await new NotifierApp().update();
 
         expect(postFilter).toHaveBeenCalledWith(newPosts, filterOpts.rules, filterOpts.fields);
 
@@ -210,7 +234,7 @@ describe('update reddit search', () => {
         });
         mockNotify.mockClear();
 
-        await app.update();
+        await new NotifierApp().update();
 
         expect(mockStorage.saveQueryData.mock.calls).toEqual([
             [q1.id, { error: null, posts: newPosts }],
@@ -258,7 +282,7 @@ describe('update user', () => {
         mockUserComments.mockResolvedValue({ kind, data: { children: comments } });
         mockUserSubmitted.mockResolvedValue({ kind, data: { children: posts } });
 
-        await app.update();
+        await new NotifierApp().update();
         expect(mockUser).toHaveBeenCalledWith('user1');
         expect(mockUser).toHaveBeenCalledWith('user2');
         expect(mockUser).toHaveBeenCalledWith('user3');
@@ -305,7 +329,7 @@ describe('update user', () => {
 
         test('should notify (new reddit)', async () => {
             mockStorageData({ usersList: cloneDeep(usersList), options: getOpts({ notificationSoundId: 'sound_02' }) });
-            await app.update();
+            await new NotifierApp().update();
             const expected: NewPostsNotification[] = [
                 { len, link: `https://reddit.com/user/user1`, name: 'user1' },
                 { len, link: `https://reddit.com/user/user2/comments`, name: 'user2' },
@@ -315,7 +339,7 @@ describe('update user', () => {
         });
         test('should notify (old reddit)', async () => {
             mockStorageData({ usersList: cloneDeep(usersList), options: getOpts({ useOldReddit: true }) });
-            await app.update();
+            await new NotifierApp().update();
             const expected: NewPostsNotification[] = [
                 { len, link: `https://old.reddit.com/user/user1`, name: 'user1' },
                 { len, link: `https://old.reddit.com/user/user2/comments`, name: 'user2' },
@@ -342,7 +366,7 @@ describe('update user', () => {
                 usersList: cloneDeep(usersList),
                 options: getOpts({ pollUserInterval: 600 }),
             });
-            await app.update();
+            await new NotifierApp().update();
             expect(mockUser.mock.calls.flat(1)).toEqual(['u3', 'u4']);
         });
         test('should skip all except new ones', async () => {
@@ -350,7 +374,7 @@ describe('update user', () => {
                 usersList: cloneDeep(usersList),
                 options: getOpts({ pollUserInterval: 900 }),
             });
-            await app.update();
+            await new NotifierApp().update();
             expect(mockUser.mock.calls.flat(1)).toEqual(['u4']);
         });
 
@@ -359,7 +383,7 @@ describe('update user', () => {
                 usersList: cloneDeep(usersList),
                 options: getOpts({ pollUserInterval: 60 }),
             });
-            await app.update();
+            await new NotifierApp().update();
             expect(mockUser.mock.calls.flat(1)).toEqual(['u1', 'u2', 'u3', 'u4']);
         });
 
@@ -368,7 +392,7 @@ describe('update user', () => {
                 usersList: cloneDeep(usersList),
                 options: getOpts({ pollUserInterval: 900 }),
             });
-            await app.update(true);
+            await new NotifierApp().update(true);
             expect(mockUser.mock.calls.flat(1)).toEqual(['u1', 'u2', 'u3', 'u4']);
         });
     });

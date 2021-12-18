@@ -1,5 +1,4 @@
 <script lang="ts">
-    import auth from '@/reddit-api/auth';
     import storage from '@/storage';
     import getMsg from '@/utils/get-message';
     import { BellIcon } from '@/views/options/icons';
@@ -10,27 +9,27 @@
     let messages: boolean;
     let messagesNotify: boolean;
     let refreshToken: string;
-    let authError = '';
+    const authError = '';
     let isAuthorizing = false;
 
     $: ({ messages, messagesNotify } = $storageData.options);
     $: {
-        refreshToken = $storageData.refreshToken;
-        if (!refreshToken) {
-            $storageData.options.messages = false;
-            $storageData.options.messagesNotify = false;
-        }
+        /* refreshToken = $storageData.refreshToken; */
+        /* if (!refreshToken) { */
+        /*     $storageData.options.messages = false; */
+        /*     $storageData.options.messagesNotify = false; */
+        /* } */
     }
 
     const authorize = async () => {
         isAuthorizing = true;
-        try {
-            await auth.login();
-            await storage.saveOptions({ messages: true, messagesNotify: true });
-        } catch (e) {
-            console.error(e);
-            authError = e.message;
-        }
+        /* try { */
+        /*     await auth.login(); */
+        /*     await storage.saveOptions({ messages: true, messagesNotify: true }); */
+        /* } catch (e) { */
+        /*     console.error(e); */
+        /*     authError = e.message; */
+        /* } */
         isAuthorizing = false;
     };
 

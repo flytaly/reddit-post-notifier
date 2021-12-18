@@ -7,13 +7,13 @@ import storage from '../storage';
 import type { ExtensionOptions } from '../types/extension-options';
 import type { PortMessageId } from '../types/message';
 import { startExtension } from './background';
-import { addNotificationClickListener } from './notifications';
+import { addNotificationClickListener } from '@/notifier/notifications';
 import { scheduleNextUpdate, watchAlarms } from './timers';
 import { updateAndSchedule } from './update';
 
 jest.mock('../storage/storage.ts');
 jest.mock('../port.ts');
-jest.mock('./notifications.ts');
+jest.mock('@/notifier/notifications');
 jest.mock('./timers.ts');
 jest.mock('./update.ts');
 

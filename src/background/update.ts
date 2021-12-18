@@ -1,6 +1,6 @@
 import { sendFromBg } from '../port';
 import storage from '../storage';
-import app from './app';
+import NotifierApp from '../notifier/app';
 import { scheduleNextUpdate } from './timers';
 
 export let isUpdating = false;
@@ -11,6 +11,7 @@ export async function updateAndSchedule(isForcedByUser = false) {
     sendFromBg('UPDATING_START');
 
     try {
+        const app = new NotifierApp();
         await app.update(isForcedByUser);
         await scheduleNextUpdate();
     } catch (e) {

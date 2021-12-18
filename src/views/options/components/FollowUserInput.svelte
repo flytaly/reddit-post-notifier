@@ -1,5 +1,5 @@
 <script lang="ts">
-    import { updateFollowingUser } from '@/background/app';
+    import NotifierApp from '@/notifier/app';
     import type { FollowingUser } from '@/storage/storage-types';
     import getMsg from '@/utils/get-message';
     import * as icons from '@/views/options/icons';
@@ -69,8 +69,9 @@
     async function fetchUser() {
         isLoading = true;
         isBlocked.block();
+        const app = new NotifierApp();
         try {
-            const { user } = await updateFollowingUser({ ...userInfo, data: [], lastPostCreated: 0 });
+            const { user } = await app.updateFollowingUser({ ...userInfo, data: [], lastPostCreated: 0 });
             userInfo = user;
             showUserData = true;
             commitChanges();
@@ -94,7 +95,10 @@
         }}
         on:change={saveUsername}
     />
-    <button class="py-0 px-2 border-0 border-l rounded-l-none rounded-r min-w-[4rem] text-xs" on:click={saveWatchTarget}>
+    <button
+        class="py-0 px-2 border-0 border-l rounded-l-none rounded-r min-w-[4rem] text-xs"
+        on:click={saveWatchTarget}
+    >
         {saveBtnMessage}
     </button>
 </div>

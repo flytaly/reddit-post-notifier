@@ -1,36 +1,33 @@
 <script lang="ts">
     import { browser } from 'webextension-polyfill-ts';
-    import MailIcon from '@assets/mail.svg';
-    import MailWarningIcon from '@assets/mail-warning.svg';
+    /* import MailIcon from '@assets/mail.svg'; */
+    /* import MailWarningIcon from '@assets/mail-warning.svg'; */
     import RefreshIcon from '@assets/refresh.svg';
     import SettingsIcon from '@assets/settings.svg';
     import { sendToBg } from '@/port';
-    import storage from '@/storage';
-    import type { ExtensionOptions } from '@/types/extension-options';
-    import { redditOldUrl, redditUrl } from '@/utils';
+    /* import type { ExtensionOptions } from '@/types/extension-options';
+    import { redditOldUrl, redditUrl } from '@/utils'; */
     import getMsg from '@/utils/get-message';
-    import { isUpdating, storageData } from '../store/store';
+    import { isUpdating /* storageData */ } from '../store/store';
     import SvgButton from './SvgButton.svelte';
-    import type { SectionKey } from '../../options/routes';
+    /* import type { SectionKey } from '../../options/routes'; */
 
-    let messagesCount = 0;
     let loading = false;
 
     $: loading = $isUpdating;
-    $: messagesCount = $storageData.messages.count || 0;
 
-    const options: ExtensionOptions = $storageData.options;
+    /* const options: ExtensionOptions = $storageData.options; */
 
-    const baseUrl = options.useOldReddit ? redditOldUrl : redditUrl;
-    const inboxHref = `${baseUrl}/message/inbox/`;
+    /* const baseUrl = options.useOldReddit ? redditOldUrl : redditUrl; */
+    /* const inboxHref = `${baseUrl}/message/inbox/`; */
 
     const onOptionClick = async () => {
         await browser.runtime.openOptionsPage();
         window.close();
     };
 
-    const key: SectionKey = '#settings__mail';
-    const authBlockUrl = `${browser.runtime.getURL('dist/options/index.html')}${key}`;
+    /* const key: SectionKey = '#settings__mail'; */
+    /* const authBlockUrl = `${browser.runtime.getURL('dist/options/index.html')}${key}`; */
 </script>
 
 <header class="flex items-center p-1 min-h-[1.2rem] border-b border-skin-delimiter">
@@ -48,6 +45,7 @@
     </span>
 
     <span class="flex items-center space-x-3">
+        <!--
         <span class="flex text-skin-accent">
             {#if !$storageData.refreshToken}
                 <div class="transform">
@@ -74,7 +72,7 @@
                     </span>
                 </SvgButton>
             {/if}
-        </span>
+        </span> -->
 
         <SvgButton on:click={onOptionClick} title={getMsg('headerOptions_title')} w="1.1rem">
             {@html SettingsIcon}

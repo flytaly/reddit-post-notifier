@@ -8,11 +8,31 @@ import type {
 import type { SearchableField, FilterRule } from '../text-search/post-filter';
 import type { ExtensionOptions } from '../types/extension-options';
 
-export type AuthData = {
-    accessToken?: string;
-    expiresIn?: number;
-    refreshToken?: string;
-    scope?: string;
+export type AuthUser = {
+    id: string;
+    checkMail?: boolean;
+    mailNotify?: boolean;
+
+    auth: {
+        accessToken?: string;
+        expiresIn?: number;
+        refreshToken?: string;
+        scope?: string;
+        error?: string;
+    };
+
+    // reddit data
+    name?: string;
+    img?: string;
+    totalKarma?: number;
+    inboxCount?: number;
+    hasMail?: boolean;
+
+    mail?: {
+        messages: RedditMessage[];
+        lastUpdate?: number;
+        lastPostCreated?: number;
+    };
 };
 
 export type PostFilterOptions = {
@@ -31,13 +51,6 @@ export type SubredditData = {
 };
 
 export type QueryData = SubredditData;
-
-export type MessageData = {
-    count?: number;
-    lastPostCreated?: number;
-    lastUpdate?: number;
-    messages?: RedditMessage[];
-};
 
 /** Reddit Search query*/
 export type QueryOpts = {
@@ -83,7 +96,7 @@ export type FollowingUser = {
 export type StorageFields = {
     options: ExtensionOptions;
 
-    messages: MessageData;
+    accounts?: Record<string, AuthUser>;
     notifications: { id: string; data: string[] }[];
     pinnedPostList: RedditPost[];
     queries: Record<string, QueryData>;
@@ -91,4 +104,4 @@ export type StorageFields = {
     subredditList: SubredditOpts[];
     subreddits: Record<string, SubredditData>;
     usersList?: FollowingUser[];
-} & AuthData;
+};

@@ -1,5 +1,5 @@
 <script lang="ts">
-    import app from '@/background/app';
+    import NotifierApp from '@/notifier/app';
     import type { QueryData, QueryOpts } from '@/storage/storage-types';
     import { debounce, testMultireddit } from '@/utils';
     import getMsg from '@/utils/get-message';
@@ -70,6 +70,7 @@
         showPosts = false;
         isBlocked.block();
         try {
+            const app = new NotifierApp();
             await app.updateQuery({
                 query: queryObject,
                 queryData: { ...queryData, lastPostCreated: 0, posts: [], error: null },

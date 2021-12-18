@@ -14,6 +14,4 @@ if (TARGET === 'chrome') {
     conf.userAgent = '';
 }
 
-export const {
-    clientId, clientSecret, redirectUri, userAgent,
-} = conf;
+export const { clientId, clientSecret, redirectUri, userAgent } = conf;

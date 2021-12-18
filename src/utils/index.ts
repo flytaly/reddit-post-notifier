@@ -1,3 +1,6 @@
+import type { RedditScope } from '@/reddit-api/scopes';
+import type redditScopes from '@/reddit-api/scopes';
+import type { StorageFields } from '@/storage/storage-types';
 import type { RedditPost, RedditPostData, RedditPostExtended } from '../reddit-api/reddit-types';
 
 /* eslint-disable @typescript-eslint/explicit-module-boundary-types */
@@ -16,7 +19,7 @@ export const testMultireddit = (subs: string) => subs.split('+').every((s) => su
 export const redditUrl = 'https://reddit.com';
 export const redditOldUrl = 'https://old.reddit.com';
 
-export const generateId = () => Math.random().toString(36).substring(2) + new Date().getTime().toString(36);
+export const generateId = () => Math.random().toString(36).substring(2, 6) + new Date().getTime().toString(36);
 
 export const getSubredditUrl = (subreddit: string, oldReddit = false): string =>
     `${oldReddit ? redditOldUrl : redditUrl}/r/${subreddit}/new`;
@@ -89,4 +92,18 @@ export const filterPostDataProperties = (post: RedditPostExtended): RedditPost =
     }
 
     return { ...post, data };
+};
+
+export const getAccountByScope = (accounts: StorageFields['accounts'], scopeList?: (keyof typeof redditScopes)[]) => {
+    const fit = Object.values(accounts).filter((ac) => {
+        if (scopeList?.length) {
+            if (!ac.auth.scope?.length) return false;
+            const acScopes = ac.auth.scope.split(' ') as RedditScope[];
+            if (!scopeList.every((s) => acScopes.includes(s))) return false;
+        }
+
+        return ac.auth.refreshToken;
+    });
+
+    return fit.length ? fit[0] : null;
 };

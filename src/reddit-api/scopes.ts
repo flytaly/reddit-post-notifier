@@ -142,6 +142,8 @@ const redditScopes = {
         id: 'flair',
         name: 'Manage My Flair',
     },
-};
+} as const;
+
+export type RedditScope = keyof typeof redditScopes;
 
 export default redditScopes;

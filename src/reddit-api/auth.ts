@@ -1,9 +1,10 @@
 import { config } from '../constants';
 import { AuthError } from './errors';
-import scopes from './scopes';
+import scopes, { RedditScope } from './scopes';
 import storage from '../storage';
-import { mapObjToQueryStr } from '../utils';
+import { getAccountByScope, mapObjToQueryStr } from '../utils';
 import { browser } from 'webextension-polyfill-ts';
+import type { StorageFields } from '@/storage/storage-types';
 
 const { clientId, clientSecret, redirectUri, userAgent } = config;
 
@@ -30,16 +31,26 @@ const auth = {
     },
 
     /**
-     * Get accessToken from storage. If there is no token
-     * or current token is outdated retrieve new one from OAUTH server.
+     * Get the accessToken of the given user (or just the first by default) from the storage. If there is no token
+     * or current token is outdated, then retrieve new one from OAUTH server.
      */
-    async getAccessToken(): Promise<string | null> {
-        const { accessToken, expiresIn, refreshToken } = await storage.getAuthData();
-        if (!refreshToken) return null;
-        const now = new Date();
-        const expires = new Date(expiresIn - 60000 * 4); // 4 mins before expire
+    async getAccessToken({
+        users,
+        withScopes,
+    }: {
+        users?: StorageFields['accounts'];
+        withScopes?: RedditScope[];
+    } = {}): Promise<string | null> {
+        const accounts = users || (await storage.getAccounts());
+        const account = getAccountByScope(accounts, withScopes);
+        if (!account) return null;
 
-        const token: string = expires > now && accessToken ? accessToken : await auth.renewAccessToken(refreshToken);
+        const { accessToken, expiresIn, refreshToken } = account.auth;
+        const now = new Date();
+        const expires = new Date(expiresIn - 60000 * 5); // 5 mins before expire
+
+        const token: string =
+            expires > now && accessToken ? accessToken : await auth.renewAccessToken(refreshToken, account.id);
         return token;
     },
 
@@ -59,7 +70,7 @@ const auth = {
         return `${BASE_URL}/authorize?${mapObjToQueryStr(params)}`;
     },
 
-    async getAuthCode(authState: string) {
+    async getAuthCode(authState: string, id: string) {
         const response = await browser.identity.launchWebAuthFlow({
             url: auth.getAuthURL(authState),
             interactive: true,
@@ -67,7 +78,7 @@ const auth = {
         const responseURL = new URL(response);
 
         if (responseURL.searchParams.has('error')) {
-            throw new AuthError(responseURL.searchParams.get('error'));
+            throw new AuthError(responseURL.searchParams.get('error'), id);
         }
         if (responseURL.searchParams.get('state') === authState) {
             return responseURL.searchParams.get('code');
@@ -89,7 +100,7 @@ const auth = {
         };
     },
 
-    async getTokens(code: string): Promise<TokenResponseBody> {
+    async getTokens(code: string, id: string): Promise<TokenResponseBody> {
         const params = {
             grant_type: 'authorization_code',
             redirect_uri: encodeURIComponent(redirectUri),
@@ -98,21 +109,19 @@ const auth = {
 
         const response = await fetch(auth.accessTokenURL, auth.fetchAuthInit(params));
         if (response.status !== 200) {
-            throw new AuthError(`Couldn't receive tokens. ${response.status}: ${response.statusText || ''}`);
+            throw new AuthError(`Couldn't receive tokens. ${response.status}: ${response.statusText || ''}`, id);
         }
 
         const body = (await response.json()) as TokenResponseBody;
         if (body.error) {
-            throw new AuthError(`Couldn't receive tokens. Error: ${body.error}`);
+            throw new AuthError(`Couldn't receive tokens. Error: ${body.error}`, id);
         }
 
         return body;
     },
 
-    /**
-     * @return accessToken
-     */
-    async renewAccessToken(refreshToken: string): Promise<string> {
+    /** @return accessToken */
+    async renewAccessToken(refreshToken: string, id: string): Promise<string> {
         const params = {
             grant_type: 'refresh_token',
             refresh_token: refreshToken,
@@ -120,26 +129,26 @@ const auth = {
         const response = await fetch(auth.accessTokenURL, auth.fetchAuthInit(params));
 
         if (response.status !== 200) {
-            throw new AuthError(`Couldn't refresh access token. ${response.status}: ${response.statusText || ''}`);
+            throw new AuthError(`Couldn't refresh access token. ${response.status}: ${response.statusText || ''}`, id);
         }
         const body = (await response.json()) as TokenResponseBody;
         if (body.error) {
-            throw new AuthError(`Couldn't refresh access token. Error: ${body.error}`);
+            throw new AuthError(`Couldn't refresh access token. Error: ${body.error}`, id);
         }
 
-        await storage.saveAuthData(body);
+        await storage.saveAuthData(body, id);
 
         return body.access_token;
     },
 
     /** Start OAUTH2 authorization flow */
-    async login() {
+    async login(id: string) {
         auth.authState = auth.generateAuthState();
-        const code = await auth.getAuthCode(auth.authState);
-        if (!code) throw new AuthError("Couldn't get auth code");
+        const code = await auth.getAuthCode(auth.authState, id);
+        if (!code) throw new AuthError("Couldn't get auth code", id);
 
-        const authData = await auth.getTokens(code);
-        await storage.saveAuthData(authData);
+        const authData = await auth.getTokens(code, id);
+        await storage.saveAuthData(authData, id);
     },
 };
 

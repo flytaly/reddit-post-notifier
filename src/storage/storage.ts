@@ -1,14 +1,14 @@
 /* eslint-disable @typescript-eslint/explicit-module-boundary-types */
 
+import scopes from '@/reddit-api/scopes';
 import { browser } from 'webextension-polyfill-ts';
 import DEFAULT_OPTIONS from '../options-default';
 import type { TokenResponseBody } from '../reddit-api/auth';
 import type { RedditItem, RedditMessage, RedditPost, RedditPostExtended } from '../reddit-api/reddit-types';
 import type { ExtensionOptions } from '../types/extension-options';
 import { filterKeys, filterPostDataProperties, generateId } from '../utils';
-import { authDataDefault, dataFields } from './fields';
+import { dataFields } from './fields';
 import type {
-    AuthData,
     QueryData,
     QueryOpts,
     PostsToSaveData,
@@ -20,14 +20,9 @@ import type {
 } from './storage-types';
 
 const storage = {
-    async getAuthData() {
-        const result = await browser.storage.local.get(authDataDefault);
-        return result as AuthData;
-    },
-
-    async getMessageData() {
-        const { messages } = await browser.storage.local.get({ messages: {} });
-        return messages as SF['messages'];
+    async getAccounts() {
+        const { accounts } = await browser.storage.local.get({ accounts: {} });
+        return accounts as SF['accounts'];
     },
 
     async getOptions() {
@@ -74,40 +69,35 @@ const storage = {
         return browser.storage.local.get(dataFields) as Promise<SF>;
     },
 
-    // async saveAuthData(data: { access_token?: string; expires_in?: number | string; refresh_token?: string }) {
-    async saveAuthData(data: TokenResponseBody) {
-        const {
-            access_token: accessToken, //
-            expires_in: expiresInRelative,
-            refresh_token: refreshToken,
-            scope,
-        } = data;
-
-        const expiresIn: number | undefined = expiresInRelative && new Date().getTime() + +expiresInRelative * 1000;
-
-        return browser.storage.local.set({
-            ...(accessToken && { accessToken }),
-            ...(refreshToken && { refreshToken }),
-            ...(expiresIn && { expiresIn }),
-            scope: scope,
-        } as StorageFields);
+    async saveAccounts(accounts: SF['accounts']) {
+        return browser.storage.local.set({ accounts } as SF);
     },
 
-    async saveMessageData({ newMessages, count }: { newMessages: RedditMessage[]; count: number }) {
-        const data = await storage.getMessageData();
-        data.messages = data.messages || [];
-        if (count === 0) {
-            data.messages = [];
-        } else if (newMessages) {
-            data.messages = [...newMessages, ...data.messages];
-        }
+    async saveAuthData(data: TokenResponseBody, id: string) {
+        const accounts = await storage.getAccounts();
+        if (!accounts[id]) accounts[id] = { id, auth: {} };
+        const auth = accounts[id].auth;
+        auth.accessToken = data.access_token;
+        auth.refreshToken = data.refresh_token;
+        auth.scope = data.scope || '';
+        const expiresInRelative = data.expires_in || 0;
+        auth.expiresIn = expiresInRelative && new Date().getTime() + +expiresInRelative * 1000;
 
-        if (newMessages && newMessages[0]) data.lastPostCreated = newMessages[0].data.created;
+        return browser.storage.local.set({ accounts } as StorageFields);
+    },
 
-        data.count = count;
-        data.lastUpdate = Date.now();
-
-        await browser.storage.local.set({ messages: data });
+    async saveMessageData(accId: string, { unreadMessages }: { unreadMessages: RedditMessage[] }) {
+        const accs = await storage.getAccounts();
+        if (!accs[accId]) accs[accId] = { id: accId, auth: {}, mail: { messages: [] } };
+        const mail = accs[accId].mail;
+        const prevUnread = mail.messages || [];
+        const ids = new Set<string>();
+        mail.messages.forEach((m) => ids.add(m.data.id));
+        unreadMessages = unreadMessages.filter((m) => !ids.has(m.data.id));
+        mail.messages = [...unreadMessages, ...prevUnread];
+        mail.lastUpdate = Date.now();
+        if (unreadMessages[0]) mail.lastPostCreated = unreadMessages[0].data.created;
+        await storage.saveAccounts(accs);
     },
 
     async saveOptions(data: Partial<ExtensionOptions>) {
@@ -222,17 +212,19 @@ const storage = {
     },
 
     async clearAuthData() {
-        return browser.storage.local.set(authDataDefault);
+        // TODO:
+        // return browser.storage.local.set(authDataDefault);
     },
 
     async clearStorage() {
         return browser.storage.local.clear();
     },
 
-    async removeMessages() {
-        const prev = await storage.getMessageData();
-        const messages: SF['messages'] = { ...prev, messages: [], count: 0 };
-        await browser.storage.local.set({ messages });
+    async removeMessages(accId: string) {
+        const accounts = await storage.getAccounts();
+        if (!accounts[accId]?.mail) return;
+        accounts[accId].mail.messages = [];
+        await browser.storage.local.set({ accounts } as SF);
     },
 
     async removeQueryData(queryId: string) {
@@ -248,7 +240,17 @@ const storage = {
         await browser.storage.local.set({ subreddits } as Pick<SF, 'subreddits'>);
     },
 
-    async removePost({ id, subreddit, searchId }: { id: string; subreddit?: string; searchId?: string }) {
+    async removePost({
+        id,
+        subreddit,
+        searchId,
+        accountId,
+    }: {
+        id: string;
+        subreddit?: string;
+        searchId?: string;
+        accountId?: string;
+    }) {
         if (subreddit) {
             const subreddits = await storage.getSubredditData();
 
@@ -261,6 +263,14 @@ const storage = {
             const queries = await storage.getQueriesData();
             queries[searchId].posts = queries[searchId].posts.filter(({ data }) => data.id !== id);
             await browser.storage.local.set({ queries });
+        }
+
+        if (accountId) {
+            const accounts = await storage.getAccounts();
+            const messages = accounts[accountId]?.mail?.messages?.filter(({ data }) => data.id !== id);
+            if (!messages) return;
+            accounts[accountId].mail.messages = messages;
+            await storage.saveAccounts(accounts);
         }
     },
 
@@ -367,7 +377,7 @@ const storage = {
 
     async countNumberOfUnreadItems(updateBadge = true) {
         let count = 0;
-        const { subredditList, queriesList, queries, subreddits, messages, usersList } = await storage.getAllData();
+        const { subredditList, queriesList, queries, subreddits, accounts, usersList } = await storage.getAllData();
 
         if (subreddits) {
             subredditList?.forEach((s) => {
@@ -385,7 +395,9 @@ const storage = {
             count += u.data?.length || 0;
         });
 
-        if (messages && messages.count) count += messages.count;
+        Object.values(accounts)?.forEach((a) => {
+            count += a.mail?.messages?.length || 0;
+        });
 
         if (updateBadge) void browser.browserAction.setBadgeText({ text: count ? String(count) : '' });
 
@@ -393,33 +405,83 @@ const storage = {
     },
 
     /**
-     * Convert subreddit list to object list:  string[] => SubredditOpts[]
-     * and subreddits data: Record<"subreddit name", {}> => Record<"id", {}>
+     * Convert
+     * 1) subreddit list to object list:  string[] => SubredditOpts[]
+     * 2) subreddits data: Record<"subreddit name", {}> => Record<"id", {}>
      * */
     async migrateToV4() {
-        const data = (await browser.storage.local.get({ options: {}, subredditList: [], subreddits: {} })) as {
-            options: { subredditNotify?: boolean };
-            subredditList: string[];
-            subreddits: SF['subreddits'];
+        const data = (await browser.storage.local.get({
+            options: {},
+            subredditList: [],
+            subreddits: {},
+            accessToken: '',
+            expiresIn: 0,
+            refreshToken: '',
+            scope: '',
+            messages: {},
+        })) as {
+            options: {
+                messages: boolean;
+                messagesNotify: boolean;
+                subredditNotify?: boolean;
+            };
+            subredditList?: string[];
+            subreddits?: SF['subreddits'];
+            accessToken?: string;
+            expiresIn?: number;
+            refreshToken?: string;
+            scope?: string;
+            messages: {
+                count?: number;
+                lastPostCreated?: number;
+                lastUpdate?: number;
+                messages?: RedditMessage[];
+            };
         };
+
+        // const obj: Pick<StorageFields, 'accessToken' | 'refreshToken' | 'expiresIn'>;
         const notifyDefault = !!data.options.subredditNotify;
         const prevSubList = data.subredditList;
         const prevSubData = data.subreddits;
+        const updated: Partial<StorageFields> = {};
         if (prevSubList) {
-            const subredditList = prevSubList.map((subreddit) => {
+            const subredditList: SubredditOpts[] = [];
+            prevSubList.forEach((subreddit) => {
                 if (typeof subreddit !== 'string') return;
-                return { id: generateId(), subreddit, notify: notifyDefault } as SubredditOpts;
+                subredditList.push({ id: generateId(), subreddit, notify: notifyDefault } as SubredditOpts);
             });
-            /** Port from */
+
             const subreddits: SF['subreddits'] = {};
             subredditList.forEach((opts) => {
+                if (!opts?.subreddit) return;
                 const subData = prevSubData[opts.subreddit];
                 if (subData) {
                     subreddits[opts.id] = subData;
                 }
             });
-            await browser.storage.local.set({ subredditList, subreddits });
+            updated.subreddits = subreddits;
+            updated.subredditList = subredditList;
         }
+        const id = generateId();
+        if (data.refreshToken) {
+            updated.accounts = {
+                [id]: {
+                    id,
+                    auth: {
+                        refreshToken: data.refreshToken,
+                        scope: data.scope || `${scopes.read.id} ${scopes.privatemessages.id}`,
+                        accessToken: data.accessToken,
+                        expiresIn: data.expiresIn,
+                    },
+                    mail: {
+                        messages: data.messages?.messages || [],
+                    },
+                    mailNotify: data.options.messagesNotify,
+                    checkMail: data.options.messages,
+                },
+            };
+        }
+        await browser.storage.local.set(updated);
     },
 };
 

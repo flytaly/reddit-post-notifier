@@ -1,24 +1,25 @@
 /* eslint-disable @typescript-eslint/unbound-method */
-import DEFAULT_OPTIONS from '@/options-default';
-import auth from '@/reddit-api/auth';
-import { dataFields } from '@/storage/fields';
+/* import DEFAULT_OPTIONS from '@/options-default';
+import auth from '@/reddit-api/auth'; */
 import storage from '@/storage/storage';
-import type { ExtensionOptions } from '@/types/extension-options';
+/* import type { ExtensionOptions } from '@/types/extension-options';
 import getMsg from '@/utils/get-message';
-import { fireEvent, render } from '@testing-library/svelte';
-import { tick } from 'svelte';
+import { tick } from 'svelte'; */
+import { dataFields } from '@/storage/fields';
 import { mocked } from 'jest-mock';
 import AuthMailBlock from '../components/AuthMailBlock.svelte';
+import { render } from '@testing-library/svelte';
 
 jest.mock('@/storage/storage.ts');
 jest.mock('@/utils/get-message.ts');
 jest.mock('@/reddit-api/auth.ts');
 
-function optionSaved(opt: Partial<ExtensionOptions>) {
+/* function optionSaved(opt: Partial<ExtensionOptions>) {
     expect(storage.saveOptions).toHaveBeenCalledWith(opt);
-}
+} */
 
 const mockStorage = mocked(storage);
+
 describe('Mail and authorization settings', () => {
     beforeEach(() => {
         mockBrowser.storage.onChanged.addListener.spy(() => ({}));
@@ -26,8 +27,16 @@ describe('Mail and authorization settings', () => {
 
     afterEach(() => jest.clearAllMocks());
 
-    test('Is authorized state', async () => {
+    test('TODO', () => {
         mockStorage.getAllData.mockResolvedValueOnce({
+            ...dataFields,
+        });
+        render(AuthMailBlock);
+        expect(false).toBeTruthy();
+    });
+
+    /* test('Is authorized state', async () => {
+         mockStorage.getAllData.mockResolvedValueOnce({
             ...dataFields,
             refreshToken: 'refreshToken',
             options: { ...DEFAULT_OPTIONS, messages: true, messagesNotify: true },
@@ -52,10 +61,10 @@ describe('Mail and authorization settings', () => {
         optionSaved({ messages: false, messagesNotify: false });
 
         await fireEvent.click(btn);
-        expect(storage.clearAuthData).toHaveBeenCalled();
-    });
+        expect(storage.clearAuthData).toHaveBeenCalled(); 
+    }); */
 
-    test('Not authorized state', async () => {
+    /* test('Not authorized state', async () => {
         mockStorage.getAllData.mockResolvedValueOnce({ ...dataFields });
         const { getByText, getByLabelText } = render(AuthMailBlock);
         await tick();
@@ -70,5 +79,5 @@ describe('Mail and authorization settings', () => {
         const notify = getByLabelText(getMsg('optionMailNotify'), { exact: false });
         expect(watchmail).toBeDisabled();
         expect(notify).toBeDisabled();
-    });
+    }); */
 });

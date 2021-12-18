@@ -1,5 +1,5 @@
 <script lang="ts">
-    import app from '@/background/app';
+    import NotifierApp from '@/notifier/app';
     import type { PostFilterOptions, SubredditData, SubredditOpts } from '@/storage/storage-types';
     import type { FilterRule, SearchableField } from '@/text-search/post-filter';
     import { debounce, testMultireddit } from '@/utils';
@@ -37,6 +37,7 @@
         isLoading = true;
         showPosts = false;
         isBlocked.block();
+        const app = new NotifierApp();
         try {
             await app.updateSubreddit({
                 subOpts,
@@ -138,14 +139,17 @@
         } rounded-t h-full`}
     >
         <input
-            class="rounded-l rounded-r-none w-full border-none" 
+            class="rounded-l rounded-r-none w-full border-none"
             type="text"
             bind:this={subredditInputRef}
             bind:value={subOpts.subreddit}
             on:input={inputHandler}
             aria-label={getMsg('optionSubredditsInput')}
         />
-        <button class="min-w-[5rem] py-0 px-2 border-0 border-l rounded-r rounded-l-none w-min text-xs" on:click={() => saveInputs()}>
+        <button
+            class="min-w-[5rem] py-0 px-2 border-0 border-l rounded-r rounded-l-none w-min text-xs"
+            on:click={() => saveInputs()}
+        >
             {#if inputStatus.saved}
                 <div class="flex items-center text-skin-success">
                     <div class="w-4 h-4 mr-1 flex-shrink-0">{@html icons.SaveIcon}</div>

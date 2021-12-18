@@ -1,4 +1,5 @@
 /* eslint-disable no-await-in-loop */
+import auth from '@/reddit-api/auth';
 import RedditApiClient from '../reddit-api/client';
 import type {
     RedditError,
@@ -12,9 +13,9 @@ import { RedditObjectKind } from '../reddit-api/reddit-types';
 import storage from '../storage';
 import type {
     FollowingUser,
-    MessageData,
     QueryData,
     QueryOpts,
+    StorageFields,
     SubredditData,
     SubredditOpts,
 } from '../storage/storage-types';
@@ -24,6 +25,7 @@ import { filterPostDataProperties, getSearchQueryUrl, getSubredditUrl, getUserPr
 import { wait } from '../utils/wait';
 import type { NewPostsNotification } from './notifications';
 import notify, { NotificationId } from './notifications';
+import scopes, { RedditScope } from '../reddit-api/scopes';
 
 const reddit = new RedditApiClient();
 
@@ -73,41 +75,13 @@ function isErrorResponse(result: RedditError | RedditListingResponse<unknown>): 
     return result['data'] === undefined;
 }
 
-export async function updateFollowingUser(user: FollowingUser): Promise<{ user: FollowingUser; newItemsLen?: number }> {
-    user = { ...user };
-    const fetchUser = reddit.user(user.username);
-    let response: RedditError | RedditUserOverviewResponse;
-    switch (user.watch) {
-        case 'comments':
-            response = await fetchUser.comments();
-            break;
-        case 'submitted':
-            response = await fetchUser.submitted();
-            break;
-        default:
-            response = await fetchUser.overview();
+export default class NotifierApp {
+    reddit: RedditApiClient;
+    constructor() {
+        this.reddit = new RedditApiClient();
     }
 
-    if (isErrorResponse(response)) {
-        console.error(`Error during fetching ${user.username}'s activities`, response);
-        user.error = response;
-        return { user };
-    }
-    if (!response.data?.children?.length) return { user };
-
-    const newItems = extractNewItems(response, user);
-    if (!newItems) return { user };
-    const itemsToSave = newItems.map((p) => (p.kind === RedditObjectKind.link ? filterPostDataProperties(p) : p));
-
-    user.data = [...itemsToSave, ...(user.data || [])].slice(0, 50);
-    user.error = null;
-    user.lastPostCreated = itemsToSave[0].data.created;
-    user.lastUpdate = Date.now();
-    return { user, newItemsLen: itemsToSave.length };
-}
-
-const app = {
-    updateSubreddit: async ({ subOpts, subData = {}, listing }: UpdateSubredditProps) => {
+    async updateSubreddit({ subOpts, subData = {}, listing }: UpdateSubredditProps) {
         const { subreddit, id, filterOpts } = subOpts;
         const info = subData;
 
@@ -129,9 +103,9 @@ const app = {
         }
         await storage.saveSubredditData(id, { posts: newPosts, lastPostCreated });
         return newPosts;
-    },
+    }
 
-    updateQuery: async ({ query, queryData, listing = {} }: UpdateQueryProps) => {
+    async updateQuery({ query, queryData, listing = {} }: UpdateQueryProps) {
         const { id, subreddit, query: q } = query;
         if (!q || !id) return null;
 
@@ -154,10 +128,10 @@ const app = {
         const newPosts: RedditPostExtended[] = extractNewItems(response, data) || [];
         await storage.saveQueryData(query.id, { posts: newPosts, error: null });
         return newPosts;
-    },
+    }
 
-    updateUnreadMsg: async (msgData: MessageData) => {
-        const response = await reddit.messages.unread();
+    async updateUnreadMsg() {
+        /* const response = await reddit.messages.unread();
 
         if (isErrorResponse(response)) {
             console.error('Error during fetching unread messages', response);
@@ -168,10 +142,43 @@ const app = {
         const newMessages = extractNewItems(response, msgData);
 
         await storage.saveMessageData({ newMessages, count });
-        return newMessages;
-    },
+        return newMessages; */
+    }
 
-    updateUsersList: async (usersList: FollowingUser[], options: ExtensionOptions, ignorePollInterval = false) => {
+    async updateFollowingUser(user: FollowingUser): Promise<{ user: FollowingUser; newItemsLen?: number }> {
+        user = { ...user };
+        const fetchUser = reddit.user(user.username);
+        let response: RedditError | RedditUserOverviewResponse;
+        switch (user.watch) {
+            case 'comments':
+                response = await fetchUser.comments();
+                break;
+            case 'submitted':
+                response = await fetchUser.submitted();
+                break;
+            default:
+                response = await fetchUser.overview();
+        }
+
+        if (isErrorResponse(response)) {
+            console.error(`Error during fetching ${user.username}'s activities`, response);
+            user.error = response;
+            return { user };
+        }
+        if (!response.data?.children?.length) return { user };
+
+        const newItems = extractNewItems(response, user);
+        if (!newItems) return { user };
+        const itemsToSave = newItems.map((p) => (p.kind === RedditObjectKind.link ? filterPostDataProperties(p) : p));
+
+        user.data = [...itemsToSave, ...(user.data || [])].slice(0, 50);
+        user.error = null;
+        user.lastPostCreated = itemsToSave[0].data.created;
+        user.lastUpdate = Date.now();
+        return { user, newItemsLen: itemsToSave.length };
+    }
+
+    async updateUsersList(usersList: FollowingUser[], options: ExtensionOptions, ignorePollInterval = false) {
         const pollInterval = ignorePollInterval ? 0 : options.pollUserInterval * 1000;
         const notifyBatch: NewPostsNotification[] = [];
         let updated = 0;
@@ -182,7 +189,7 @@ const app = {
                 continue;
             }
 
-            const { user, newItemsLen } = await updateFollowingUser(usersList[i]);
+            const { user, newItemsLen } = await this.updateFollowingUser(usersList[i]);
 
             usersList[i] = user;
 
@@ -200,7 +207,18 @@ const app = {
         if (notifyBatch.length) notify(NotificationId.user, notifyBatch, options.notificationSoundId);
 
         return updated;
-    },
+    }
+
+    async setAccessToken(accounts?: StorageFields['accounts']) {
+        const withScopes: RedditScope[] = [
+            scopes.identity.id,
+            scopes.read.id,
+            scopes.privatemessages.id,
+            scopes.history.id,
+        ];
+        const token = await auth.getAccessToken({ users: accounts, withScopes });
+        this.reddit.setAccessToken(token || null);
+    }
 
     /**
      * Update extension data and save into storage
@@ -211,31 +229,35 @@ const app = {
      * Hence updates inevitably stop after a while. Instead, we ask some last posts
      * and then save only new posts depending on their timestamp
      * */
-    update: async (isForcedByUser = false) => {
+    async update(isForcedByUser = false) {
         const {
             queries: queryData,
             queriesList,
             subredditList,
             subreddits: subData,
-            messages: messageData,
+            accounts,
             options,
-            refreshToken,
             usersList,
         } = await storage.getAllData();
 
-        const { waitTimeout, messages, limit = 10, messagesNotify, notificationSoundId, useOldReddit } = options;
+        const { waitTimeout, limit = 10, notificationSoundId, useOldReddit } = options;
+
+        await this.setAccessToken(accounts);
 
         if (usersList) {
-            const updated = await app.updateUsersList(usersList, options, isForcedByUser);
+            const updated = await this.updateUsersList(usersList, options, isForcedByUser);
             if (updated) await wait(waitTimeout * 1000);
         }
 
-        if (messages && refreshToken) {
-            const newMessages = await app.updateUnreadMsg(messageData);
-            if (messagesNotify && newMessages?.length) {
-                notify(NotificationId.mail, newMessages, notificationSoundId);
-            }
-            await wait(waitTimeout * 1000);
+        if (accounts) {
+            // TODO
+            // if (messages && refreshToken) {
+            /* const newMessages = await this.updateUnreadMsg(messageData);
+                if (messagesNotify && newMessages?.length) {
+                    notify(NotificationId.mail, newMessages, notificationSoundId);
+                }
+                await wait(waitTimeout * 1000); */
+            // }
         }
 
         let batch: NewPostsNotification[] = [];
@@ -246,7 +268,7 @@ const app = {
             const actualLimit =
                 subOpts.filterOpts?.enabled && !subData[subOpts.id]?.lastPostCreated ? Math.max(limit, 25) : limit;
 
-            const newPosts = await app.updateSubreddit({
+            const newPosts = await this.updateSubreddit({
                 subOpts,
                 subData: subData[subOpts.id],
                 listing: { limit: actualLimit },
@@ -264,7 +286,7 @@ const app = {
         for (const query of queriesList) {
             if (query.disabled) continue;
 
-            const newMessages = await app.updateQuery({ query, queryData: queryData[query.id], listing: { limit } });
+            const newMessages = await this.updateQuery({ query, queryData: queryData[query.id], listing: { limit } });
             if (query.notify && newMessages?.length) {
                 batch.push({
                     name: query.name || query.query,
@@ -275,8 +297,5 @@ const app = {
             await wait(waitTimeout * 1000);
         }
         if (batch.length) notify(NotificationId.post, batch, notificationSoundId);
-    },
-};
-// };
-
-export default app;
+    }
+}

@@ -9,7 +9,8 @@ import { mockDate, restoreDate } from '../test-utils/mock-date';
 import type { ExtensionOptions } from '../types/extension-options';
 import { generateId } from '../utils/index';
 import storage from './index';
-import type { MessageData, QueryData, QueryOpts, StorageFields, SubredditData, SubredditOpts } from './storage-types';
+import type { AuthUser, QueryData, QueryOpts, StorageFields, SubredditData, SubredditOpts } from './storage-types';
+import type { TokenResponseBody } from '@/reddit-api/auth';
 
 jest.mock('../utils/index.ts', () => ({
     // @ts-ignore
@@ -22,41 +23,92 @@ const generateIdMock = mocked(generateId);
 const mockGet = mockBrowser.storage.local.get;
 const mockSet = mockBrowser.storage.local.set;
 
-type ExpRecord = Record<string, any>
+type ExpRecord = Record<string, any>;
 
-describe('authorization data', () => {
-    afterEach(() => restoreDate());
+describe('Authorization and messages', () => {
+    type PartialMsg = { data: Partial<RedditMessageData> };
+    const oldMsgs: PartialMsg[] = [
+        { data: { id: 'm1', created: 1552338638 } },
+        { data: { id: 'm2', created: 1552338630 } },
+    ];
+    const newMsgs: PartialMsg[] = [
+        { data: { id: 'm3', created: 1552339005 } },
+        { data: { id: 'm4', created: 1552339000 } },
+    ];
 
-    const accessToken = 'accessToken';
-    const refreshToken = 'refreshToken';
-    const expiresIn = 3600;
-    const scope = 'scope';
+    const fakeData: StorageFields['accounts'] = {
+        a1: {
+            id: 'a1',
+            auth: {
+                accessToken: 'accessToken',
+                refreshToken: 'refreshToken',
+                expiresIn: 4000000,
+                scope: 'scope',
+            },
+            mail: {
+                messages: [...oldMsgs] as RedditMessage[],
+            },
+        },
+        a2: { auth: { refreshToken: 'refreshToken2' }, id: 'a2' },
+    };
 
-    test('should save authorization data', async () => {
-        const authDataFake = {
-            access_token: accessToken,
-            expires_in: String(expiresIn),
-            refresh_token: refreshToken,
-            token_type: 'tokenType',
-            scope,
-        };
-        mockDate('2019-02-17T00:25:58.000Z');
-        const expiresInAbsolute = new Date().getTime() + expiresIn * 1000;
-        const expected = { accessToken, refreshToken, expiresIn: expiresInAbsolute, scope: 'scope' };
-        mockSet.expect(expect.objectContaining(expected) as ExpRecord);
-        await storage.saveAuthData(authDataFake);
+    test('should return accounts data', async () => {
+        mockGet.expect({ accounts: {} }).andResolve({ accounts: cloneDeep(fakeData) });
+        const accs = await storage.getAccounts();
+        expect(accs).toMatchObject(fakeData);
     });
 
-    test('should return authorization data', async () => {
-        const result = { accessToken, refreshToken, expiresIn };
-        const exp: ExpRecord  = expect.objectContaining({
-            accessToken: '',
-            expiresIn: 0,
-            refreshToken: '',
-            scope: '',
-        });
-        mockGet.expect(exp).andResolve(result);
-        await expect(storage.getAuthData()).resolves.toBe(result);
+    test('should save authorization data', async () => {
+        mockDate('2019-02-17T00:25:58.000Z');
+        const expiresInRelative = 3000;
+        const expiresIn = new Date().getTime() + expiresInRelative * 1000;
+        mockGet.expect({ accounts: {} }).andResolve({ accounts: cloneDeep(fakeData) });
+        const id = fakeData.a2.id;
+        const accessToken = 'access token';
+        const refreshToken = 'refresh token';
+        const scope = 'scope';
+        const dataToSave: TokenResponseBody = {
+            scope,
+            expires_in: String(expiresInRelative),
+            access_token: accessToken,
+            refresh_token: refreshToken,
+            token_type: '???',
+        };
+        const expected = cloneDeep(fakeData);
+        expected[id] = { id, auth: { scope, accessToken, refreshToken, expiresIn } } as AuthUser;
+        mockSet.expect({ accounts: expected });
+        await storage.saveAuthData(dataToSave, id);
+        restoreDate();
+    });
+
+    test('should save private messages', async () => {
+        const date = mockDate(new Date());
+        mockGet.expect({ accounts: {} }).andResolve({ accounts: cloneDeep(fakeData) });
+        const expected = cloneDeep(fakeData);
+        expected.a1.mail.lastPostCreated = newMsgs[0].data.created;
+        expected.a1.mail.lastUpdate = date.getTime();
+        expected.a1.mail.messages = [...newMsgs, ...oldMsgs] as RedditMessage[];
+        mockSet.expect({ accounts: expected });
+        await storage.saveMessageData(fakeData.a1.id, { unreadMessages: cloneDeep(newMsgs) as any as RedditMessage[] });
+        restoreDate();
+    });
+
+    test('should remove all messages from account', async () => {
+        const expected = cloneDeep(fakeData);
+        expected.a1.mail.messages = [];
+        mockGet.expect({ accounts: {} }).andResolve({ accounts: cloneDeep(fakeData) });
+        mockSet.expect({ accounts: expected });
+        await storage.removeMessages(fakeData.a1.id);
+    });
+
+    test('should remove message', async () => {
+        const expected = cloneDeep(fakeData);
+        const messageId = expected.a1.mail.messages[0].data.id;
+        const accountId = expected.a1.id;
+        expected[accountId].mail.messages = expected.a1.mail.messages.slice(1);
+        mockGet.expect({ accounts: {} }).andResolve({ accounts: cloneDeep(fakeData) });
+        mockSet.expect({ accounts: expected });
+        await storage.removePost({ id: messageId, accountId });
     });
 });
 
@@ -90,27 +142,6 @@ describe('subreddits', () => {
         subOpts.forEach(({ id, subreddit }) => {
             subreddits[id] = { posts: generatePosts(2, subreddit) };
         });
-    });
-    test('should migrate to v4', async () => {
-        let id = 1;
-        generateIdMock.mockImplementation(() => `id_${id++}`);
-
-        const notify = true;
-        const prevSubList = ['sub1', 'sub2'];
-        const newSubList: Partial<SubredditOpts>[] = [
-            { id: 'id_1', subreddit: 'sub1', notify },
-            { id: 'id_2', subreddit: 'sub2', notify },
-        ];
-        const prevSubData: Record<string, SubredditData> = { sub2: { lastPost: 'postId' } };
-        const newSubData = { id_2: { lastPost: 'postId' } };
-
-        mockGet
-            .expect({ options: {}, subredditList: [], subreddits: {} })
-            .andResolve({ options: { subredditNotify: true }, subredditList: prevSubList, subreddits: prevSubData });
-
-        mockSet.expect({ subredditList: newSubList, subreddits: newSubData });
-
-        await storage.migrateToV4();
     });
 
     test('should get and save the list of subreddits', async () => {
@@ -361,44 +392,6 @@ describe('search queries', () => {
     });
 });
 
-describe('messages', () => {
-    type PartialMsg = { data: Partial<RedditMessageData> };
-    const oldMsgs: PartialMsg[] = [{ data: { created: 1552338638 } }, { data: { created: 1552338630 } }];
-    const newMsgs: PartialMsg[] = [{ data: { created: 1552339005 } }, { data: { created: 1552339000 } }];
-
-    beforeEach(() => {
-        const msgArray = cloneDeep(oldMsgs);
-        mockGet.expect({ messages: {} }).andResolve({
-            messages: { count: msgArray.length, messages: msgArray } as MessageData,
-        });
-    });
-    test('should return information about unread messages', async () => {
-        await expect(storage.getMessageData()).resolves.toEqual({
-            count: oldMsgs.length,
-            messages: oldMsgs,
-        });
-    });
-
-    test('should save private messages and total number of unread messages', async () => {
-        const count = oldMsgs.length + newMsgs.length;
-        const date = mockDate(new Date());
-        const expected: MessageData = {
-            count,
-            lastPostCreated: newMsgs[0].data.created,
-            lastUpdate: date.getTime(),
-            messages: expect.arrayContaining([...newMsgs, ...oldMsgs]) as RedditMessage[],
-        };
-        mockSet.expect({ messages: expected });
-        const newMessages = cloneDeep(newMsgs) as any as RedditMessage[];
-        await storage.saveMessageData({ newMessages, count });
-        restoreDate();
-    });
-    test('should remove messages', async () => {
-        mockSet.expect({ messages: { messages: [], count: 0 } });
-        await storage.removeMessages();
-    });
-});
-
 describe('prune', () => {
     const subInfo = { s1: { posts: [] }, s2: { posts: [] }, s3: { posts: [] }, s4: { posts: [] } };
     const queryInfo = { q1: { posts: [] }, q2: { posts: [] }, q3: { posts: [] } };
@@ -439,14 +432,76 @@ describe('Count unread', () => {
         queriesList: [generateQuery({ id: 'q1' }), generateQuery({ id: 'q2' }), generateQuery({ id: 'q3' })],
         queries: { q1: { posts: generatePosts(1) }, q2: { posts: [] }, q3: {} } as StorageFields['queries'],
         usersList: [{ username: 'u1', data: [{}, {}] }],
-        messages: { count: 3 },
     } as StorageFields;
-    const total = 3 + 1 + 2 + 3;
+    storageData.accounts = {
+        id1: { id: 'id1', auth: {}, mail: { messages: Array.from({ length: 3 }) as unknown as RedditMessage[] } },
+        id2: { id: 'id2', auth: {}, mail: { messages: Array.from({ length: 2 }) as unknown as RedditMessage[] } },
+    };
+
+    const total = 3 + 1 + 2 + 3 + 2;
 
     test('should count unread items', async () => {
         jest.spyOn(storage, 'getAllData').mockImplementation(() => Promise.resolve(storageData));
         mockBrowser.browserAction.setBadgeText.expect({ text: String(total) });
         await expect(storage.countNumberOfUnreadItems()).resolves.toBe(total);
         (storage.getAllData as any as jest.SpyInstance).mockRestore();
+    });
+});
+
+describe('migration', () => {
+    test('should migrate to v4', async () => {
+        let id = 1;
+        generateIdMock.mockImplementation(() => `id_${id++}`);
+
+        const notify = true;
+        const prevSubList = ['sub1', 'sub2'];
+        const newSubList: Partial<SubredditOpts>[] = [
+            { id: 'id_1', subreddit: 'sub1', notify },
+            { id: 'id_2', subreddit: 'sub2', notify },
+        ];
+        const prevSubData: Record<string, SubredditData> = { sub2: { lastPost: 'postId' } };
+        const newSubData = { id_2: { lastPost: 'postId' } };
+
+        const auth: AuthUser['auth'] = {
+            accessToken: 'myAccessToken',
+            refreshToken: 'myRefreshToken',
+            expiresIn: 1000,
+        };
+
+        mockGet
+            .expect({
+                options: {},
+                subredditList: [],
+                subreddits: {},
+                accessToken: '',
+                expiresIn: 0,
+                refreshToken: '',
+                scope: '',
+                messages: {},
+            })
+            .andResolve({
+                options: { subredditNotify: true, messages: true, messagesNotify: false },
+                subredditList: prevSubList,
+                subreddits: prevSubData,
+                ...auth,
+                messages: [],
+            });
+
+        const accId = `id_3`;
+        mockSet.expect({
+            subredditList: newSubList,
+            subreddits: newSubData,
+            accounts: {
+                [accId]: {
+                    auth: { ...auth, scope: 'read privatemessages' },
+                    id: accId,
+                    checkMail: true,
+                    mailNotify: false,
+                    mail: { messages: [] },
+                },
+            },
+        } as Partial<StorageFields>);
+
+        await storage.migrateToV4();
     });
 });

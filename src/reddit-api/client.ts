@@ -1,8 +1,8 @@
 // https://www.reddit.com/dev/api/
-import auth from './auth';
 import { mapObjToQueryStr } from '../utils/index';
 import { config } from '../constants';
 import type {
+    RedditAccount,
     RedditCommentResponse,
     RedditError,
     RedditMessageListing,
@@ -15,16 +15,12 @@ import type {
 } from './reddit-types';
 
 type R<T> = Promise<T | RedditError>;
-export type UserActivityResponse =
-    | RedditError
-    | RedditUserOverviewResponse
-    | RedditCommentResponse
-    | RedditPostResponse;
 
 export default class RedditApiClient {
     authOrigin: string;
     publicOrigin: string;
     headers: HeadersInit;
+    accessToken?: string | null;
 
     constructor() {
         this.authOrigin = 'https://oauth.reddit.com';
@@ -32,16 +28,19 @@ export default class RedditApiClient {
         this.headers = { Accept: 'application/json' };
     }
 
-    async GET(endpoint: string, params: Record<string, unknown> = {}) {
-        const token = await auth.getAccessToken();
-        const query = mapObjToQueryStr({ ...params, raw_json: '1' });
+    setAccessToken(accessToken?: string | null) {
+        this.accessToken = accessToken;
+    }
+
+    async GET(endpoint: string, queryParams: Record<string, unknown> = {}) {
+        const query = mapObjToQueryStr({ ...queryParams, raw_json: '1' });
         const init: RequestInit = { method: 'GET', headers: { ...this.headers } };
-        if (token) {
+        if (this.accessToken) {
             init.headers['User-Agent'] = config.userAgent;
-            init.headers['Authorization'] = `bearer ${token}`;
+            init.headers['Authorization'] = `bearer ${this.accessToken}`;
         }
-        const origin = token ? this.authOrigin : this.publicOrigin;
-        const actualEndpoint = token ? endpoint : `${endpoint}.json`;
+        const origin = this.accessToken ? this.authOrigin : this.publicOrigin;
+        const actualEndpoint = this.accessToken ? endpoint : `${endpoint}.json`;
         const result = await fetch(encodeURI(`${origin}${actualEndpoint}?${query}`), init);
         return result.json();
     }
@@ -77,5 +76,9 @@ export default class RedditApiClient {
             unread: async (listing?: RedditMessageListing) =>
                 this.GET('/message/unread', listing) as R<RedditMessageResponse>,
         };
+    }
+
+    me() {
+        return this.GET('/api/me') as R<RedditAccount>;
     }
 }

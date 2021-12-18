@@ -4,7 +4,7 @@ import DEFAULT_OPTIONS from '../options-default';
 import { initializeBgListener, onMessage } from '../port';
 import storage from '../storage';
 import type { PortMessage } from '../types/message';
-import { addNotificationClickListener } from './notifications';
+import { addNotificationClickListener } from '../notifier/notifications';
 import { scheduleNextUpdate, watchAlarms } from './timers';
 import { isUpdating, updateAndSchedule } from './update';
 

@@ -62,6 +62,17 @@ export type RedditMessageData = {
     was_comment?: boolean;
 };
 
+export type RedditAccountData = {
+    id: string;
+    icon_img: string;
+    total_karma: number;
+    inbox_count: number;
+    has_mail: boolean;
+    name: string;
+    created_utc: number;
+    comment_karma: number;
+};
+
 // https://www.reddit.com/dev/api/
 export enum RedditObjectKind {
     'comment' = 't1',
@@ -89,6 +100,11 @@ export type RedditComment = {
 export type RedditMessage = {
     kind?: RedditObjectKind.message;
     data: RedditMessageData;
+};
+
+export type RedditAccount = {
+    kind?: RedditObjectKind.account;
+    data: RedditAccountData;
 };
 
 export type RedditItem = RedditPost | RedditComment;
