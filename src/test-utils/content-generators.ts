@@ -1,11 +1,6 @@
 import faker from 'faker';
-import {
-    RedditMessage,
-    RedditMessageData,
-    RedditObjectKind,
-    RedditPost,
-    RedditPostData,
-} from '../reddit-api/reddit-types';
+import { RedditObjectKind } from '../reddit-api/reddit-types';
+import type { RedditMessage, RedditMessageData, RedditPost, RedditPostData } from '../reddit-api/reddit-types';
 import type { QueryOpts } from '../storage/storage-types';
 
 export const generatePost = (props: Partial<RedditPostData> = {}): RedditPostData => {

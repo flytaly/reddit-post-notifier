@@ -15,12 +15,8 @@ import { mockDate, restoreDate } from '../test-utils/mock-date';
 import type { ExtensionOptions } from '../types/extension-options';
 import { getSearchQueryUrl } from '../utils';
 import NotifierApp from './app';
-import notify, {
-    MessageNotification as MN,
-    NotificationId as NId,
-    PostNotification,
-    UserNotification,
-} from './notifications';
+import notify, { NotificationId as NId } from './notifications';
+import type { MessageNotification as MN, PostNotification, UserNotification } from './notifications';
 
 jest.mock('@/storage/storage.ts');
 jest.mock('@/reddit-api/client.ts');

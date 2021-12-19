@@ -1,4 +1,5 @@
-import { browser, Runtime } from 'webextension-polyfill-ts';
+import { browser } from 'webextension-polyfill-ts';
+import type { Runtime } from 'webextension-polyfill-ts';
 import { IS_DEV, IS_FIREFOX, IS_TEST } from '../constants';
 import DEFAULT_OPTIONS from '../options-default';
 import { initializeBgListener, onMessage } from '../port';

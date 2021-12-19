@@ -1,5 +1,7 @@
-import { Index, IndexOpts, TextId } from '../index';
-import { DocSearch, Document } from '../document';
+import { Index } from '../index';
+import type { IndexOpts, TextId } from '../index';
+import { Document } from '../document';
+import type { DocSearch } from '../document';
 import type { DocField } from '../document';
 import { fixtures } from './fixtures';
 

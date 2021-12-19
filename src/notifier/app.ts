@@ -10,7 +10,8 @@ import type {
     RedditUserOverviewResponse,
 } from '../reddit-api/reddit-types';
 import { RedditObjectKind } from '../reddit-api/reddit-types';
-import scopes, { RedditScope } from '../reddit-api/scopes';
+import scopes from '../reddit-api/scopes';
+import type { RedditScope } from '../reddit-api/scopes';
 import storage from '../storage';
 import type {
     AuthUser,

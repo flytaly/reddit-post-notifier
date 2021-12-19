@@ -1,4 +1,5 @@
-import { browser, Notifications } from 'webextension-polyfill-ts';
+import { browser } from 'webextension-polyfill-ts';
+import type { Notifications } from 'webextension-polyfill-ts';
 import type { SoundId } from '../sounds';
 import { notificationSoundFiles } from '../sounds';
 import storage from '../storage';

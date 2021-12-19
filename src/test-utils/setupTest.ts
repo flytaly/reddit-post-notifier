@@ -1,5 +1,6 @@
 import type { Browser } from 'webextension-polyfill-ts';
-import { deepMock, MockzillaDeep } from 'mockzilla';
+import { deepMock } from 'mockzilla';
+import type { MockzillaDeep } from 'mockzilla';
 import { enableFetchMocks } from 'jest-fetch-mock';
 import '@testing-library/jest-dom';
 
