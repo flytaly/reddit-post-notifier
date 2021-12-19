@@ -32,6 +32,7 @@ export type AuthUser = {
         messages: RedditMessage[];
         lastUpdate?: number;
         lastPostCreated?: number;
+        error?: RedditError | null;
     };
 };
 

@@ -95,7 +95,7 @@ export const filterPostDataProperties = (post: RedditPostExtended): RedditPost =
 };
 
 export const getAccountByScope = (accounts: StorageFields['accounts'], scopeList?: (keyof typeof redditScopes)[]) => {
-    const fit = Object.values(accounts).filter((ac) => {
+    const fit = Object.values(accounts || {}).filter((ac) => {
         if (scopeList?.length) {
             if (!ac.auth.scope?.length) return false;
             const acScopes = ac.auth.scope.split(' ') as RedditScope[];

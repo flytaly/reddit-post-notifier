@@ -75,9 +75,9 @@ describe('Authorization and messages', () => {
             token_type: '???',
         };
         const expected = cloneDeep(fakeData);
-        expected[id] = { id, auth: { scope, accessToken, refreshToken, expiresIn } } as AuthUser;
+        expected[id] = { id, auth: { scope, accessToken, refreshToken, expiresIn, error: '' } } as AuthUser;
         mockSet.expect({ accounts: expected });
-        await storage.saveAuthData(dataToSave, id);
+        await storage.saveAuthData({ data: dataToSave, id });
         restoreDate();
     });
 

@@ -10,8 +10,10 @@ import type {
     RedditUserOverviewResponse,
 } from '../reddit-api/reddit-types';
 import { RedditObjectKind } from '../reddit-api/reddit-types';
+import scopes, { RedditScope } from '../reddit-api/scopes';
 import storage from '../storage';
 import type {
+    AuthUser,
     FollowingUser,
     QueryData,
     QueryOpts,
@@ -21,11 +23,16 @@ import type {
 } from '../storage/storage-types';
 import { postFilter } from '../text-search/post-filter';
 import type { ExtensionOptions } from '../types/extension-options';
-import { filterPostDataProperties, getSearchQueryUrl, getSubredditUrl, getUserProfileUrl } from '../utils/index';
+import {
+    filterPostDataProperties,
+    getAccountByScope,
+    getSearchQueryUrl,
+    getSubredditUrl,
+    getUserProfileUrl,
+} from '../utils/index';
 import { wait } from '../utils/wait';
-import type { NewPostsNotification } from './notifications';
+import type { MessageNotification, PostNotification, UserNotification } from './notifications';
 import notify, { NotificationId } from './notifications';
-import scopes, { RedditScope } from '../reddit-api/scopes';
 
 const reddit = new RedditApiClient();
 
@@ -130,19 +137,19 @@ export default class NotifierApp {
         return newPosts;
     }
 
-    async updateUnreadMsg() {
-        /* const response = await reddit.messages.unread();
+    async updateUnreadMsg(account: AuthUser) {
+        const response = await this.reddit.messages.unread();
 
         if (isErrorResponse(response)) {
             console.error('Error during fetching unread messages', response);
+            await storage.saveMessageData(account.id, { error: response });
             return null;
         }
 
-        const count = response.data.children ? response.data.children.length : 0;
-        const newMessages = extractNewItems(response, msgData);
+        const newMessages = extractNewItems(response, account.mail || {});
 
-        await storage.saveMessageData({ newMessages, count });
-        return newMessages; */
+        await storage.saveMessageData(account.id, { unreadMessages: newMessages });
+        return newMessages;
     }
 
     async updateFollowingUser(user: FollowingUser): Promise<{ user: FollowingUser; newItemsLen?: number }> {
@@ -180,7 +187,7 @@ export default class NotifierApp {
 
     async updateUsersList(usersList: FollowingUser[], options: ExtensionOptions, ignorePollInterval = false) {
         const pollInterval = ignorePollInterval ? 0 : options.pollUserInterval * 1000;
-        const notifyBatch: NewPostsNotification[] = [];
+        const notifyInfo: UserNotification = { type: NotificationId.user, items: [] };
         let updated = 0;
         for (let i = 0; i < usersList.length; i++) {
             const ts = Date.now();
@@ -195,7 +202,7 @@ export default class NotifierApp {
 
             if (user.notify && newItemsLen) {
                 const link = getUserProfileUrl(user.username, user.watch, options.useOldReddit);
-                notifyBatch.push({ len: newItemsLen, link, name: user.username });
+                notifyInfo.items.push({ len: newItemsLen, link, name: user.username });
             }
 
             user.lastUpdate = ts;
@@ -204,20 +211,39 @@ export default class NotifierApp {
         }
         await storage.saveUsersList(usersList);
 
-        if (notifyBatch.length) notify(NotificationId.user, notifyBatch, options.notificationSoundId);
+        if (notifyInfo.items.length) notify(notifyInfo, options.notificationSoundId);
 
         return updated;
     }
 
     async setAccessToken(accounts?: StorageFields['accounts']) {
+        accounts = accounts || (await storage.getAccounts());
         const withScopes: RedditScope[] = [
             scopes.identity.id,
             scopes.read.id,
             scopes.privatemessages.id,
             scopes.history.id,
         ];
-        const token = await auth.getAccessToken({ users: accounts, withScopes });
+        const account = getAccountByScope(accounts, withScopes);
+        if (!account) return this.reddit.setAccessToken(null);
+        const token = await auth.getAccessToken(account);
         this.reddit.setAccessToken(token || null);
+    }
+
+    async updateAllMail(accounts: StorageFields['accounts'], options: ExtensionOptions) {
+        const msgNotify: MessageNotification = { type: NotificationId.mail, items: [] };
+        for (const ac of Object.values(accounts)) {
+            if (ac.auth.refreshToken && ac.checkMail && ac.auth.scope?.includes('privatemessages')) {
+                const token = await auth.getAccessToken(ac);
+                this.reddit.setAccessToken(token || null);
+                const newMessages = await this.updateUnreadMsg(ac);
+                if (newMessages.length && ac.mailNotify) {
+                    msgNotify.items.push({ username: ac.name, len: newMessages.length });
+                }
+                await wait(options.waitTimeout * 1000);
+            }
+        }
+        if (msgNotify.items.length) notify(msgNotify, options.notificationSoundId);
     }
 
     /**
@@ -242,25 +268,21 @@ export default class NotifierApp {
 
         const { waitTimeout, limit = 10, notificationSoundId, useOldReddit } = options;
 
-        await this.setAccessToken(accounts);
+        if (accounts) {
+            await this.updateAllMail(accounts, options);
+        }
+
+        if (usersList?.length || subredditList?.length || queriesList?.length) {
+            await this.setAccessToken(accounts);
+        }
 
         if (usersList) {
             const updated = await this.updateUsersList(usersList, options, isForcedByUser);
             if (updated) await wait(waitTimeout * 1000);
         }
 
-        if (accounts) {
-            // TODO
-            // if (messages && refreshToken) {
-            /* const newMessages = await this.updateUnreadMsg(messageData);
-                if (messagesNotify && newMessages?.length) {
-                    notify(NotificationId.mail, newMessages, notificationSoundId);
-                }
-                await wait(waitTimeout * 1000); */
-            // }
-        }
-
-        let batch: NewPostsNotification[] = [];
+        // let batch: NewPostsNotification[] = [];
+        let postNotif: PostNotification = { type: NotificationId.post, items: [] };
         for (const subOpts of subredditList) {
             if (subOpts.disabled) continue;
 
@@ -275,20 +297,20 @@ export default class NotifierApp {
             });
             if (subOpts.notify && newPosts?.length) {
                 const link = getSubredditUrl(subOpts.subreddit, useOldReddit);
-                batch.push({ name: subOpts.subreddit, len: newPosts.length, link });
+                postNotif.items.push({ name: subOpts.subreddit, len: newPosts.length, link });
             }
             await wait(waitTimeout * 1000);
         }
-        if (batch.length) notify(NotificationId.post, batch, notificationSoundId);
+        if (postNotif.items.length) notify(postNotif, notificationSoundId);
 
-        batch = [];
+        postNotif = { type: NotificationId.post, items: [] };
 
         for (const query of queriesList) {
             if (query.disabled) continue;
 
             const newMessages = await this.updateQuery({ query, queryData: queryData[query.id], listing: { limit } });
             if (query.notify && newMessages?.length) {
-                batch.push({
+                postNotif.items.push({
                     name: query.name || query.query,
                     len: newMessages.length,
                     link: getSearchQueryUrl(query.query, query.subreddit, useOldReddit),
@@ -296,6 +318,6 @@ export default class NotifierApp {
             }
             await wait(waitTimeout * 1000);
         }
-        if (batch.length) notify(NotificationId.post, batch, notificationSoundId);
+        if (postNotif.items.length) notify(postNotif, notificationSoundId);
     }
 }

@@ -1,12 +1,12 @@
 /* eslint-disable @typescript-eslint/unbound-method */
-import { postFilter } from '@/text-search/post-filter';
-import { cloneDeep } from 'lodash';
-import { mocked } from 'jest-mock';
-import DEFAULT_OPTIONS from '../options-default';
-import RedditApiClient from '@/reddit-api/client';
 import auth from '@/reddit-api/auth';
-import { RedditObjectKind } from '../reddit-api/reddit-types';
+import RedditApiClient from '@/reddit-api/client';
+import { postFilter } from '@/text-search/post-filter';
+import { mocked } from 'jest-mock';
+import { cloneDeep } from 'lodash';
+import DEFAULT_OPTIONS from '../options-default';
 import type { RedditComment, RedditError, RedditMessage, RedditPost } from '../reddit-api/reddit-types';
+import { RedditObjectKind } from '../reddit-api/reddit-types';
 import storage from '../storage';
 import { dataFields } from '../storage/fields';
 import type { AuthUser, FollowingUser, PostFilterOptions, StorageFields } from '../storage/storage-types';
@@ -15,7 +15,12 @@ import { mockDate, restoreDate } from '../test-utils/mock-date';
 import type { ExtensionOptions } from '../types/extension-options';
 import { getSearchQueryUrl } from '../utils';
 import NotifierApp from './app';
-import notify, { NewPostsNotification, NotificationId } from './notifications';
+import notify, {
+    MessageNotification as MN,
+    NotificationId as NId,
+    PostNotification,
+    UserNotification,
+} from './notifications';
 
 jest.mock('@/storage/storage.ts');
 jest.mock('@/reddit-api/client.ts');
@@ -43,50 +48,72 @@ describe('update messages', () => {
     let ts: number;
     let messages: RedditMessage[];
     let newMessages: RedditMessage[];
-    const refreshToken = 'refreshToken';
+
+    function mockAccounts(users: Partial<AuthUser>[] = [{}], sf: Partial<StorageFields> = {}) {
+        let _id = 1;
+        const accounts: StorageFields['accounts'] = {};
+        users.forEach((u) => {
+            const id = String(_id++);
+            const base: Partial<AuthUser> = { name: `u${id}`, checkMail: true, mailNotify: false, ...u };
+            const mail: AuthUser['mail'] = {
+                lastPostCreated: ts,
+                messages: [...cloneDeep(messages)],
+                ...(u.mail || {}),
+            };
+            const refreshToken = `rt${id}`;
+            accounts[id] = { ...base, id, mail, auth: { refreshToken, scope: 'privatemessages', ...(u.auth || {}) } };
+        });
+        mockStorageData({ accounts, ...(sf || {}) });
+    }
 
     beforeAll(() => {
-        /* jest.clearAllMocks();
         ts = Date.now();
         const genMsgsByDate = (stamps: number[]) => stamps.map((created) => generateMessage({ created }));
         messages = genMsgsByDate([ts + 2000, ts + 1000, ts, ts - 1000]);
         newMessages = messages.slice(0, 2);
-        mockClient.messages.unread.mockResolvedValue({
-            kind: 'Listing',
-            data: { children: messages },
-        }); */
+        mockClient.messages.unread.mockResolvedValue({ kind: 'Listing', data: { children: messages } });
+    });
+    beforeEach(() => jest.clearAllMocks());
+
+    test('should update and save', async () => {
+        mockAccounts([{ mailNotify: false }]);
+        const app = new NotifierApp();
+        await app.update();
+        expect(mockStorage.saveMessageData).toHaveBeenCalledWith('1', { unreadMessages: newMessages });
+        expect(mockNotify).not.toHaveBeenCalled();
+        expect(app.reddit.setAccessToken).toHaveBeenCalledWith('access_token');
     });
 
-    test('should update and save new private messages', async () => {
-        // TODO:
-        expect(false).toBeTruthy();
-        // mockStorageData({
-        //     refreshToken,
-        //     options: getOpts({ messages: true, messagesNotify: false }),
-        //     messages: { lastPostCreated: ts },
-        // });
-        // await (new NotifierApp()).update();
-        // expect(mockStorage.saveMessageData).toHaveBeenCalledWith({ newMessages, count: messages.length });
-        // expect(mockNotify).not.toHaveBeenCalled();
+    test('should update, save, and notify ', async () => {
+        mockAccounts([{ mailNotify: true }], { options: getOpts({ notificationSoundId: 'sound_03' }) });
+        await new NotifierApp().update();
+        expect(mockStorage.saveMessageData).toHaveBeenCalledWith('1', { unreadMessages: newMessages });
+        const ntf: MN = { type: NId.mail, items: [{ len: newMessages.length, username: 'u1' }] };
+        expect(mockNotify).toHaveBeenCalledWith(ntf, 'sound_03');
     });
 
-    /* test('should call notification creation', async () => {
-        const options = getOpts({ messages: true, messagesNotify: true, notificationSoundId: 'sound_00' });
-        mockStorageData({ refreshToken, options, messages: { lastPostCreated: ts } });
-        await (new NotifierApp()).update();
-        expect(mockNotify).toHaveBeenCalledWith(NotificationId.mail, newMessages, 'sound_00');
+    test('should update only with correct scope', async () => {
+        mockAccounts([
+            { auth: { scope: 'read' } },
+            { auth: { scope: 'read privatemessages' } },
+            { auth: { scope: 'privatemessages' } },
+        ]);
+        await new NotifierApp().update();
+        expect(mockStorage.saveMessageData.mock.calls).toHaveLength(2);
+        expect(mockStorage.saveMessageData).not.toHaveBeenCalledWith('1', { unreadMessages: newMessages });
+        expect(mockStorage.saveMessageData).toHaveBeenCalledWith('2', { unreadMessages: newMessages });
+        expect(mockStorage.saveMessageData).toHaveBeenCalledWith('3', { unreadMessages: newMessages });
+        const calls = mocked(auth.getAccessToken).mock.calls;
+        expect(calls).toHaveLength(2);
+        expect(calls[0][0]).toMatchObject({ auth: { refreshToken: 'rt2' } });
+        expect(calls[1][0]).toMatchObject({ auth: { refreshToken: 'rt3' } });
     });
 
-    test("should not call messages updating if extension isn't authorized", async () => {
-        mockStorageData({ refreshToken: '', options: getOpts({ messages: true }) });
-        mockStorage.getAuthData.mockImplementationOnce(async () => ({ refreshToken: null }));
-        mockStorage.saveMessageData.mockClear();
-        const stub = jest.spyOn(app, 'updateUnreadMsg');
-        await (new NotifierApp()).update();
-        expect(mockStorage.saveMessageData).not.toHaveBeenCalled();
-        expect(stub).not.toHaveBeenCalled();
-        stub.mockRestore();
-    }); */
+    test('should not update without refreshToken', async () => {
+        mockAccounts([{ auth: { refreshToken: null } }]);
+        await new NotifierApp().update();
+        expect(mockStorage.saveMessageData.mock.calls).toHaveLength(0);
+    });
 });
 
 describe('update subreddits', () => {
@@ -110,18 +137,19 @@ describe('update subreddits', () => {
 
     beforeEach(() => {
         mockGetSubreddit.mockClear();
+        mockNotify.mockClear();
     });
 
     test('should set access token', async () => {
-        const accounts: Record<string, AuthUser> = { ac1: { id: 'ac1', auth: {} } };
-        mockStorageData({ accounts });
+        const accounts: Record<string, AuthUser> = {
+            ac1: { id: 'ac1', auth: { refreshToken: 'rT1', scope: 'identity read privatemessages history' } },
+        };
+        mockStorageData({ accounts, subredditList: [{ id: 'id1', subreddit: 's' }] });
         const app = new NotifierApp();
-        await new NotifierApp().update();
-        expect(mocked(auth.getAccessToken)).toHaveBeenCalledWith({
-            users: accounts,
-            withScopes: ['identity', 'read', 'privatemessages', 'history'],
-        });
+        await app.update();
+        expect(mocked(auth.getAccessToken)).toHaveBeenCalledWith(accounts.ac1);
         expect(mocked(mockClient.setAccessToken)).toHaveBeenCalledWith('access_token');
+        expect(app.reddit.setAccessToken).toHaveBeenCalledWith('access_token');
     });
 
     test('should fetch and save new posts', async () => {
@@ -151,15 +179,14 @@ describe('update subreddits', () => {
             subreddits: { id1: { lastPostCreated: ts, posts: [] } },
             options: getOpts(),
         });
-
         await new NotifierApp().update();
 
-        // if (batch.length) notify(NotificationId.post, batch, notificationSoundId);
-        expect(mockNotify).toHaveBeenCalledWith(
-            NotificationId.post,
-            [{ len: newPosts.length, link: `https://reddit.com/r/${subreddit}/new`, name: subreddit }],
-            null,
-        );
+        const n: PostNotification = {
+            type: NId.post,
+            items: [{ len: newPosts.length, link: `https://reddit.com/r/${subreddit}/new`, name: subreddit }],
+        };
+
+        expect(mockNotify).toHaveBeenCalledWith(n, null);
     });
 
     test('should save error', async () => {
@@ -241,11 +268,11 @@ describe('update reddit search', () => {
             [q2.id, { error: null, posts: newPosts.slice(0, 1) }],
         ]);
 
-        expect(mockNotify).toHaveBeenCalledWith(
-            NotificationId.post,
-            [{ len: 1, link: getSearchQueryUrl(q2.query, q2.subreddit, false), name: q2.name }],
-            null,
-        );
+        const ntf: PostNotification = {
+            type: NId.post,
+            items: [{ len: 1, link: getSearchQueryUrl(q2.query, q2.subreddit, false), name: q2.name }],
+        };
+        expect(mockNotify).toHaveBeenCalledWith(ntf, null);
     });
 });
 
@@ -330,22 +357,28 @@ describe('update user', () => {
         test('should notify (new reddit)', async () => {
             mockStorageData({ usersList: cloneDeep(usersList), options: getOpts({ notificationSoundId: 'sound_02' }) });
             await new NotifierApp().update();
-            const expected: NewPostsNotification[] = [
-                { len, link: `https://reddit.com/user/user1`, name: 'user1' },
-                { len, link: `https://reddit.com/user/user2/comments`, name: 'user2' },
-                { len, link: `https://reddit.com/user/user3/posts`, name: 'user3' },
-            ];
-            expect(mockNotify).toHaveBeenCalledWith(NotificationId.user, expected, 'sound_02');
+            const expected: UserNotification = {
+                type: NId.user,
+                items: [
+                    { len, link: `https://reddit.com/user/user1`, name: 'user1' },
+                    { len, link: `https://reddit.com/user/user2/comments`, name: 'user2' },
+                    { len, link: `https://reddit.com/user/user3/posts`, name: 'user3' },
+                ],
+            };
+            expect(mockNotify).toHaveBeenCalledWith(expected, 'sound_02');
         });
         test('should notify (old reddit)', async () => {
             mockStorageData({ usersList: cloneDeep(usersList), options: getOpts({ useOldReddit: true }) });
             await new NotifierApp().update();
-            const expected: NewPostsNotification[] = [
-                { len, link: `https://old.reddit.com/user/user1`, name: 'user1' },
-                { len, link: `https://old.reddit.com/user/user2/comments`, name: 'user2' },
-                { len, link: `https://old.reddit.com/user/user3/submitted`, name: 'user3' },
-            ];
-            expect(mockNotify).toHaveBeenCalledWith(NotificationId.user, expected, null);
+            const expected: UserNotification = {
+                type: NId.user,
+                items: [
+                    { len, link: `https://old.reddit.com/user/user1`, name: 'user1' },
+                    { len, link: `https://old.reddit.com/user/user2/comments`, name: 'user2' },
+                    { len, link: `https://old.reddit.com/user/user3/submitted`, name: 'user3' },
+                ],
+            };
+            expect(mockNotify).toHaveBeenCalledWith(expected, null);
         });
     });
 

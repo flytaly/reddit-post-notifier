@@ -1,10 +1,10 @@
-import { config } from '../constants';
-import { AuthError } from './errors';
-import scopes, { RedditScope } from './scopes';
-import storage from '../storage';
-import { getAccountByScope, mapObjToQueryStr } from '../utils';
+import type { AuthUser } from '@/storage/storage-types';
 import { browser } from 'webextension-polyfill-ts';
-import type { StorageFields } from '@/storage/storage-types';
+import { config } from '../constants';
+import storage from '../storage';
+import { mapObjToQueryStr } from '../utils';
+import { AuthError } from './errors';
+import scopes from './scopes';
 
 const { clientId, clientSecret, redirectUri, userAgent } = config;
 
@@ -31,20 +31,10 @@ const auth = {
     },
 
     /**
-     * Get the accessToken of the given user (or just the first by default) from the storage. If there is no token
+     * Get the accessToken of the given user. If there is no token
      * or current token is outdated, then retrieve new one from OAUTH server.
      */
-    async getAccessToken({
-        users,
-        withScopes,
-    }: {
-        users?: StorageFields['accounts'];
-        withScopes?: RedditScope[];
-    } = {}): Promise<string | null> {
-        const accounts = users || (await storage.getAccounts());
-        const account = getAccountByScope(accounts, withScopes);
-        if (!account) return null;
-
+    async getAccessToken(account: AuthUser): Promise<string | null> {
         const { accessToken, expiresIn, refreshToken } = account.auth;
         const now = new Date();
         const expires = new Date(expiresIn - 60000 * 5); // 5 mins before expire
@@ -136,7 +126,7 @@ const auth = {
             throw new AuthError(`Couldn't refresh access token. Error: ${body.error}`, id);
         }
 
-        await storage.saveAuthData(body, id);
+        await storage.saveAuthData({ data: body, id });
 
         return body.access_token;
     },
@@ -148,7 +138,7 @@ const auth = {
         if (!code) throw new AuthError("Couldn't get auth code", id);
 
         const authData = await auth.getTokens(code, id);
-        await storage.saveAuthData(authData, id);
+        await storage.saveAuthData({ data: authData, id });
     },
 };
 

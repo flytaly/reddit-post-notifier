@@ -1,5 +1,4 @@
 import { browser, Notifications } from 'webextension-polyfill-ts';
-import type { RedditMessage } from '../reddit-api/reddit-types';
 import type { SoundId } from '../sounds';
 import { notificationSoundFiles } from '../sounds';
 import storage from '../storage';
@@ -27,11 +26,37 @@ export enum NotificationId {
     user = 'user',
 }
 
-export type NewPostsNotification = { len: number; link: string; name: string };
-export type NotificationBatch = RedditMessage[] | NewPostsNotification[];
+export type MessageNotification = {
+    type: NotificationId.mail;
+    items: { len: number; username: string }[];
+};
 
-function notify(type: NotificationId, items: NotificationBatch = [], soundId?: SoundId) {
-    if (!items.length) return;
+export type PostNotification = {
+    type: NotificationId.post;
+    items: { len: number; link: string; name: string }[];
+};
+
+export type UserNotification = {
+    type: NotificationId.user;
+    items: { len: number; link: string; name: string }[];
+};
+
+type Notification = MessageNotification | PostNotification | UserNotification;
+
+function isMessage(n: Notification): n is MessageNotification {
+    return n.type === NotificationId.mail;
+}
+
+function isPost(n: Notification): n is UserNotification {
+    return n.type === NotificationId.post;
+}
+
+function isUser(n: Notification): n is UserNotification {
+    return n.type === NotificationId.user;
+}
+
+function notify(notif: Notification, soundId?: SoundId) {
+    if (!notif.items.length) return;
 
     async function createNotification(id: string, options: NotificationOpts, links: string[]) {
         await browser.notifications.create(id, options);
@@ -46,12 +71,8 @@ function notify(type: NotificationId, items: NotificationBatch = [], soundId?: S
         iconUrl: browser.runtime.getURL('/images/icon-96.png'),
     } as const;
 
-    if (type === NotificationId.mail) {
-        items = items as RedditMessage[];
-        const message =
-            items.length === 1
-                ? `${items.length} new message from ${items[0].data.author}`
-                : `${items.length} new messages from ${items.map(({ data }) => data.author).join(', ')}`;
+    if (isMessage(notif)) {
+        const message = notif.items.map((i) => `${i.username}(${i.len})`).join(', ');
 
         const nOpts: NotificationOpts = { ...opts, title: 'Reddit: new mail', message };
 
@@ -61,26 +82,24 @@ function notify(type: NotificationId, items: NotificationBatch = [], soundId?: S
         });
     }
 
-    if (type === NotificationId.post) {
-        items = items as NewPostsNotification[];
+    if (isPost(notif)) {
         const nOpts = {
             ...opts,
             title: 'Reddit: new posts',
-            message: `New posts in: ${items.map(({ name, len }) => `${name} (${len})`).join(', ')}`,
+            message: `New posts in: ${notif.items.map(({ name, len }) => `${name} (${len})`).join(', ')}`,
         };
 
-        const links = items.filter((item) => item.link).map((item) => item.link);
+        const links = notif.items.filter((item) => item.link).map((item) => item.link);
         void createNotification(`${NotificationId.post}__${Date.now()}`, nOpts, [...links]);
     }
 
-    if (type === NotificationId.user) {
-        items = items as NewPostsNotification[];
+    if (isUser(notif)) {
         const nOpts = {
             ...opts,
             title: 'Reddit: new users activities',
-            message: items.map(({ len, name }) => `${name} (${len})`).join(', '),
+            message: notif.items.map(({ len, name }) => `${name} (${len})`).join(', '),
         };
-        const links = items.filter((item) => item.link).map((item) => item.link);
+        const links = notif.items.filter((item) => item.link).map((item) => item.link);
         void createNotification(`${NotificationId.post}__${Date.now()}`, nOpts, links);
     }
 }

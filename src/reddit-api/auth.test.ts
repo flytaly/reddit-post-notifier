@@ -1,10 +1,11 @@
 /* eslint-disable @typescript-eslint/unbound-method */
+import type { AuthUser } from '@/storage/storage-types';
 import fetchMock from 'jest-fetch-mock';
-import auth from './auth';
-import scopes, { RedditScope } from './scopes';
-import storage from '../storage';
-import { AuthError } from './errors';
 import { config } from '../constants';
+import storage from '../storage';
+import auth from './auth';
+import { AuthError } from './errors';
+import scopes from './scopes';
 
 jest.mock('../storage/index.ts');
 
@@ -70,7 +71,7 @@ describe('Token Retrieval', () => {
             return jsonResponse(authSuccessBody);
         });
         await auth.login('fake_id');
-        expect(storage.saveAuthData).toHaveBeenCalledWith(authSuccessBody, id);
+        expect(storage.saveAuthData).toHaveBeenCalledWith({ data: authSuccessBody, id });
     });
 
     test('should throw AuthError when retrieving tokens', async () => {
@@ -114,7 +115,7 @@ describe('Token Refreshing', () => {
         });
 
         const token = await auth.renewAccessToken(refreshToken, id);
-        expect(storage.saveAuthData).toHaveBeenCalledWith(refreshSuccessBody, id);
+        expect(storage.saveAuthData).toHaveBeenCalledWith({ data: refreshSuccessBody, id });
         expect(token).toBe(refreshSuccessBody.access_token);
     });
 
@@ -145,50 +146,24 @@ describe('Get Access Token', () => {
     });
 
     test('should return old access token', async () => {
-        storage.getAccounts = jest.fn(async () => ({
-            id1: { id: 'id1', auth: { ...authData, expiresIn: new Date().getTime() + 1000 * 3600 } },
-        }));
-        const token = await auth.getAccessToken();
-        expect(storage.getAccounts).toHaveBeenCalled();
+        const user: AuthUser = { id: 'id1', auth: { ...authData, expiresIn: new Date().getTime() + 1000 * 3600 } };
+        const token = await auth.getAccessToken(user);
+        expect(auth.renewAccessToken).not.toHaveBeenCalled();
         expect(token).toBe(authData.accessToken);
     });
 
     test('should return renewed accessToken', async () => {
-        storage.getAccounts = jest.fn(async () => ({
-            id1: { id: 'id1', auth: { ...authData, expiresIn: new Date().getTime() } },
-            id2: { id: 'id2', auth: { expiresIn: new Date().getTime() + 1000 * 3600 } },
-        }));
-        const token = await auth.getAccessToken();
-        expect(storage.getAccounts).toHaveBeenCalled();
+        const user: AuthUser = { id: 'id1', auth: { ...authData, expiresIn: new Date().getTime() } };
+        const token = await auth.getAccessToken(user);
         expect(auth.renewAccessToken).toHaveBeenCalledWith(authData.refreshToken, 'id1');
         expect(token).toBe(renewedToken);
     });
 
-    test('should return renewed accessToken if there is no token in storage', async () => {
+    test('should return renewed accessToken if there is no token in the storage', async () => {
         const refreshToken = '___refreshToken___';
-
-        storage.getAccounts = jest.fn(async () => ({
-            id1: { id: 'id1', auth: { refreshToken, expiresIn: new Date().getTime() + 1000 * 3600 } },
-        }));
-
-        const token = await auth.getAccessToken();
-        expect(storage.getAccounts).toHaveBeenCalled();
+        const user: AuthUser = { id: 'id1', auth: { refreshToken, expiresIn: new Date().getTime() + 1000 * 3600 } };
+        const token = await auth.getAccessToken(user);
         expect(auth.renewAccessToken).toHaveBeenCalledWith(refreshToken, 'id1');
         expect(token).toBe(renewedToken);
-    });
-
-    test('should return tokens with correct scope', async () => {
-        const expiresIn = new Date().getTime() + 1000 * 3600;
-        const scopes: RedditScope[] = ['privatemessages'];
-        storage.getAccounts = jest.fn(async () => ({
-            id1: { id: 'id1', auth: { refreshToken: 't1', accessToken: 'a1', expiresIn } },
-            id2: { id: 'id2', auth: { refreshToken: 't2', accessToken: 'a2', expiresIn, scope: 'read' } },
-            id3: {
-                id: 'id3',
-                auth: { refreshToken: 't3', accessToken: 'a3', expiresIn, scope: 'read privatemessages' },
-            },
-        }));
-        const token = await auth.getAccessToken({ withScopes: scopes });
-        expect(token).toBe('a3');
     });
 });
