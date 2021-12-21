@@ -1,9 +1,9 @@
 <script lang="ts">
     import getMsg from '@/utils/get-message';
-    import { AddIcon } from '@/views/options/icons';
     import { flip } from 'svelte/animate';
     import { fade } from 'svelte/transition';
     import { storageData } from '../../../popup/store/store';
+    import AddButton from '../common/AddButton.svelte';
     import SubredditInput from './SubredditInput.svelte';
     import { subredditStore } from './subreddits-store';
 </script>
@@ -25,15 +25,7 @@
             <SubredditInput bind:subOpts subData={$storageData.subreddits[subOpts.id] || {}} />
         </div>
     {/each}
-    <button
-        class="flex items-center rounded p-1 bg-transparent  border-transparent hover:border-skin-accent2 text-skin-accent2"
-        on:click={subredditStore.addSubreddit}
-    >
-        <span class="w-5 h-5 mr-1">
-            {@html AddIcon}
-        </span>
-        <div>{getMsg('optionSubredditsAdd')}</div>
-    </button>
+    <AddButton clickHandler={subredditStore.addSubreddit}>{getMsg('optionSubredditsAdd')}</AddButton>
 </div>
 
 <style lang="postcss">

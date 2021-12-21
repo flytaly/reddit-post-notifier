@@ -2,9 +2,9 @@
     import storage from '@/storage';
     import type { FollowingUser, StorageFields } from '@/storage/storage-types';
     import type { ExtensionOptions } from '@/types/extension-options';
-    import { AddIcon } from '@/views/options/icons';
     import DEFAULT_OPTIONS from '../../../options-default';
     import { storageData } from '../../popup/store/store';
+    import AddButton from './common/AddButton.svelte';
     import FollowUserInput from './FollowUserInput.svelte';
     import OptionsItem from './OptionsItem.svelte';
     import RadioGroup from './RadioGroup.svelte';
@@ -103,15 +103,7 @@
             <FollowUserInput bind:userInfo commitChanges={saveInputs} onDelete={() => removeUser(index)} />
         {/each}
     </div>
-    <button
-        class="flex items-center rounded p-1 bg-transparent  border-transparent hover:border-skin-accent2 text-skin-accent2"
-        on:click={() => addUsers()}
-    >
-        <span class="w-5 h-5 mr-1">
-            {@html AddIcon}
-        </span>
-        <div>Add user to follow</div>
-    </button>
+    <AddButton clickHandler={() => addUsers()}>Add user to follow</AddButton>
 </div>
 
 <style lang="postcss">

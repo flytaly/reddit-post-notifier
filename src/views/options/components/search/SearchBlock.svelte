@@ -1,11 +1,11 @@
 <script lang="ts">
     import getMsg from '@/utils/get-message';
-    import { AddIcon } from '@/views/options/icons';
     import { storageData } from '@/views/options/store';
     import { quadOut } from 'svelte/easing';
     import { fade } from 'svelte/transition';
     import SearchFieldset from './SearchFieldset.svelte';
     import { searchStore } from './search-store';
+    import AddButton from '../common/AddButton.svelte';
 </script>
 
 <div>
@@ -21,12 +21,4 @@
         </div>
     {/each}
 </div>
-<button
-    class="flex items-center rounded p-1 bg-transparent  border-transparent hover:border-skin-accent2 text-skin-accent2"
-    on:click={() => searchStore.addQuery()}
->
-    <span class="w-5 h-5 mr-1">
-        {@html AddIcon}
-    </span>
-    <div>{getMsg('optionsSearchAddNew')}</div>
-</button>
+<AddButton clickHandler={() => searchStore.addQuery()}>{getMsg('optionsSearchAddNew')}</AddButton>

@@ -3,8 +3,8 @@
     import type { FilterRule } from '@/text-search/post-filter';
     import { quadOut } from 'svelte/easing';
     import { slide } from 'svelte/transition';
-    import { AddIcon } from '@/views/options/icons';
     import PostFilterFields from './PostFilterFields.svelte';
+    import AddButton from '../common/AddButton.svelte';
 
     export let ruleList: FilterRule[] = [[{ field: 'title', query: '' }]];
 
@@ -49,13 +49,5 @@
             {/if}
         {/each}
     </div>
-    <button
-        class="ml-6 flex items-center rounded py-px p-1 bg-transparent  border-transparent hover:border-skin-accent2 text-skin-accent2"
-        on:click={addRule}
-    >
-        <span class="w-4 h-4 mr-1">
-            {@html AddIcon}
-        </span>
-        <div>add filter rule</div>
-    </button>
+    <AddButton clickHandler={addRule}>add filter rule</AddButton>
 </div>
