@@ -2,7 +2,7 @@ import type { AuthUser } from '@/storage/storage-types';
 import { browser } from 'webextension-polyfill-ts';
 import { config } from '../constants';
 import storage from '../storage';
-import { mapObjToQueryStr } from '../utils';
+import { generateId, mapObjToQueryStr } from '../utils';
 import { AuthError } from './errors';
 import scopes from './scopes';
 
@@ -132,7 +132,8 @@ const auth = {
     },
 
     /** Start OAUTH2 authorization flow */
-    async login(id: string) {
+    async login(id?: string) {
+        if (!id) id = generateId();
         auth.authState = auth.generateAuthState();
         const code = await auth.getAuthCode(auth.authState, id);
         if (!code) throw new AuthError("Couldn't get auth code", id);

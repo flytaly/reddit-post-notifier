@@ -2,6 +2,7 @@
 import auth from '@/reddit-api/auth';
 import RedditApiClient from '../reddit-api/client';
 import type {
+    RedditAccount,
     RedditError,
     RedditListingResponse,
     RedditPostExtended,
@@ -34,6 +35,7 @@ import {
 import { wait } from '../utils/wait';
 import type { MessageNotification, PostNotification, UserNotification } from './notifications';
 import notify, { NotificationId } from './notifications';
+import { isAuthError } from '@/reddit-api/errors';
 
 const reddit = new RedditApiClient();
 
@@ -79,7 +81,7 @@ interface UpdateQueryProps {
     listing?: Partial<RedditSearchListing>;
 }
 
-function isErrorResponse(result: RedditError | RedditListingResponse<unknown>): result is RedditError {
+function isErrorResponse(result: RedditError | RedditListingResponse<unknown> | RedditAccount): result is RedditError {
     return result['data'] === undefined;
 }
 
@@ -245,6 +247,66 @@ export default class NotifierApp {
             }
         }
         if (msgNotify.items.length) notify(msgNotify, options.notificationSoundId);
+    }
+
+    async updateAccountInfo(user: AuthUser) {
+        if (!user) return user;
+        const ac: AuthUser = { ...user };
+        try {
+            if (ac?.auth.refreshToken) {
+                const token = await auth.getAccessToken(ac);
+
+                this.reddit.setAccessToken(token || null);
+
+                const response = await this.reddit.me();
+
+                if (isErrorResponse(response)) {
+                    console.error('Error during fetching account information', response);
+                    ac.error = 'Couldn\t fetch account information: ' + response.message;
+                    return ac;
+                }
+                if (response.data) {
+                    const d = response.data;
+                    ac.redditId = d.id;
+                    ac.name = d.name;
+                    ac.img = d.icon_img;
+                    ac.inboxCount = d.inbox_count;
+                    ac.hasMail = d.has_mail;
+                    ac.totalKarma = d.total_karma;
+                }
+            }
+        } catch (error) {
+            if (isAuthError(error)) {
+                ac.auth.error = error.message;
+                return ac;
+            }
+            ac.error = error?.message;
+        }
+
+        return ac;
+    }
+
+    /**
+     * Update reddit accounts information and save them to the storage.
+     * If id is passed then update only one account.
+     */
+    async updateAccounts(accounts: StorageFields['accounts'], id?: string) {
+        const updated = { ...accounts };
+        const updateArray = !id ? Object.values(accounts) : [accounts[id]];
+        for (const acc of updateArray) {
+            updated[acc.id] = await this.updateAccountInfo(accounts[acc.id]);
+        }
+        // remove duplicates
+        const names: string[] = [];
+        const filtered = Object.fromEntries(
+            Object.entries(updated).filter(([, v]) => {
+                if (names.includes(v.name)) return false;
+                if (v.name) names.push(v.name);
+                return true;
+            }),
+        );
+
+        await storage.saveAccounts(filtered);
     }
 
     /**

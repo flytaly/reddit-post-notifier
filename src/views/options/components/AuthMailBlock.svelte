@@ -1,102 +1,71 @@
 <script lang="ts">
-    import storage from '@/storage';
-    import getMsg from '@/utils/get-message';
-    import { BellIcon } from '@/views/options/icons';
+    import type { AuthUser, StorageFields } from '@/storage/storage-types';
+    import { RefreshIcon2 } from '@/views/options/icons';
     import { storageData } from '../store';
-    import Labeled from './Labeled.svelte';
-    import OptionsItem from './OptionsItem.svelte';
+    import AddButton from './common/AddButton.svelte';
+    import auth from '@/reddit-api/auth';
+    import NotifierApp from '@/notifier/app';
 
-    let messages: boolean;
-    let messagesNotify: boolean;
-    let refreshToken: string;
-    const authError = '';
-    let isAuthorizing = false;
+    let accounts: StorageFields['accounts'] = $storageData.accounts;
+    let accList: AuthUser[] = [];
 
-    $: ({ messages, messagesNotify } = $storageData.options);
     $: {
-        /* refreshToken = $storageData.refreshToken; */
-        /* if (!refreshToken) { */
-        /*     $storageData.options.messages = false; */
-        /*     $storageData.options.messagesNotify = false; */
-        /* } */
+        accounts = $storageData.accounts;
+        accList = Object.values(accounts);
     }
+
+    let authError = '';
+    let isAuthorizing = false;
+    let updatingId: string | null = '';
 
     const authorize = async () => {
         isAuthorizing = true;
-        /* try { */
-        /*     await auth.login(); */
-        /*     await storage.saveOptions({ messages: true, messagesNotify: true }); */
-        /* } catch (e) { */
-        /*     console.error(e); */
-        /*     authError = e.message; */
-        /* } */
+        try {
+            await auth.login();
+        } catch (e) {
+            console.error(e);
+            authError = e.message;
+        }
         isAuthorizing = false;
     };
 
-    const signOut = async () => {
-        isAuthorizing = true;
-        await storage.clearAuthData();
-        isAuthorizing = false;
-        await storage.saveOptions({ messages: false, messagesNotify: false });
-    };
-
-    const getBtnMessage = (authorized: boolean, loading: boolean) => {
-        if (loading) return getMsg('optionStartAuthBtnDisabled');
-        return getMsg(authorized ? 'optionSignOutBtn' : 'optionStartAuthBtn');
+    const updateAcc = async (id: string) => {
+        updatingId = id;
+        const app = new NotifierApp();
+        await app.updateAccounts(accounts, id);
+        updatingId = null;
     };
 </script>
 
-<OptionsItem title={getMsg('optionAuthorization')}>
-    <div slot="description">{getMsg('optionAuthorizationDescription')}</div>
-    <div slot="controls">
-        <div class="flex flex-col items-end min-w-[10rem]">
-            <div class={`${refreshToken ? 'text-skin-success' : 'text-skin-accent'}`}>
-                {getMsg(refreshToken ? 'optionIsAuthMsg' : 'optionNoAuthMsg')}
-            </div>
-            <button on:click={refreshToken ? signOut : authorize} disabled={isAuthorizing}>
-                {getBtnMessage(!!refreshToken, isAuthorizing)}</button
-            >
-            <div class="text-skin-error">{authError}</div>
-        </div>
-    </div>
-</OptionsItem>
-<OptionsItem title={getMsg('optionMail')} column>
-    <div slot="description">{getMsg('optionMailDescription')}</div>
-    <div slot="controls">
-        <div class="space-y-2">
-            <Labeled disabled={!refreshToken} title={!refreshToken ? getMsg('optionMailNoAuthTooltip') : ''}>
-                <input
-                    slot="input"
-                    type="checkbox"
-                    bind:checked={$storageData.options.messages}
-                    disabled={!refreshToken}
-                    on:change={() => {
-                        if (!messages) $storageData.options.messagesNotify = false;
-                        void storage.saveOptions({
-                            messages: $storageData.options.messages,
-                            messagesNotify: $storageData.options.messagesNotify,
-                        });
-                    }}
-                />
-                <span slot="description">{getMsg('optionMailShow')}</span>
-            </Labeled>
-            <Labeled disabled={!messages} indent>
-                <input
-                    slot="input"
-                    type="checkbox"
-                    bind:checked={$storageData.options.messagesNotify}
-                    disabled={!refreshToken || !$storageData.options.messages}
-                    on:change={() => storage.saveOptions({ messagesNotify: $storageData.options.messagesNotify })}
-                />
-                <span slot="description">
-                    <div class="flex items-center">
-                        <span class={`h-4 w-4 mr-2 ${messagesNotify ? 'text-skin-accent' : 'text-skin-text'}`}>
-                            {@html BellIcon}
-                        </span>
-                        {getMsg('optionMailNotify')}
+<div>
+    <div>Description</div>
+    <ul>
+        {#each accList as acc, num (acc.id)}
+            <li>
+                <div class="flex gap-3">
+                    <button
+                        class="flex items-center text-skin-accent2 p-0 border-transparent bg-transparent hover:bg-transparent text-xs"
+                        on:click={() => void updateAcc(String(acc.id))}
+                        disabled={isAuthorizing || !!updatingId}
+                        title="update"
+                    >
+                        <div class="w-5 h-5 mr-1">
+                            {@html RefreshIcon2}
+                        </div>
+                    </button>
+                    <div>{acc.name || `User${num}`}</div>
+                </div>
+                {#if acc.auth.error || acc.error}
+                    <div>
+                        <div>Errors:</div>
+                        <div>{acc.error || acc.auth.error || ''}</div>
                     </div>
-                </span>
-            </Labeled>
-        </div>
-    </div>
-</OptionsItem>
+                {/if}
+            </li>
+        {:else}
+            <div>No authorized accounts</div>
+        {/each}
+    </ul>
+    <div>{authError}</div>
+    <AddButton clickHandler={() => authorize()} disabled={isAuthorizing || !!updatingId}>Add account</AddButton>
+</div>

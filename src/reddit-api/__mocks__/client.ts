@@ -1,4 +1,4 @@
-import type { RedditComment, RedditListingResponse, RedditMessage, RedditPost } from '../reddit-types';
+import type { RedditAccount, RedditComment, RedditListingResponse, RedditMessage, RedditPost } from '../reddit-types';
 
 const response: RedditListingResponse<RedditPost | RedditMessage | RedditComment> = {
     kind: 'Listing',
@@ -22,6 +22,13 @@ export const mockUser = jest.fn(() => ({
     submitted: mockUserSubmitted,
 }));
 const mockSetAccessToken = jest.fn();
+const mockMe = jest.fn(
+    async () =>
+        ({
+            kind: 't2',
+            data: {},
+        } as RedditAccount),
+);
 
 const mock = jest.fn().mockImplementation(() => {
     return {
@@ -30,6 +37,7 @@ const mock = jest.fn().mockImplementation(() => {
         messages: { unread: mockUnread },
         user: mockUser,
         setAccessToken: mockSetAccessToken,
+        me: mockMe,
     };
 });
 

@@ -5,7 +5,14 @@ import { postFilter } from '@/text-search/post-filter';
 import { mocked } from 'jest-mock';
 import { cloneDeep } from 'lodash';
 import DEFAULT_OPTIONS from '../options-default';
-import type { RedditComment, RedditError, RedditMessage, RedditPost } from '../reddit-api/reddit-types';
+import type {
+    RedditAccount,
+    RedditAccountData,
+    RedditComment,
+    RedditError,
+    RedditMessage,
+    RedditPost,
+} from '../reddit-api/reddit-types';
 import { RedditObjectKind } from '../reddit-api/reddit-types';
 import storage from '../storage';
 import { dataFields } from '../storage/fields';
@@ -17,6 +24,7 @@ import { getSearchQueryUrl } from '../utils';
 import NotifierApp from './app';
 import notify, { NotificationId as NId } from './notifications';
 import type { MessageNotification as MN, PostNotification, UserNotification } from './notifications';
+import redditScopes from '@/reddit-api/scopes';
 
 jest.mock('@/storage/storage.ts');
 jest.mock('@/reddit-api/client.ts');
@@ -38,6 +46,102 @@ function mockStorageData(data?: Partial<StorageFields>) {
 
 beforeAll(() => {
     mocked(auth.getAccessToken).mockImplementation(async () => 'access_token');
+});
+
+const contain = expect.objectContaining;
+
+describe('update accounts', () => {
+    function createAccounts(users: Partial<AuthUser>[] = [{}]) {
+        let _id = 0;
+        const accounts: StorageFields['accounts'] = {};
+        users.forEach((u) => {
+            const id = String(u.id || _id++);
+            const refreshToken = `rt${id}`;
+            accounts[id] = {
+                id,
+                ...(u || {}),
+                auth: { refreshToken, scope: redditScopes.identity.id, ...(u.auth || {}) },
+            };
+        });
+        return accounts;
+    }
+    beforeEach(() => jest.clearAllMocks());
+
+    function mockMe(data: Partial<RedditAccountData>): RedditAccount {
+        return {
+            data: {
+                comment_karma: 999,
+                total_karma: 1200,
+                inbox_count: 0,
+                has_mail: false,
+                created_utc: Date.now(),
+                id: 'reddit_id',
+                name: 'username',
+                icon_img: 'iconurl',
+                ...data,
+            },
+        };
+    }
+
+    test('should update accounts and save to the storage', async () => {
+        const app = new NotifierApp();
+        let callCount = 0;
+        const users: RedditAccount[] = [];
+        mocked(mockClient.me).mockImplementation(async () => {
+            const res = mockMe({ name: `username_${callCount++}` });
+            users.push(res);
+            return res;
+        });
+        const auth = { refreshToken: 'token' };
+        const accs = createAccounts([{ auth }, { auth }, { auth: { refreshToken: null } }]);
+
+        await app.updateAccounts(accs);
+        expect(app.reddit.setAccessToken).toHaveBeenCalledWith('access_token');
+        expect(mockClient.me).toHaveBeenCalledTimes(2);
+
+        const u = users.map((us) => us.data);
+        const obj = {
+            0: contain({ id: '0', name: u[0].name, img: u[0].icon_img, redditId: u[0].id }),
+            1: contain({ id: '1', name: u[1].name, img: u[1].icon_img, redditId: u[1].id }),
+            2: { ...accs[2] },
+        };
+        expect(mockStorage.saveAccounts).toHaveBeenCalledWith(obj);
+    });
+
+    test('should update only one account', async () => {
+        const accs = createAccounts([{ id: 'a0' }, { id: 'a1' }, { id: 'a2' }]);
+
+        let callCount = 0;
+        mocked(mockClient.me).mockImplementation(async () => {
+            const c = String(callCount++);
+            return mockMe({ id: `redditId_${c}`, name: `name_${c}` });
+        });
+        await new NotifierApp().updateAccounts(accs, 'a1');
+        expect(mockClient.me).toHaveBeenCalledTimes(1);
+
+        const obj = {
+            a0: { ...accs['a0'] },
+            a1: contain({ id: 'a1', name: 'name_0', redditId: 'redditId_0' }),
+            a2: { ...accs['a2'] },
+        };
+        expect(mockStorage.saveAccounts).toHaveBeenCalledWith(obj);
+    });
+
+    test('should remove duplicates', async () => {
+        const accs = createAccounts([{ id: 'i1', name: 'n1' }, { id: 'i2' }, { id: 'i3' }]);
+        mocked(mockClient.me).mockImplementation(async () => mockMe({ name: 'n1' }));
+        const app = new NotifierApp();
+
+        // should remove the latest
+        await app.updateAccounts(cloneDeep(accs), 'i3');
+        expect(mockStorage.saveAccounts).toHaveBeenCalledWith({ i1: accs.i1, i2: accs.i2 });
+        mockStorage.saveAccounts.mockClear();
+
+        // should remove 2nd and 3rd
+        await app.updateAccounts(cloneDeep(accs));
+        const exp = { i1: expect.objectContaining(accs.i1) };
+        expect(mockStorage.saveAccounts).toHaveBeenCalledWith(exp);
+    });
 });
 
 describe('update messages', () => {

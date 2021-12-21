@@ -10,4 +10,8 @@ export class AuthError extends Error {
     }
 }
 
+export function isAuthError(e: unknown): e is AuthError {
+    return (e as AuthError)?.name == 'AuthError';
+}
+
 export default { AuthError };

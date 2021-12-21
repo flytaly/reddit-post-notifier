@@ -105,7 +105,7 @@ const storage = {
         const accs = await storage.getAccounts();
         if (!accs[accId]) accs[accId] = { id: accId, auth: {}, mail: { messages: [] } };
         if (error) {
-            accs[accId].mail.error = error;
+            (accs[accId].error = "Couldn't fetch messages: "), error.message;
             return storage.saveAccounts(accs);
         }
         if (unreadMessages) {

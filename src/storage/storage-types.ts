@@ -23,16 +23,17 @@ export type AuthUser = {
 
     // reddit data
     name?: string;
+    redditId?: string;
     img?: string;
     totalKarma?: number;
     inboxCount?: number;
     hasMail?: boolean;
+    error?: string;
 
     mail?: {
         messages: RedditMessage[];
         lastUpdate?: number;
         lastPostCreated?: number;
-        error?: RedditError | null;
     };
 };
 
