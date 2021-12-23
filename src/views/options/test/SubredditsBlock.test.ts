@@ -50,8 +50,8 @@ describe('Subreddit settings', () => {
         const { getByText, getAllByLabelText, getAllByTestId } = render(SubredditsBlock);
         await tick();
         const inputs = getAllByLabelText(getMsg('optionSubredditsInput')) as HTMLInputElement[];
-        const notifyElems = getAllByTestId('notify') as HTMLInputElement[];
-        const isActiveElems = getAllByTestId('isActive') as HTMLInputElement[];
+        const notifyElems = getAllByTestId('notify') as HTMLLabelElement[];
+        const isActiveElems = getAllByTestId('isActive') as HTMLLabelElement[];
 
         const len = subList.length + 1;
         expect(inputs).toHaveLength(len);
@@ -60,8 +60,8 @@ describe('Subreddit settings', () => {
 
         subList.forEach((s, idx) => {
             expect(inputs[idx].value).toEqual(s.subreddit);
-            expect(notifyElems[idx].checked).toEqual(s.notify);
-            expect(isActiveElems[idx].checked).toEqual(!s.disabled);
+            expect((notifyElems[idx]).querySelector('input').checked).toEqual(s.notify);
+            expect(isActiveElems[idx].querySelector('input').checked).toEqual(!s.disabled);
         });
 
         await waitFor(() => {

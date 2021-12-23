@@ -12,6 +12,9 @@
     import PostFilterBlock from './PostFilterBlock.svelte';
     import type { InputStatus } from './subreddits-store';
     import { inputStatusStore, subredditStore } from './subreddits-store';
+    import Spinner from '../common/Spinner.svelte';
+    import IosCheckbox from '../common/IosCheckbox.svelte';
+    import NotifyToggle from '../common/NotifyToggle.svelte';
 
     export let subOpts: SubredditOpts;
     export let subData: SubredditData = {};
@@ -105,19 +108,11 @@
     };
 
     let labelText = '';
-    const showLabel = (e: Event & { currentTarget: Element }) => {
-        labelText = e.currentTarget.getAttribute('aria-label');
+    const showLabel = (e: Event) => {
+        labelText = (e.currentTarget as HTMLElement).getAttribute('aria-label');
     };
     const hideLabel = () => {
         labelText = '';
-    };
-
-    /** Activate/toggle input on Enter and Space */
-    const labelBtnClick = (e: KeyboardEvent & { currentTarget: HTMLLabelElement }) => {
-        if (e.key === 'Enter' || e.key == ' ') {
-            e.stopPropagation();
-            e.currentTarget.querySelector('input').click();
-        }
     };
 
     const toggleFilters = () => {
@@ -166,53 +161,55 @@
             {/if}
         </button>
     </div>
-    <label
+    <IosCheckbox
         aria-label={getMsg('optionSubredditsDisable')}
         on:focus={showLabel}
         on:mouseover={showLabel}
         on:mouseleave={hideLabel}
-        on:keydown={labelBtnClick}
-        tabindex="0"
-    >
-        <input
-            class="peer hidden"
-            type="checkbox"
-            bind:checked={isActive}
-            on:change={() => saveInputs()}
-            data-testid="isActive"
-        />
-        <div class="ios-checkbox" />
-    </label>
-    <label
-        class="flex items-center justify-center text-sm"
+        bind:checked={isActive}
+        changeHandler={() => saveInputs()}
+        data-testid="isActive"
+    />
+
+    <NotifyToggle
+        bind:checked={subOpts.notify}
+        changeHander={() => saveInputs()}
         aria-label={getMsg('optionSubredditsNotify')}
         on:focus={showLabel}
         on:mouseover={showLabel}
         on:mouseleave={hideLabel}
-        on:keydown={labelBtnClick}
-        tabindex="0"
-    >
-        <input
-            class="hidden peer"
-            type="checkbox"
-            bind:checked={subOpts.notify}
-            on:change={() => saveInputs()}
-            data-testid="notify"
-        />
-        <div
-            class={`flex items-center justify-center select-none
-            text-gray-50 rounded-2xl py-[2px] px-2 hover:brightness-110 transition-colors ${
-                subOpts.notify ? 'bg-skin-input-checked' : 'bg-gray-500'
-            }`}
-        >
-            {#if subOpts.notify}
-                <div class="w-5 h-5">{@html icons.NotifyIcon}</div>
-            {:else}
-                <div class="w-5 h-5">{@html icons.NotifyOffIcon}</div>
-            {/if}
-            <span class="ml-[2px]">Notify</span>
-        </div>
-    </label>
+        data-testid="notify"
+    />
+    <!-- <label -->
+    <!--     class="flex items-center justify-center text-sm" -->
+    <!--     aria-label={getMsg('optionSubredditsNotify')} -->
+    <!--     on:focus={showLabel} -->
+    <!--     on:mouseover={showLabel} -->
+    <!--     on:mouseleave={hideLabel} -->
+    <!--     on:keydown={labelBtnClick} -->
+    <!--     tabindex="0" -->
+    <!-- > -->
+    <!--     <input -->
+    <!--         class="hidden peer" -->
+    <!--         type="checkbox" -->
+    <!--         bind:checked={subOpts.notify} -->
+    <!--         on:change={() => saveInputs()} -->
+    <!--         data-testid="notify" -->
+    <!--     /> -->
+    <!--     <div -->
+    <!--         class={`flex items-center justify-center select-none -->
+    <!--         text-gray-50 rounded-2xl py-[2px] px-2 hover:brightness-110 transition-colors ${ -->
+    <!--             subOpts.notify ? 'bg-skin-input-checked' : 'bg-gray-500' -->
+    <!--         }`} -->
+    <!--     > -->
+    <!--         {#if subOpts.notify} -->
+    <!--             <div class="w-5 h-5">{@html icons.NotifyIcon}</div> -->
+    <!--         {:else} -->
+    <!--             <div class="w-5 h-5">{@html icons.NotifyOffIcon}</div> -->
+    <!--         {/if} -->
+    <!--         <span class="ml-[2px]">Notify</span> -->
+    <!--     </div> -->
+    <!-- </label> -->
     <button
         class="flex item-center ml-auto py-0 px-0 bg-transparent border-transparent text-skin-accent hover:bg-transparent"
         aria-label={getMsg('optionSubredditsFilter')}
@@ -236,7 +233,7 @@
     </button>
     <div>
         <button
-            class="flex item-center ml-auto py-0 px-1 bg-transparent border-transparent text-skin-accent hover:bg-transparent hover:scale-105 transition-transform"
+            class="icon-button text-skin-accent ml-auto"
             aria-label={getMsg('optionSubredditsDelete')}
             on:click={() => subredditStore.deleteSubreddit(subOpts.id)}
             on:focus={showLabel}
@@ -270,20 +267,12 @@
             <span>fetch and display the latest subreddit's posts</span>
         </button>
     </div>
-    <div id="inputs-label" class="p-1 text-right col-start-2 col-span-full text-xs italic">
+    <div id="inputs-label" class="p-1 mb-2 text-right col-start-2 col-span-full text-xs italic">
         <span>{labelText}</span>
         &nbsp;
     </div>
-    <div class="col-span-full">
-        <!--   -->
-    </div>
 
-    {#if isLoading}
-        <div class="flex space-x-1 mt-2">
-            <div class="w-4 h-4 animate-spin" title="loading">{@html icons.LoadingIcon}</div>
-            <span>Loading</span>
-        </div>
-    {/if}
+    <Spinner show={isLoading} />
 
     {#if showPosts}
         <div class="col-span-full border p-1 border-skin-delimiter ">

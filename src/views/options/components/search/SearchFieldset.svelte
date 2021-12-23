@@ -10,6 +10,7 @@
     import RedditItemsList from '../RedditItemsList.svelte';
     import { searchStore } from './search-store';
     import TooltipIcon from '../TooltipIcon.svelte';
+    import Spinner from '../common/Spinner.svelte';
 
     export let queryObject: QueryOpts;
     export let queryData: QueryData;
@@ -180,7 +181,7 @@
     </div>
 
     <button
-        class="flex items-center text-skin-accent2 p-0 ml-4  border-transparent bg-transparent hover:bg-transparent text-xs transition-colors"
+        class="flex items-center text-skin-accent2 p-0 mb-2 ml-4  border-transparent bg-transparent hover:bg-transparent text-xs transition-colors"
         on:click={() => void fetchPosts()}
         title="click to fetch and show the latest post from the Reddit search"
         disabled={$isBlocked || !queryObject.query || !!subredditError}
@@ -191,12 +192,7 @@
         <span>fetch and display the latest posts</span>
     </button>
 
-    {#if isLoading}
-        <div class="flex space-x-1 mt-2">
-            <div class="w-4 h-4 animate-spin" title="loading">{@html LoadingIcon}</div>
-            <span>Loading</span>
-        </div>
-    {/if}
+    <Spinner show={isLoading} />
 
     {#if showPosts}
         <div class="border p-1 border-skin-delimiter ">

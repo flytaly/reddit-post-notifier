@@ -5,6 +5,9 @@
     import * as icons from '@/views/options/icons';
     import { RefreshIcon2 } from '@/views/options/icons';
     import { isBlocked } from '../store';
+    import IosCheckbox from './common/IosCheckbox.svelte';
+    import NotifyToggle from './common/NotifyToggle.svelte';
+    import Spinner from './common/Spinner.svelte';
     import RedditItemsList from './RedditItemsList.svelte';
 
     export let userInfo: FollowingUser;
@@ -80,6 +83,16 @@
         }
         isLoading = false;
     }
+
+    const commentChange = (e: Event & { currentTarget: HTMLInputElement }) => {
+        comments = (e.currentTarget as HTMLInputElement).checked;
+        saveWatchTarget();
+    };
+
+    const postChange = (e: Event & { currentTarget: HTMLInputElement }) => {
+        posts = e.currentTarget.checked;
+        saveWatchTarget();
+    };
 </script>
 
 <div class="flex border border-skin-base bg-skin-input rounded">
@@ -103,56 +116,23 @@
     </button>
 </div>
 
-<label class="flex space-x-1 items-center" title="watch for user's comments">
-    <input
-        class="peer hidden"
-        type="checkbox"
-        checked={comments}
-        on:change={(e) => {
-            comments = e.currentTarget.checked;
-            saveWatchTarget();
-        }}
-    />
-    <div class="ios-checkbox" />
+<IosCheckbox checked={comments} changeHandler={commentChange} title="watch for user's comments">
     <span>Comments</span>
-</label>
-<label class="flex space-x-1 items-center" title="watch for user's submissions">
-    <input
-        class="peer hidden"
-        type="checkbox"
-        checked={posts}
-        on:change={(e) => {
-            posts = e.currentTarget.checked;
-            saveWatchTarget();
-        }}
-    />
-    <div class="ios-checkbox" />
+</IosCheckbox>
+
+<IosCheckbox checked={posts} changeHandler={postChange} title="watch for user's submissions">
     <span>Posts</span>
-</label>
-<label
-    class="flex items-center justify-center text-sm ml-1"
-    tabindex="0"
+</IosCheckbox>
+
+<NotifyToggle
+    bind:checked={userInfo.notify}
+    changeHander={commitChanges}
     title="Show notification on new user activities"
->
-    <input class="hidden peer" type="checkbox" bind:checked={userInfo.notify} on:change={commitChanges} />
-    <div
-        class={`flex items-center justify-center select-none
-            text-gray-50 rounded-2xl py-[2px] px-2 hover:brightness-110 transition-colors ${
-                userInfo.notify ? 'bg-skin-input-checked' : 'bg-gray-500'
-            }`}
-    >
-        {#if userInfo.notify}
-            <div class="w-5 h-5">{@html icons.NotifyIcon}</div>
-        {:else}
-            <div class="w-5 h-5">{@html icons.NotifyOffIcon}</div>
-        {/if}
-        <span class="ml-[2px]">Notify</span>
-    </div>
-</label>
+/>
 
 <div class="ml-auto">
     <button
-        class="flex item-center ml-auto py-0 px-1 bg-transparent border-transparent text-skin-accent hover:bg-transparent hover:scale-105 transition-transform"
+        class="icon-button text-skin-accent ml-auto"
         aria-label={getMsg('optionSubredditsDelete')}
         on:click={onDelete}
     >
@@ -172,13 +152,8 @@
             </div>
             <span>fetch and display the latest user's activities </span>
         </button>
-        <div class="ml-2">
-            {#if isLoading}
-                <div class="flex space-x-1 mt-2">
-                    <div class="w-4 h-4 animate-spin" title="loading">{@html icons.LoadingIcon}</div>
-                    <span>Loading</span>
-                </div>
-            {/if}
+        <div class="ml-2 mb-2">
+            <Spinner show={isLoading} />
             {#if showUserData && !errorMsg}
                 <RedditItemsList
                     title={`${userInfo.username}' latest activities on reddit: `}
