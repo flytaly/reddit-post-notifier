@@ -75,7 +75,7 @@ const storage = {
 
     async saveAuthData({ id, data }: { data?: TokenResponseBody; id: string }) {
         const accounts = await storage.getAccounts();
-        if (!accounts[id]) accounts[id] = { id, auth: {} };
+        if (!accounts[id]) accounts[id] = { id, auth: {}, checkMail: true, mailNotify: true, mail: { messages: [] } };
         const auth = accounts[id].auth;
         if (data) {
             auth.accessToken = data.access_token;

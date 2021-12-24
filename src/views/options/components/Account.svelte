@@ -12,6 +12,7 @@
 
     export let accounts: StorageFields['accounts'];
     export let acc: AuthUser;
+    export let authorize: (id?: string, fn?: () => Promise<void>) => Promise<void>;
 
     let isUpdating = false;
     let isUpdatingMessages = false;
@@ -33,8 +34,13 @@
 
     const getErrors = (u: AuthUser) => {
         const res: string[] = [];
-        if (u.auth.error) res.push(u.auth.error);
         if (u.error) res.push(u.error);
+        if (u.auth.error) {
+            res.push(u.auth.error);
+            res.push('Authorization error. Please reathorize account');
+        } else if (!u.auth.refreshToken) {
+            res.push("Extension doesn't have refresh token. Please reathorize account");
+        }
         return res;
     };
 
@@ -52,6 +58,13 @@
     onMount(() => {
         if (!acc.name) void updateAcc();
     });
+
+    const saveToStorage = async () => {
+        if (acc.mailNotify) acc.checkMail = true;
+        await storage.saveAccounts(accounts);
+    };
+
+    const reAuth = () => authorize(acc.id, updateAcc);
 </script>
 
 <li>
@@ -75,12 +88,16 @@
         {/if}
     </div>
     <div class="mx-4">
-        <IosCheckbox checked={acc.checkMail}>
+        <IosCheckbox bind:checked={acc.checkMail} changeHandler={saveToStorage}>
             <span class="text-xs">Watch for Messages</span>
         </IosCheckbox>
     </div>
     <div class="mx-4">
-        <NotifyToggle checked={acc.mailNotify} title="Notify on the new private messages" />
+        <NotifyToggle
+            bind:checked={acc.mailNotify}
+            changeHander={saveToStorage}
+            title="Notify on the new private messages"
+        />
     </div>
     <button class="icon-button text-skin-accent ml-auto" on:click={deleteHandler} {disabled} title="Delete the account">
         <div class="h-5 w-5">
@@ -88,27 +105,33 @@
         </div>
     </button>
     <div class="text-xs col-span-full">
-        <button
-            class="flex items-center text-skin-accent2 p-0 border-transparent bg-transparent hover:bg-transparent text-xs ml-8"
-            on:click={() => void updateMessages()}
-            {disabled}
-        >
-            <div class="w-5 h-5 mr-1">
-                {@html RefreshIcon2}
-            </div>
-            <span>fetch and display unread messages</span>
-        </button>
-        <Spinner show={isUpdatingMessages} />
-        <div class="text-skin-error">
-            {#each errorList as errMsg}
-                <div>{errMsg}</div>
-            {/each}
+        <div class="flex justify-between">
+            <button
+                class="flex items-center text-skin-accent2 p-0 border-transparent bg-transparent hover:bg-transparent text-xs ml-8"
+                on:click={() => void updateMessages()}
+                {disabled}
+            >
+                <div class="w-5 h-5 mr-1">
+                    {@html RefreshIcon2}
+                </div>
+                <span>fetch and display unread messages</span>
+            </button>
+            <div class="ml-auto" />
+            <button class="bg-transparent rounded-sm py-[1px] px-1" on:click={reAuth}>Reauthorize</button>
         </div>
+        <Spinner show={isUpdatingMessages} />
+        {#if errorList?.length}
+            <div class="p-1 pl-8 text-skin-error">
+                {#each errorList as errMsg}
+                    <div>{errMsg}</div>
+                {/each}
+            </div>
+        {/if}
 
         {#if showMessages}
-            <div class="max-w-full border p-1 border-skin-delimiter ">
+            <div class="max-w-full border p-1 border-skin-delimiter mt-2">
                 <MessagesList
-                    title={`${acc.name} unread private messages`}
+                    title={`${acc.name || ''} unread private messages`}
                     items={acc.mail?.messages || []}
                     limit={10}
                     onClose={() => {
@@ -122,7 +145,7 @@
 
 <style lang="postcss">
     li {
-        @apply grid gap-2 mb-6 w-full max-w-full;
+        @apply grid gap-x-2 gap-y-1 mb-6 w-full max-w-full;
 
         grid-template-columns: min-content minmax(auto, 1fr) auto auto auto;
     }

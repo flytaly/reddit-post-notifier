@@ -35,7 +35,8 @@ import {
 import { wait } from '../utils/wait';
 import type { MessageNotification, PostNotification, UserNotification } from './notifications';
 import notify, { NotificationId } from './notifications';
-import { isAuthError } from '@/reddit-api/errors';
+import { AuthError, isAuthError } from '@/reddit-api/errors';
+import redditScopes from '../reddit-api/scopes';
 
 const reddit = new RedditApiClient();
 
@@ -260,6 +261,9 @@ export default class NotifierApp {
         const ac: AuthUser = { ...user };
         try {
             if (ac?.auth.refreshToken) {
+                if (!ac.auth.scope || !ac.auth.scope.includes(redditScopes.identity.id)) {
+                    throw new AuthError("Extension doesn't have permissions to fetch user's identity", ac.id);
+                }
                 const token = await auth.getAccessToken(ac);
 
                 this.reddit.setAccessToken(token || null);

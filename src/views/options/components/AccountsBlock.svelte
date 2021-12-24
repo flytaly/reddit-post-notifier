@@ -19,10 +19,11 @@
 
     $: disabled = isAuthorizing || $isBlocked;
 
-    const authorize = async () => {
+    const authorize = async (id?: string, onSuccess?: () => unknown) => {
         isAuthorizing = true;
         try {
-            await auth.login();
+            await auth.login(id);
+            onSuccess?.();
         } catch (e) {
             console.error(e);
             authError = e.message;
@@ -38,7 +39,7 @@
         {#if accList?.length}
             <ul>
                 {#each accList as acc (acc.id)}
-                    <Account {accounts} {acc} />
+                    <Account {accounts} {acc} {authorize} />
                 {/each}
             </ul>
         {:else}
