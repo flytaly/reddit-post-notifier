@@ -3,7 +3,7 @@
     import type { QueryData, QueryOpts } from '@/storage/storage-types';
     import { debounce, testMultireddit } from '@/utils';
     import getMsg from '@/utils/get-message';
-    import { BellIcon, DeleteIcon, LoadingIcon, RefreshIcon2, WarningIcon } from '@/views/options/icons';
+    import { BellIcon, DeleteIcon, RefreshIcon2, WarningIcon } from '@/views/options/icons';
     import { isBlocked } from '@/views/options/store';
     import { formatError } from '../../format-error';
     import Labeled from '../Labeled.svelte';

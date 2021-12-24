@@ -2,6 +2,7 @@ import { sendFromBg } from '../port';
 import storage from '../storage';
 import NotifierApp from '../notifier/app';
 import { scheduleNextUpdate } from './timers';
+import { isAuthError } from '@/reddit-api/errors';
 
 export let isUpdating = false;
 
@@ -16,10 +17,9 @@ export async function updateAndSchedule(isForcedByUser = false) {
         await scheduleNextUpdate();
     } catch (e) {
         console.error(e);
-
-        if (e.name === 'AuthError') {
+        if (isAuthError(e)) {
             // If authorization fails remove authorization data from storage and update again.
-            await storage.clearAuthData();
+            await storage.setAuthError(e.id, e.message);
             isUpdating = false;
             await updateAndSchedule();
         } else {

@@ -75,6 +75,8 @@ export default class RedditApiClient {
         return {
             unread: async (listing?: RedditMessageListing) =>
                 this.GET('/message/unread', listing) as R<RedditMessageResponse>,
+            inbox: async (listing?: RedditMessageListing) =>
+                this.GET('/message/inbox', listing) as R<RedditMessageResponse>,
         };
     }
 

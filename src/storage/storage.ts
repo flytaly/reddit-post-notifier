@@ -4,13 +4,7 @@ import scopes from '@/reddit-api/scopes';
 import { browser } from 'webextension-polyfill-ts';
 import DEFAULT_OPTIONS from '../options-default';
 import type { TokenResponseBody } from '../reddit-api/auth';
-import type {
-    RedditError,
-    RedditItem,
-    RedditMessage,
-    RedditPost,
-    RedditPostExtended,
-} from '../reddit-api/reddit-types';
+import type { RedditItem, RedditMessage, RedditPost, RedditPostExtended } from '../reddit-api/reddit-types';
 import type { ExtensionOptions } from '../types/extension-options';
 import { filterKeys, filterPostDataProperties, generateId } from '../utils';
 import { dataFields } from './fields';
@@ -79,7 +73,7 @@ const storage = {
         return browser.storage.local.set({ accounts } as SF);
     },
 
-    async saveAuthData({ id, data, error }: { data?: TokenResponseBody; id: string; error?: string }) {
+    async saveAuthData({ id, data }: { data?: TokenResponseBody; id: string }) {
         const accounts = await storage.getAccounts();
         if (!accounts[id]) accounts[id] = { id, auth: {} };
         const auth = accounts[id].auth;
@@ -91,34 +85,35 @@ const storage = {
             const expiresInRelative = data.expires_in || 0;
             auth.expiresIn = expiresInRelative && new Date().getTime() + +expiresInRelative * 1000;
         }
-        if (error) {
-            auth.error = error;
-        }
 
         return browser.storage.local.set({ accounts } as StorageFields);
     },
 
     async saveMessageData(
         accId: string,
-        { unreadMessages, error }: { unreadMessages?: RedditMessage[]; error?: RedditError | null },
+        { unreadMessages, error }: { unreadMessages?: RedditMessage[]; error?: { message?: string } | null },
     ) {
         const accs = await storage.getAccounts();
         if (!accs[accId]) accs[accId] = { id: accId, auth: {}, mail: { messages: [] } };
         if (error) {
-            (accs[accId].error = "Couldn't fetch messages: "), error.message;
+            accs[accId].error = "Couldn't fetch messages: " + error.message;
             return storage.saveAccounts(accs);
         }
+
+        accs[accId].error = null;
+        if (!accs[accId].mail) accs[accId].mail = { messages: [] };
+        const mail = accs[accId].mail;
+        mail.lastUpdate = Date.now();
         if (unreadMessages) {
-            const mail = accs[accId].mail;
             const prevUnread = mail.messages || [];
             const ids = new Set<string>();
             mail.messages.forEach((m) => ids.add(m.data.id));
             unreadMessages = unreadMessages.filter((m) => !ids.has(m.data.id));
             mail.messages = [...unreadMessages, ...prevUnread];
-            mail.lastUpdate = Date.now();
             if (unreadMessages[0]) mail.lastPostCreated = unreadMessages[0].data.created;
-            return storage.saveAccounts(accs);
         }
+
+        return storage.saveAccounts(accs);
     },
 
     async saveOptions(data: Partial<ExtensionOptions>) {
@@ -232,13 +227,27 @@ const storage = {
         return browser.storage.local.set({ notifications });
     },
 
-    async clearAuthData() {
-        // TODO:
-        // return browser.storage.local.set(authDataDefault);
+    async setAuthError(id: string, errMsg?: string) {
+        const accs = await storage.getAccounts();
+        if (accs[id]) {
+            accs[id].auth.error = errMsg;
+            accs[id].auth.refreshToken = null;
+        }
+        return storage.saveAccounts(accs);
     },
 
     async clearStorage() {
         return browser.storage.local.clear();
+    },
+
+    async removeAccount(ids: string[]) {
+        const accs = await storage.getAccounts();
+        const result: StorageFields['accounts'] = {};
+        Object.keys(accs).forEach((k) => {
+            if (ids.includes(accs[k]?.id)) return;
+            result[k] = accs[k];
+        });
+        return storage.saveAccounts(result);
     },
 
     async removeMessages(accId: string) {

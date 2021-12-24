@@ -141,18 +141,26 @@ export default class NotifierApp {
     }
 
     async updateUnreadMsg(account: AuthUser) {
-        const response = await this.reddit.messages.unread();
+        try {
+            const token = await auth.getAccessToken(account);
+            this.reddit.setAccessToken(token || null);
 
-        if (isErrorResponse(response)) {
-            console.error('Error during fetching unread messages', response);
-            await storage.saveMessageData(account.id, { error: response });
+            const response = await this.reddit.messages.unread();
+
+            if (isErrorResponse(response)) {
+                throw new Error(response.message);
+            }
+
+            const newMessages = extractNewItems(response, account.mail || {});
+
+            await storage.saveMessageData(account.id, { unreadMessages: newMessages });
+            return newMessages;
+        } catch (error) {
+            const message = error.message || error;
+            console.error('Error during fetching unread messages ', message);
+            await storage.saveMessageData(account.id, { error: { message } });
             return null;
         }
-
-        const newMessages = extractNewItems(response, account.mail || {});
-
-        await storage.saveMessageData(account.id, { unreadMessages: newMessages });
-        return newMessages;
     }
 
     async updateFollowingUser(user: FollowingUser): Promise<{ user: FollowingUser; newItemsLen?: number }> {
@@ -237,8 +245,6 @@ export default class NotifierApp {
         const msgNotify: MessageNotification = { type: NotificationId.mail, items: [] };
         for (const ac of Object.values(accounts)) {
             if (ac.auth.refreshToken && ac.checkMail && ac.auth.scope?.includes('privatemessages')) {
-                const token = await auth.getAccessToken(ac);
-                this.reddit.setAccessToken(token || null);
                 const newMessages = await this.updateUnreadMsg(ac);
                 if (newMessages.length && ac.mailNotify) {
                     msgNotify.items.push({ username: ac.name, len: newMessages.length });

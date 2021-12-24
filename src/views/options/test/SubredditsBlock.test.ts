@@ -60,7 +60,7 @@ describe('Subreddit settings', () => {
 
         subList.forEach((s, idx) => {
             expect(inputs[idx].value).toEqual(s.subreddit);
-            expect((notifyElems[idx]).querySelector('input').checked).toEqual(s.notify);
+            expect(notifyElems[idx].querySelector('input').checked).toEqual(s.notify);
             expect(isActiveElems[idx].querySelector('input').checked).toEqual(!s.disabled);
         });
 

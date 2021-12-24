@@ -1,7 +1,7 @@
 <script lang="ts">
     import { NotifyIcon, NotifyOffIcon } from '../../icons';
 
-    export let checked = false; 
+    export let checked = false;
     export let changeHander: () => void = undefined;
 
     const labelBtnClick = (e: KeyboardEvent & { currentTarget: HTMLLabelElement }) => {

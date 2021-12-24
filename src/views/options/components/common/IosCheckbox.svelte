@@ -22,6 +22,6 @@
     {...$$restProps}
 >
     <input class="peer hidden" type="checkbox" bind:checked on:change={changeHandler} />
-    <div class="ios-checkbox" />
+    <div class="ios-checkbox shrink-0" />
     <slot />
 </label>

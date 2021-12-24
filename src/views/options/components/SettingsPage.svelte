@@ -4,7 +4,7 @@
     import type { Unsubscriber } from 'svelte/store';
     import { pageInfo, sections } from '../routes';
     import { storageData } from '../store';
-    import AuthMailBlock from './AuthMailBlock.svelte';
+    import AccountsBlock from './AccountsBlock.svelte';
     import FollowUsersBlock from './FollowUsersBlock.svelte';
     import GeneralSettingsBlock from './GeneralSettingsBlock.svelte';
     import Heading from './Heading.svelte';
@@ -42,7 +42,7 @@
 
         <section>
             <Heading id={'#settings__mail'} />
-            <AuthMailBlock />
+            <AccountsBlock />
         </section>
         <section>
             <Heading id={'#settings__subreddit'} />

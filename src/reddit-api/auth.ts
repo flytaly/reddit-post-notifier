@@ -140,6 +140,7 @@ const auth = {
 
         const authData = await auth.getTokens(code, id);
         await storage.saveAuthData({ data: authData, id });
+        return id;
     },
 };
 

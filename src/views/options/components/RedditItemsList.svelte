@@ -51,8 +51,8 @@
 
 <article>
     <header>
-        <div class="flex justify-between items-center">
-            <div class="mt-2">{title}</div>
+        <div class="flex justify-between items-center my-1">
+            <div>{title}</div>
             <button class="p-0 mr-2 border-none bg-transparent h-4 w-4" on:click={onClose} title="close">
                 {@html XCircleIcon}
             </button>
@@ -82,7 +82,7 @@
                 {item.text}
             </a>
         {:else}
-            <div>Empty.</div>
+            <div>No items.</div>
         {/each}
     </div>
 </article>
