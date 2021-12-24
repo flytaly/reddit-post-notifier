@@ -59,8 +59,17 @@
         if (!acc.name) void updateAcc();
     });
 
-    const saveToStorage = async () => {
-        if (acc.mailNotify) acc.checkMail = true;
+    const checkMailCommit = async (e: Event) => {
+        const checked = (e.currentTarget as HTMLInputElement).checked;
+        acc.checkMail = checked
+        if (!checked) acc.mailNotify = false
+        await storage.saveAccounts(accounts);
+    };
+
+    const notifyMailCommit = async (e: Event) => {
+        const checked = (e.currentTarget as HTMLInputElement).checked;
+        acc.mailNotify = checked
+        if (checked) acc.checkMail = true
         await storage.saveAccounts(accounts);
     };
 
@@ -88,14 +97,14 @@
         {/if}
     </div>
     <div class="mx-4">
-        <IosCheckbox bind:checked={acc.checkMail} changeHandler={saveToStorage}>
+        <IosCheckbox checked={acc.checkMail} changeHandler={checkMailCommit}>
             <span class="text-xs">Watch for Messages</span>
         </IosCheckbox>
     </div>
     <div class="mx-4">
         <NotifyToggle
-            bind:checked={acc.mailNotify}
-            changeHander={saveToStorage}
+            checked={acc.mailNotify}
+            changeHander={notifyMailCommit}
             title="Notify on the new private messages"
         />
     </div>
