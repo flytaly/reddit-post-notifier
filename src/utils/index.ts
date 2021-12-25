@@ -24,6 +24,8 @@ export const generateId = () => Math.random().toString(36).substring(2, 6) + new
 export const getSubredditUrl = (subreddit: string, oldReddit = false): string =>
     `${oldReddit ? redditOldUrl : redditUrl}/r/${subreddit}/new`;
 
+export const getInboxUrl = (oldReddit = false): string => `${oldReddit ? redditOldUrl : redditUrl}/message/unread`;
+
 export const getSearchQueryUrl = (query: string, subreddit = '', oldReddit = false): string => {
     const endpoint = subreddit
         ? `/r/${subreddit}/search?sort=new&restrict_sr=on&q=${query}`

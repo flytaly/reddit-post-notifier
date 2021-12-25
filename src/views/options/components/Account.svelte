@@ -61,15 +61,15 @@
 
     const checkMailCommit = async (e: Event) => {
         const checked = (e.currentTarget as HTMLInputElement).checked;
-        acc.checkMail = checked
-        if (!checked) acc.mailNotify = false
+        acc.checkMail = checked;
+        if (!checked) acc.mailNotify = false;
         await storage.saveAccounts(accounts);
     };
 
     const notifyMailCommit = async (e: Event) => {
         const checked = (e.currentTarget as HTMLInputElement).checked;
-        acc.mailNotify = checked
-        if (checked) acc.checkMail = true
+        acc.mailNotify = checked;
+        if (checked) acc.checkMail = true;
         await storage.saveAccounts(accounts);
     };
 

@@ -1,9 +1,9 @@
 import type { StorageFields } from '@/storage/storage-types';
-import { getSearchQueryUrl, getSubredditUrl, getUserProfileUrl } from '@/utils';
+import { getInboxUrl, getSearchQueryUrl, getSubredditUrl, getUserProfileUrl } from '@/utils';
 import { idToUserIdx } from '.';
-import type { RedditItem } from '../../../reddit-api/reddit-types';
+import type { RedditItem, RedditMessage } from '../../../reddit-api/reddit-types';
 
-export type PostGroupType = 'subreddit' | 'search' | 'user';
+export type PostGroupType = 'subreddit' | 'search' | 'user' | 'message';
 
 export type PostGroup = {
     type: PostGroupType;
@@ -19,13 +19,34 @@ export const extractPostGroups = (sData: StorageFields) => {
     const groupsWithPosts: PostGroup[] = [];
     const groupsWithoutPosts: PostGroup[] = [];
 
+    const accList = Object.values(sData.accounts || {});
+    const { useOldReddit } = sData.options;
+
+    accList.forEach((a) => {
+        const length = a.mail?.messages?.length || 0;
+        const lastPostCreated = a.mail?.lastPostCreated;
+        const group: PostGroup = {
+            type: 'message',
+            id: a.id,
+            href: getInboxUrl(useOldReddit),
+            title: `${a.name || ''} inbox (${length})`,
+            lastPostCreated,
+            size: length,
+        };
+        if (length) {
+            groupsWithPosts.push(group);
+        } else if (!sData.options.hideEmptyGroups) {
+            groupsWithoutPosts.push(group);
+        }
+    });
+
     sData.subredditList.forEach((s) => {
         const length = sData.subreddits[s.id]?.posts?.length || 0;
         const lastPostCreated = sData.subreddits[s.id]?.lastPostCreated;
         const group: PostGroup = {
             type: 'subreddit',
             id: s.id,
-            href: getSubredditUrl(s.subreddit, sData.options.useOldReddit),
+            href: getSubredditUrl(s.subreddit, useOldReddit),
             title: `r/${s.subreddit} (${length})`,
             lastPostCreated,
             size: length,
@@ -44,7 +65,7 @@ export const extractPostGroups = (sData: StorageFields) => {
         const group: PostGroup = {
             type: 'search',
             id: q.id,
-            href: getSearchQueryUrl(q.query, q.subreddit, sData.options.useOldReddit),
+            href: getSearchQueryUrl(q.query, q.subreddit, useOldReddit),
             title: `${q.name || q.query} (${length})`,
             lastPostCreated,
             size: length,
@@ -67,7 +88,7 @@ export const extractPostGroups = (sData: StorageFields) => {
         const group: PostGroup = {
             type: 'user',
             id: `user_${idx}`,
-            href: getUserProfileUrl(u.username, u.watch, sData.options.useOldReddit),
+            href: getUserProfileUrl(u.username, u.watch, useOldReddit),
             title: `u/${u.username} ${watchType} (${length})`,
             lastPostCreated: u.lastPostCreated,
             size: length,
@@ -86,10 +107,10 @@ export const extractPostGroups = (sData: StorageFields) => {
 };
 
 export const getGroupItems = (
-    data: Pick<StorageFields, 'subreddits' | 'queries' | 'usersList'>,
+    data: Pick<StorageFields, 'subreddits' | 'queries' | 'usersList' | 'accounts'>,
     id: string,
     type: PostGroupType,
-): RedditItem[] => {
+): RedditItem[] | RedditMessage[] => {
     if (type === 'subreddit') {
         return data.subreddits[id].posts;
     }
@@ -99,6 +120,9 @@ export const getGroupItems = (
     if (type === 'user') {
         const idx = idToUserIdx(id);
         if (idx !== undefined) return data.usersList[idx]?.data;
+    }
+    if (type === 'message') {
+        return data.accounts?.[id]?.mail?.messages || [];
     }
     return [];
 };

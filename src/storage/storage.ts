@@ -257,6 +257,14 @@ const storage = {
         await browser.storage.local.set({ accounts } as SF);
     },
 
+    async removeMessage({ accId, messageId }: { accId: string; messageId: string }) {
+        const accounts = await storage.getAccounts();
+        const a = accounts[accId];
+        if (!a?.mail) return;
+        accounts[accId].mail.messages = (a.mail.messages || []).filter((m) => m.data.id !== messageId);
+        await browser.storage.local.set({ accounts } as SF);
+    },
+
     async removeQueryData(queryId: string) {
         const queries = await storage.getQueriesData();
         queries[queryId] = { posts: [] };

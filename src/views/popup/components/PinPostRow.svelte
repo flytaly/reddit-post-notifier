@@ -1,5 +1,6 @@
 <script lang="ts">
-    import type { RedditItem } from '@/reddit-api/reddit-types';
+    import { RedditObjectKind } from '@/reddit-api/reddit-types';
+    import type { RedditItem, RedditMessage } from '@/reddit-api/reddit-types';
     import storage from '@/storage';
     import { redditOldUrl, redditUrl } from '@/utils';
     import PinRemove from '@assets/pin-remove.svg';
@@ -7,24 +8,32 @@
     import { storageData } from '../store/store';
     import SvgButton from './SvgButton.svelte';
 
-    export let post: RedditItem;
+    export let item: RedditItem | RedditMessage;
 
     const baseUrl = $storageData.options.useOldReddit ? redditOldUrl : redditUrl;
+
+    let redditItem: RedditItem;
+
+    if (item.kind !== RedditObjectKind.message) {
+        redditItem = item;
+    }
 </script>
 
-<div class="flex items-center w-full pr-3 py-1">
-    <a
-        class="flex-grow px-1"
-        href={`${baseUrl}${post.data.permalink}`}
-        data-keys-target="post-link"
-        data-post-id={post.data.id}
-    >
-        <span class="text-skin-text pr-2 text-xs">{`r/${post.data.subreddit}`}</span>
-        <span>{getItemTitle(post)}</span>
-    </a>
-    <span data-keys-target="pin-post">
-        <SvgButton on:click={() => void storage.removePinPost(post.data.id)} title={'Remove the post'}>
-            {@html PinRemove}
-        </SvgButton>
-    </span>
-</div>
+{#if redditItem}
+    <div class="flex items-center w-full pr-3 py-1">
+        <a
+            class="flex-grow px-1"
+            href={`${baseUrl}${redditItem.data.permalink}`}
+            data-keys-target="post-link"
+            data-post-id={redditItem.data.id}
+        >
+            <span class="text-skin-text pr-2 text-xs">{`r/${redditItem.data.subreddit}`}</span>
+            <span>{getItemTitle(redditItem)}</span>
+        </a>
+        <span data-keys-target="pin-post">
+            <SvgButton on:click={() => void storage.removePinPost(redditItem.data.id)} title={'Remove the post'}>
+                {@html PinRemove}
+            </SvgButton>
+        </span>
+    </div>
+{/if}

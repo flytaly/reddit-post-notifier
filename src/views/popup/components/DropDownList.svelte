@@ -1,5 +1,5 @@
 <script lang="ts">
-    import type { RedditItem } from '@/reddit-api/reddit-types';
+    import type { RedditItem, RedditMessage } from '@/reddit-api/reddit-types';
     import ArrowUp from '@assets/arrowhead-up.svg';
     import { flip } from 'svelte/animate';
     import { quadOut } from 'svelte/easing';
@@ -8,7 +8,7 @@
     import FloatingPreview from './FloatingPreview.svelte';
     import SvgButton from './SvgButton.svelte';
 
-    export let items: RedditItem[];
+    export let items: RedditItem[] | RedditMessage[];
     export let rowOutTransition = slideHorizontal;
     export let isExpanded = false; // initial state
     export let toggle: (e: MouseEvent) => void;

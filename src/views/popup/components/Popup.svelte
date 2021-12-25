@@ -1,4 +1,5 @@
 <script lang="ts">
+    /* eslint-disable @typescript-eslint/no-unsafe-argument */
     import nProgress from 'nprogress';
     import { onMount } from 'svelte';
     import { browser } from 'webextension-polyfill-ts';
@@ -11,6 +12,7 @@
     import { openLinksOnClick } from '../helpers/open-links';
     import handleKeydownEvent from '../helpers/handle-keys';
     import SettingsIcon from '@/assets/settings.svg';
+    import type { StorageFields } from '@/storage/storage-types';
 
     onMount(() => {
         void applyTheme();
@@ -30,14 +32,21 @@
         window.close();
     };
 
-    let havePosts: boolean | number = true;
-    $: havePosts =
-        $storageData.queriesList.length || $storageData.subredditList.length || $storageData.pinnedPostList.length;
+    const haveItems = (s: StorageFields) => {
+        s = $storageData;
+        return Boolean(
+            s.queriesList?.length ||
+                s.subredditList?.length ||
+                s.pinnedPostList?.length ||
+                s.usersList?.length ||
+                Object.keys(s.accounts || {}).length,
+        );
+    };
 </script>
 
 <Header />
 <main class="flex flex-col flex-1 min-w-[18rem] min-h-[6rem]">
-    {#if havePosts}
+    {#if haveItems($storageData)}
         <WatchList />
     {:else}
         <div class="flex flex-col items-center justify-center py-2 h-full my-auto mx-4 text-center">

@@ -12,8 +12,8 @@
     import DropDownList from './DropDownList.svelte';
     import GroupTitle from './GroupTitle.svelte';
     import PinPostRow from './PinPostRow.svelte';
-    import PostRow from './PostRow.svelte';
     import { idToUserIdx } from '../helpers';
+    import Row from './Row.svelte';
 
     let groupsWithPosts: PostGroup[] = [];
     let groupsWithoutPosts: PostGroup[] = [];
@@ -52,10 +52,8 @@
     const getOnCheckHandler = (id: string, type: PostGroupType) => () => {
         if (type === 'search') return storage.removePostsFrom({ searchId: id });
         if (type === 'subreddit') return storage.removePostsFrom({ subredditId: id });
-        if (type === 'user')
-            return storage.removePostsFrom({
-                followUserIndex: idToUserIdx(id),
-            });
+        if (type === 'user') return storage.removePostsFrom({ followUserIndex: idToUserIdx(id) });
+        if (type === 'message') return storage.removeMessages(id);
     };
 
     const pinTransition = (node: Element, props: SlideConfig) => slideHorizontal(node, props);
@@ -83,7 +81,7 @@
                     </div>
                 </div>
                 <div slot="list-row" let:item>
-                    <PinPostRow post={item} />
+                    <PinPostRow {item} />
                 </div>
             </DropDownList>
             <div class="delimiter" />
@@ -100,10 +98,10 @@
                 rowOutTransition={pinTransition}
             >
                 <div slot="header-row">
-                    <GroupTitle onCheck={getOnCheckHandler(id, type)} {href} {title} />
+                    <GroupTitle onCheck={getOnCheckHandler(id, type)} {href} {title} {type} />
                 </div>
                 <div slot="list-row" let:item>
-                    <PostRow showSubreddit={isMultireddit} post={item} {type} itemId={id} />
+                    <Row {isMultireddit} {id} itemType={type} {item} />
                 </div>
             </DropDownList>
         </div>
@@ -115,8 +113,8 @@
     <!-- EMPTY GROUPS -->
     {#if !data.options.hideEmptyGroups && groupsWithoutPosts.length}
         <div class="delimiter" />
-        {#each groupsWithoutPosts as { href, title }}
-            <GroupTitle {href} {title} disabled />
+        {#each groupsWithoutPosts as { href, title, type }}
+            <GroupTitle {href} {title} {type} disabled />
         {/each}
     {/if}
 </div>

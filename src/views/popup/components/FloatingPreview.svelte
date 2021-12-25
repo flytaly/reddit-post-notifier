@@ -1,9 +1,9 @@
 <script lang="ts">
     import { onMount } from 'svelte';
+    import type { RedditItem, RedditMessage } from '@/reddit-api/reddit-types';
     import { RedditObjectKind } from '@/reddit-api/reddit-types';
-    import type { RedditItem } from '@/reddit-api/reddit-types';
 
-    export let posts: RedditItem[];
+    export let posts: RedditItem[] | RedditMessage[];
     export let containerElement: HTMLElement;
 
     let previewElement: HTMLElement;
@@ -19,13 +19,15 @@
         }
     }
 
-    function setData(post: RedditItem) {
+    function setData(post: RedditItem | RedditMessage) {
         imageInfo = null;
-        if (post.kind === RedditObjectKind.link) {
-            if (post.data.selftext) {
-                postText =
-                    post.data.selftext.length > 400 ? `${post.data.selftext.slice(0, 400)}...` : post.data.selftext;
-            } else {
+        const sliceText = (str: string, max = 400) => (str.length > max ? `${str.slice(0, max)}...` : str);
+        switch (post.kind) {
+            case RedditObjectKind.link: {
+                if (post.data.selftext) {
+                    postText = sliceText(post.data.selftext);
+                    return;
+                }
                 const image = post?.data?.preview?.images[0];
                 if (image?.resolutions?.length) {
                     const { url, width, height } = image.resolutions[1] || image.resolutions[0];
@@ -41,10 +43,14 @@
                     }
                 }
                 postText = !imageInfo ? post.data.url : null;
+                return;
             }
-        }
-        if (post.kind === RedditObjectKind.comment) {
-            postText = post.data.body?.length > 400 ? `${post.data.body.slice(0, 400)}...` : post.data.body;
+            case RedditObjectKind.comment:
+            case RedditObjectKind.message:
+                postText = sliceText(post.data.body || '');
+                return;
+            default:
+                break;
         }
     }
 
@@ -70,7 +76,10 @@
         const mouseover = (e: MouseEvent) => {
             const { postId } = (e.target as HTMLElement).dataset;
             if (postId && postId !== prevId) {
-                const post = posts.find((p) => p.data.id === postId);
+                // array union bug: https://github.com/microsoft/TypeScript/issues/44373
+                const post = (posts as { data: { id: string } }[]).find((p) => p.data.id === postId) as
+                    | RedditMessage
+                    | RedditItem;
                 if (!post) return;
                 setData(post);
                 prevId = postId;

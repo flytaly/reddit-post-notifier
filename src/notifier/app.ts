@@ -244,10 +244,11 @@ export default class NotifierApp {
 
     async updateAllMail(accounts: StorageFields['accounts'], options: ExtensionOptions) {
         const msgNotify: MessageNotification = { type: NotificationId.mail, items: [] };
+
         for (const ac of Object.values(accounts)) {
             if (ac.auth.refreshToken && ac.checkMail && ac.auth.scope?.includes('privatemessages')) {
                 const newMessages = await this.updateUnreadMsg(ac);
-                if (newMessages.length && ac.mailNotify) {
+                if (newMessages?.length && ac.mailNotify) {
                     msgNotify.items.push({ username: ac.name, len: newMessages.length });
                 }
                 await wait(options.waitTimeout * 1000);
