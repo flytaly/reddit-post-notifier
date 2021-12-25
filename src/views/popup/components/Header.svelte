@@ -1,33 +1,20 @@
 <script lang="ts">
     import { browser } from 'webextension-polyfill-ts';
-    /* import MailIcon from '@assets/mail.svg'; */
-    /* import MailWarningIcon from '@assets/mail-warning.svg'; */
     import RefreshIcon from '@assets/refresh.svg';
     import SettingsIcon from '@assets/settings.svg';
     import { sendToBg } from '@/port';
-    /* import type { ExtensionOptions } from '@/types/extension-options';
-    import { redditOldUrl, redditUrl } from '@/utils'; */
     import getMsg from '@/utils/get-message';
-    import { isUpdating /* storageData */ } from '../store/store';
+    import { isUpdating } from '../store/store';
     import SvgButton from './SvgButton.svelte';
-    /* import type { SectionKey } from '../../options/routes'; */
 
     let loading = false;
 
     $: loading = $isUpdating;
 
-    /* const options: ExtensionOptions = $storageData.options; */
-
-    /* const baseUrl = options.useOldReddit ? redditOldUrl : redditUrl; */
-    /* const inboxHref = `${baseUrl}/message/inbox/`; */
-
     const onOptionClick = async () => {
         await browser.runtime.openOptionsPage();
         window.close();
     };
-
-    /* const key: SectionKey = '#settings__mail'; */
-    /* const authBlockUrl = `${browser.runtime.getURL('dist/options/index.html')}${key}`; */
 </script>
 
 <header class="flex items-center p-1 min-h-[1.2rem] border-b border-skin-delimiter">
@@ -45,36 +32,7 @@
     </span>
 
     <span class="flex items-center space-x-3">
-        <!--
-        <span class="flex text-skin-accent">
-            {#if !$storageData.refreshToken}
-                <div class="transform">
-                    <SvgButton href={authBlockUrl} title={getMsg('headerMailNoAuth_title')} w="1.1rem">
-                        <span class="text-skin-accent">
-                            {@html MailWarningIcon}
-                        </span>
-                    </SvgButton>
-                </div>
-            {:else}
-                {#if messagesCount}
-                    <a href={inboxHref} class="mr-1 text-skin-accent" title={getMsg('headerMail_title')}
-                        >{messagesCount}</a
-                    >
-                {/if}
-                <SvgButton
-                    href={inboxHref}
-                    title={getMsg('headerMail_title')}
-                    on:click={() => void storage.removeMessages()}
-                    w="1.1rem"
-                >
-                    <span class={`${messagesCount ? 'text-skin-accent' : 'text-skin-text'}`}>
-                        {@html MailIcon}
-                    </span>
-                </SvgButton>
-            {/if}
-        </span> -->
-
-        <SvgButton on:click={onOptionClick} title={getMsg('headerOptions_title')} w="1.1rem">
+        <SvgButton text="settings" on:click={onOptionClick} title={getMsg('headerOptions_title')} w="1.1rem">
             {@html SettingsIcon}
         </SvgButton>
     </span>

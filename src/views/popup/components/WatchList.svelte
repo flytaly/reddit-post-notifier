@@ -1,4 +1,5 @@
 <script lang="ts">
+    /* eslint-disable @typescript-eslint/no-unsafe-argument */
     import Pin from '@/assets/pin.svg';
     import storage from '@/storage';
     import type { StorageFields } from '@/storage/storage-types';
@@ -89,19 +90,19 @@
     </div>
 
     <!-- UNREAD POSTS BLOCK -->
-    {#each groupsWithPosts as { type, id, href, title, isMultireddit } (id)}
+    {#each groupsWithPosts as g (g.id)}
         <div out:postGroupTransition={{ duration: 150 }}>
             <DropDownList
-                toggle={getToggleHandler(id)}
-                items={getGroupItems(data, id, type)}
-                isExpanded={expanded.has(id)}
+                toggle={getToggleHandler(g.id)}
+                items={getGroupItems(data, g.id, g.type)}
+                isExpanded={expanded.has(g.id)}
                 rowOutTransition={pinTransition}
             >
                 <div slot="header-row">
-                    <GroupTitle onCheck={getOnCheckHandler(id, type)} {href} {title} {type} />
+                    <GroupTitle onCheck={getOnCheckHandler(g.id, g.type)} group={g} />
                 </div>
                 <div slot="list-row" let:item>
-                    <Row {isMultireddit} {id} itemType={type} {item} />
+                    <Row group={g} {item} />
                 </div>
             </DropDownList>
         </div>
@@ -113,8 +114,8 @@
     <!-- EMPTY GROUPS -->
     {#if !data.options.hideEmptyGroups && groupsWithoutPosts.length}
         <div class="delimiter" />
-        {#each groupsWithoutPosts as { href, title, type }}
-            <GroupTitle {href} {title} {type} disabled />
+        {#each groupsWithoutPosts as group (group.id)}
+            <GroupTitle {group} disabled />
         {/each}
     {/if}
 </div>

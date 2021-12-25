@@ -7,14 +7,13 @@
     import getMsg from '@/utils/get-message';
     import { browser } from 'webextension-polyfill-ts';
     import { getItemTitle, idToUserIdx } from '../helpers';
+    import type { PostGroup } from '../helpers/post-group';
     import { storageData } from '../store/store';
     import CheckMarkButton from './CheckMarkButton.svelte';
     import SvgButton from './SvgButton.svelte';
 
+    export let group: PostGroup;
     export let post: RedditItem;
-    export let type: 'subreddit' | 'search' | 'user' = 'subreddit';
-    export let itemId: string;
-    export let showSubreddit = false;
 
     let options: ExtensionOptions = $storageData.options;
     $: options = $storageData.options;
@@ -23,14 +22,17 @@
     const href = `${baseUrl}${post.data.permalink}`;
 
     const removePost = async (id: string) => {
-        switch (type) {
+        const itemId = group.id;
+        switch (group.type) {
             case 'search':
                 return storage.removePost({ id, searchId: itemId });
             case 'user': {
                 return storage.removeUserPost({ postId: id, userIndex: idToUserIdx(itemId) });
             }
-            default:
+            case 'subreddit': {
                 return storage.removePost({ id, subreddit: itemId });
+            }
+            default:
         }
     };
 
@@ -57,7 +59,7 @@
         on:click|preventDefault|stopPropagation={onLinkClick}
         data-post-id={post.data.id}
     >
-        {#if showSubreddit}
+        {#if group.isMultireddit}
             <span class="text-skin-text text-xs mr-1">{`r/${post.data.subreddit}`}</span>
         {/if}
         {getItemTitle(post)}</a

@@ -2,38 +2,72 @@
     import getMsg from '@/utils/get-message';
     import OpenInNew from '@/assets/open-in-new.svg';
     import MailIcon from '@/assets/mail.svg';
+    // import SearchIcon from '@/assets/search.svg';
+    import FilterOnIcon from '@/assets/filter-on.svg';
+    import WarningIcon from '@/assets/warning.svg';
+    import UpdatesDisabledIcon from '@/assets/updates-disable.svg';
+    import NotifyOnIcon from '@/assets/notify.svg';
+    import NotifyOffIcon from '@/assets/notify-off.svg';
     import SvgButton from './SvgButton.svelte';
     import { browser } from 'webextension-polyfill-ts';
     import CheckMarkButton from './CheckMarkButton.svelte';
+    import type { PostGroup } from '../helpers/post-group';
+
+    export let group: PostGroup;
 
     export let onCheck: () => void | null = null;
-    export let href: string;
-    export let title: string;
     export let disabled = false;
-    export let type: 'message' | unknown | null = null;
 
     const linkClickHandler = (e: Event) => {
         e.stopPropagation();
         // Prevent double opening in Firefox
         e.preventDefault();
-        void browser.tabs.create({ url: href, active: true });
+        void browser.tabs.create({ url: group.href, active: true });
     };
 </script>
 
-<div class="flex items-center w-full p-1 pr-4" class:disabled>
+<div class="flex items-center w-full p-1 pr-4" class:disabled={disabled || group.updatesDisabled}>
     {#if onCheck}
         <CheckMarkButton clickHandler={onCheck} title={getMsg('queryListCheckMark_title')} />
     {/if}
-    <div class="flex items-center">
-        {#if type == 'message'}
-            <div class="h-4 w-4 mr-1">
+    <div class="flex items-center space-x-1">
+        {#if group.type == 'message'}
+            <div class="h-4 w-4 text-skin-gray" title="Unread private messages">
                 {@html MailIcon}
             </div>
+            <!-- {:else if group.type == 'search'}
+            <div class="h-4 w-4 text-skin-gray" title="Reddit search">
+                {@html SearchIcon}
+            </div> -->
         {/if}
-        <span>{title}</span>
+        <span class="mr-auto">{group.title}</span>
+        {#if group.updatesDisabled}
+            <div class="h-4 w-4 text-skin-gray" title="Updates disabled">
+                {@html UpdatesDisabledIcon}
+            </div>
+        {/if}
+        {#if group.error}
+            <div class="h-4 w-4 text-skin-error" title={group.error}>
+                {@html WarningIcon}
+            </div>
+        {/if}
+        {#if group.notify === 'on'}
+            <div class="h-4 w-4 text-skin-gray" title="Notifications enabled">
+                {@html NotifyOnIcon}
+            </div>
+        {:else if group.notify === 'off'}
+            <div class="h-4 w-4 text-skin-gray" title="Notifications disabled">
+                {@html NotifyOffIcon}
+            </div>
+        {/if}
+        {#if group.filter === 'on'}
+            <div class="h-4 w-4 text-skin-gray" title="filters enabled">
+                {@html FilterOnIcon}
+            </div>
+        {/if}
     </div>
     <span class="ml-2 text-skin-link opacity-50 hover:opacity-100">
-        <SvgButton {href} title={getMsg('watchListOpenInNew_title')} on:click={linkClickHandler}>
+        <SvgButton href={group.href} title={getMsg('watchListOpenInNew_title')} on:click={linkClickHandler}>
             {@html OpenInNew}
         </SvgButton>
     </span>
@@ -41,6 +75,6 @@
 
 <style lang="postcss">
     .disabled {
-        @apply text-skin-gray pl-4;
+        @apply text-skin-gray;
     }
 </style>

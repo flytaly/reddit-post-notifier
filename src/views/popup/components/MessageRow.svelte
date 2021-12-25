@@ -5,11 +5,12 @@
     import { getInboxUrl } from '@/utils';
     import getMsg from '@/utils/get-message';
     import { browser } from 'webextension-polyfill-ts';
+    import type { PostGroup } from '../helpers/post-group';
     import { storageData } from '../store/store';
     import CheckMarkButton from './CheckMarkButton.svelte';
 
+    export let group: PostGroup;
     export let item: RedditMessage;
-    export let accId: string;
 
     let options: ExtensionOptions = $storageData.options;
     $: options = $storageData.options;
@@ -17,7 +18,7 @@
     const href = getInboxUrl(options.useOldReddit);
 
     const removePost = async (messageId: string) => {
-        await storage.removeMessage({ accId, messageId });
+        await storage.removeMessage({ accId: group.id, messageId });
     };
 
     const onLinkClick = async () => {

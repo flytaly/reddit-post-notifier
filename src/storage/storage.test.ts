@@ -270,6 +270,7 @@ describe('subreddits', () => {
                 subreddits: inputSubs,
                 queries: {},
                 usersList: [],
+                accounts: {},
             } as StorageFields),
         );
         mockSet.expect(expect.objectContaining({ subreddits: expectedSubs }) as ExpRecord);
@@ -382,6 +383,7 @@ describe('search queries', () => {
                 subreddits: {},
                 queries: cloneDeep(qData),
                 usersList: [],
+                accounts: {},
             } as StorageFields),
         );
         const expectedQueries = {};

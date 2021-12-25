@@ -361,7 +361,12 @@ const storage = {
     },
 
     async removeAllPosts() {
-        const { queries, subreddits, usersList } = await storage.getAllData();
+        const { queries, subreddits, usersList, accounts } = await storage.getAllData();
+
+        Object.values(accounts).forEach((acc) => {
+            if (!acc.mail) acc.mail = { messages: [] };
+            else acc.mail.messages = [];
+        });
 
         Object.keys(subreddits).forEach((subr) => {
             subreddits[subr].posts = [];
@@ -373,7 +378,7 @@ const storage = {
             u.data = [];
         });
 
-        await browser.storage.local.set({ subreddits, queries, usersList });
+        await browser.storage.local.set({ subreddits, queries, usersList, accounts });
     },
 
     async removeSubreddits(ids = [] as string[]) {

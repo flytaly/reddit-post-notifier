@@ -1,5 +1,6 @@
 import type { StorageFields } from '@/storage/storage-types';
 import { getInboxUrl, getSearchQueryUrl, getSubredditUrl, getUserProfileUrl } from '@/utils';
+import { formatError } from '@/views/options/format-error';
 import { idToUserIdx } from '.';
 import type { RedditItem, RedditMessage } from '../../../reddit-api/reddit-types';
 
@@ -13,16 +14,22 @@ export type PostGroup = {
     lastPostCreated: number;
     size: number;
     isMultireddit?: boolean;
+    notify?: 'on' | 'off' | null;
+    filter?: 'on' | 'off' | null;
+    error?: string | null;
+    updatesDisabled?: boolean;
 };
 
-export const extractPostGroups = (sData: StorageFields) => {
+export const extractPostGroups = (storageData: StorageFields) => {
     const groupsWithPosts: PostGroup[] = [];
     const groupsWithoutPosts: PostGroup[] = [];
 
-    const accList = Object.values(sData.accounts || {});
-    const { useOldReddit } = sData.options;
+    const accList = Object.values(storageData.accounts || {});
+    const { useOldReddit } = storageData.options;
 
     accList.forEach((a) => {
+        let error = a.error || a.auth.error;
+        if (!a.auth.refreshToken) error = 'There is no refresh token. Please reauthorize the account.';
         const length = a.mail?.messages?.length || 0;
         const lastPostCreated = a.mail?.lastPostCreated;
         const group: PostGroup = {
@@ -32,17 +39,21 @@ export const extractPostGroups = (sData: StorageFields) => {
             title: `${a.name || ''} inbox (${length})`,
             lastPostCreated,
             size: length,
+            notify: a.mailNotify ? 'on' : 'off',
+            error,
+            updatesDisabled: !a.checkMail,
         };
         if (length) {
             groupsWithPosts.push(group);
-        } else if (!sData.options.hideEmptyGroups) {
+        } else if (!storageData.options.hideEmptyGroups) {
             groupsWithoutPosts.push(group);
         }
     });
 
-    sData.subredditList.forEach((s) => {
-        const length = sData.subreddits[s.id]?.posts?.length || 0;
-        const lastPostCreated = sData.subreddits[s.id]?.lastPostCreated;
+    storageData.subredditList.forEach((s) => {
+        const subData = storageData.subreddits[s.id];
+        const length = subData?.posts?.length || 0;
+        const lastPostCreated = subData?.lastPostCreated;
         const group: PostGroup = {
             type: 'subreddit',
             id: s.id,
@@ -51,17 +62,22 @@ export const extractPostGroups = (sData: StorageFields) => {
             lastPostCreated,
             size: length,
             isMultireddit: s.subreddit.includes('+'),
+            notify: s.notify ? 'on' : 'off',
+            error: formatError(subData?.error),
+            filter: s.filterOpts?.enabled ? 'on' : 'off',
+            updatesDisabled: s.disabled,
         };
         if (length) {
             groupsWithPosts.push(group);
-        } else if (!sData.options.hideEmptyGroups) {
+        } else if (!storageData.options.hideEmptyGroups) {
             groupsWithoutPosts.push(group);
         }
     });
 
-    sData.queriesList.forEach((q) => {
-        const length = sData.queries[q.id]?.posts?.length || 0;
-        const lastPostCreated = sData.queries[q.id]?.lastPostCreated;
+    storageData.queriesList.forEach((q) => {
+        const query = storageData.queries[q.id];
+        const length = query?.posts?.length || 0;
+        const lastPostCreated = query?.lastPostCreated;
         const group: PostGroup = {
             type: 'search',
             id: q.id,
@@ -70,15 +86,17 @@ export const extractPostGroups = (sData: StorageFields) => {
             lastPostCreated,
             size: length,
             isMultireddit: q.subreddit ? q.subreddit.includes('+') : true,
+            error: formatError(query?.error),
+            notify: q.notify ? 'on' : 'off',
         };
         if (length) {
             groupsWithPosts.push(group);
-        } else if (!sData.options.hideEmptyGroups) {
+        } else if (!storageData.options.hideEmptyGroups) {
             groupsWithoutPosts.push(group);
         }
     });
 
-    sData.usersList?.forEach((u, idx) => {
+    storageData.usersList?.forEach((u, idx) => {
         if (!u.username) return;
         const length = u.data?.length || 0;
         let watchType = '';
@@ -93,10 +111,12 @@ export const extractPostGroups = (sData: StorageFields) => {
             lastPostCreated: u.lastPostCreated,
             size: length,
             isMultireddit: true,
+            notify: u.notify ? 'on' : 'off',
+            error: formatError(u.error),
         };
         if (length) {
             groupsWithPosts.push(group);
-        } else if (!sData.options.hideEmptyGroups) {
+        } else if (!storageData.options.hideEmptyGroups) {
             groupsWithoutPosts.push(group);
         }
     });

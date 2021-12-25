@@ -161,6 +161,7 @@
             {/if}
         </button>
     </div>
+
     <IosCheckbox
         aria-label={getMsg('optionSubredditsDisable')}
         on:focus={showLabel}
@@ -180,36 +181,7 @@
         on:mouseleave={hideLabel}
         data-testid="notify"
     />
-    <!-- <label -->
-    <!--     class="flex items-center justify-center text-sm" -->
-    <!--     aria-label={getMsg('optionSubredditsNotify')} -->
-    <!--     on:focus={showLabel} -->
-    <!--     on:mouseover={showLabel} -->
-    <!--     on:mouseleave={hideLabel} -->
-    <!--     on:keydown={labelBtnClick} -->
-    <!--     tabindex="0" -->
-    <!-- > -->
-    <!--     <input -->
-    <!--         class="hidden peer" -->
-    <!--         type="checkbox" -->
-    <!--         bind:checked={subOpts.notify} -->
-    <!--         on:change={() => saveInputs()} -->
-    <!--         data-testid="notify" -->
-    <!--     /> -->
-    <!--     <div -->
-    <!--         class={`flex items-center justify-center select-none -->
-    <!--         text-gray-50 rounded-2xl py-[2px] px-2 hover:brightness-110 transition-colors ${ -->
-    <!--             subOpts.notify ? 'bg-skin-input-checked' : 'bg-gray-500' -->
-    <!--         }`} -->
-    <!--     > -->
-    <!--         {#if subOpts.notify} -->
-    <!--             <div class="w-5 h-5">{@html icons.NotifyIcon}</div> -->
-    <!--         {:else} -->
-    <!--             <div class="w-5 h-5">{@html icons.NotifyOffIcon}</div> -->
-    <!--         {/if} -->
-    <!--         <span class="ml-[2px]">Notify</span> -->
-    <!--     </div> -->
-    <!-- </label> -->
+
     <button
         class="flex item-center ml-auto py-0 px-0 bg-transparent border-transparent text-skin-accent hover:bg-transparent"
         aria-label={getMsg('optionSubredditsFilter')}
