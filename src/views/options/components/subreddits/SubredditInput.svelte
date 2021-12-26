@@ -139,8 +139,12 @@
             bind:this={subredditInputRef}
             bind:value={subOpts.subreddit}
             on:input={inputHandler}
-            aria-label={getMsg('optionSubredditsInput')}
+            on:focus={showLabel}
+            on:mouseover={showLabel}
+            on:mouseleave={hideLabel}
+            aria-label={getMsg("optionSubredditsInput_title")}
         />
+
         <button
             class="min-w-[5rem] py-0 px-2 border-0 border-l rounded-r rounded-l-none w-min text-xs"
             on:click={() => saveInputs()}
@@ -148,7 +152,7 @@
             {#if inputStatus.saved}
                 <div class="flex items-center text-skin-success">
                     <div class="w-4 h-4 mr-1 flex-shrink-0">{@html icons.SaveIcon}</div>
-                    <span class="text-skin-success font-medium">Saved</span>
+                    <span class="text-skin-success font-medium">{getMsg('savedLabel')}</span>
                 </div>
             {:else if inputStatus.error}
                 <div class="flex justify-center">
@@ -163,7 +167,7 @@
     </div>
 
     <IosCheckbox
-        aria-label={getMsg('optionSubredditsDisable')}
+        aria-label={getMsg('optionSubredditsDisable_title')}
         on:focus={showLabel}
         on:mouseover={showLabel}
         on:mouseleave={hideLabel}
@@ -175,7 +179,7 @@
     <NotifyToggle
         bind:checked={subOpts.notify}
         changeHander={() => saveInputs()}
-        aria-label={getMsg('optionSubredditsNotify')}
+        aria-label={getMsg('optionSubredditsNotify_title')}
         on:focus={showLabel}
         on:mouseover={showLabel}
         on:mouseleave={hideLabel}
@@ -184,7 +188,7 @@
 
     <button
         class="flex item-center ml-auto py-0 px-0 bg-transparent border-transparent text-skin-accent hover:bg-transparent"
-        aria-label={getMsg('optionSubredditsFilter')}
+        aria-label={getMsg('optionSubredditsFilter_title')}
         on:focus={showLabel}
         on:mouseover={showLabel}
         on:mouseleave={hideLabel}
@@ -200,7 +204,9 @@
             {:else}
                 <div class="w-5 h-5">{@html icons.FilterOffIcon}</div>
             {/if}
-            <span class="ml-[2px]">Filters ({(filterOpts?.enabled && filterOpts?.rules?.length) || 0})</span>
+            <span class="ml-[2px]"
+                >{getMsg('optionSubredditsFilter')} ({(filterOpts?.enabled && filterOpts?.rules?.length) || 0})</span
+            >
         </div>
     </button>
     <div>
@@ -230,13 +236,13 @@
         <button
             class="flex items-center text-skin-accent2 p-0 border-transparent bg-transparent hover:bg-transparent text-xs"
             on:click={() => void fetchPosts()}
-            title="click to fetch and show the latest post from the subreddit"
+            title={getMsg("optionsSubredditFetch_title")}
             disabled={$isBlocked || !subOpts.subreddit || !!inputStatus.error}
         >
             <div class="w-5 h-5 mr-1">
                 {@html RefreshIcon2}
             </div>
-            <span>fetch and display the latest subreddit's posts</span>
+            <span>{getMsg("optionsSubredditFetch")}</span>
         </button>
     </div>
     <div id="inputs-label" class="p-1 mb-2 text-right col-start-2 col-span-full text-xs italic">

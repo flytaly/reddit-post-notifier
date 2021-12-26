@@ -28,11 +28,11 @@
 
 <div class="flex items-center w-full p-1 pr-4" class:disabled={disabled || group.updatesDisabled}>
     {#if onCheck}
-        <CheckMarkButton clickHandler={onCheck} title={getMsg('queryListCheckMark_title')} />
+        <CheckMarkButton clickHandler={onCheck} title={getMsg('watchListCheckMark_title')} />
     {/if}
     <div class="flex items-center space-x-1">
         {#if group.type == 'message'}
-            <div class="h-4 w-4 text-skin-gray" title="Unread private messages">
+            <div class="h-4 w-4 text-skin-gray" title={getMsg("watchListMailIcon")}>
                 {@html MailIcon}
             </div>
             <!-- {:else if group.type == 'search'}
@@ -42,7 +42,7 @@
         {/if}
         <span class="mr-auto">{group.title}</span>
         {#if group.updatesDisabled}
-            <div class="h-4 w-4 text-skin-gray" title="Updates disabled">
+            <div class="h-4 w-4 text-skin-gray" title={getMsg("watchListUpdatesOff")}>
                 {@html UpdatesDisabledIcon}
             </div>
         {/if}
@@ -52,16 +52,16 @@
             </div>
         {/if}
         {#if group.notify === 'on'}
-            <div class="h-4 w-4 text-skin-gray" title="Notifications enabled">
+            <div class="h-4 w-4 text-skin-gray" title={getMsg("watchListNotifyOn")}>
                 {@html NotifyOnIcon}
             </div>
         {:else if group.notify === 'off'}
-            <div class="h-4 w-4 text-skin-gray" title="Notifications disabled">
+            <div class="h-4 w-4 text-skin-gray" title={getMsg("watchListNotifyOff")}>
                 {@html NotifyOffIcon}
             </div>
         {/if}
         {#if group.filter === 'on'}
-            <div class="h-4 w-4 text-skin-gray" title="filters enabled">
+            <div class="h-4 w-4 text-skin-gray" title={getMsg("watchListFiltersOn")}>
                 {@html FilterOnIcon}
             </div>
         {/if}

@@ -7,6 +7,7 @@
     import { getItemTitle } from '../helpers';
     import { storageData } from '../store/store';
     import SvgButton from './SvgButton.svelte';
+    import getMsg from '@/utils/get-message';
 
     export let item: RedditItem | RedditMessage;
 
@@ -31,7 +32,10 @@
             <span>{getItemTitle(redditItem)}</span>
         </a>
         <span data-keys-target="pin-post">
-            <SvgButton on:click={() => void storage.removePinPost(redditItem.data.id)} title={'Remove the post'}>
+            <SvgButton
+                on:click={() => void storage.removePinPost(redditItem.data.id)}
+                title={getMsg('watchListItemUnpin_title')}
+            >
                 {@html PinRemove}
             </SvgButton>
         </span>

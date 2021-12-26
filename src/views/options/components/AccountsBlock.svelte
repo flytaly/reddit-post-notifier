@@ -1,6 +1,7 @@
 <script lang="ts">
     import auth from '@/reddit-api/auth';
     import type { AuthUser, StorageFields } from '@/storage/storage-types';
+import getMsg from '@/utils/get-message';
     import { isBlocked, storageData } from '../store';
     import Account from './Account.svelte';
     import AddButton from './common/AddButton.svelte';
@@ -33,8 +34,8 @@
 </script>
 
 <div class="text-sm">
-    <div class="my-4">Description</div>
-
+    <span>{getMsg("optionAccountsDescription")}</span>&nbsp;
+    <a href="#info">{getMsg("optionReadMore")}</a>
     <div class="my-4">
         {#if accList?.length}
             <ul>
@@ -43,10 +44,10 @@
                 {/each}
             </ul>
         {:else}
-            <div class="font-medium">No authorized accounts</div>
+            <div class="font-medium">{getMsg("optionAccountsNoAccs")}</div>
         {/if}
     </div>
-    <AddButton clickHandler={() => authorize()} {disabled}>Add account</AddButton>
+    <AddButton clickHandler={() => authorize()} {disabled}>{getMsg("optionAccountsAddBtn")}</AddButton>
     {#if authError}
         <div class="mt-2 text-skin-error"><span>Error: </span><span>{authError}</span></div>
     {/if}

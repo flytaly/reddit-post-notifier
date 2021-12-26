@@ -10,12 +10,12 @@
 
 <div>
     <div class=" mb-4 text-sm">
-        Monitor every post in a subreddit. You can filter posts based on given rule. In general, it's recommended to use
-        Reddit Search instead of filters. <a href="#info">Read more on help page</a>.
+        <span>{getMsg('optionSubredditsDescription')}</span>
+        <a href="#info">{getMsg('optionReadMore')}</a>
     </div>
     <div class="grid-header">
-        <div>Subreddit name</div>
-        <div>Active</div>
+        <div>{getMsg('optionSubredditsName')}</div>
+        <div>{getMsg('optionSubredditsActive')}</div>
         <div />
         <div />
         <div />

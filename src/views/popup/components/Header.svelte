@@ -32,7 +32,12 @@
     </span>
 
     <span class="flex items-center space-x-3">
-        <SvgButton text="settings" on:click={onOptionClick} title={getMsg('headerOptions_title')} w="1.1rem">
+        <SvgButton
+            text={getMsg('headerOptionsBtn')}
+            on:click={onOptionClick}
+            title={getMsg('headerOptionsBtn_title')}
+            w="1.1rem"
+        >
             {@html SettingsIcon}
         </SvgButton>
     </span>

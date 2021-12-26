@@ -2,6 +2,7 @@
     import NotifierApp from '@/notifier/app';
     import storage from '@/storage';
     import type { AuthUser, StorageFields } from '@/storage/storage-types';
+    import getMsg from '@/utils/get-message';
     import { onMount } from 'svelte';
     import { DeleteIcon, RefreshIcon2 } from '../icons';
     import { isBlocked } from '../store';
@@ -97,15 +98,19 @@
         {/if}
     </div>
     <div class="mx-4">
-        <IosCheckbox checked={acc.checkMail} changeHandler={checkMailCommit}>
-            <span class="text-xs">Watch for Messages</span>
+        <IosCheckbox
+            checked={acc.checkMail}
+            changeHandler={checkMailCommit}
+            title={getMsg('optionAccountsMailCheck_title')}
+        >
+            <span class="text-xs">{getMsg('optionAccountsMailCheck')}</span>
         </IosCheckbox>
     </div>
     <div class="mx-4">
         <NotifyToggle
             checked={acc.mailNotify}
             changeHander={notifyMailCommit}
-            title="Notify on the new private messages"
+            title={getMsg("optionAccountsMailNotify_title")}
         />
     </div>
     <button class="icon-button text-skin-accent ml-auto" on:click={deleteHandler} {disabled} title="Delete the account">
@@ -123,10 +128,10 @@
                 <div class="w-5 h-5 mr-1">
                     {@html RefreshIcon2}
                 </div>
-                <span>fetch and display unread messages</span>
+                <span>{getMsg('optionAccountsFetchBtn')}</span>
             </button>
             <div class="ml-auto" />
-            <button class="bg-transparent rounded-sm py-[1px] px-1" on:click={reAuth}>Reauthorize</button>
+            <button class="bg-transparent rounded-sm py-[1px] px-1" on:click={reAuth}> {getMsg('optionAccountsReAuthBtn')}</button>
         </div>
         <Spinner show={isUpdatingMessages} />
         {#if errorList?.length}
@@ -154,7 +159,7 @@
 
 <style lang="postcss">
     li {
-        @apply grid gap-x-2 gap-y-1 mb-6 w-full max-w-full;
+        @apply grid gap-x-2 gap-y-1 mb-6 w-full max-w-full items-center;
 
         grid-template-columns: min-content minmax(auto, 1fr) auto auto auto;
     }

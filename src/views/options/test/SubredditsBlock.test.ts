@@ -49,7 +49,7 @@ describe('Subreddit settings', () => {
     test('save subreddits and show error', async () => {
         const { getByText, getAllByLabelText, getAllByTestId } = render(SubredditsBlock);
         await tick();
-        const inputs = getAllByLabelText(getMsg('optionSubredditsInput')) as HTMLInputElement[];
+        const inputs = getAllByLabelText(getMsg('optionSubredditsInput_title')) as HTMLInputElement[];
         const notifyElems = getAllByTestId('notify') as HTMLLabelElement[];
         const isActiveElems = getAllByTestId('isActive') as HTMLLabelElement[];
 
@@ -85,7 +85,7 @@ describe('Subreddit settings', () => {
         await tick();
 
         // NOTIFY
-        const notifyElems = getAllByLabelText(getMsg('optionSubredditsNotify'));
+        const notifyElems = getAllByLabelText(getMsg('optionSubredditsNotify_title'));
         await fireEvent.click(notifyElems[0]);
         expect(storage.saveSubredditOpts).toHaveBeenCalledWith(
             like({
@@ -95,7 +95,7 @@ describe('Subreddit settings', () => {
         );
 
         // DISABLE
-        const isActiveElem = getAllByLabelText(getMsg('optionSubredditsDisable'));
+        const isActiveElem = getAllByLabelText(getMsg('optionSubredditsDisable_title'));
 
         mocked(storage.saveSubredditOpts).mockClear();
         await fireEvent.click(isActiveElem[1]);
@@ -111,12 +111,12 @@ describe('Subreddit settings', () => {
         const { getAllByLabelText, getByText } = render(SubredditsBlock);
         await tick();
 
-        const len = getAllByLabelText(getMsg('optionSubredditsInput')).length;
+        const len = getAllByLabelText(getMsg('optionSubredditsInput_title')).length;
 
         const AddBtn = getByText(getMsg('optionSubredditsAdd'), { exact: false });
         await fireEvent.click(AddBtn);
         await waitFor(() => {
-            expect(getAllByLabelText(getMsg('optionSubredditsInput'))).toHaveLength(len + 1);
+            expect(getAllByLabelText(getMsg('optionSubredditsInput_title'))).toHaveLength(len + 1);
         });
         const DelBtn = getAllByLabelText(getMsg('optionSubredditsDelete'));
         await fireEvent.click(DelBtn[0]);
@@ -129,7 +129,7 @@ describe('Subreddit settings', () => {
 
         await tick();
 
-        const inputs = getAllByLabelText(getMsg('optionSubredditsInput')) as HTMLInputElement[];
+        const inputs = getAllByLabelText(getMsg('optionSubredditsInput_title')) as HTMLInputElement[];
 
         const input = inputs[subList.length];
 

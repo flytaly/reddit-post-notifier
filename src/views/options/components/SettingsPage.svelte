@@ -34,12 +34,10 @@
         <h1 class="text-2xl uppercase font-bold tracking-widest text-skin-gray mb-4">
             {sections['#settings'].name}
         </h1>
-
         <section>
             <Heading id={'#settings__general'} />
             <GeneralSettingsBlock />
         </section>
-
         <section>
             <Heading id={'#settings__mail'} />
             <AccountsBlock />

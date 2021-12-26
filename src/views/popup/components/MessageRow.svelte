@@ -30,7 +30,7 @@
 </script>
 
 <div class="flex items-center w-full py-[0.125rem] pr-3" data-post-id={item.data.id}>
-    <CheckMarkButton clickHandler={() => removePost(item.data.id)} title={getMsg('postListCheckMark_title')} />
+    <CheckMarkButton clickHandler={() => removePost(item.data.id)} title={getMsg('watchListItemCheckMark_title')} />
     <a
         class="text-skin-link flex-grow px-1 py-[0.125rem]"
         {href}

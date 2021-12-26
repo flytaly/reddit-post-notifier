@@ -1,6 +1,6 @@
 {
     "description": {
-        "message": "Watch for new posts in given subreddits or reddit search",
+        "message": "Watch for new posts in given subreddits or Reddit searches and the latest user's activities.",
         "description": "Description of the extension"
     },
     "name": {
@@ -11,22 +11,14 @@
         "message": "New submissions on Reddit",
         "description": "Extension title"
     },
-    "headerSubredditName_title": {
-        "message": "Open the subreddit or search",
-        "description": "Attribute title of the link to a subreddit"
-    },
     "headerUpdateBtn_title": {
         "message": "Update now",
         "description": "Attribute title of the update button"
     },
-    "headerMail_title": {
-        "message": "Open private mail",
-        "description": "Attribute title of the private mail icon"
+    "headerOptionsBtn": {
+        "message": "options"
     },
-    "headerMailNoAuth_title": {
-        "message": "Extension isn't authorized to check mail"
-    },
-    "headerOptions_title": {
+    "headerOptionsBtn_title": {
         "message": "Open options",
         "description": "Attribute title of the options icon"
     },
@@ -43,20 +35,38 @@
         "description": "No unread posts note"
     },
     "watchListOpenInNew_title": {
-        "message": "Open subreddit or reddit search in a new tab",
+        "message": "Open the item's group on Reddit in a new tab",
         "description": "Open in a new tab link's title"
     },
-    "queryListCheckMark_title": {
-        "message": "Remove all posts in the subreddit or search",
-        "description": "Attribute title of the check mark icon in query list"
+    "watchListCheckMark_title": {
+        "message": "Remove all items in the group"
     },
-    "postListCheckMark_title": {
-        "message": "Remove the post",
-        "description": "Attribute title of the check mark icon in post list"
+    "watchListMailIcon": {
+        "message": "Unread private messages"
+    },
+    "watchListUpdatesOff": {
+        "message": "Updates disabled"
+    },
+    "watchListNotifyOn": {
+        "message": "Notifications enabled"
+    },
+    "watchListNotifyOff": {
+        "message": "Notifications disabled"
+    },
+    "watchListFiltersOn": {
+        "message": "Filters enabled"
+    },
+    "watchListItemCheckMark_title": {
+        "message": "Remove the item from the extension"
+    },
+    "watchListItemPin_title": {
+        "message": "Pin the item"
+    },
+    "watchListItemUnpin_title": {
+        "message": "Remove the item"
     },
     "footerButton": {
-        "message": "Remove all not pinned posts",
-        "description": "Footer button"
+        "message": "Remove all not pinned items"
     },
     "optionsNavSettings": {
         "message": "Settings"
@@ -112,8 +122,7 @@
         "message": "Purple"
     },
     "optionDelPostAfterClick": {
-        "message": "Delete post link after opening",
-        "description": "Automatically delete the link to the post after opening"
+        "message": "Delete post link after opening"
     },
     "optionDelPostAfterClickDescription": {
         "message": "Open the post in a new tab and remove it from the list."
@@ -137,82 +146,107 @@
     "optionUseOldRedditDescription": {
         "message": "Redirect links to old.reddit.com"
     },
-    "optionAuthorization": {
-        "message": "Chat access authorization"
+    "closeLabel": {
+        "message": "Close"
     },
-    "optionAuthorizationDescription": {
-        "message": "The extension should be authorized to check your DMs. No authorization is required for other features."
+    "notifyLabel": {
+        "message": "Notify"
     },
-    "optionNoAuthMsg": {
-        "message": "Extension isn't authorized to access your chat",
-        "description": "Not authorized message"
+    "savedLabel": {
+        "message": "saved"
     },
-    "optionStartAuthBtn": {
-        "message": "authorize",
-        "description": "Authorize button"
+    "optionReadMore": {
+        "message": "Read more on the help page."
     },
-    "optionStartAuthBtnDisabled": {
-        "message": "authorizing",
-        "description": "Authorize button"
+    "optionAccountsDescription": {
+        "message": "Connect a Reddit account to check its unread private messages and use Reddit OAuth API (optionally)."
     },
-    "optionIsAuthMsg": {
-        "message": "Extension is authorized",
-        "description": "Authorized message"
+    "optionAccountsNoAccs": {
+        "message": "No authorized accounts"
     },
-    "optionSignOutBtn": {
-        "message": "sign out",
-        "description": "Sign out button"
+    "optionAccountsReAuthBtn": {
+        "message": "reauthorize"
     },
-    "optionMail": {
-        "message": "Unread mail"
+    "optionAccountsAddBtn": {
+        "message": "Add account"
     },
-    "optionMailDescription": {
-        "message": "Check mail on reddit to display the number of unread private messages in the popup"
+    "optionAccountsMailCheck": {
+        "message": "Watch for Messages"
     },
-    "optionMailNoAuthTooltip": {
-        "message": "The extension should be authorized to check your mail"
+    "optionAccountsMailCheck_title": {
+        "message": "Check unread private messages on reddit and display them in the popup"
     },
-    "optionMailShow": {
-        "message": "watch for new reddit mail",
-        "description": "Option: watch for new mail"
+    "optionAccountsMailNotify_title": {
+        "message": "Show notifications if there are new messages"
     },
-    "optionMailNotify": {
-        "message": "show desktop notifications if there is new mail",
-        "description": "Option: show new mail notifications"
+    "optionAccountsUpdateAcc": {
+        "message": "update the account's information"
     },
-    "optionSubreddits": {
-        "message": "Watch for new posts in subreddits"
-    },
-    "optionSubredditsInput": {
-        "message": "Enter subreddit (multireddit) name"
-    },
-    "optionSubredditsTooltip1": {
-        "message": "Enter the list of subreddits you want to monitor.",
-        "description": "Subreddits tooltip"
-    },
-    "optionSubredditsTooltip2": {
-        "message": "To check that everything works, open extension's popup in the browser toolbar and click the update button.",
-        "description": "Subreddits tooltip"
+    "optionAccountsFetchBtn": {
+        "message": "fetch and display unread messages"
     },
     "optionSubredditsDescription": {
-        "message": "A space-separated list of subreddits without \"r/\" prefix, e.g. formula1 learnprogramming",
-        "description": "Option: description for the input of subreddits"
+        "message": "Monitor every post in a subreddit. You can filter posts based on given rule. In general, it's recommended to use Reddit Search instead of filters."
     },
-    "optionSubredditsNotify": {
-        "message": "Show desktop notifications",
-        "description": "Option: notify about new subreddit posts"
+    "optionSubredditsName": {
+        "message": "Subreddit name"
     },
-    "optionSubredditsFilter": {
+    "optionSubredditsActive": {
+        "message": "Active"
+    },
+    "optionSubredditsInput_title": {
+        "message": "Enter subreddit (multireddit) name"
+    },
+    "optionSubredditsNotify_title": {
+        "message": "Show desktop notifications"
+    },
+    "optionSubredditsFilter_title": {
         "message": "Filter posts"
     },
-    "optionSubredditsDisable": {
+    "optionSubredditsDisable_title": {
         "message": "Disable/Enable subreddit updates"
+    },
+    "optionSubredditsFilter": {
+        "message": "Filters"
+    },
+    "postFilters": {
+        "message": "Post filters"
+    },
+    "postFiltersDescription": {
+        "message": "Check if the subreddit's posts fit at least one of the rules below. Filter words in the title and post's text fields are case-insensitive and can be stemmed (dogs = dog)."
+    },
+    "addFilterRule": {
+        "message": "add filter rule"
+    },
+    "filterRule": {
+        "message": "Filter rule"
+    },
+    "is": {
+        "message": "is"
+    },
+    "hasTheWords": {
+        "message": "has the words"
+    },
+    "removeFilter": {
+        "message": "remove filter"
+    },
+    "addField": {
+        "message": "add field"
     },
     "optionSubredditsDelete": {
         "message": "Delete the subreddit"
     },
+    "optionsSubredditFetch_title": {
+        "message": "click to fetch and show the latest post from the subreddit"
+    },
+    "optionsSubredditFetch": {
+        "message": "fetch and display the latest subreddit's posts"
+    },
     "optionSubredditsAdd": {
         "message": "Add new subreddit"
+    },
+    "optionSearchDescription": {
+        "message": "You can stay up to date with reddit search by adding a query in the \"search query\" field. Look at the <a href=\"https://www.reddit.com/wiki/search#wiki_field_search\" target=\"_blank\">reddit search wiki</a> to learn supported keywords and <a href=\"https://www.reddit.com/wiki/search#wiki_boolean_operators\" target=\"_blank\">boolean operators</a>."
     },
     "optionSearchLegend": {
         "message": "Watch for specific posts"
@@ -265,47 +299,25 @@
         "message": "Delete the search",
         "description": "Button: delete the search"
     },
+    "optionSearchFetch": {
+        "message": "Fetch and display the latest posts"
+    },
     "optionsSearchAddNew": {
         "message": "Add new search"
     },
-    "optionClearData": {
-        "message": "Sign out and clear local data",
-        "description": "Button: clear data"
+    "optionsFollowUserDescription": {
+        "message": "Check the latest posts and/or comments of a user. Toggle \"Notify\" to enable/disable desktop notifications."
     },
-    "optionSignOut_title": {
-        "message": "Unauthorize extension and remove all local data from the browser",
-        "description": "Attribute title of button signout"
+    "optionsFollowUserMinUpdate": {
+        "message": "Considering that most users don't post and comment very often, it's reasonable to poll it slower than subreddits. The value will be ignored if it's lower than the global update interval."
     },
-    "optionLinkShortcuts": {
-        "message": "keyboard shortcuts",
-        "description": "Link to shortcuts"
+    "optionsFollowUserGlobal": {
+        "message": "Global update interval is $1 min"
     },
-    "optionLinkIssues": {
-        "message": "issues",
-        "description": "Link to issues"
+    "optionsFollowUserFetch": {
+        "message": "fetch and display the latest user's activities"
     },
-    "optionLinkRate": {
-        "message": "rate extension",
-        "description": "Link to reviews"
-    },
-    "authorizeButton": {
-        "message": "Authorize",
-        "description": "Authorize button"
-    },
-    "notAuthMessage1": {
-        "message": "The extension isn't authorized",
-        "description": "Not authorized message 1"
-    },
-    "notAuthMessage2": {
-        "message": "Press on the button below to authorize",
-        "description": "Not authorized message 2"
-    },
-    "notAuthFirefoxMessage": {
-        "message": "If you use Firefox Multi-Account Containers it could break authorization flow.",
-        "description": "Firefox specific message"
-    },
-    "notAuthFirefoxLink": {
-        "message": "Read more",
-        "description": "Firefox specific message link"
+    "optionsFollowUserAdd": {
+        "message": "Add user to follow"
     }
 }

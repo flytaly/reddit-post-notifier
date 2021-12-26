@@ -2,6 +2,7 @@
     import storage from '@/storage';
     import type { FollowingUser, StorageFields } from '@/storage/storage-types';
     import type { ExtensionOptions } from '@/types/extension-options';
+    import getMsg from '@/utils/get-message';
     import DEFAULT_OPTIONS from '../../../options-default';
     import { storageData } from '../../popup/store/store';
     import AddButton from './common/AddButton.svelte';
@@ -66,13 +67,10 @@
 </script>
 
 <div>
-    <div class="my-4 text-sm">
-        Check the latest posts and/or comments of a user. Toggle "Notify" to enable/disable desktop notifications.
-    </div>
+    <div class="my-4 text-sm">{getMsg('optionsFollowUserDescription')}</div>
     <OptionsItem title="Minimum update interval">
         <div slot="description">
-            Considering that most users don't post and comment very often, it's reasonable to poll it slower than
-            subreddits. The value will be ignored if it's lower than the global update interval.
+            {getMsg('optionsFollowUserMinUpdate')}
         </div>
         <div slot="controls">
             <div class="flex flex-col">
@@ -82,7 +80,7 @@
                     currentValue={String($storageData.options.pollUserInterval)}
                 />
                 <div class="mt-4">
-                    Global update interval is {Math.round((options.updateInterval / 60) * 10) / 10} min
+                    {getMsg('optionsFollowUserGlobal', String(Math.round((options.updateInterval / 60) * 10) / 10))}
                 </div>
             </div>
         </div>
@@ -103,7 +101,7 @@
             <FollowUserInput bind:userInfo commitChanges={saveInputs} onDelete={() => removeUser(index)} />
         {/each}
     </div>
-    <AddButton clickHandler={() => addUsers()}>Add user to follow</AddButton>
+    <AddButton clickHandler={() => addUsers()}>{getMsg("optionsFollowUserAdd")}</AddButton>
 </div>
 
 <style lang="postcss">

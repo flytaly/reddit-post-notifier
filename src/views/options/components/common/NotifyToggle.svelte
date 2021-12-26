@@ -1,4 +1,5 @@
 <script lang="ts">
+    import getMsg from '@/utils/get-message';
     import { NotifyIcon, NotifyOffIcon } from '../../icons';
 
     export let checked = false;
@@ -34,6 +35,6 @@
         {:else}
             <div class="w-5 h-5">{@html NotifyOffIcon}</div>
         {/if}
-        <span class="ml-[2px]">Notify</span>
+        <span class="ml-[2px]">{getMsg('notifyLabel')}</span>
     </div>
 </label>

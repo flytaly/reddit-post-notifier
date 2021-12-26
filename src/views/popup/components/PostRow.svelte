@@ -51,7 +51,7 @@
 </script>
 
 <div class="flex items-center w-full py-[0.125rem] pr-3" data-post-id={post.data.id}>
-    <CheckMarkButton clickHandler={() => removePost(post.data.id)} title={getMsg('postListCheckMark_title')} />
+    <CheckMarkButton clickHandler={() => removePost(post.data.id)} title={getMsg('watchListItemCheckMark_title')} />
     <a
         class="text-skin-link flex-grow px-1 py-[0.125rem]"
         {href}
@@ -65,7 +65,7 @@
         {getItemTitle(post)}</a
     >
     <span data-keys-target="pin-post">
-        <SvgButton on:click={onPinClick} title={'Pin the post'}>
+        <SvgButton on:click={onPinClick} title={getMsg("watchListItemPin_title")}>
             {@html Pin}
         </SvgButton>
     </span>
