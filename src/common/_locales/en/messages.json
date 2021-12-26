@@ -106,12 +106,11 @@
         "message": "Purple"
     },
     "optionDelPostAfterClick": {
-        "message": "Delete post after opening",
-
-        "description": "Delete post after click option"
+        "message": "Delete post link after opening",
+        "description": "Automatically delete the link to the post after opening"
     },
     "optionDelPostAfterClickDescription": {
-        "message": "After clicking on a post open it in the new tab and then automatically delete."
+        "message": "Open the post in a new tab and remove it from the list."
     },
     "optionHideEmptyGroups": {
         "message": "Hide empty groups",
@@ -133,14 +132,14 @@
         "message": "Redirect links to old.reddit.com"
     },
     "optionAuthorization": {
-        "message": "Authorization"
+        "message": "Chat access authorization"
     },
     "optionAuthorizationDescription": {
-        "message": "The extension should be authorized to check your mail but it’s not required for everything else."
+        "message": "The extension should be authorized to check your DMs. No authorization is required for other features."
     },
     "optionNoAuthMsg": {
-        "message": "Extension isn't authorized",
-        "description": "No authorized message"
+        "message": "Extension isn't authorized to access your chat",
+        "description": "Not authorized message"
     },
     "optionStartAuthBtn": {
         "message": "authorize",
@@ -187,7 +186,7 @@
         "description": "Subreddits tooltip"
     },
     "optionSubredditsDescription": {
-        "message": "List of subreddits (without \"r/\") divided by spaces. Example: formula1 learnprogramming",
+        "message": "A space-separated list of subreddits without \"r/\" prefix, e.g. formula1 learnprogramming",
         "description": "Option: description for the input of subreddits"
     },
     "optionSubredditsNotify": {
