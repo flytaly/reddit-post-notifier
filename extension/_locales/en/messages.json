@@ -77,6 +77,9 @@
     "optionsNavMail": {
         "message": "Messages"
     },
+    "optionsNavMailFull": {
+        "message": "Messages and Accounts"
+    },
     "optionsNavSubreddits": {
         "message": "Subreddits"
     },

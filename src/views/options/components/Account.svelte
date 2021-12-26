@@ -14,6 +14,7 @@
     export let accounts: StorageFields['accounts'];
     export let acc: AuthUser;
     export let authorize: (id?: string, fn?: () => Promise<void>) => Promise<void>;
+    export let isAuthorizing = false;
 
     let isUpdating = false;
     let isUpdatingMessages = false;
@@ -21,7 +22,7 @@
     let disabled = false;
     let showMessages = false;
 
-    $: disabled = isUpdating || isUpdatingMessages || $isBlocked;
+    $: disabled = isUpdating || isUpdatingMessages || isAuthorizing || $isBlocked;
 
     const updateAcc = async () => {
         isUpdating = true;
@@ -110,7 +111,7 @@
         <NotifyToggle
             checked={acc.mailNotify}
             changeHander={notifyMailCommit}
-            title={getMsg("optionAccountsMailNotify_title")}
+            title={getMsg('optionAccountsMailNotify_title')}
         />
     </div>
     <button class="icon-button text-skin-accent ml-auto" on:click={deleteHandler} {disabled} title="Delete the account">
@@ -131,7 +132,9 @@
                 <span>{getMsg('optionAccountsFetchBtn')}</span>
             </button>
             <div class="ml-auto" />
-            <button class="bg-transparent rounded-sm py-[1px] px-1" on:click={reAuth}> {getMsg('optionAccountsReAuthBtn')}</button>
+            <button class="bg-transparent rounded-sm py-[1px] px-1" on:click={reAuth} {disabled}>
+                {getMsg('optionAccountsReAuthBtn')}</button
+            >
         </div>
         <Spinner show={isUpdatingMessages} />
         {#if errorList?.length}

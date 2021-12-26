@@ -14,6 +14,7 @@ export const sections = {
     },
     '#settings__mail': {
         name: getMsg('optionsNavMail'),
+        fullname: getMsg('optionsNavMailFull'),
     },
     '#settings__subreddit': {
         name: getMsg('optionsNavSubreddits'),

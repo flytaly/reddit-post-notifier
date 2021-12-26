@@ -40,7 +40,7 @@ import getMsg from '@/utils/get-message';
         {#if accList?.length}
             <ul>
                 {#each accList as acc (acc.id)}
-                    <Account {accounts} {acc} {authorize} />
+                    <Account {accounts} {acc} {authorize} {isAuthorizing} />
                 {/each}
             </ul>
         {:else}
