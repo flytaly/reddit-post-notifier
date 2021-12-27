@@ -1,6 +1,6 @@
 {
     "description": {
-        "message": "Watch for new posts in given subreddits or Reddit searches and the latest user's activities.",
+        "message": "Watch for the new posts in given subreddits, Reddit searches, and for the latest user's activities",
         "description": "Description of the extension"
     },
     "name": {
