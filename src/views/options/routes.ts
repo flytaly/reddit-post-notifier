@@ -8,9 +8,11 @@ export type PageId = '#settings' | '#info';
 export const sections = {
     '#settings': {
         name: getMsg('optionsNavSettings'),
+        fullname: '',
     },
     '#settings__general': {
         name: getMsg('optionsNavGeneral'),
+        fullname: '',
     },
     '#settings__mail': {
         name: getMsg('optionsNavMail'),
@@ -18,21 +20,27 @@ export const sections = {
     },
     '#settings__subreddit': {
         name: getMsg('optionsNavSubreddits'),
+        fullname: '',
     },
     '#settings__reddit-search': {
         name: getMsg('optionsNavSearch'),
+        fullname: '',
     },
     '#settings__follow-user': {
         name: getMsg('optionsNavUsers'),
+        fullname: '',
     },
     '#info': {
         name: getMsg('optionsNavInfo'),
+        fullname: '',
     },
     '#info__help': {
         name: getMsg('optionsNavHelp'),
+        fullname: '',
     },
     '#info__shortcuts': {
         name: getMsg('optionsNavShortcuts'),
+        fullname: '',
     },
 } as const;
 

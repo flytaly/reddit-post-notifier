@@ -12,10 +12,10 @@
     <details>
         <summary>Update interval and missing posts</summary>
         <div class="ml-8">
-            The extension's update logic is simple. It just checks the latest 10 posts in given Subreddits, Reddit
-            Searches, or following users. This means that the extension may miss some posts if more than 10 of them were
-            posted during the selected interval. It often happens when you just open the browser after a long time or
-            set a big update interval for Subreddits with frequent updates.
+            The extension's update logic is simple. It just checks the latest {limit || 10} posts in given Subreddits, Reddit
+            Searches, or following users. This means that the extension may miss some posts if more than {limit || 10} of
+            them were posted during the selected interval. It often happens when you just open the browser after a long time
+            or set a big update interval for Subreddits with frequent updates.
         </div>
     </details>
 
