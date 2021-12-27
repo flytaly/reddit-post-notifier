@@ -16,11 +16,13 @@
             <span class="text-base ml-1">{`v. ${version}`}</span>
         </div>
         <div class="text-sm">
-            <a href={addonHref} target="_blank">rate the extension</a>
+            <a href={addonHref} target="_blank">rating</a>
             |
             <a href="https://github.com/flytaly/reddit-post-notifier" target="_blank">github</a>
             |
             <a href="https://github.com/flytaly/reddit-post-notifier/issues" target="_blank">create an issue</a>
+            |
+            <a href="https://ko-fi.com/flytaly" target="_blank">ko-fi</a>
         </div>
     </div>
 </article>

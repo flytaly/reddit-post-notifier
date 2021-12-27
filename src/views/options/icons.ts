@@ -13,3 +13,4 @@ export { default as RefreshIcon2 } from '@assets/refresh2.svg';
 export { default as SaveIcon } from '@assets/save.svg';
 export { default as WarningIcon } from '@assets/warning.svg';
 export { default as XCircleIcon } from '@assets/x-circle-fill.svg';
+export { default as KoFiIcon } from '@assets/ko-fi-icon.svg';

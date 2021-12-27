@@ -1,5 +1,5 @@
 <script lang="ts">
-    import { LogoIcon } from '@/views/options/icons';
+    import { LogoIcon, KoFiIcon } from '@/views/options/icons';
     import type { PageId } from '../routes';
     import { sections } from '../routes';
 
@@ -19,18 +19,36 @@
             {@html LogoIcon}
         </div>
     </a>
-    <nav class="flex flex-col">
+    <nav class="flex flex-col p-4">
         {#each navItems as { key, name, level } (key)}
             <a href={key} class="leading-8 text-skin-text" class:current={current === key} class:level2={level === 2}
                 >{name}</a
             >
         {/each}
     </nav>
+    <div class="mx-2 text-xs">
+        <a
+            class="supportme gap-x-2 justify-center text-center rounded-md text-skin-text hover:text-skin-accent group"
+            href="https://ko-fi.com/flytaly"
+            target="_blank"
+        >
+            <div class="w-5 flex items-center group-hover:animate-pulse">
+                {@html KoFiIcon}
+            </div>
+                <div>Support me</div>
+                <div></div>
+                <div class="transition-opacity opacity-0 group-hover:opacity-100 group-focus:opacity-100">on Ko-Fi</div>
+        </a>
+    </div>
 </aside>
 
 <style lang="postcss">
+    .supportme {
+        display: grid;
+        grid-template-columns: min-content max-content;
+    }
     aside {
-        @apply sticky flex flex-col top-4 p-4 pt-2 pb-8 shadow-sidebar text-sm;
+        @apply sticky flex flex-col top-4 pt-2 shadow-sidebar text-sm;
     }
 
     .logo {
