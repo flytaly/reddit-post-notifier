@@ -1,0 +1,326 @@
+{
+    "description": {
+        "message": "Watch for the new posts in given subreddits, Reddit searches, and for the latest user's activities",
+        "description": "Description of the extension"
+    },
+    "name": {
+        "message": "Reddit post notifier",
+        "description": "Name of the extension"
+    },
+    "extension_title": {
+        "message": "New submissions on Reddit",
+        "description": "Extension title"
+    },
+    "headerUpdateBtn_title": {
+        "message": "Update now",
+        "description": "Attribute title of the update button"
+    },
+    "headerOptionsBtn": {
+        "message": "options"
+    },
+    "headerOptionsBtn_title": {
+        "message": "Open options",
+        "description": "Attribute title of the options icon"
+    },
+    "noQueries": {
+        "message": "You didn't add anything to watch",
+        "description": "No queries popup message"
+    },
+    "openOptions": {
+        "message": "Open options",
+        "description": "Open options page tooltip"
+    },
+    "noPosts": {
+        "message": "No unread posts",
+        "description": "No unread posts note"
+    },
+    "watchListOpenInNew_title": {
+        "message": "Open the item's group on Reddit in a new tab",
+        "description": "Open in a new tab link's title"
+    },
+    "watchListCheckMark_title": {
+        "message": "Remove all items in the group"
+    },
+    "watchListMailIcon": {
+        "message": "Unread private messages"
+    },
+    "watchListUpdatesOff": {
+        "message": "Updates disabled"
+    },
+    "watchListNotifyOn": {
+        "message": "Notifications enabled"
+    },
+    "watchListNotifyOff": {
+        "message": "Notifications disabled"
+    },
+    "watchListFiltersOn": {
+        "message": "Filters enabled"
+    },
+    "watchListItemCheckMark_title": {
+        "message": "Remove the item from the extension"
+    },
+    "watchListItemPin_title": {
+        "message": "Pin the item"
+    },
+    "watchListItemUnpin_title": {
+        "message": "Remove the item"
+    },
+    "footerButton": {
+        "message": "Remove all not pinned items"
+    },
+    "optionsNavSettings": {
+        "message": "Settings"
+    },
+    "optionsNavGeneral": {
+        "message": "General"
+    },
+    "optionsNavMail": {
+        "message": "Messages"
+    },
+    "optionsNavMailFull": {
+        "message": "Messages and Accounts"
+    },
+    "optionsNavSubreddits": {
+        "message": "Subreddits"
+    },
+    "optionsNavSearch": {
+        "message": "Reddit Search"
+    },
+    "optionsNavUsers": {
+        "message": "Follow users"
+    },
+    "optionsNavInfo": {
+        "message": "Info"
+    },
+    "optionsNavHelp": {
+        "message": "Help"
+    },
+    "optionsNavShortcuts": {
+        "message": "Shortcuts"
+    },
+    "optionUpdateInterval": {
+        "message": "Update interval (in seconds)",
+        "description": "Name of option: update interval"
+    },
+    "optionUpdateIntervalDescription": {
+        "message": "Set the update interval at which the extension will check for new updates. To reduce power and internet traffic consumption it's recommended to set update interval at least 60 seconds.",
+        "description": "Update interval description"
+    },
+    "optionsThemeDescription": {
+        "message": "The purple theme is based on the 'Shades of Purple' theme which you can find in the browser store."
+    },
+    "optionTheme": {
+        "message": "Theme"
+    },
+    "optionThemeAuto": {
+        "message": "Auto"
+    },
+    "optionThemeLight": {
+        "message": "Light"
+    },
+    "optionThemeDark": {
+        "message": "Dark"
+    },
+    "optionThemePurple": {
+        "message": "Purple"
+    },
+    "optionDelPostAfterClick": {
+        "message": "Delete post link after opening"
+    },
+    "optionDelPostAfterClickDescription": {
+        "message": "Open the post in a new tab and remove it from the list."
+    },
+    "optionHideEmptyGroups": {
+        "message": "Hide empty groups",
+        "description": "Hide empty groups checkbox"
+    },
+    "optionHideEmptyGroupsDescription": {
+        "message": "If selected, don't show empty subreddits and reddit searches in the popup."
+    },
+    "optionNotificationAudioId": {
+        "message": "Play sound on notification"
+    },
+    "optionNotificationAudioIdDescription": {
+        "message": "If you don't have sound on notifications, you can choose one from the list"
+    },
+    "optionUseOldReddit": {
+        "message": "Use old reddit to open links"
+    },
+    "optionUseOldRedditDescription": {
+        "message": "Redirect links to old.reddit.com"
+    },
+    "closeLabel": {
+        "message": "Close"
+    },
+    "notifyLabel": {
+        "message": "Notify"
+    },
+    "savedLabel": {
+        "message": "saved"
+    },
+    "optionReadMore": {
+        "message": "Read more on the help page."
+    },
+    "optionAccountsDescription": {
+        "message": "Connect a Reddit account to check its unread private messages and use Reddit OAuth API (optionally)."
+    },
+    "optionAccountsNoAccs": {
+        "message": "No authorized accounts"
+    },
+    "optionAccountsReAuthBtn": {
+        "message": "reauthorize"
+    },
+    "optionAccountsAddBtn": {
+        "message": "Add account"
+    },
+    "optionAccountsMailCheck": {
+        "message": "Watch for Messages"
+    },
+    "optionAccountsMailCheck_title": {
+        "message": "Check unread private messages on reddit and display them in the popup"
+    },
+    "optionAccountsMailNotify_title": {
+        "message": "Show notifications if there are new messages"
+    },
+    "optionAccountsUpdateAcc": {
+        "message": "update the account's information"
+    },
+    "optionAccountsFetchBtn": {
+        "message": "fetch and display unread messages"
+    },
+    "optionSubredditsDescription": {
+        "message": "Monitor every post in a subreddit. You can filter posts based on given rule. In general, it's recommended to use Reddit Search instead of filters."
+    },
+    "optionSubredditsName": {
+        "message": "Subreddit name"
+    },
+    "optionSubredditsActive": {
+        "message": "Active"
+    },
+    "optionSubredditsInput_title": {
+        "message": "Enter subreddit (multireddit) name"
+    },
+    "optionSubredditsNotify_title": {
+        "message": "Show desktop notifications"
+    },
+    "optionSubredditsFilter_title": {
+        "message": "Filter posts"
+    },
+    "optionSubredditsDisable_title": {
+        "message": "Disable/Enable subreddit updates"
+    },
+    "optionSubredditsFilter": {
+        "message": "Filters"
+    },
+    "postFilters": {
+        "message": "Post filters"
+    },
+    "postFiltersDescription": {
+        "message": "Check if the subreddit's posts fit at least one of the rules below. Filter words in the title and post's text fields are case-insensitive and can be stemmed (dogs = dog)."
+    },
+    "addFilterRule": {
+        "message": "add filter rule"
+    },
+    "filterRule": {
+        "message": "Filter rule"
+    },
+    "is": {
+        "message": "is"
+    },
+    "hasTheWords": {
+        "message": "has the words"
+    },
+    "removeFilter": {
+        "message": "remove filter"
+    },
+    "addField": {
+        "message": "add field"
+    },
+    "optionSubredditsDelete": {
+        "message": "Delete the subreddit"
+    },
+    "optionsSubredditFetch_title": {
+        "message": "click to fetch and show the latest post from the subreddit"
+    },
+    "optionsSubredditFetch": {
+        "message": "fetch and display the latest subreddit's posts"
+    },
+    "optionSubredditsAdd": {
+        "message": "Add new subreddit"
+    },
+    "optionSearchDescription": {
+        "message": "You can stay up to date with reddit search by adding a query in the \"search query\" field. Look at the <a href=\"https://www.reddit.com/wiki/search#wiki_field_search\" target=\"_blank\">reddit search wiki</a> to learn supported keywords and <a href=\"https://www.reddit.com/wiki/search#wiki_boolean_operators\" target=\"_blank\">boolean operators</a>."
+    },
+    "optionSearchLegend": {
+        "message": "Watch for specific posts"
+    },
+    "optionSearchName": {
+        "message": "Name:",
+        "description": "Label of search input 'name'"
+    },
+    "optionSearchName_title": {
+        "message": "Optional name of the search query",
+        "description": "Attribute title of search input 'name' and its label"
+    },
+    "optionSearchName_placeholder": {
+        "message": "e.g.: dogs in r/aww",
+        "description": "Attribute placeholder of search input 'name' and its label"
+    },
+    "optionSearchSubreddit": {
+        "message": "Subreddit:",
+        "description": "Label of search input 'subreddit'"
+    },
+    "optionSearchSubreddit_title": {
+        "message": "Search submissions in a specific subreddit. You can combine subreddits with '+' like: 'europe+worldnews'. Leave empty to search in the entire reddit.",
+        "description": "Attribute title of search input 'subreddit' and its label"
+    },
+    "optionSearchSubreddit_placeholder": {
+        "message": "e.g.: aww",
+        "description": "Attribute placeholder of search input 'subreddit'"
+    },
+    "optionSearchQuery": {
+        "message": "Search query:",
+        "description": "Label of search input 'query'"
+    },
+    "optionSearchQuery_title": {
+        "message": "Search for posts that fit the search query. For example, if you want to monitor posts that contain the word France in their title enter: 'title:France'.  For more information look search wiki.",
+        "description": "Attribute title of search input 'query' and its label"
+    },
+    "optionSearchQuery_placeholder": {
+        "message": "e.g.: dog",
+        "description": "Attribute placeholder of search input 'query'"
+    },
+    "optionSearchWiki": {
+        "message": "reddit search wiki",
+        "description": "Search wiki link"
+    },
+    "optionSearchNotify": {
+        "message": "Show notifications of new posts",
+        "description": "Option: show notifications of new posts in the search"
+    },
+    "optionSearchDelete": {
+        "message": "Delete the search",
+        "description": "Button: delete the search"
+    },
+    "optionSearchFetch": {
+        "message": "Fetch and display the latest posts"
+    },
+    "optionsSearchAddNew": {
+        "message": "Add new search"
+    },
+    "optionsFollowUserDescription": {
+        "message": "Check the latest posts and/or comments of a user. Toggle \"Notify\" to enable/disable desktop notifications."
+    },
+    "optionsFollowUserMinUpdate": {
+        "message": "Considering that most users don't post and comment very often, it's reasonable to poll it slower than subreddits. The value will be ignored if it's lower than the global update interval."
+    },
+    "optionsFollowUserGlobal": {
+        "message": "Global update interval is $1 min"
+    },
+    "optionsFollowUserFetch": {
+        "message": "fetch and display the latest user's activities"
+    },
+    "optionsFollowUserAdd": {
+        "message": "Add user to follow"
+    }
+}

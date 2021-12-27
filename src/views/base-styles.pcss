@@ -1,0 +1,143 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer components {
+    .ios-checkbox {
+        /* Checkbox input should be placed before this element with `peer hidden` classes */
+        @apply block relative h-6 w-11 rounded-2xl
+        transition-colors ease-in-out bg-gray-500
+        peer-checked:bg-skin-input-checked hover:brightness-125
+
+        before:absolute before:block before:h-5 before:w-5 before:bg-white
+        before:rounded-full
+        before:top-1/2 before:left-1  before:-translate-y-1/2  before:transition-all  before:ease-in-out
+        peer-checked:before:translate-x-3/4
+        peer-checked:before:border-skin-input-checked;
+    }
+
+    .connected-block {
+        @apply ml-6 relative;
+    }
+
+    .connected-block::before {
+        @apply absolute w-4 h-1/2 right-full rounded-bl-xl border-skin-gray2;
+
+        content: '';
+    }
+
+    .connected-block::after {
+        @apply absolute w-4 h-1/2 top-1/2 right-full rounded-tl-xl border-skin-gray2;
+
+        content: '';
+    }
+
+    .connected-block:first-child::after {
+        @apply border-l border-t;
+    }
+
+    .connected-block:last-child::before {
+        @apply border-l border-b;
+    }
+
+    .connected-block:not(:first-child):not(:last-child)::after {
+        @apply border-l border-t;
+    }
+
+    .connected-block:not(:first-child):not(:last-child)::before {
+        @apply border-l;
+    }
+
+    .connected-block:first-child:last-child::after,
+    .connected-block:first-child:last-child::before {
+        @apply border-none;
+    }
+
+    .icon-button {
+        @apply flex items-center py-0 px-1 bg-transparent border-transparent hover:bg-transparent hover:scale-105 transition-transform;
+    }
+}
+
+:root {
+    --color-text-base: theme('colors.zinc.900');
+    --color-bg-base: #fff;
+    --color-bg-second: hsl(200, 40%, 97%);
+    --color-accent: theme('colors.red.700');
+    --color-accent2: theme('colors.sky.700');
+    --color-outline: theme('colors.sky.500');
+    --color-gray: theme('colors.zinc.500');
+    --color-gray2: theme('colors.zinc.300');
+    --color-delimiter: theme('colors.zinc.300');
+    --color-border: theme('colors.zinc.700');
+    --color-input-bg: theme('colors.zinc.50');
+    --color-input-bg-checked: theme('colors.sky.600');
+    --color-input-bg-hover: theme('colors.zinc.100');
+    --color-item-bg-hover: theme('colors.stone.100');
+    --color-btn: theme('colors.gray.200');
+    --color-btn-hover: theme('colors.gray.300');
+    --color-btn-active: theme('colors.gray.400');
+    --color-error: theme('colors.red.600');
+    --color-error-bg: theme('colors.red.100');
+    --color-success: theme('colors.emerald.700');
+    --color-link: #016ed8;
+
+    /* shadows */
+    --shadow-sidebar: 0 0 3px 0 rgba(0, 0, 0, 0.5);
+    --shadow-input-hover: 0 0 3px 3px var(--color-input-bg-hover);
+}
+
+.dark-theme {
+    --color-text-base: theme('colors.neutral.200');
+    --color-bg-base: theme('colors.neutral.800');
+    --color-bg-second: hsl(240, 5%, 20%);
+    --color-accent: theme('colors.rose.300');
+    --color-accent2: theme('colors.sky.200');
+    --color-outline: theme('colors.sky.300');
+    --color-gray: theme('colors.neutral.400');
+    --color-gray2: theme('colors.neutral.600');
+    --color-delimiter: theme('colors.neutral.500');
+    --color-border: theme('colors.zinc.400');
+    --color-input-bg: theme('colors.zinc.600');
+    --color-input-bg-checked: theme('colors.blue.500');
+    --color-input-bg-hover: theme('colors.zinc.500');
+    --color-item-bg-hover: theme('colors.neutral.700');
+    --color-btn: theme('colors.neutral.700');
+    --color-btn-hover: theme('colors.neutral.600');
+    --color-btn-active: theme('colors.neutral.500');
+    --color-error: theme('colors.red.400');
+    --color-error-bg: #6a1d1f;
+    --color-success: theme('colors.green.300');
+    --color-link: #98c0ff;
+
+    /* shadows */
+    --shadow-sidebar: 0 0 3px 0 rgba(255, 255, 255, 0.4);
+    --shadow-input-hover: 0 0 3px 3px var(--color-input-bg-hover);
+}
+
+.purple-theme {
+    --color-text-base: hsl(244, 90%, 98%);
+    --color-bg-base: hsl(244, 33%, 28%);
+    --color-bg-second: hsl(244, 33%, 24%);
+    --color-accent: theme('colors.yellow.300');
+    --color-accent2: theme('colors.sky.200');
+    --color-outline: theme('colors.yellow.400');
+    --color-gray: hsl(244, 20%, 80%);
+    --color-gray2: hsl(244, 20%, 50%);
+    --color-delimiter: hsl(265, 44%, 53%);
+    --color-border: hsl(244, 30%, 58%);
+    --color-input-bg: hsl(244, 33%, 29%);
+    --color-input-bg-checked: hsl(265, 45%, 45%);
+    --color-input-bg-hover: hsl(244, 34%, 50%);
+    --color-item-bg-hover: #313250;
+    --color-btn: hsl(244, 33%, 40%);
+    --color-btn-hover: hsl(265, 45%, 55%);
+    --color-btn-active: hsl(265, 45%, 66%);
+    --color-error: theme('colors.red.500');
+    --color-error-bg: #6a1d1f;
+    --color-success: theme('colors.emerald.400');
+    --color-link: #98c0ff;
+
+    /* shadows */
+    --shadow-sidebar: 0 0 3px 0 rgba(255, 255, 255, 0.4);
+    --shadow-input-hover: 0 0 3px 3px var(--color-input-bg-hover);
+}

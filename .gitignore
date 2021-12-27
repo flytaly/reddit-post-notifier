@@ -3,7 +3,8 @@
 node_modules
 .idea
 .vscode
+.env
 web-ext-artifacts
 coverage/
 dist/
-src/scripts/config.js
+extension/manifest.json
