@@ -142,7 +142,7 @@
             on:focus={showLabel}
             on:mouseover={showLabel}
             on:mouseleave={hideLabel}
-            aria-label={getMsg("optionSubredditsInput_title")}
+            aria-label={getMsg('optionSubredditsInput_title')}
         />
 
         <button
@@ -236,13 +236,13 @@
         <button
             class="flex items-center text-skin-accent2 p-0 border-transparent bg-transparent hover:bg-transparent text-xs"
             on:click={() => void fetchPosts()}
-            title={getMsg("optionsSubredditFetch_title")}
+            title={getMsg('optionsSubredditFetch_title')}
             disabled={$isBlocked || !subOpts.subreddit || !!inputStatus.error}
         >
             <div class="w-5 h-5 mr-1">
                 {@html RefreshIcon2}
             </div>
-            <span>{getMsg("optionsSubredditFetch")}</span>
+            <span>{getMsg('optionsSubredditFetch')}</span>
         </button>
     </div>
     <div id="inputs-label" class="p-1 mb-2 text-right col-start-2 col-span-full text-xs italic">
@@ -256,7 +256,7 @@
         <div class="col-span-full border p-1 border-skin-delimiter ">
             <RedditItemsList
                 title={`The latest posts in the subreddit. ${
-                    subOpts.filterOpts.enabled ? 'With filters.' : 'Without filters.'
+                    subOpts.filterOpts?.enabled ? 'With filters.' : 'Without filters.'
                 }`}
                 items={subData.posts || []}
                 limit={10}

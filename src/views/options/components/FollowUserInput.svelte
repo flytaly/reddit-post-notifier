@@ -150,7 +150,7 @@
             <div class="w-5 h-5 mr-1">
                 {@html RefreshIcon2}
             </div>
-            <span>{getMsg("optionsFollowUserFetch")}</span>
+            <span>{getMsg('optionsFollowUserFetch')}</span>
         </button>
         <div class="ml-2 mb-2">
             <Spinner show={isLoading} />

@@ -5,10 +5,9 @@
     export let id: SectionKey;
     export let level: 1 | 2 | undefined = 2;
 
-    let name = ''
+    let name = '';
 
-    $: name = sections[id].fullname || sections[id].name
-
+    $: name = sections[id].fullname || sections[id].name;
 </script>
 
 {#if level === 1}

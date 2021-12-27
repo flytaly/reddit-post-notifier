@@ -65,7 +65,7 @@
         {getItemTitle(post)}</a
     >
     <span data-keys-target="pin-post">
-        <SvgButton on:click={onPinClick} title={getMsg("watchListItemPin_title")}>
+        <SvgButton on:click={onPinClick} title={getMsg('watchListItemPin_title')}>
             {@html Pin}
         </SvgButton>
     </span>

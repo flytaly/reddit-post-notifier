@@ -101,7 +101,7 @@
             <FollowUserInput bind:userInfo commitChanges={saveInputs} onDelete={() => removeUser(index)} />
         {/each}
     </div>
-    <AddButton clickHandler={() => addUsers()}>{getMsg("optionsFollowUserAdd")}</AddButton>
+    <AddButton clickHandler={() => addUsers()}>{getMsg('optionsFollowUserAdd')}</AddButton>
 </div>
 
 <style lang="postcss">

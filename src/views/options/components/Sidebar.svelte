@@ -35,9 +35,9 @@
             <div class="w-5 flex items-center group-hover:animate-pulse">
                 {@html KoFiIcon}
             </div>
-                <div>Support me</div>
-                <div></div>
-                <div class="transition-opacity opacity-0 group-hover:opacity-100 group-focus:opacity-100">on Ko-Fi</div>
+            <div>Support me</div>
+            <div />
+            <div class="transition-opacity opacity-0 group-hover:opacity-100 group-focus:opacity-100">on Ko-Fi</div>
         </a>
     </div>
 </aside>

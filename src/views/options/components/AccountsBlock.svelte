@@ -1,7 +1,7 @@
 <script lang="ts">
     import auth from '@/reddit-api/auth';
     import type { AuthUser, StorageFields } from '@/storage/storage-types';
-import getMsg from '@/utils/get-message';
+    import getMsg from '@/utils/get-message';
     import { isBlocked, storageData } from '../store';
     import Account from './Account.svelte';
     import AddButton from './common/AddButton.svelte';
@@ -34,8 +34,8 @@ import getMsg from '@/utils/get-message';
 </script>
 
 <div class="text-sm">
-    <span>{getMsg("optionAccountsDescription")}</span>&nbsp;
-    <a href="#info">{getMsg("optionReadMore")}</a>
+    <span>{getMsg('optionAccountsDescription')}</span>&nbsp;
+    <a href="#info">{getMsg('optionReadMore')}</a>
     <div class="my-4">
         {#if accList?.length}
             <ul>
@@ -44,10 +44,10 @@ import getMsg from '@/utils/get-message';
                 {/each}
             </ul>
         {:else}
-            <div class="font-medium">{getMsg("optionAccountsNoAccs")}</div>
+            <div class="font-medium">{getMsg('optionAccountsNoAccs')}</div>
         {/if}
     </div>
-    <AddButton clickHandler={() => authorize()} {disabled}>{getMsg("optionAccountsAddBtn")}</AddButton>
+    <AddButton clickHandler={() => authorize()} {disabled}>{getMsg('optionAccountsAddBtn')}</AddButton>
     {#if authError}
         <div class="mt-2 text-skin-error"><span>Error: </span><span>{authError}</span></div>
     {/if}

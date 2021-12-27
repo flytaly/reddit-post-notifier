@@ -32,7 +32,7 @@
     {/if}
     <div class="flex items-center space-x-1">
         {#if group.type == 'message'}
-            <div class="h-4 w-4 text-skin-gray" title={getMsg("watchListMailIcon")}>
+            <div class="h-4 w-4 text-skin-gray" title={getMsg('watchListMailIcon')}>
                 {@html MailIcon}
             </div>
             <!-- {:else if group.type == 'search'}
@@ -42,7 +42,7 @@
         {/if}
         <span class="mr-auto">{group.title}</span>
         {#if group.updatesDisabled}
-            <div class="h-4 w-4 text-skin-gray" title={getMsg("watchListUpdatesOff")}>
+            <div class="h-4 w-4 text-skin-gray" title={getMsg('watchListUpdatesOff')}>
                 {@html UpdatesDisabledIcon}
             </div>
         {/if}
@@ -52,16 +52,16 @@
             </div>
         {/if}
         {#if group.notify === 'on'}
-            <div class="h-4 w-4 text-skin-gray" title={getMsg("watchListNotifyOn")}>
+            <div class="h-4 w-4 text-skin-gray" title={getMsg('watchListNotifyOn')}>
                 {@html NotifyOnIcon}
             </div>
         {:else if group.notify === 'off'}
-            <div class="h-4 w-4 text-skin-gray" title={getMsg("watchListNotifyOff")}>
+            <div class="h-4 w-4 text-skin-gray" title={getMsg('watchListNotifyOff')}>
                 {@html NotifyOffIcon}
             </div>
         {/if}
         {#if group.filter === 'on'}
-            <div class="h-4 w-4 text-skin-gray" title={getMsg("watchListFiltersOn")}>
+            <div class="h-4 w-4 text-skin-gray" title={getMsg('watchListFiltersOn')}>
                 {@html FilterOnIcon}
             </div>
         {/if}

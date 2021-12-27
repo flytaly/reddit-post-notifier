@@ -1,6 +1,6 @@
 <script lang="ts">
     import type { RedditMessage } from '@/reddit-api/reddit-types';
-import getMsg from '@/utils/get-message';
+    import getMsg from '@/utils/get-message';
     import { XCircleIcon } from '../icons';
 
     export let items: RedditMessage[] = [];
@@ -35,7 +35,7 @@ import getMsg from '@/utils/get-message';
     <header>
         <div class="flex justify-between items-center my-1">
             <a href="https://reddit.com/message/unread/" target="_blank">{title}</a>
-            <button class="p-0 mr-2 border-none bg-transparent h-4 w-4" on:click={onClose} title={getMsg("closeLabel")}>
+            <button class="p-0 mr-2 border-none bg-transparent h-4 w-4" on:click={onClose} title={getMsg('closeLabel')}>
                 {@html XCircleIcon}
             </button>
         </div>
