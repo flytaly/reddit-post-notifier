@@ -1,30 +1,43 @@
 # Reddit post notifier
 
-[ ![addons.mozilla.org/](https://ffp4g1ylyit3jdyti1hqcvtb-wpengine.netdna-ssl.com/addons/files/2015/11/get-the-addon.png)](https://addons.mozilla.org/firefox/addon/reddit-post-notifier/)
-[ ![chrome.google.com/](https://i.imgur.com/unvdmLG.png)](https://chrome.google.com/webstore/detail/reddit-post-notifier/hoolgoecmeegpbidbbcefgkjegdejibd)
+![Chrome Web Store](https://img.shields.io/chrome-web-store/v/hoolgoecmeegpbidbbcefgkjegdejibd)
+![Chrome Web Store](https://img.shields.io/chrome-web-store/stars/hoolgoecmeegpbidbbcefgkjegdejibd)
+![Chrome Web Store](https://img.shields.io/chrome-web-store/users/hoolgoecmeegpbidbbcefgkjegdejibd)
 
-Firefox/Chrome extension that watches for posts in given subreddits or reddit searches and notifies about the new ones.
+![Mozilla Add-on](https://img.shields.io/amo/v/reddit-post-notifier)
+![Mozilla Add-on](https://img.shields.io/amo/stars/reddit-post-notifier)
+![Mozilla Add-on](https://img.shields.io/amo/users/reddit-post-notifier)
+
+[ ![chrome.google.com/](https://i.imgur.com/unvdmLG.png)](https://chrome.google.com/webstore/detail/reddit-post-notifier/hoolgoecmeegpbidbbcefgkjegdejibd)
+[ ![addons.mozilla.org/](https://ffp4g1ylyit3jdyti1hqcvtb-wpengine.netdna-ssl.com/addons/files/2015/11/get-the-addon.png)](https://addons.mozilla.org/firefox/addon/reddit-post-notifier/)
+
+A browser extension that watches and notifies about:
+
+-   **new posts** in subreddits and Reddit searches,
+-   unread **private messages** in multiple accounts,
+-   the latest **users' comments and posts**.
 
 [![Video demonstration](https://img.youtube.com/vi/PZ69Vljtrg8/0.jpg)](https://www.youtube.com/watch?v=PZ69Vljtrg8)
 
 ## Usage for developers
 
--   `> npm run start:ff`
--   `> npm run start:chrome`
-    -   build the extension with [rollup](https://github.com/rollup/rollup) and run it in Firefox or Chrome using [web-ext](https://github.com/mozilla/web-ext)
--   `> npm run buildzip:ff`
--   `> npm run buildzip:chrome`
-    -   create an extension package in /web-ext-artifacts folder
--   `> npm run test`
-    -   test extension's code with jest
+Build and watch for changes in the code and style files, then run corresponding browser with `web-ext`
+
+    npm run dev:ff
+    npm run dev:chrome
+
+Build and zip the extension as a package in /web-ext-artifacts folder
+
+    npm run buildzip:ff
+    npm run buildzip:chrome
 
 ### Authorization
 
-This extension uses [OAuth2](https://github.com/reddit-archive/reddit/wiki/OAuth2) authorization to check reddit private mail. To generate credentials [create new reddit app](https://www.reddit.com/prefs/apps/) and then add id of the app in `/scripts/config.js` as `clientId` string.
+This extension uses [OAuth2](https://github.com/reddit-archive/reddit/wiki/OAuth2) authentication to get athorization and refresh tokens. These tokens will be used to check reddit private mail. To generate credentials [create new reddit app](https://www.reddit.com/prefs/apps/), and add id of the app in `.env` file (see .env.example).
 
 ### External libraries and frameworks
 
-Popup and option page UI are made with [Svelte](https://github.com/sveltejs/svelte).
+The pop-up and option pages UI are made with [Svelte](https://github.com/sveltejs/svelte) + [Tailwind CSS](https://tailwindcss.com/) and bundled with [esbuild](https://github.com/evanw/esbuild) and [Vite](https://github.com/vitejs/vite).
 
 ## Keyboard shortcuts
 
@@ -33,7 +46,7 @@ Popup and option page UI are made with [Svelte](https://github.com/sveltejs/svel
 |     <kbd>Alt</kbd>+<kbd>Shift</kbd>+<kbd>S</kbd>      | Open the extension's popup                                     |
 |            <kbd>&darr;</kbd>, <kbd>j</kbd>            | Select the next item                                           |
 |            <kbd>&uarr;</kbd>, <kbd>k</kbd>            | Select the previous item                                       |
-|   <kbd>&rarr;</kbd>, <kbd>l</kbd>, <kbd>Enter</kbd>   | Expand selected posts group; open selected post in the new tab |
+|   <kbd>&rarr;</kbd>, <kbd>l</kbd>, <kbd>Enter</kbd>   | Expand selected posts group; open selected item in the new tab |
 | <kbd>&larr;</kbd>, <kbd>h</kbd>, <kbd>Backspace</kbd> | Collapse selected posts group                                  |
 |                   <kbd>Space</kbd>                    | Mark selected item as read (remove it)                         |
 |                     <kbd>p</kbd>                      | Pin selected post; remove already pinned post                  |
