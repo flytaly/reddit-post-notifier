@@ -45,7 +45,7 @@
 </script>
 
 <Header />
-<main class="flex flex-col flex-1 min-w-[18rem] min-h-[6rem]">
+<main class="flex flex-col flex-1 min-w-[18rem] min-h-[6rem] max-h-[500px] overflow-x-hidden overflow-y-auto">
     {#if haveItems($storageData)}
         <WatchList />
     {:else}

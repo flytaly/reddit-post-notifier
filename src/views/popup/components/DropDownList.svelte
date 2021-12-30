@@ -28,17 +28,7 @@
         </span>
     </div>
     {#if isExpanded}
-        <div
-            class="flex flex-row ml-2"
-            transition:slide={{ duration: 150, easing: quadOut }}
-            on:introstart={() => {
-                // to prevent scroll bar blinking
-                document.body.style.overflowY = 'hidden';
-            }}
-            on:introend={() => {
-                document.body.style.overflowY = '';
-            }}
-        >
+        <div class="flex flex-row ml-2" transition:slide={{ duration: 150, easing: quadOut }}>
             <!-- Vertical Line -->
             <button class="flex w-5 group flex-shrink-0" on:click={toggle}>
                 <span class="w-px ml-1 h-full bg-skin-delimiter group-hover:bg-skin-accent2 group-hover:w-[2px]" />
