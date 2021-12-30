@@ -1,5 +1,11 @@
 # Release Notes
 
+## 4.0.1 (2021-12-31)
+
+-   Make main block in the popup scrollable
+-   Fixed focus outline colors in the popup
+-   Added avatar placeholder
+
 ## 4.0.0 (2021-12-27)
 
 -   Split Subreddits input and added per Subreddit settings
