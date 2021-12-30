@@ -4,7 +4,7 @@
     import type { AuthUser, StorageFields } from '@/storage/storage-types';
     import getMsg from '@/utils/get-message';
     import { onMount } from 'svelte';
-    import { DeleteIcon, RefreshIcon2 } from '../icons';
+    import { AccountIcon, DeleteIcon, RefreshIcon2 } from '../icons';
     import { isBlocked } from '../store';
     import IosCheckbox from './common/IosCheckbox.svelte';
     import NotifyToggle from './common/NotifyToggle.svelte';
@@ -92,7 +92,13 @@
     <div class="flex items-center gap-1 ">
         <Spinner show={isUpdating} label="" />
         {#if !isUpdating}
-            <img class="h-8 w-8" src={acc.img} alt="avatar" />
+            {#if acc.img}
+                <img class="h-8 w-8" src={acc.img} alt="avatar" />
+            {:else}
+                <div class="w-7 text-skin-gray">
+                    {@html AccountIcon}
+                </div>
+            {/if}
             <span>
                 {acc.name || `~ no account info`}
             </span>
