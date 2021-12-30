@@ -16,7 +16,7 @@ function browserSpecific() {
     if (target === 'firefox') {
         manifest.applications = {
             gecko: {
-                strict_min_version: '85',
+                strict_min_version: '85.0',
                 id: 'reddit-post-notifier@flytaly',
             },
         };
