@@ -60,10 +60,11 @@
     }
 
     .item {
-        @apply flex items-center w-full
+        @apply flex items-center w-full my-px
                border-t border-b border-skin-bg
                hover:border-skin-delimiter focus:border-skin-delimiter
-               hover:bg-skin-item-hover focus:bg-skin-item-hover;
+               hover:bg-skin-item-hover focus:bg-skin-item-hover
+               focus-visible:outline-none focus-visible:border-skin-outline;
     }
 
     :global([slot='list-row']),

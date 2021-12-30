@@ -10,13 +10,13 @@ const key =
 function browserSpecific() {
     const manifest: Partial<ExtManifest> = {};
     if (target === 'chrome') {
-        manifest.minimum_chrome_version = '80';
+        manifest.minimum_chrome_version = '86';
         manifest.key = key;
     }
     if (target === 'firefox') {
         manifest.applications = {
             gecko: {
-                strict_min_version: '75.0',
+                strict_min_version: '85',
                 id: 'reddit-post-notifier@flytaly',
             },
         };
