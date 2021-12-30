@@ -85,6 +85,12 @@
         }
         subredditInputRef.setCustomValidity('');
 
+        const shouldRemoveData = !!filter;
+
+        if (shouldRemoveData && showPosts) {
+            showPosts = false;
+        }
+
         await subredditStore.saveOptions(
             {
                 id: subOpts.id,
@@ -93,7 +99,7 @@
                 notify: subOpts.notify,
                 filterOpts: processFilterOpts(filter ? filter : subOpts.filterOpts),
             },
-            !!filter,
+            shouldRemoveData,
         );
 
         fetchError = '';
