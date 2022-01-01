@@ -73,7 +73,7 @@ function notify(notif: Notification, soundId?: SoundId) {
     } as const;
 
     if (isMessage(notif)) {
-        const message = notif.items.map((i) => `${i.username}(${i.len})`).join(', ');
+        const message = notif.items.map((i) => `${i.username || ''} (${i.len})`).join(', ');
 
         const nOpts: NotificationOpts = { ...opts, title: 'Reddit: new mail', message };
 

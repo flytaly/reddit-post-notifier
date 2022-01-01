@@ -250,10 +250,17 @@ const storage = {
         return storage.saveAccounts(result);
     },
 
-    async removeMessages(accId: string) {
+    async removeMessages(accId?: string) {
         const accounts = await storage.getAccounts();
-        if (!accounts[accId]?.mail) return;
-        accounts[accId].mail.messages = [];
+        if (!accId) {
+            Object.values(accounts).forEach((a) => {
+                if (!a.mail) a.mail = { messages: [] };
+                a.mail.messages = [];
+            });
+        } else {
+            if (!accounts[accId]?.mail) return;
+            accounts[accId].mail.messages = [];
+        }
         await browser.storage.local.set({ accounts } as SF);
     },
 

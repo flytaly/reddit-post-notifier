@@ -2,22 +2,38 @@
     import { browser } from 'webextension-polyfill-ts';
     import RefreshIcon from '@assets/refresh.svg';
     import SettingsIcon from '@assets/settings.svg';
+    import MailIcon from '@assets/mail.svg';
     import { sendToBg } from '@/port';
     import getMsg from '@/utils/get-message';
-    import { isUpdating } from '../store/store';
+    import { isUpdating, storageData } from '../store/store';
     import SvgButton from './SvgButton.svelte';
+    import { getInboxUrl } from '@/utils';
+    import storage from '@/storage/storage';
+    import type { StorageFields } from '@/storage/storage-types';
 
     let loading = false;
+    let messagesCount = 0;
+    const inboxHref = getInboxUrl();
 
     $: loading = $isUpdating;
+    $: {
+        const accs: StorageFields['accounts'] = $storageData.accounts || {};
+        Object.values(accs)?.forEach((a) => {
+            messagesCount += a.mail?.messages?.length || 0;
+        });
+    }
 
     const onOptionClick = async () => {
         await browser.runtime.openOptionsPage();
         window.close();
     };
+
+    const onMailClick = async () => {
+        if (messagesCount) await storage.removeMessages();
+    };
 </script>
 
-<header class="flex items-center p-1 min-h-[1.2rem] border-b border-skin-delimiter">
+<header class="flex items-center p-1 min-h-[1.2rem] border-b border-skin-delimiter space-x-3">
     <span class="flex flex-1 items-center space-x-2">
         <SvgButton
             disabled={loading}
@@ -31,6 +47,21 @@
         </SvgButton>
     </span>
 
+    <a
+        class="flex gap-1 text-current group"
+        class:accent={messagesCount}
+        on:click={onMailClick}
+        title={getMsg('headerMailLink_title')}
+        href={inboxHref}
+    >
+        {#if messagesCount}
+            <span>{messagesCount}</span>
+        {/if}
+        <div class="w-5 h-4 group-hover:scale-110 group-active:scale-95">
+            {@html MailIcon}
+        </div>
+    </a>
+
     <span class="flex items-center space-x-3">
         <SvgButton
             text={getMsg('headerOptionsBtn')}
@@ -42,3 +73,9 @@
         </SvgButton>
     </span>
 </header>
+
+<style lang="postcss">
+    .accent {
+        @apply text-skin-accent;
+    }
+</style>

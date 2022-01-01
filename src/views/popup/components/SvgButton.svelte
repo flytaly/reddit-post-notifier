@@ -31,7 +31,7 @@
         @apply flex items-center justify-center p-0 transition;
     }
     .icon {
-        @apply group-hover:scale-110 group-active:scale-95   group-disabled:scale-100;
+        @apply group-hover:scale-110 group-active:scale-95 group-disabled:scale-100;
     }
     .with-text {
         @apply px-1 border border-skin-base

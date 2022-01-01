@@ -46,10 +46,14 @@ describe('Authorization and messages', () => {
                 scope: 'scope',
             },
             mail: {
-                messages: [...oldMsgs] as RedditMessage[],
+                messages: cloneDeep(oldMsgs) as RedditMessage[],
             },
         },
-        a2: { auth: { refreshToken: 'refreshToken2' }, id: 'a2' },
+        a2: {
+            auth: { refreshToken: 'refreshToken2' },
+            mail: { messages: cloneDeep(oldMsgs) as RedditMessage[] },
+            id: 'a2',
+        },
     };
 
     test('should return accounts data', async () => {
@@ -75,7 +79,7 @@ describe('Authorization and messages', () => {
             token_type: '???',
         };
         const expected = cloneDeep(fakeData);
-        expected[id] = { id, auth: { scope, accessToken, refreshToken, expiresIn, error: '' } } as AuthUser;
+        expected[id] = { ...expected[id], auth: { scope, accessToken, refreshToken, expiresIn, error: '' } };
         mockSet.expect({ accounts: expected });
         await storage.saveAuthData({ data: dataToSave, id });
         restoreDate();
@@ -94,12 +98,22 @@ describe('Authorization and messages', () => {
         restoreDate();
     });
 
-    test('should remove all messages from account', async () => {
+    test('should remove all messages from an account', async () => {
         const expected = cloneDeep(fakeData);
         expected.a1.mail.messages = [];
+        expected.a2.mail.messages = oldMsgs as RedditMessage[];
         mockGet.expect({ accounts: {} }).andResolve({ accounts: cloneDeep(fakeData) });
         mockSet.expect({ accounts: expected });
         await storage.removeMessages(fakeData.a1.id);
+    });
+
+    test('should remove all messages from all accounts', async () => {
+        const expected = cloneDeep(fakeData);
+        expected.a1.mail.messages = [];
+        expected.a2.mail.messages = [];
+        mockGet.expect({ accounts: {} }).andResolve({ accounts: cloneDeep(fakeData) });
+        mockSet.expect({ accounts: expected });
+        await storage.removeMessages();
     });
 
     test('should remove message', async () => {

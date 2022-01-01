@@ -15,6 +15,9 @@
         "message": "Update now",
         "description": "Attribute title of the update button"
     },
+    "headerMailLink_title": {
+        "message": "Open reddit inbox and remove all messages from the extension"
+    },
     "headerOptionsBtn": {
         "message": "options"
     },
