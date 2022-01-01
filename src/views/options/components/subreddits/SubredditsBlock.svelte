@@ -4,15 +4,16 @@
     import { fade } from 'svelte/transition';
     import { storageData } from '../../../popup/store/store';
     import AddButton from '../common/AddButton.svelte';
+    import BlockDescription from '../common/BlockDescription.svelte';
     import SubredditInput from './SubredditInput.svelte';
     import { subredditStore } from './subreddits-store';
 </script>
 
 <div>
-    <div class=" mb-4 text-sm">
+    <BlockDescription>
         <span>{getMsg('optionSubredditsDescription')}</span>
         <a href="#info">{getMsg('optionReadMore')}</a>
-    </div>
+    </BlockDescription>
     <div class="grid-header">
         <div>{getMsg('optionSubredditsName')}</div>
         <div>{getMsg('optionSubredditsActive')}</div>

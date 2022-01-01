@@ -6,6 +6,7 @@
     import DEFAULT_OPTIONS from '../../../options-default';
     import { storageData } from '../../popup/store/store';
     import AddButton from './common/AddButton.svelte';
+    import BlockDescription from './common/BlockDescription.svelte';
     import FollowUserInput from './FollowUserInput.svelte';
     import OptionsItem from './OptionsItem.svelte';
     import RadioGroup from './RadioGroup.svelte';
@@ -67,7 +68,7 @@
 </script>
 
 <div>
-    <div class="my-4 text-sm">{getMsg('optionsFollowUserDescription')}</div>
+    <BlockDescription>{getMsg('optionsFollowUserDescription')}</BlockDescription>
     <OptionsItem title="Minimum update interval">
         <div slot="description">
             {getMsg('optionsFollowUserMinUpdate')}

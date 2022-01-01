@@ -6,10 +6,11 @@
     import SearchFieldset from './SearchFieldset.svelte';
     import { searchStore } from './search-store';
     import AddButton from '../common/AddButton.svelte';
+import BlockDescription from '../common/BlockDescription.svelte';
 </script>
 
 <div>
-    <div class="my-4 text-sm">{@html getMsg('optionSearchDescription')}</div>
+    <BlockDescription>{@html getMsg('optionSearchDescription')}</BlockDescription>
     {#each $searchStore as queryObject (queryObject.id)}
         <div class="mb-4" transition:fade|local={{ duration: 200, easing: quadOut }}>
             <SearchFieldset bind:queryObject queryData={$storageData.queries[queryObject.id] || {}} />

@@ -5,6 +5,7 @@
     import { isBlocked, storageData } from '../store';
     import Account from './Account.svelte';
     import AddButton from './common/AddButton.svelte';
+    import BlockDescription from './common/BlockDescription.svelte';
 
     let accounts: StorageFields['accounts'] = $storageData.accounts;
     let accList: AuthUser[] = [];
@@ -34,8 +35,12 @@
 </script>
 
 <div class="text-sm">
-    <span>{getMsg('optionAccountsDescription')}</span>&nbsp;
-    <a href="#info">{getMsg('optionReadMore')}</a>
+    <BlockDescription>
+        <span>
+            {getMsg('optionAccountsDescription')}
+        </span>
+        <a href="#info">{getMsg('optionReadMore')}</a>
+    </BlockDescription>
     <div class="my-4">
         {#if accList?.length}
             <ul>

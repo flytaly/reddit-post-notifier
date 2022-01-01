@@ -30,7 +30,7 @@
         flex-direction: column;
     }
     .description {
-        @apply text-skin-gray flex-grow pr-4 mb-2;
+        @apply text-skin-gray flex-grow pr-4 mb-2 leading-6;
     }
     :not(.column) .description :global([slot='description']) {
         max-width: 90%;
