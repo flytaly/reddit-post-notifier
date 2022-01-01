@@ -5,7 +5,7 @@
     import type { ExtensionOptions } from '@/types/extension-options';
     import applyTheme from '@/utils/apply-theme';
     import getMsg from '@/utils/get-message';
-    import { PlayIcon } from '@/views/options/icons';
+    import { OpenInNew, PlayIcon } from '@/views/options/icons';
     import { browser } from 'webextension-polyfill-ts';
     import OptionsItem from './OptionsItem.svelte';
     import RadioGroup from './RadioGroup.svelte';
@@ -76,6 +76,23 @@
             type="checkbox"
             bind:checked={$storageData.options.delPostAfterBodyClick}
             on:change={() => storage.saveOptions({ delPostAfterBodyClick: $storageData.options.delPostAfterBodyClick })}
+        />
+    </div>
+</OptionsItem>
+
+<OptionsItem title={getMsg('optionDelListAfterClick')} labelFor="deleteListInput">
+    <div slot="description">
+        <span class="inline-block">
+            <span>{getMsg('optionDelListAfterClickDescription')}</span>
+            <span class="inline-block w-4">{@html OpenInNew}</span>
+        </span>
+    </div>
+    <div slot="controls">
+        <input
+            id="deleteListInput"
+            type="checkbox"
+            bind:checked={$storageData.options.delListAfterOpening}
+            on:change={() => storage.saveOptions({ delListAfterOpening: $storageData.options.delListAfterOpening })}
         />
     </div>
 </OptionsItem>

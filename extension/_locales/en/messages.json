@@ -133,6 +133,12 @@
     "optionDelPostAfterClickDescription": {
         "message": "Open the post in a new tab and remove it from the list."
     },
+    "optionDelListAfterClick": {
+        "message": "Clear item list after opening it in a new tab"
+    },
+    "optionDelListAfterClickDescription": {
+        "message": "Upon clicking the 'open in a new tab' icon, clear the current list of posts/comments/messages."
+    },
     "optionHideEmptyGroups": {
         "message": "Hide empty groups",
         "description": "Hide empty groups checkbox"

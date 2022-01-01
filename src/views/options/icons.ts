@@ -10,6 +10,7 @@ export { default as LoadingIcon } from '@assets/loading.svg';
 export { default as LogoIcon } from '@assets/logo.svg';
 export { default as NotifyIcon } from '@assets/notify.svg';
 export { default as NotifyOffIcon } from '@assets/notify-off.svg';
+export { default as OpenInNew } from '@assets/open-in-new.svg';
 export { default as PlayIcon } from '@assets/play.svg';
 export { default as RefreshIcon2 } from '@assets/refresh2.svg';
 export { default as SaveIcon } from '@assets/save.svg';

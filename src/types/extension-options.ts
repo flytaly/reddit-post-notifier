@@ -17,6 +17,8 @@ export type ExtensionOptions = {
     expandWithItems: number;
     /** delete the post after clicking on it */
     delPostAfterBodyClick: boolean;
+    /** delete the item list after opening */
+    delListAfterOpening: boolean;
     hideEmptyGroups: boolean;
     notificationSoundId: null | SoundId;
     /** open links in 'old.reddit.com' */

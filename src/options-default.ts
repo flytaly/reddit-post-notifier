@@ -11,6 +11,7 @@ const DEFAULT_OPTIONS: ExtensionOptions = {
     theme: 'auto',
     expandWithItems: 5,
     delPostAfterBodyClick: false,
+    delListAfterOpening: false,
     hideEmptyGroups: false,
     notificationSoundId: null,
     useOldReddit: false,

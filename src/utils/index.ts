@@ -26,7 +26,6 @@ export const getSubredditUrl = (subreddit: string, oldReddit = false): string =>
 
 export const getInboxUrl = (oldReddit = false): string => `${oldReddit ? redditOldUrl : redditUrl}/message/inbox`;
 
-
 export const getSearchQueryUrl = (query: string, subreddit = '', oldReddit = false): string => {
     const endpoint = subreddit
         ? `/r/${subreddit}/search?sort=new&restrict_sr=on&q=${query}`

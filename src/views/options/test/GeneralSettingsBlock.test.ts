@@ -82,7 +82,7 @@ describe('General Options', () => {
         check('auto');
     });
 
-    test('delete after click', async () => {
+    test('delete post after click', async () => {
         mockStorageData();
         const { getByLabelText } = render(GeneralSettingsBlock);
         await tick();
@@ -91,6 +91,17 @@ describe('General Options', () => {
         expect(input).not.toBeChecked();
         await fireEvent.click(input);
         optionSaved({ delPostAfterBodyClick: true });
+    });
+
+    test('delete list after click', async () => {
+        mockStorageData();
+        const { getByLabelText } = render(GeneralSettingsBlock);
+        await tick();
+
+        const input = getByLabelText(getMsg('optionDelListAfterClick'), { exact: false });
+        expect(input).not.toBeChecked();
+        await fireEvent.click(input);
+        optionSaved({ delListAfterOpening: true });
     });
 
     test('hide empty groups', async () => {

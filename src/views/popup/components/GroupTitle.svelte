@@ -12,16 +12,19 @@
     import { browser } from 'webextension-polyfill-ts';
     import CheckMarkButton from './CheckMarkButton.svelte';
     import type { PostGroup } from '../helpers/post-group';
+    import { storageData } from '../store/store';
 
     export let group: PostGroup;
-
-    export let onCheck: () => void | null = null;
+    export let onCheck: () => Promise<void> | null = null;
     export let disabled = false;
 
-    const linkClickHandler = (e: Event) => {
+    const linkClickHandler = async (e: Event) => {
         e.stopPropagation();
         // Prevent double opening in Firefox
         e.preventDefault();
+        if (onCheck && $storageData.options.delListAfterOpening) {
+            await onCheck();
+        }
         void browser.tabs.create({ url: group.href, active: true });
     };
 </script>
