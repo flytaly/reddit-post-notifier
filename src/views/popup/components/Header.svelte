@@ -9,7 +9,6 @@
     import SvgButton from './SvgButton.svelte';
     import { getInboxUrl } from '@/utils';
     import storage from '@/storage/storage';
-    import type { StorageFields } from '@/storage/storage-types';
 
     let loading = false;
     let messagesCount = 0;
@@ -17,9 +16,10 @@
 
     $: loading = $isUpdating;
     $: {
-        const accs: StorageFields['accounts'] = $storageData.accounts || {};
-        Object.values(accs)?.forEach((a) => {
-            messagesCount += a.mail?.messages?.length || 0;
+        messagesCount = 0;
+        // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
+        Object.values($storageData.accounts || {})?.forEach((a) => {
+            messagesCount = a.mail?.messages?.length || 0;
         });
     }
 

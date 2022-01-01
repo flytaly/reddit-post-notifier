@@ -1,5 +1,10 @@
 # Release Notes
 
+## 4.1.0 (2022-01-02)
+
+-   Restore mail icon in the popup header
+-   Add an option to clear item lists after opening it in the new tab
+
 ## 4.0.1 (2021-12-31)
 
 -   Make main block in the popup scrollable
