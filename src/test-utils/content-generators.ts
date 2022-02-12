@@ -1,4 +1,4 @@
-import faker from 'faker';
+import faker from '@withshepherd/faker';
 import { RedditObjectKind } from '../reddit-api/reddit-types';
 import type { RedditMessage, RedditMessageData, RedditPost, RedditPostData } from '../reddit-api/reddit-types';
 import type { QueryOpts } from '../storage/storage-types';
