@@ -5,6 +5,7 @@ import type {
     RedditAccount,
     RedditError,
     RedditListingResponse,
+    RedditMessage,
     RedditPostExtended,
     RedditSearchListing,
     RedditSubredditListing,
@@ -141,10 +142,11 @@ export default class NotifierApp {
         return newPosts;
     }
 
-    async updateUnreadMsg(account: AuthUser) {
+    async updateUnreadMsg(account: AuthUser): Promise<null | RedditMessage[]> {
         try {
             const token = await auth.getAccessToken(account);
-            this.reddit.setAccessToken(token || null);
+            if (!token) return null;
+            this.reddit.setAccessToken(token);
 
             const response = await this.reddit.messages.unread();
 
@@ -157,6 +159,11 @@ export default class NotifierApp {
             await storage.saveMessageData(account.id, { unreadMessages: newMessages });
             return newMessages;
         } catch (error) {
+            console.log(error);
+            if (isAuthError(error)) {
+                await storage.setAuthError(error);
+                return null;
+            }
             const message = error.message || error;
             console.error('Error during fetching unread messages ', message);
             await storage.saveMessageData(account.id, { error: { message } });
@@ -347,7 +354,14 @@ export default class NotifierApp {
         }
 
         if (usersList?.length || subredditList?.length || queriesList?.length) {
-            await this.setAccessToken(accounts);
+            try {
+                await this.setAccessToken(accounts);
+            } catch (e) {
+                console.error(e);
+                if (isAuthError(e)) {
+                    await storage.setAuthError(e);
+                }
+            }
         }
 
         if (usersList) {

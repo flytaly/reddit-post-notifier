@@ -1,6 +1,6 @@
 import type { AuthUser } from '@/storage/storage-types';
 import { browser } from 'webextension-polyfill-ts';
-import { config } from '../constants';
+import { config, DEV_SERVER, USE_DEV_SERVER } from '../constants';
 import storage from '../storage';
 import { generateId, mapObjToQueryStr } from '../utils';
 import { AuthError } from './errors';
@@ -14,10 +14,15 @@ export type TokenResponseBody = {
     expires_in: string;
     scope: string;
     token_type: string;
-    error?: string;
 };
 
-const BASE_URL = 'https://www.reddit.com/api/v1';
+export type TokenResponseError = { error?: string; message?: string };
+
+export function isErrorTokenResponse(r: TokenResponseError | TokenResponseBody): r is TokenResponseError {
+    return !(r as TokenResponseBody).access_token;
+}
+
+const BASE_URL = USE_DEV_SERVER ? `${DEV_SERVER}/api/v1` : 'https://www.reddit.com/api/v1';
 
 /**
  * Reddit OAuth2 code flow:
@@ -102,8 +107,8 @@ const auth = {
             throw new AuthError(`Couldn't receive tokens. ${response.status}: ${response.statusText || ''}`, id);
         }
 
-        const body = (await response.json()) as TokenResponseBody;
-        if (body.error) {
+        const body = (await response.json()) as TokenResponseBody | TokenResponseError;
+        if (isErrorTokenResponse(body)) {
             throw new AuthError(`Couldn't receive tokens. Error: ${body.error}`, id);
         }
 
@@ -118,12 +123,24 @@ const auth = {
         };
         const response = await fetch(auth.accessTokenURL, auth.fetchAuthInit(params));
 
-        if (response.status !== 200) {
-            throw new AuthError(`Couldn't refresh access token. ${response.status}: ${response.statusText || ''}`, id);
+        if (response.status >= 500) {
+            throw new AuthError(
+                `Couldn't refresh access token. ${response.status}: ${response.statusText || ''}`,
+                id,
+                // Reddit is down, don't invalidate token
+                false,
+            );
         }
-        const body = (await response.json()) as TokenResponseBody;
-        if (body.error) {
-            throw new AuthError(`Couldn't refresh access token. Error: ${body.error}`, id);
+
+        let body: TokenResponseBody | TokenResponseError;
+        try {
+            body = (await response.json()) as TokenResponseBody | TokenResponseError;
+        } catch (error) {
+            body = { error: error.status, message: error.message };
+        }
+
+        if (isErrorTokenResponse(body)) {
+            throw new AuthError(`Couldn't refresh access token. ${body.error}: ${body.message}`, id, true);
         }
 
         await storage.saveAuthData({ data: body, id });

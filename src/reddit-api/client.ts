@@ -1,6 +1,6 @@
 // https://www.reddit.com/dev/api/
 import { mapObjToQueryStr } from '../utils/index';
-import { config } from '../constants';
+import { config, DEV_SERVER, IS_DEV, USE_DEV_SERVER } from '../constants';
 import type {
     RedditAccount,
     RedditCommentResponse,
@@ -26,6 +26,11 @@ export default class RedditApiClient {
         this.authOrigin = 'https://oauth.reddit.com';
         this.publicOrigin = 'https://reddit.com';
         this.headers = { Accept: 'application/json' };
+
+        if (IS_DEV && USE_DEV_SERVER) {
+            this.authOrigin = DEV_SERVER;
+            this.publicOrigin = DEV_SERVER;
+        }
     }
 
     setAccessToken(accessToken?: string | null) {
@@ -42,6 +47,9 @@ export default class RedditApiClient {
         const origin = this.accessToken ? this.authOrigin : this.publicOrigin;
         const actualEndpoint = this.accessToken ? endpoint : `${endpoint}.json`;
         const result = await fetch(encodeURI(`${origin}${actualEndpoint}?${query}`), init);
+        if (result.status !== 200) {
+            throw new Error(`${result.status} ${result.statusText}`);
+        }
         return result.json();
     }
 

@@ -4,6 +4,10 @@ export const TARGET = process.env.TARGET;
 export const IS_CHROME = TARGET === 'chrome';
 export const IS_FIREFOX = TARGET === 'firefox';
 
+export const USE_DEV_SERVER = process.env.USE_DEV_SERVER === 'true';
+export const DEV_SERVER = 'http://localhost:3000'
+
+
 export const config = IS_CHROME
     ? {
           clientId: process.env.CHROME_CLIENT_ID,

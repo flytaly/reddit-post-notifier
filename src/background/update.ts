@@ -18,10 +18,9 @@ export async function updateAndSchedule(isForcedByUser = false) {
     } catch (e) {
         console.error(e);
         if (isAuthError(e)) {
-            // If authorization fails remove authorization data from storage and update again.
-            await storage.setAuthError(e.id, e.message);
+            await storage.setAuthError(e);
             isUpdating = false;
-            await updateAndSchedule();
+            if (e.invalidateToken) await updateAndSchedule();
         } else {
             await scheduleNextUpdate();
         }

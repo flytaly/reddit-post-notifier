@@ -93,6 +93,7 @@ describe('Authorization and messages', () => {
         expected.a1.mail.lastUpdate = date.getTime();
         expected.a1.mail.messages = [...newMsgs, ...oldMsgs] as RedditMessage[];
         expected.a1.error = null;
+        expected.a1.auth.error = null;
         mockSet.expect({ accounts: expected });
         await storage.saveMessageData(fakeData.a1.id, { unreadMessages: cloneDeep(newMsgs) as any as RedditMessage[] });
         restoreDate();

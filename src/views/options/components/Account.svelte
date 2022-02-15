@@ -39,9 +39,9 @@
         if (u.error) res.push(u.error);
         if (u.auth.error) {
             res.push(u.auth.error);
-            res.push('Authorization error. Please reathorize account');
-        } else if (!u.auth.refreshToken) {
-            res.push("Extension doesn't have a refresh token. Please reathorize the account");
+        }
+        if (!u.auth.refreshToken) {
+            res.push('Refresh token is missing or invalid. Please reathorize the account');
         }
         return res;
     };

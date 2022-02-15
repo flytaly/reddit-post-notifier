@@ -1,5 +1,6 @@
 /* eslint-disable @typescript-eslint/explicit-module-boundary-types */
 
+import type { AuthError } from '@/reddit-api/errors';
 import scopes from '@/reddit-api/scopes';
 import { browser } from 'webextension-polyfill-ts';
 import DEFAULT_OPTIONS from '../options-default';
@@ -96,11 +97,12 @@ const storage = {
         const accs = await storage.getAccounts();
         if (!accs[accId]) accs[accId] = { id: accId, auth: {}, mail: { messages: [] } };
         if (error) {
-            accs[accId].error = "Couldn't fetch messages: " + error.message;
+            accs[accId].error = `Couldn't fetch messages. ${error.message}`;
             return storage.saveAccounts(accs);
         }
 
         accs[accId].error = null;
+        accs[accId].auth.error = null;
         if (!accs[accId].mail) accs[accId].mail = { messages: [] };
         const mail = accs[accId].mail;
         mail.lastUpdate = Date.now();
@@ -227,12 +229,13 @@ const storage = {
         return browser.storage.local.set({ notifications });
     },
 
-    async setAuthError(id: string, errMsg?: string) {
+    async setAuthError(error: AuthError) {
         const accs = await storage.getAccounts();
-        if (accs[id]) {
-            accs[id].auth.error = errMsg;
-            accs[id].auth.refreshToken = null;
-        }
+        const { id } = error;
+        if (!accs[id]) return;
+
+        accs[id].auth.error = error.message;
+        if (error.invalidateToken) accs[id].auth.refreshToken = null;
         return storage.saveAccounts(accs);
     },
 

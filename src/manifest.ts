@@ -1,6 +1,7 @@
 import type { Manifest } from 'webextension-polyfill-ts';
 import pkg from '../package.json';
 import { isDev, port, target } from '../scripts/utils';
+import { DEV_SERVER, IS_DEV } from './constants';
 
 type ExtManifest = Manifest.WebExtensionManifest & { key?: string };
 
@@ -27,6 +28,17 @@ function browserSpecific() {
 export async function getManifest(): Promise<Manifest.WebExtensionManifest> {
     // update this file to update this manifest.json
     // can also be conditional based on your need
+    const permissions: string[] = [
+        'identity',
+        'storage',
+        'alarms',
+        'notifications',
+        'https://*.reddit.com/*',
+        'https://*.redd.it/*',
+    ];
+    if (IS_DEV) {
+        permissions.push(`${DEV_SERVER}/*`);
+    }
     return {
         manifest_version: 2,
         default_locale: 'en',
@@ -40,14 +52,7 @@ export async function getManifest(): Promise<Manifest.WebExtensionManifest> {
             '96': 'images/icon-96.png',
             '128': 'images/icon-128_chrome.png',
         },
-        permissions: [
-            'identity',
-            'storage',
-            'alarms',
-            'notifications',
-            'https://*.reddit.com/*',
-            'https://*.redd.it/*',
-        ],
+        permissions,
         background: {
             persistent: true,
             page: 'background.html',

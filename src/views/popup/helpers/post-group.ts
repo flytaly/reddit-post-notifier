@@ -29,7 +29,7 @@ export const extractPostGroups = (storageData: StorageFields) => {
 
     accList.forEach((a) => {
         let error = a.error || a.auth.error;
-        if (!a.auth.refreshToken) error = 'There is no refresh token. Please reauthorize the account.';
+        if (!a.auth.refreshToken) error = 'Refresh token is missing. Please reauthorize the account.';
         const length = a.mail?.messages?.length || 0;
         const lastPostCreated = a.mail?.lastPostCreated;
         const group: PostGroup = {
