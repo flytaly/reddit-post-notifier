@@ -1,5 +1,9 @@
 # Release Notes
 
+## 4.1.1 (2022-02-15)
+
+-  Don't remove refresh token on Reddit servers errors 
+
 ## 4.1.0 (2022-01-02)
 
 -   Restore mail icon in the popup header
