@@ -6,7 +6,7 @@
     import SearchFieldset from './SearchFieldset.svelte';
     import { searchStore } from './search-store';
     import AddButton from '../common/AddButton.svelte';
-import BlockDescription from '../common/BlockDescription.svelte';
+    import BlockDescription from '../common/BlockDescription.svelte';
 </script>
 
 <div>
