@@ -1,6 +1,6 @@
 import type { StorageFields } from '@/storage/storage-types';
 import { getInboxUrl, getSearchQueryUrl, getSubredditUrl, getUserProfileUrl } from '@/utils';
-import { formatError } from '@/views/options/format-error';
+import { formatError } from '@/pages/options/format-error';
 import { idToUserIdx } from '.';
 import type { RedditItem, RedditMessage } from '../../../reddit-api/reddit-types';
 

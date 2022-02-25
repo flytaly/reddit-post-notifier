@@ -33,7 +33,7 @@ const r = (...args: string[]) => resolve(__dirname, ...args);
 
 export default defineConfig(({ command }) => {
     return {
-        root: r('src/views'),
+        root: r('src/pages'),
         base: command === 'serve' ? `http://localhost:${port}/` : undefined,
         server: {
             port,
@@ -53,8 +53,9 @@ export default defineConfig(({ command }) => {
             emptyOutDir: false,
             rollupOptions: {
                 input: {
-                    popup: r('src/views/popup/index.html'),
-                    options: r('src/views/options/index.html'),
+                    popup: r('src/pages/popup/index.html'),
+                    options: r('src/pages/options/index.html'),
+                    info: r('src/pages/options/info.html'),
                 },
             },
         },

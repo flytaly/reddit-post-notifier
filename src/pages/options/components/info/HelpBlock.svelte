@@ -1,9 +1,8 @@
 <script lang="ts">
-    import { BellIcon } from '@/views/options/icons';
+    import { BellIcon } from '@/pages/options/icons';
     import { storageData } from '../../store';
-    import type { SectionKey } from '../../routes';
+    import { sections } from '../../routes';
 
-    const href = (key: SectionKey) => key;
     let limit = 10;
     $: limit = $storageData.options.limit || 10;
 </script>
@@ -26,7 +25,7 @@
                 If you want to monitor
                 <b>every</b>
                 post in a Subreddit/Multireddit go to the
-                <a href={href('#settings__subreddit')}>Subreddits section</a>
+                <a href={'./index.html#' + sections.settings.subreddit.id}>Subreddits section</a>
                 and add the Subreddit name to the list.</span
             >
             <details class="mt-2" open>
@@ -47,7 +46,7 @@
         <div class="ml-8">
             <div>
                 You can stay up to date with Reddit Search by adding a query in the "search query" field in the
-                <a href={href('#settings__reddit-search')}>Reddit Search</a>
+                <a href={'./index.html#' + sections.settings['reddit-search'].id}>Reddit Search</a>
                 section. Look at the
                 <a href="https://www.reddit.com/wiki/search#wiki_field_search" target="_blank">Reddit Search wiki</a>
                 to learn supported keywords and

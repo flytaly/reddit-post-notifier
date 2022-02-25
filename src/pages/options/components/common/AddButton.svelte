@@ -1,5 +1,5 @@
 <script lang="ts">
-    import { AddIcon } from '@/views/options/icons';
+    import { AddIcon } from '@/pages/options/icons';
     export let clickHandler: (e: MouseEvent & { currentTarget: EventTarget & HTMLButtonElement }) => void = undefined;
     export let disabled = false;
 </script>

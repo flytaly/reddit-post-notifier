@@ -5,11 +5,11 @@
     import type { ExtensionOptions } from '@/types/extension-options';
     import applyTheme from '@/utils/apply-theme';
     import getMsg from '@/utils/get-message';
-    import { OpenInNew, PlayIcon } from '@/views/options/icons';
+    import { OpenInNew, PlayIcon } from '@/pages/options/icons';
     import { browser } from 'webextension-polyfill-ts';
     import OptionsItem from './OptionsItem.svelte';
     import RadioGroup from './RadioGroup.svelte';
-    import { storageData } from '@/views/options/store';
+    import { storageData } from '@/pages/options/store';
 
     const themeValueList: Array<{ value: ExtensionOptions['theme']; id: string; label: string }> = [
         { value: 'light', id: 'light', label: getMsg('optionThemeLight') },

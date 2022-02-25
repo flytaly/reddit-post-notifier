@@ -4,8 +4,8 @@
     import type { FilterRule, SearchableField } from '@/text-search/post-filter';
     import { debounce, testMultireddit } from '@/utils';
     import getMsg from '@/utils/get-message';
-    import * as icons from '@/views/options/icons';
-    import { RefreshIcon2 } from '@/views/options/icons';
+    import * as icons from '@/pages/options/icons';
+    import { RefreshIcon2 } from '@/pages/options/icons';
     import { formatError } from '../../format-error';
     import { isBlocked } from '../../store';
     import RedditItemsList from '../RedditItemsList.svelte';

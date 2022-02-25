@@ -2,8 +2,8 @@
     import NotifierApp from '@/notifier/app';
     import type { FollowingUser } from '@/storage/storage-types';
     import getMsg from '@/utils/get-message';
-    import * as icons from '@/views/options/icons';
-    import { RefreshIcon2 } from '@/views/options/icons';
+    import * as icons from '@/pages/options/icons';
+    import { RefreshIcon2 } from '@/pages/options/icons';
     import { isBlocked } from '../store';
     import IosCheckbox from './common/IosCheckbox.svelte';
     import NotifyToggle from './common/NotifyToggle.svelte';

@@ -1,6 +1,6 @@
 <script lang="ts">
     import getMsg from '@/utils/get-message';
-    import { storageData } from '@/views/options/store';
+    import { storageData } from '@/pages/options/store';
     import { quadOut } from 'svelte/easing';
     import { fade } from 'svelte/transition';
     import SearchFieldset from './SearchFieldset.svelte';

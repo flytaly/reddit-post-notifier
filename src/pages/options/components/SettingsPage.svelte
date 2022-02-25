@@ -1,8 +1,9 @@
 <script lang="ts">
     import storage from '@/storage/storage';
+    import getMsg from '@/utils/get-message';
     import { onDestroy, onMount, tick } from 'svelte';
     import type { Unsubscriber } from 'svelte/store';
-    import { pageInfo, sections } from '../routes';
+    import { sections } from '../routes';
     import { storageData } from '../store';
     import AccountsBlock from './AccountsBlock.svelte';
     import FollowUsersBlock from './FollowUsersBlock.svelte';
@@ -11,47 +12,49 @@
     import SearchBlock from './search/SearchBlock.svelte';
     import SubredditsBlock from './subreddits/SubredditsBlock.svelte';
 
-    let destroy: Unsubscriber;
     const dataPromise = storage.getAllData();
+    let destroy: Unsubscriber;
 
     onMount(() => {
         // wait for children sections to mount and then scroll based on hash
         void (async () => {
             await dataPromise;
             await tick();
-            destroy = pageInfo.subscribe(({ sectionId }) => {
-                if (sectionId !== '#settings') {
-                    document.body.querySelector(sectionId)?.scrollIntoView();
-                } else window.scrollTo(0, 0);
-            });
+            const { hash } = document.location;
+            if (hash) {
+                document.body.querySelector(hash)?.scrollIntoView();
+            }
         })();
     });
+
     onDestroy(() => void destroy?.());
+
+    const s = sections.settings;
 </script>
 
 <div class="w-full">
     {#if $storageData.isLoaded}
         <h1 class="text-2xl uppercase font-bold tracking-widest text-skin-gray mb-4">
-            {sections['#settings'].name}
+            {getMsg('optionsNavSettings')}
         </h1>
         <section>
-            <Heading id={'#settings__general'} />
+            <Heading id={s.general.id} name={s.general.name} />
             <GeneralSettingsBlock />
         </section>
         <section>
-            <Heading id={'#settings__mail'} />
+            <Heading id={s.mail.id} name={getMsg('optionsNavMailFull')} />
             <AccountsBlock />
         </section>
         <section>
-            <Heading id={'#settings__subreddit'} />
+            <Heading id={s.subreddit.id} name={s.subreddit.name} />
             <SubredditsBlock />
         </section>
         <section>
-            <Heading id={'#settings__reddit-search'} />
+            <Heading id={s['reddit-search'].id} name={s['reddit-search'].name} />
             <SearchBlock />
         </section>
         <section>
-            <Heading id="#settings__follow-user" />
+            <Heading id={s['follow-user'].id} name={s['follow-user'].name} />
             <FollowUsersBlock />
         </section>
         <div class="h-[80vh]" />

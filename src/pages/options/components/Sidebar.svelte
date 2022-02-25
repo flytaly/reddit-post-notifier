@@ -1,29 +1,35 @@
 <script lang="ts">
-    import { LogoIcon, KoFiIcon } from '@/views/options/icons';
+    import { LogoIcon, KoFiIcon } from '@/pages/options/icons';
+    import getMsg from '@/utils/get-message';
     import type { PageId } from '../routes';
     import { sections } from '../routes';
 
     export let current: PageId;
 
-    const navItems: Array<{ key: string; name: string; level: 1 | 2 }> = [];
+    const navItems: Array<{ key: string; name: string; level: 1 | 2 }> = [
+        { name: getMsg('optionsNavSettings'), key: './index.html#settings', level: 1 },
+    ];
+    Object.entries(sections.settings).forEach(([key, b]) => {
+        navItems.push({ key: `./index.html#${key}`, level: 2, name: b.name });
+    });
 
-    Object.entries(sections).forEach(([key, b]) => {
-        const [, l2] = key.split('__');
-        navItems.push({ key, level: l2 ? 2 : 1, name: b.name });
+    navItems.push({ name: getMsg('optionsNavInfo'), key: './info.html#', level: 1 });
+    Object.entries(sections.info).forEach(([key, b]) => {
+        navItems.push({ key: `./info.html#${key}`, level: 2, name: b.name });
     });
 </script>
 
 <aside>
-    <a href="#settings" class="self-center text-skin-text hover:text-skin-text">
+    <a href="./index.html" class="self-center text-skin-text hover:text-skin-text">
         <div class="logo">
             {@html LogoIcon}
         </div>
     </a>
     <nav class="flex flex-col p-4">
         {#each navItems as { key, name, level } (key)}
-            <a href={key} class="leading-8 text-skin-text" class:current={current === key} class:level2={level === 2}
-                >{name}</a
-            >
+            <a href={key} class="leading-8 text-skin-text" class:current={current === key} class:level2={level === 2}>
+                {name}
+            </a>
         {/each}
     </nav>
     <div class="mx-2 text-xs">
