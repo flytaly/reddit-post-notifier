@@ -70,6 +70,23 @@ const storage = {
         return browser.storage.local.get(dataFields) as Promise<SF>;
     },
 
+    async getExportData() {
+        const data = (await browser.storage.local.get({
+            accounts: {},
+            options: DEFAULT_OPTIONS,
+            queriesList: [],
+            subredditList: [],
+            usersList: [],
+            pinnedPostList: [],
+        } as SF)) as Partial<SF>;
+
+        data.usersList?.forEach((u) => {
+            u.data = [];
+        });
+
+        return data;
+    },
+
     async saveAccounts(accounts: SF['accounts']) {
         return browser.storage.local.set({ accounts } as SF);
     },

@@ -8,6 +8,7 @@
     import Info from './info/InfoPage.svelte';
     import getMsg from '@/utils/get-message';
     import type { PageId } from '../routes';
+    import ImportExport from './ImportExport.svelte';
 
     export let pageId: PageId = 'settings';
 
@@ -21,6 +22,9 @@
     $: switch (pageId) {
         case 'info':
             page = { cmp: Info, name: getMsg('optionsNavInfo') };
+            break;
+        case 'import-export':
+            page = { cmp: ImportExport, name: getMsg('optionsNavImportExport')};
             break;
         default:
             page = { cmp: Settings, name: getMsg('optionsNavSettings') };

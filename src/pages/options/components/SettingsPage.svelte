@@ -1,8 +1,7 @@
 <script lang="ts">
     import storage from '@/storage/storage';
     import getMsg from '@/utils/get-message';
-    import { onDestroy, onMount, tick } from 'svelte';
-    import type { Unsubscriber } from 'svelte/store';
+    import { onMount, tick } from 'svelte';
     import { sections } from '../routes';
     import { storageData } from '../store';
     import AccountsBlock from './AccountsBlock.svelte';
@@ -13,7 +12,6 @@
     import SubredditsBlock from './subreddits/SubredditsBlock.svelte';
 
     const dataPromise = storage.getAllData();
-    let destroy: Unsubscriber;
 
     onMount(() => {
         // wait for children sections to mount and then scroll based on hash
@@ -26,8 +24,6 @@
             }
         })();
     });
-
-    onDestroy(() => void destroy?.());
 
     const s = sections.settings;
 </script>

@@ -1,6 +1,6 @@
 import getMsg from '../../utils/get-message';
 
-export type PageId = 'settings' | 'info';
+export type PageId = 'settings' | 'info' | 'import-export';
 
 export const sections = {
     settings: {
