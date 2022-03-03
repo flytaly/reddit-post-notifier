@@ -1,5 +1,5 @@
 <script lang="ts">
-    export let checked = false;
+    export let checked: boolean = false;
     export let changeHandler: (e: Event & { currentTarget: EventTarget & HTMLInputElement }) => void = undefined;
 
     /** Activate/toggle input on Enter and Space */

@@ -70,9 +70,9 @@ const storage = {
         return browser.storage.local.get(dataFields) as Promise<SF>;
     },
 
-    async getExportData() {
+    async getExportData(accounts = false) {
         const data = (await browser.storage.local.get({
-            accounts: {},
+            ...(accounts ? { accounts: {} } : {}),
             options: DEFAULT_OPTIONS,
             queriesList: [],
             subredditList: [],

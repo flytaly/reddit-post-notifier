@@ -2,7 +2,7 @@
     import getMsg from '@/utils/get-message';
     import { NotifyIcon, NotifyOffIcon } from '../../icons';
 
-    export let checked = false;
+    export let checked: boolean = false;
     export let changeHander: (e: Event & { currentTarget: HTMLInputElement }) => void = undefined;
 
     const labelBtnClick = (e: KeyboardEvent & { currentTarget: HTMLLabelElement }) => {

@@ -41,5 +41,6 @@ module.exports = {
         '@typescript-eslint/no-unsafe-member-access': 'off',
         '@typescript-eslint/ban-ts-comment': 'off',
         '@typescript-eslint/require-await': 'off',
+        '@typescript-eslint/no-inferrable-types': 'off',
     },
 };
