@@ -7,11 +7,6 @@ export type ExtensionOptions = {
     waitTimeout: number;
     /** limit the number of post in response */
     limit: number;
-    /** show the number of unread private messages */
-    messages: boolean;
-    messagesNotify: boolean;
-    subredditNotify: boolean;
-    isAuthorized: boolean;
     theme: 'auto' | 'dark' | 'light' | 'purple';
     /**  expand groups in popup that have at least 'x' number of posts */
     expandWithItems: number;
