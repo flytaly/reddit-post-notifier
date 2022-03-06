@@ -20,6 +20,20 @@ import type {
     StorageFields,
 } from './storage-types';
 
+/** Concat two arrays and remove duplications **/
+function concatUnique<T>(arr1: Array<T>, arr2: Array<T>, getId: (item: T) => string | number) {
+    const result: Array<T> = [];
+    if (!arr1) arr1 = [];
+    if (!arr2) arr2 = [];
+    const ids = new Set<unknown>();
+    [...arr1, ...arr2].forEach((item) => {
+        if (ids.has(getId(item))) return;
+        ids.add(getId(item));
+        result.push(item);
+    });
+    return result;
+}
+
 const storage = {
     async getAccounts() {
         const { accounts } = await browser.storage.local.get({ accounts: {} });
@@ -80,11 +94,49 @@ const storage = {
             pinnedPostList: [],
         } as SF)) as Partial<SF>;
 
+        if (data.accounts) {
+            Object.values(data.accounts).forEach((acc) => {
+                acc.mail = { messages: [] };
+            });
+        }
+
         data.usersList?.forEach((u) => {
             u.data = [];
         });
 
         return data;
+    },
+
+    async importData(data: Record<string, unknown> & Partial<SF>) {
+        const sData = await storage.getAllData();
+        if (data.options) {
+            data.options.limit = DEFAULT_OPTIONS.limit;
+            data.options.waitTimeout = DEFAULT_OPTIONS.waitTimeout;
+            data.options.pollUserInterval = Math.max(
+                2,
+                parseInt(data.options.pollUserInterval as unknown as string) || DEFAULT_OPTIONS.updateInterval,
+            );
+            sData.options = { ...sData.options, ...data.options };
+        }
+        if (data.accounts) {
+            Object.values(data.accounts).forEach((acc) => {
+                acc.mail = { messages: [], lastUpdate: 0 };
+            });
+            sData.accounts = { ...(sData.accounts || {}), ...data.accounts };
+        }
+        if (data.subredditList && Array.isArray(data.subredditList)) {
+            sData.subredditList = concatUnique(sData.subredditList, data.subredditList, (i) => i.id);
+        }
+        if (data.queriesList && Array.isArray(data.queriesList)) {
+            sData.queriesList = concatUnique(sData.queriesList, data.queriesList, (i) => i.id);
+        }
+        if (data.pinnedPostList && Array.isArray(data.pinnedPostList)) {
+            sData.pinnedPostList = concatUnique(sData.pinnedPostList, data.pinnedPostList, (i) => i.data.id);
+        }
+        if (data.usersList && Array.isArray(data.usersList)) {
+            sData.usersList = concatUnique(sData.usersList, data.usersList, (i) => i.username);
+        }
+        await browser.storage.local.set(sData);
     },
 
     async saveAccounts(accounts: SF['accounts']) {
