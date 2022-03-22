@@ -56,6 +56,7 @@ export default defineConfig(({ command }) => {
                     popup: r('src/pages/popup/index.html'),
                     options: r('src/pages/options/index.html'),
                     info: r('src/pages/options/info.html'),
+                    backup: r('src/pages/options/import-export.html'),
                 },
             },
         },
