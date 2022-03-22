@@ -112,9 +112,9 @@ const storage = {
         if (data.options) {
             data.options.limit = DEFAULT_OPTIONS.limit;
             data.options.waitTimeout = DEFAULT_OPTIONS.waitTimeout;
-            data.options.pollUserInterval = Math.max(
+            data.options.updateInterval = Math.max(
                 2,
-                parseInt(data.options.pollUserInterval as unknown as string) || DEFAULT_OPTIONS.updateInterval,
+                parseInt(data.options.updateInterval as unknown as string) || DEFAULT_OPTIONS.updateInterval,
             );
             sData.options = { ...sData.options, ...data.options };
         }
