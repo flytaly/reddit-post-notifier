@@ -7,6 +7,7 @@ module.exports = {
                 ignoreAtRules: ['tailwind', 'apply', 'variants', 'responsive', 'screen', 'layer'],
             },
         ],
+        'function-no-unknown': [true, { ignoreFunctions: ['theme'] }],
         'declaration-block-trailing-semicolon': null,
         'no-descending-specificity': null,
         'selector-pseudo-class-no-unknown': [
@@ -17,6 +18,6 @@ module.exports = {
         ],
         'hue-degree-notation': 'off',
         'color-function-notation': 'legacy',
-        'alpha-value-notation': 'off'
+        'alpha-value-notation': 'off',
     },
 };
