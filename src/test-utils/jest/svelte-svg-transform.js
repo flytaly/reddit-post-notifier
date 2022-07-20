@@ -10,7 +10,7 @@ const process = () => {
     const esInterop = 'Object.defineProperty(exports, "__esModule", { value: true });';
 
     const code = compiled.js.code + esInterop;
-    return code;
+    return { code };
 };
 
 module.exports = {

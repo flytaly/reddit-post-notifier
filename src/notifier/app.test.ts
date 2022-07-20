@@ -315,6 +315,7 @@ describe('update subreddits', () => {
         const _posts = newPosts.slice(1);
         const lastPostCreated = newPosts[0].data.created;
 
+        //@ts-ignore
         mocked(postFilter).mockImplementation(() => _posts);
 
         await new NotifierApp().update();

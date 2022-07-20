@@ -12,11 +12,14 @@ import storage from './index';
 import type { AuthUser, QueryData, QueryOpts, StorageFields, SubredditData, SubredditOpts } from './storage-types';
 import type { TokenResponseBody } from '@/reddit-api/auth';
 
-jest.mock('../utils/index.ts', () => ({
-    // @ts-ignore
-    ...jest.requireActual('../utils/index.ts'),
-    generateId: jest.fn(),
-}));
+jest.mock(
+    '../utils/index.ts',
+    () =>
+        ({
+            ...jest.requireActual('../utils/index.ts'),
+            generateId: jest.fn(),
+        } as object),
+);
 
 const generateIdMock = mocked(generateId);
 

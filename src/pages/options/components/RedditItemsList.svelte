@@ -1,5 +1,5 @@
 <script lang="ts">
-    import type { RedditCommentData, RedditItem, RedditPostData } from '@/reddit-api/reddit-types';
+    import type { RedditItem } from '@/reddit-api/reddit-types';
     import { XCircleIcon } from '../icons';
 
     export let items: RedditItem[] = [];
@@ -28,18 +28,18 @@
             return {
                 type: 'post',
                 subreddit: `r/${data.subreddit}`,
-                text: (data as RedditPostData).title,
+                text: data.title,
                 date,
                 fullDate,
                 link,
-                flair: (data as RedditPostData).link_flair_text,
+                flair: data.link_flair_text,
                 author: data.author,
             };
         if (kind === 't1')
             return {
                 type: 'comment',
                 subreddit: `r/${data.subreddit}`,
-                text: (data as RedditCommentData).body,
+                text: data.body,
                 date,
                 fullDate,
                 link,
