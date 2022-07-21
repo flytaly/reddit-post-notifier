@@ -7,6 +7,7 @@ import type {
     RedditListingResponse,
     RedditMessage,
     RedditPostExtended,
+    RedditPostResponse,
     RedditSearchListing,
     RedditSubredditListing,
     RedditUserOverviewResponse,
@@ -104,7 +105,16 @@ export default class NotifierApp {
         // fetch subreddits with error at a slower pace
         if (info.error && info.lastUpdate && Date.now() - info.lastUpdate < 1000 * 60 * 6) return null;
 
-        const response = await reddit.getSubreddit(subreddit).new(listing);
+        let response: RedditPostResponse | RedditError;
+        try {
+            response = await reddit.getSubreddit(subreddit).new(listing);
+        } catch (error) {
+            if (isAuthError(error)) {
+                return this.onAuthError(error);
+            }
+            response = { message: error.message };
+        }
+
         if (isErrorResponse(response)) {
             console.error(`Error during fetching new posts from r/${subreddit}: `, response);
             await storage.saveSubredditData(id, { error: response });
@@ -128,9 +138,18 @@ export default class NotifierApp {
         const data = queryData || {};
 
         if (data.error && data.lastUpdate && Date.now() - data.lastUpdate < 1000 * 60 * 10) return null;
-        const response = subreddit
-            ? await reddit.getSubreddit(subreddit).search({ ...listing, q, restrict_sr: 'on' })
-            : await reddit.search({ ...listing, q });
+
+        let response: RedditError | RedditPostResponse;
+        try {
+            response = subreddit
+                ? await reddit.getSubreddit(subreddit).search({ ...listing, q, restrict_sr: 'on' })
+                : await reddit.search({ ...listing, q });
+        } catch (error) {
+            if (isAuthError(error)) {
+                return this.onAuthError(error);
+            }
+            response = { message: error.message };
+        }
 
         if (isErrorResponse(response)) {
             console.error(
@@ -163,10 +182,8 @@ export default class NotifierApp {
             await storage.saveMessageData(account.id, { unreadMessages: newMessages });
             return newMessages;
         } catch (error) {
-            console.log(error);
             if (isAuthError(error)) {
-                await storage.setAuthError(error);
-                return null;
+                return this.onAuthError(error);
             }
             const message = error.message || error;
             console.error('Error during fetching unread messages ', message);
@@ -179,17 +196,24 @@ export default class NotifierApp {
         user = { ...user };
         const fetchUser = reddit.user(user.username);
         let response: RedditError | RedditUserOverviewResponse;
-        switch (user.watch) {
-            case 'comments':
-                response = await fetchUser.comments();
-                break;
-            case 'submitted':
-                response = await fetchUser.submitted();
-                break;
-            default:
-                response = await fetchUser.overview();
+        try {
+            switch (user.watch) {
+                case 'comments':
+                    response = await fetchUser.comments();
+                    break;
+                case 'submitted':
+                    response = await fetchUser.submitted();
+                    break;
+                default:
+                    response = await fetchUser.overview();
+            }
+        } catch (error) {
+            if (isAuthError(error)) {
+                await this.onAuthError(error);
+                return { user };
+            }
+            response = { message: error.message };
         }
-
         if (isErrorResponse(response)) {
             console.error(`Error during fetching ${user.username}'s activities`, response);
             user.error = response;
@@ -240,17 +264,33 @@ export default class NotifierApp {
     }
 
     async setAccessToken(accounts?: StorageFields['accounts']) {
-        accounts = accounts || (await storage.getAccounts());
-        const withScopes: RedditScope[] = [
-            scopes.identity.id,
-            scopes.read.id,
-            scopes.privatemessages.id,
-            scopes.history.id,
-        ];
-        const account = getAccountByScope(accounts, withScopes);
-        if (!account) return this.reddit.setAccessToken(null);
-        const token = await auth.getAccessToken(account);
-        this.reddit.setAccessToken(token || null);
+        try {
+            accounts = accounts || (await storage.getAccounts());
+            const withScopes: RedditScope[] = [
+                scopes.identity.id,
+                scopes.read.id,
+                scopes.privatemessages.id,
+                scopes.history.id,
+            ];
+            const account = getAccountByScope(accounts, withScopes);
+            if (!account) return this.clearAccessToken();
+            const token = await auth.getAccessToken(account);
+            this.reddit.setAccessToken(token || null);
+        } catch (e) {
+            if (isAuthError(e)) return this.onAuthError(e);
+            console.log(e);
+        }
+    }
+
+    async onAuthError(e: AuthError) {
+        console.error(e);
+        this.clearAccessToken();
+        await storage.setAuthError(e);
+        return null;
+    }
+
+    clearAccessToken() {
+        this.reddit.setAccessToken(null);
     }
 
     async updateAllMail(accounts: StorageFields['accounts'], options: ExtensionOptions) {
@@ -358,14 +398,7 @@ export default class NotifierApp {
         }
 
         if (usersList?.length || subredditList?.length || queriesList?.length) {
-            try {
-                await this.setAccessToken(accounts);
-            } catch (e) {
-                console.error(e);
-                if (isAuthError(e)) {
-                    await storage.setAuthError(e);
-                }
-            }
+            await this.setAccessToken(accounts);
         }
 
         if (usersList) {
