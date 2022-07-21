@@ -12,6 +12,7 @@
         "target": "ES2019",
         "outDir": "./dist",
         "module": "ES2020",
+        "strictNullChecks": true
     },
     "include": [
         "./vite.config.ts",

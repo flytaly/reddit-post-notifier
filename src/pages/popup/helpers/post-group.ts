@@ -11,7 +11,7 @@ export type PostGroup = {
     id: string;
     href: string;
     title: string;
-    lastPostCreated: number;
+    lastPostCreated?: number | null;
     size: number;
     isMultireddit?: boolean;
     notify?: 'on' | 'off' | null;
@@ -82,7 +82,7 @@ export const extractPostGroups = (storageData: StorageFields) => {
             type: 'search',
             id: q.id,
             href: getSearchQueryUrl(q.query, q.subreddit, useOldReddit),
-            title: `${q.name || q.query} (${length})`,
+            title: `${q.name || q.query || ''} (${length})`,
             lastPostCreated,
             size: length,
             isMultireddit: q.subreddit ? q.subreddit.includes('+') : true,
@@ -121,7 +121,7 @@ export const extractPostGroups = (storageData: StorageFields) => {
         }
     });
 
-    groupsWithPosts.sort((a, b) => a.lastPostCreated - b.lastPostCreated);
+    groupsWithPosts.sort((a, b) => (a.lastPostCreated || 0) - (b.lastPostCreated || 0));
 
     return { groupsWithPosts, groupsWithoutPosts };
 };
@@ -132,14 +132,14 @@ export const getGroupItems = (
     type: PostGroupType,
 ): RedditItem[] | RedditMessage[] => {
     if (type === 'subreddit') {
-        return data.subreddits[id].posts;
+        return data.subreddits[id].posts || [];
     }
     if (type === 'search') {
-        return data.queries[id].posts;
+        return data.queries[id].posts || [];
     }
     if (type === 'user') {
         const idx = idToUserIdx(id);
-        if (idx !== undefined) return data.usersList[idx]?.data;
+        if (idx !== undefined) return data.usersList?.[idx]?.data || [];
     }
     if (type === 'message') {
         return data.accounts?.[id]?.mail?.messages || [];

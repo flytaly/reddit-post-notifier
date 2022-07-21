@@ -10,6 +10,7 @@ import type { ExtensionOptions } from '../types/extension-options';
 import { filterKeys, filterPostDataProperties, generateId } from '../utils';
 import { dataFields } from './fields';
 import type {
+    AuthUser,
     QueryData,
     QueryOpts,
     PostsToSaveData,
@@ -37,7 +38,7 @@ function concatUnique<T>(arr1: Array<T>, arr2: Array<T>, getId: (item: T) => str
 const storage = {
     async getAccounts() {
         const { accounts } = await browser.storage.local.get({ accounts: {} });
-        return accounts as SF['accounts'];
+        return accounts as Record<string, AuthUser>;
     },
 
     async getOptions() {
@@ -72,7 +73,7 @@ const storage = {
 
     async getUsersList() {
         const { usersList } = await browser.storage.local.get({ usersList: [] } as Pick<SF, 'usersList'>);
-        return usersList as SF['usersList'];
+        return usersList as FollowingUser[];
     },
 
     async getNotificationsData() {
@@ -92,7 +93,7 @@ const storage = {
             subredditList: [],
             usersList: [],
             pinnedPostList: [],
-        } as SF)) as Partial<SF>;
+        } as Partial<SF>)) as Partial<SF>;
 
         if (data.accounts) {
             Object.values(data.accounts).forEach((acc) => {
@@ -134,7 +135,7 @@ const storage = {
             sData.pinnedPostList = concatUnique(sData.pinnedPostList, data.pinnedPostList, (i) => i.data.id);
         }
         if (data.usersList && Array.isArray(data.usersList)) {
-            sData.usersList = concatUnique(sData.usersList, data.usersList, (i) => i.username);
+            sData.usersList = concatUnique(sData.usersList || [], data.usersList, (i) => i.username);
         }
         await browser.storage.local.set(sData);
     },
@@ -152,8 +153,8 @@ const storage = {
             auth.refreshToken = data.refresh_token;
             auth.scope = data.scope || '';
             auth.error = '';
-            const expiresInRelative = data.expires_in || 0;
-            auth.expiresIn = expiresInRelative && new Date().getTime() + +expiresInRelative * 1000;
+            const expiresInRelative = +data.expires_in || 0;
+            auth.expiresIn = expiresInRelative && new Date().getTime() + expiresInRelative * 1000;
         }
 
         return browser.storage.local.set({ accounts } as StorageFields);
@@ -161,19 +162,20 @@ const storage = {
 
     async saveMessageData(
         accId: string,
-        { unreadMessages, error }: { unreadMessages?: RedditMessage[]; error?: { message?: string } | null },
+        { unreadMessages, error }: { unreadMessages?: RedditMessage[] | null; error?: { message?: string } | null },
     ) {
         const accs = await storage.getAccounts();
         if (!accs[accId]) accs[accId] = { id: accId, auth: {}, mail: { messages: [] } };
         if (error) {
-            accs[accId].error = `Couldn't fetch messages. ${error.message}`;
+            accs[accId].error = `Couldn't fetch messages. ${error.message || ''}`;
             return storage.saveAccounts(accs);
         }
 
         accs[accId].error = null;
         accs[accId].auth.error = null;
         if (!accs[accId].mail) accs[accId].mail = { messages: [] };
-        const mail = accs[accId].mail;
+        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+        const mail = accs[accId].mail!;
         mail.lastUpdate = Date.now();
         if (unreadMessages) {
             const prevUnread = mail.messages || [];
@@ -330,17 +332,18 @@ const storage = {
                 a.mail.messages = [];
             });
         } else {
-            if (!accounts[accId]?.mail) return;
-            accounts[accId].mail.messages = [];
+            const m = accounts[accId]?.mail;
+            if (!m) return;
+            m.messages = [];
         }
         await browser.storage.local.set({ accounts } as SF);
     },
 
     async removeMessage({ accId, messageId }: { accId: string; messageId: string }) {
         const accounts = await storage.getAccounts();
-        const a = accounts[accId];
-        if (!a?.mail) return;
-        accounts[accId].mail.messages = (a.mail.messages || []).filter((m) => m.data.id !== messageId);
+        const mail = accounts[accId]?.mail;
+        if (!mail) return;
+        mail.messages = (mail.messages || []).filter((m) => m.data.id !== messageId);
         await browser.storage.local.set({ accounts } as SF);
     },
 
@@ -371,22 +374,22 @@ const storage = {
         if (subreddit) {
             const subreddits = await storage.getSubredditData();
 
-            subreddits[subreddit].posts = subreddits[subreddit].posts.filter(({ data }) => data.id !== id);
+            subreddits[subreddit].posts = subreddits[subreddit].posts?.filter(({ data }) => data.id !== id);
 
             await browser.storage.local.set({ subreddits });
         }
 
         if (searchId) {
             const queries = await storage.getQueriesData();
-            queries[searchId].posts = queries[searchId].posts.filter(({ data }) => data.id !== id);
+            queries[searchId].posts = queries[searchId].posts?.filter(({ data }) => data.id !== id);
             await browser.storage.local.set({ queries });
         }
 
         if (accountId) {
             const accounts = await storage.getAccounts();
-            const messages = accounts[accountId]?.mail?.messages?.filter(({ data }) => data.id !== id);
-            if (!messages) return;
-            accounts[accountId].mail.messages = messages;
+            const mail = accounts[accountId]?.mail;
+            if (!mail) return;
+            mail.messages = mail.messages?.filter(({ data }) => data.id !== id);
             await storage.saveAccounts(accounts);
         }
     },
@@ -394,7 +397,7 @@ const storage = {
     async removeUserPost({ userIndex, postId }: { userIndex: number; postId: string }) {
         const usersList = await storage.getUsersList();
         if (usersList[userIndex]?.data) {
-            usersList[userIndex].data = usersList[userIndex].data.filter((item) => item.data.id !== postId);
+            usersList[userIndex].data = usersList[userIndex].data?.filter((item) => item.data.id !== postId);
             await storage.saveUsersList(usersList);
         }
     },
@@ -442,7 +445,7 @@ const storage = {
     async removeAllPosts() {
         const { queries, subreddits, usersList, accounts } = await storage.getAllData();
 
-        Object.values(accounts).forEach((acc) => {
+        Object.values(accounts || {}).forEach((acc) => {
             if (!acc.mail) acc.mail = { messages: [] };
             else acc.mail.messages = [];
         });
@@ -453,7 +456,7 @@ const storage = {
         Object.keys(queries).forEach((q) => {
             queries[q].posts = [];
         });
-        usersList.forEach((u) => {
+        usersList?.forEach((u) => {
             u.data = [];
         });
 
@@ -517,7 +520,7 @@ const storage = {
             count += u.data?.length || 0;
         });
 
-        Object.values(accounts)?.forEach((a) => {
+        Object.values(accounts || {})?.forEach((a) => {
             count += a.mail?.messages?.length || 0;
         });
 
@@ -576,7 +579,7 @@ const storage = {
             const subreddits: SF['subreddits'] = {};
             subredditList.forEach((opts) => {
                 if (!opts?.subreddit) return;
-                const subData = prevSubData[opts.subreddit];
+                const subData = prevSubData?.[opts.subreddit];
                 if (subData) {
                     subreddits[opts.id] = subData;
                 }

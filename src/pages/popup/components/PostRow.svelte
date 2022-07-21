@@ -27,7 +27,8 @@
             case 'search':
                 return storage.removePost({ id, searchId: itemId });
             case 'user': {
-                return storage.removeUserPost({ postId: id, userIndex: idToUserIdx(itemId) });
+                const userIndex = idToUserIdx(itemId);
+                return userIndex && storage.removeUserPost({ postId: id, userIndex });
             }
             case 'subreddit': {
                 return storage.removePost({ id, subreddit: itemId });

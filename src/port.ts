@@ -7,7 +7,7 @@ type FromContext = 'popup' | 'options';
 
 const portMap = new Map<string, Runtime.Port>();
 const messageListeners = new Map<PortMessageId, MessageListener>();
-let bgPort: Runtime.Port;
+let bgPort: Runtime.Port | undefined | null;
 
 export const sendFromBg = (id: PortMessageId, payload?: PortMessagePayload, dest?: string) => {
     const message: PortMessage = { id, payload };
@@ -28,7 +28,7 @@ export const connectToBg = (context: FromContext) => {
 };
 
 export const disconnectFromBg = () => {
-    bgPort.disconnect();
+    bgPort?.disconnect();
     bgPort = null;
 };
 

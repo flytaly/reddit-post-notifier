@@ -22,11 +22,11 @@ const focusNextRowElement = (current: HTMLElement, reverse = false) => {
 
 const getGroupHeader = (elem: HTMLElement) => {
     const container = elem.closest('[data-keys-target="list-container"]');
-    const header: HTMLElement = container.querySelector('[data-keys-target="list-row"]');
-    if (header.dataset.keysTarget === 'list-row') return header;
+    const header: HTMLElement | null = container?.querySelector('[data-keys-target="list-row"]') || null;
+    if (header?.dataset.keysTarget === 'list-row') return header;
 };
 
-const isRow = (elem: HTMLElement) => ['list-row', 'post-row'].includes(elem.dataset.keysTarget);
+const isRow = (elem: HTMLElement) => ['list-row', 'post-row'].includes(elem.dataset.keysTarget || '');
 const isPostRow = (elem: HTMLElement) => elem.dataset.keysTarget === 'post-row';
 const isHeaderRow = (elem: HTMLElement) => elem.dataset.keysTarget === 'list-row';
 
@@ -53,7 +53,7 @@ export default function handleKeydownEvent(e: KeyboardEvent & { target: HTMLElem
     if (key === 'ArrowRight' || key === 'Enter' || code === 'KeyL') {
         if (isHeaderRow(target)) return target.click();
         if (isPostRow(target)) {
-            const link: HTMLElement = target.querySelector('a[data-keys-target="post-link"]');
+            const link: HTMLElement | null = target.querySelector('a[data-keys-target="post-link"]');
             link?.click();
             if (IS_FIREFOX) {
                 // close window shortly after the click because the extension will lose focus in firefox anyway
@@ -67,8 +67,8 @@ export default function handleKeydownEvent(e: KeyboardEvent & { target: HTMLElem
         if (isHeaderRow(target)) return target.click();
         if (isPostRow(target)) {
             const groupHeader = getGroupHeader(target);
-            groupHeader.click();
-            groupHeader.focus();
+            groupHeader?.click();
+            groupHeader?.focus();
         }
     }
 
@@ -77,7 +77,7 @@ export default function handleKeydownEvent(e: KeyboardEvent & { target: HTMLElem
         if (!isRow(target)) return;
         const next = target.nextElementSibling as HTMLElement;
         const prev = target.previousElementSibling as HTMLElement;
-        const button: HTMLElement = target.querySelector('[data-keys-target="check-mark"] button');
+        const button: HTMLElement | null = target.querySelector('[data-keys-target="check-mark"] button');
         button?.click();
         if (isPostRow(target)) {
             if (next) next.focus();
@@ -89,7 +89,7 @@ export default function handleKeydownEvent(e: KeyboardEvent & { target: HTMLElem
         if (isPostRow(target)) {
             const next = target.nextElementSibling as HTMLElement;
             const prev = target.previousElementSibling as HTMLElement;
-            const btn: HTMLElement = target.querySelector('[data-keys-target="pin-post"] button');
+            const btn: HTMLElement | null = target.querySelector('[data-keys-target="pin-post"] button');
             if (btn) {
                 btn.click();
                 if (next) next.focus();

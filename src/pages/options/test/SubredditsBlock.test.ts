@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unsafe-return */
 /* eslint-disable @typescript-eslint/unbound-method */
 import { fireEvent, render, waitFor } from '@testing-library/svelte';
 import { cloneDeep } from 'lodash';
@@ -60,8 +61,8 @@ describe('Subreddit settings', () => {
 
         subList.forEach((s, idx) => {
             expect(inputs[idx].value).toEqual(s.subreddit);
-            expect(notifyElems[idx].querySelector('input').checked).toEqual(s.notify);
-            expect(isActiveElems[idx].querySelector('input').checked).toEqual(!s.disabled);
+            expect(notifyElems[idx].querySelector('input')?.checked).toEqual(s.notify);
+            expect(isActiveElems[idx].querySelector('input')?.checked).toEqual(!s.disabled);
         });
 
         await waitFor(() => {

@@ -12,7 +12,7 @@
 
     $: {
         accounts = $storageData.accounts;
-        accList = Object.values(accounts);
+        accList = Object.values(accounts || {});
     }
 
     let authError = '';

@@ -67,7 +67,7 @@ describe('General Options', () => {
         mockStorageData({ theme: 'purple' });
         const { getByLabelText } = render(GeneralSettingsBlock);
         const auto = getByLabelText(getMsg('optionThemeAuto'));
-        const form: HTMLFormElement = auto.closest('form');
+        const form: HTMLFormElement | null = auto.closest('form');
         await waitFor(() => {
             expect(form).toBeInTheDocument();
             expect(form).toHaveFormValues({ theme: 'purple' });

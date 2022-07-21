@@ -1,6 +1,6 @@
 <script lang="ts">
     import storage from '@/storage';
-    import type { FollowingUser, StorageFields } from '@/storage/storage-types';
+    import type { FollowingUser } from '@/storage/storage-types';
     import type { ExtensionOptions } from '@/types/extension-options';
     import getMsg from '@/utils/get-message';
     import DEFAULT_OPTIONS from '../../../options-default';
@@ -12,10 +12,10 @@
     import RadioGroup from './RadioGroup.svelte';
 
     let options: ExtensionOptions = $storageData.options;
-    let usersList: StorageFields['usersList'] = $storageData.usersList;
+    let usersList: FollowingUser[] = $storageData.usersList || [];
 
     $: options = $storageData.options;
-    $: usersList = $storageData.usersList;
+    $: usersList = $storageData.usersList || [];
 
     /** save number of inputs to restore them after rerender caused by saving in the storage */
     let prevLen = usersList.length;
@@ -98,7 +98,7 @@
         <div class="text-center">Notification</div>
         <div class="ml-auto">Delete</div>
         <div class="col-span-full my-2" />
-        {#each usersList as userInfo, index}
+        {#each usersList || [] as userInfo, index}
             <FollowUserInput bind:userInfo commitChanges={saveInputs} onDelete={() => removeUser(index)} />
         {/each}
     </div>

@@ -63,7 +63,7 @@
     let errorMsg = '';
 
     $: if (userInfo.error) {
-        errorMsg = `${userInfo.error.error} ${userInfo.error.message}`;
+        errorMsg = `${userInfo.error.error || ''} ${userInfo.error.message || ''}`;
     } else errorMsg = '';
 
     let showUserData = false;

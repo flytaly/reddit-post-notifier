@@ -30,7 +30,7 @@
                 }
                 const image = post?.data?.preview?.images[0];
                 if (image?.resolutions?.length) {
-                    const { url, width, height } = image.resolutions[1] || image.resolutions[0];
+                    const { url, width = 300, height = 200 } = image.resolutions[1] || image.resolutions[0];
                     if (url) {
                         imageInfo = { url, width, height, loaded: false };
                         const imgElem = new Image();
@@ -68,7 +68,7 @@
     };
 
     onMount(() => {
-        let prevId: string;
+        let prevId: string | null;
         const mousemove = (e: MouseEvent) =>
             window.requestAnimationFrame(() => {
                 positionPreview(e);
@@ -96,13 +96,13 @@
 
         const elem = containerElement.querySelector('[data-floatpreview-target]');
 
-        elem.addEventListener('mousemove', mousemove);
-        elem.addEventListener('mouseover', mouseover);
-        elem.addEventListener('mouseleave', mouseleave);
+        elem?.addEventListener('mousemove', mousemove);
+        elem?.addEventListener('mouseover', mouseover);
+        elem?.addEventListener('mouseleave', mouseleave);
         return () => {
-            elem.removeEventListener('mousemove', mousemove);
-            elem.removeEventListener('mouseover', mouseover);
-            elem.removeEventListener('mouseleave', mouseleave);
+            elem?.removeEventListener('mousemove', mousemove);
+            elem?.removeEventListener('mouseover', mouseover);
+            elem?.removeEventListener('mouseleave', mouseleave);
         };
     });
 </script>
@@ -122,7 +122,7 @@
                 class="block min-w-min"
             />
         {:else}
-            <div style={`width: ${imageInfo.width}px; height: ${imageInfo.height}px`} />
+            <div style={`width: ${Number(imageInfo.width)}px; height: ${Number(imageInfo.height)}px`} />
         {/if}
     {:else}<span>{postText}</span>{/if}
 </div>

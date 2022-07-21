@@ -1,7 +1,7 @@
 <script lang="ts">
     export let title = '';
     export let column = false;
-    export let labelFor = null;
+    export let labelFor: string | null = null;
 </script>
 
 <article class:column>

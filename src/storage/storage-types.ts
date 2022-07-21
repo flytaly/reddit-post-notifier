@@ -14,11 +14,11 @@ export type AuthUser = {
     mailNotify?: boolean;
 
     auth: {
-        accessToken?: string;
+        accessToken?: string | null;
         expiresIn?: number;
-        refreshToken?: string;
+        refreshToken?: string | null;
         scope?: string;
-        error?: string;
+        error?: string | null;
     };
 
     // reddit data
@@ -28,7 +28,7 @@ export type AuthUser = {
     totalKarma?: number;
     inboxCount?: number;
     hasMail?: boolean;
-    error?: string;
+    error?: string | null;
 
     mail?: {
         messages: RedditMessage[];
@@ -47,7 +47,7 @@ export type SubredditData = {
     error?: RedditError | null;
     /**  the newest post's id */
     lastPost?: string;
-    lastPostCreated?: number;
+    lastPostCreated?: number | null;
     lastUpdate?: number;
     posts?: RedditPost[];
 };

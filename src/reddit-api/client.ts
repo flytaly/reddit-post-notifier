@@ -41,6 +41,7 @@ export default class RedditApiClient {
         const query = mapObjToQueryStr({ ...queryParams, raw_json: '1' });
         const init: RequestInit = { method: 'GET', headers: { ...this.headers } };
         if (this.accessToken) {
+            if (!init.headers) init.headers = {};
             init.headers['User-Agent'] = config.userAgent;
             init.headers['Authorization'] = `bearer ${this.accessToken}`;
         }

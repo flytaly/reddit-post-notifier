@@ -15,8 +15,8 @@
 
     let redditItem: RedditItem;
 
-    if (item.kind !== RedditObjectKind.message) {
-        redditItem = item;
+    if (item.kind && item.kind !== RedditObjectKind.message) {
+        redditItem = item as RedditItem;
     }
 </script>
 

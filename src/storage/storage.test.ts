@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-non-null-assertion */
 /* eslint-disable @typescript-eslint/no-explicit-any */
 /* eslint-disable @typescript-eslint/unbound-method */
 import cloneDeep from 'lodash.clonedeep';
@@ -92,9 +93,9 @@ describe('Authorization and messages', () => {
         const date = mockDate(new Date());
         mockGet.expect({ accounts: {} }).andResolve({ accounts: cloneDeep(fakeData) });
         const expected = cloneDeep(fakeData);
-        expected.a1.mail.lastPostCreated = newMsgs[0].data.created;
-        expected.a1.mail.lastUpdate = date.getTime();
-        expected.a1.mail.messages = [...newMsgs, ...oldMsgs] as RedditMessage[];
+        expected.a1.mail!.lastPostCreated = newMsgs[0].data.created;
+        expected.a1.mail!.lastUpdate = date.getTime();
+        expected.a1.mail!.messages = [...newMsgs, ...oldMsgs] as RedditMessage[];
         expected.a1.error = null;
         expected.a1.auth.error = null;
         mockSet.expect({ accounts: expected });
@@ -104,8 +105,8 @@ describe('Authorization and messages', () => {
 
     test('should remove all messages from an account', async () => {
         const expected = cloneDeep(fakeData);
-        expected.a1.mail.messages = [];
-        expected.a2.mail.messages = oldMsgs as RedditMessage[];
+        expected.a1.mail!.messages = [];
+        expected.a2.mail!.messages = oldMsgs as RedditMessage[];
         mockGet.expect({ accounts: {} }).andResolve({ accounts: cloneDeep(fakeData) });
         mockSet.expect({ accounts: expected });
         await storage.removeMessages(fakeData.a1.id);
@@ -113,8 +114,8 @@ describe('Authorization and messages', () => {
 
     test('should remove all messages from all accounts', async () => {
         const expected = cloneDeep(fakeData);
-        expected.a1.mail.messages = [];
-        expected.a2.mail.messages = [];
+        expected.a1.mail!.messages = [];
+        expected.a2.mail!.messages = [];
         mockGet.expect({ accounts: {} }).andResolve({ accounts: cloneDeep(fakeData) });
         mockSet.expect({ accounts: expected });
         await storage.removeMessages();
@@ -122,9 +123,9 @@ describe('Authorization and messages', () => {
 
     test('should remove message', async () => {
         const expected = cloneDeep(fakeData);
-        const messageId = expected.a1.mail.messages[0].data.id;
+        const messageId = expected.a1.mail!.messages[0].data.id;
         const accountId = expected.a1.id;
-        expected[accountId].mail.messages = expected.a1.mail.messages.slice(1);
+        expected[accountId].mail!.messages = expected.a1.mail!.messages.slice(1);
         mockGet.expect({ accounts: {} }).andResolve({ accounts: cloneDeep(fakeData) });
         mockSet.expect({ accounts: expected });
         await storage.removePost({ id: messageId, accountId });
@@ -223,14 +224,14 @@ describe('subreddits', () => {
         mockDate(ts);
         const { subreddit, id } = subOpts[0];
         const newPosts: RedditPost[] = [{ data: generatePost({ subreddit }) }, { data: generatePost({ subreddit }) }];
-        const posts: RedditPost[] = [...newPosts, ...subreddits[id].posts];
+        const posts: RedditPost[] = [...newPosts, ...(subreddits[id].posts || [])];
 
         const expectedData: SubredditData = {
             error: null,
             lastPost: newPosts[0].data.name,
             lastPostCreated: newPosts[0].data.created,
             lastUpdate: ts,
-            posts: [...newPosts, ...subreddits[id].posts],
+            posts: [...newPosts, ...(subreddits[id].posts || [])],
         };
 
         mockGet.mock(() => Promise.resolve({ subreddits }));
@@ -263,11 +264,11 @@ describe('subreddits', () => {
     test('should remove post', async () => {
         const { id: subId } = subOpts[0];
         const subs = cloneDeep(subreddits);
-        const postId = subs[subId].posts[1].data.id;
-        const exp = expect.objectContaining({ posts: subreddits[subId].posts.filter((p) => p.data.id !== postId) });
+        const postId = subs[subId].posts?.[1].data.id;
+        const exp = expect.objectContaining({ posts: subreddits[subId].posts?.filter((p) => p.data.id !== postId) });
         mockGet.mock(() => Promise.resolve({ subreddits: subs }));
         mockSet.expect({ subreddits: { ...subs, [subId]: exp } });
-        await storage.removePost({ id: postId, subreddit: subId });
+        await storage.removePost({ id: postId!, subreddit: subId });
     });
 
     test('should remove all posts in subreddit', async () => {
@@ -289,7 +290,7 @@ describe('subreddits', () => {
                 queries: {},
                 usersList: [],
                 accounts: {},
-            } as StorageFields),
+            } as Partial<StorageFields>),
         );
         mockSet.expect(expect.objectContaining({ subreddits: expectedSubs }) as ExpRecord);
         jest.spyOn(storage, 'getQueriesData').mockImplementationOnce(() => Promise.resolve({}));
@@ -328,7 +329,7 @@ describe('search queries', () => {
             lastPost: posts[0].data.name,
             lastPostCreated: created,
             lastUpdate: created + 1000,
-            posts: [...posts, ...qData[queryId].posts],
+            posts: [...posts, ...(qData[queryId].posts || [])],
         };
         mockQueries();
         mockSet.expect({ queries: expect.objectContaining({ [queryId]: updated }) });
@@ -376,12 +377,12 @@ describe('search queries', () => {
     test('should remove post', async () => {
         mockQueries();
         const searchId = queriesList[1].id;
-        const postId = qData[searchId].posts[1].data.id;
-        const posts = qData[searchId].posts.filter((p) => p.data.id !== postId);
+        const postId = qData[searchId].posts?.[1].data.id;
+        const posts = qData[searchId].posts?.filter((p) => p.data.id !== postId);
         mockSet.expect({
             queries: expect.objectContaining({ [searchId]: { posts } }),
         });
-        await storage.removePost({ id: postId, searchId });
+        await storage.removePost({ id: postId!, searchId });
     });
 
     test('should remove all posts in search query', async () => {
@@ -402,7 +403,7 @@ describe('search queries', () => {
                 queries: cloneDeep(qData),
                 usersList: [],
                 accounts: {},
-            } as StorageFields),
+            } as Partial<StorageFields>),
         );
         const expectedQueries = {};
         queriesList.forEach((q) => (expectedQueries[q.id] = { posts: [] }));

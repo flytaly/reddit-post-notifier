@@ -26,7 +26,7 @@ export const getSubredditUrl = (subreddit: string, oldReddit = false): string =>
 
 export const getInboxUrl = (oldReddit = false): string => `${oldReddit ? redditOldUrl : redditUrl}/message/inbox`;
 
-export const getSearchQueryUrl = (query: string, subreddit = '', oldReddit = false): string => {
+export const getSearchQueryUrl = (query = '', subreddit = '', oldReddit = false): string => {
     const endpoint = subreddit
         ? `/r/${subreddit}/search?sort=new&restrict_sr=on&q=${query}`
         : `/search?q=${query}&sort=new`;
@@ -89,8 +89,8 @@ export const filterPostDataProperties = (post: RedditPostExtended): RedditPost =
 
     const data = filterKeys(filterList, post.data) as RedditPostData;
 
-    if (data.selftext?.length > 400) {
-        data.selftext = data.selftext.slice(0, 400);
+    if ((data.selftext?.length || 0) > 400) {
+        data.selftext = data.selftext?.slice(0, 400);
     }
 
     return { ...post, data };

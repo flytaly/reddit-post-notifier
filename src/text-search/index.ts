@@ -52,7 +52,7 @@ export class Index {
     }
 
     search(query: string): TextId[] {
-        if (!query) return;
+        if (!query) return [];
         const queryTokens = this.getTokens(query);
         const result: TextId[][] = [];
         for (let i = 0; i < queryTokens.length; i++) {

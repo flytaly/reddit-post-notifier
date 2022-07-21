@@ -30,7 +30,7 @@ export function slideHorizontal(node: Element, { duration, easing = quadOut }: S
 export const slideVertical = (
     node: Element,
     y: number,
-    { duration, easing = quadOut }: SlideConfig,
+    { duration = 0, easing = quadOut }: SlideConfig,
 ): TransitionConfig => {
     const style = getComputedStyle(node);
     const transform = style.transform === 'none' ? '' : style.transform;

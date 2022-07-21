@@ -18,7 +18,7 @@ async function stubIndexHtml() {
         for (page of pages) {
             let data = await fs.readFile(r(`src/pages/${view}/${page}`), 'utf-8');
             const reg = /<script\ssrc="\.\/(?<filename>.*\.ts)"/;
-            const scriptFileName = data.match(reg).groups?.filename;
+            const scriptFileName = data.match(reg)?.groups?.filename || '';
             data = data.replace(`"./${scriptFileName}"`, `"http://localhost:${port}/${view}/${scriptFileName}"`);
             await fs.writeFile(r(`extension/dist/${view}/${page}`), data, 'utf-8');
             log('PRE', `stub ${view}/${page}`);

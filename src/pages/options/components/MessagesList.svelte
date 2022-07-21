@@ -5,17 +5,19 @@
 
     export let items: RedditMessage[] = [];
     export let title = '';
-    export let onClose: () => void = undefined;
+    export let onClose: (() => void) | undefined = undefined;
     export let limit = 5;
 
-    let displayItems: {
+    type DisplayedMessage = {
         subreddit: string;
         text: string;
         title: string;
         date: string;
         fullDate: string;
         author: string;
-    }[] = [];
+    };
+
+    let displayItems: DisplayedMessage[] = [];
 
     $: displayItems = items.slice(0, limit).map(({ data }) => {
         const date = new Date(data.created * 1000).toLocaleDateString();
@@ -27,7 +29,7 @@
             date,
             fullDate,
             author: data.author,
-        };
+        } as DisplayedMessage;
     });
 </script>
 

@@ -56,7 +56,7 @@ function isUser(n: Notification): n is UserNotification {
     return n.type === NotificationId.user;
 }
 
-function notify(notif: Notification, soundId?: SoundId) {
+function notify(notif: Notification, soundId?: SoundId | null) {
     if (!notif.items.length) return;
 
     async function createNotification(id: string, options: NotificationOpts, links: string[]) {

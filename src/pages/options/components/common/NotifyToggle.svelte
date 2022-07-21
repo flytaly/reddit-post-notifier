@@ -1,15 +1,16 @@
 <script lang="ts">
     import getMsg from '@/utils/get-message';
+    import type { InputChangeEv } from './events';
     import { NotifyIcon, NotifyOffIcon } from '../../icons';
 
     export let checked: boolean = false;
-    export let changeHander: (e: Event & { currentTarget: HTMLInputElement }) => void = undefined;
+    export let changeHander: ((e: InputChangeEv) => void) | undefined = undefined;
 
     const labelBtnClick = (e: KeyboardEvent & { currentTarget: HTMLLabelElement }) => {
         if (e.key === 'Enter' || e.key == ' ') {
             e.stopPropagation();
             e.preventDefault();
-            e.currentTarget.querySelector('input').click();
+            e.currentTarget.querySelector('input')?.click();
         }
     };
 </script>

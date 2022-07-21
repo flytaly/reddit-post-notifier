@@ -32,12 +32,12 @@
     };
 
     const playSound = () => {
+        if (!$storageData.options.notificationSoundId) return;
         const file: string = notificationSoundFiles[$storageData.options.notificationSoundId];
-        if (file) {
-            const audio = new Audio();
-            audio.src = browser.runtime.getURL(file);
-            void audio.play();
-        }
+        if (!file) return;
+        const audio = new Audio();
+        audio.src = browser.runtime.getURL(file);
+        void audio.play();
     };
 </script>
 

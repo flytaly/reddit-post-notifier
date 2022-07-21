@@ -9,7 +9,7 @@
     };
     export let limit = 5;
 
-    let displayItems: {
+    type DisplayedRedditItem = {
         type: string;
         subreddit: string;
         text: string;
@@ -18,35 +18,44 @@
         link: string;
         flair?: string;
         author: string;
-    }[] = [];
+    };
 
-    $: displayItems = items.slice(0, limit).map(({ kind, data }) => {
-        const link = 'https://reddit.com/' + data.permalink;
-        const date = new Date(data.created * 1000).toLocaleDateString();
-        const fullDate = new Date(data.created * 1000).toLocaleString();
-        if (kind === 't3')
-            return {
-                type: 'post',
-                subreddit: `r/${data.subreddit}`,
-                text: data.title,
-                date,
-                fullDate,
-                link,
-                flair: data.link_flair_text,
-                author: data.author,
-            };
-        if (kind === 't1')
-            return {
-                type: 'comment',
-                subreddit: `r/${data.subreddit}`,
-                text: data.body,
-                date,
-                fullDate,
-                link,
-                flair: '',
-                author: data.author,
-            };
-    });
+    let displayItems: DisplayedRedditItem[] = [];
+
+    function notEmpty<T>(value: T | null | undefined): value is T {
+        return value !== null && value !== undefined;
+    }
+
+    $: displayItems = items
+        .slice(0, limit)
+        .map(({ kind, data }): DisplayedRedditItem | undefined => {
+            const link = 'https://reddit.com/' + data.permalink;
+            const date = new Date(data.created * 1000).toLocaleDateString();
+            const fullDate = new Date(data.created * 1000).toLocaleString();
+            if (kind === 't3')
+                return {
+                    type: 'post',
+                    subreddit: `r/${data.subreddit}`,
+                    text: data.title,
+                    date,
+                    fullDate,
+                    link,
+                    flair: data.link_flair_text || '',
+                    author: data.author,
+                };
+            if (kind === 't1')
+                return {
+                    type: 'comment',
+                    subreddit: `r/${data.subreddit}`,
+                    text: data.body,
+                    date,
+                    fullDate,
+                    link,
+                    flair: '',
+                    author: data.author,
+                };
+        })
+        .filter(notEmpty);
 </script>
 
 <article>

@@ -30,7 +30,7 @@
     let showFilterBlock = false;
     let subredditInputRef: HTMLInputElement;
 
-    $: filterOpts = subOpts.filterOpts;
+    $: filterOpts = subOpts.filterOpts || {};
     $: ruleList = filterOpts?.rules || [[{ field: 'title', query: '' }]];
     $: inputStatus = $inputStatusStore[subOpts.id] || {};
     $: fetchError = formatError(subData.error);
@@ -115,7 +115,7 @@
 
     let labelText = '';
     const showLabel = (e: Event) => {
-        labelText = (e.currentTarget as HTMLElement).getAttribute('aria-label');
+        labelText = (e.currentTarget as HTMLElement).getAttribute('aria-label') || '';
     };
     const hideLabel = () => {
         labelText = '';

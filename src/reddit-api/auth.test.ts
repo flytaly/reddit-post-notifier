@@ -1,4 +1,5 @@
-/* eslint-disable @typescript-eslint/unbound-method */
+/* eslint-disable @typescript-eslint/restrict-template-expressions */
+/* eslint-disable @typescript-eslint/no-non-null-assertion, @typescript-eslint/unbound-method */
 import type { AuthUser } from '@/storage/storage-types';
 import fetchMock from 'jest-fetch-mock';
 import { config } from '../constants';
@@ -12,9 +13,9 @@ jest.mock('../storage/index.ts');
 const testAuthFetchOptions = (options: RequestInit) => {
     expect(options.method).toBe('POST');
     expect(options.headers).toHaveProperty('Authorization');
-    const [type, credentials] = options.headers['Authorization'].split(' ') as [string, string];
+    const [type, credentials] = options.headers?.['Authorization'].split(' ') as [string, string];
     expect(type).toBe('Basic');
-    expect(Buffer.from(credentials, 'base64').toString()).toBe(`${config.clientId}:${config.clientSecret}`);
+    expect(Buffer.from(credentials, 'base64').toString()).toBe(`${config.clientId!}:${config.clientSecret!}`);
 };
 
 const queryStrToObj = (query: string): Record<string, string> =>
@@ -64,8 +65,8 @@ describe('Token Retrieval', () => {
         mockAuthFlow();
         fetchMock.mockImplementationOnce((url, options) => {
             expect(url).toBe('https://www.reddit.com/api/v1/access_token');
-            testAuthFetchOptions(options);
-            const body = queryStrToObj(options.body as string);
+            testAuthFetchOptions(options!);
+            const body = queryStrToObj(options!.body as string);
             expect(body.grant_type).toBe('authorization_code');
             expect(body.code).toBe(fakeCode);
             return jsonResponse(authSuccessBody);
@@ -107,8 +108,8 @@ describe('Token Refreshing', () => {
             const parsedUrl = new URL(url as string);
             expect(parsedUrl.origin).toBe('https://www.reddit.com');
             expect(parsedUrl.pathname).toBe('/api/v1/access_token');
-            testAuthFetchOptions(options);
-            const body = queryStrToObj(options.body.toString());
+            testAuthFetchOptions(options!);
+            const body = queryStrToObj(options!.body!.toString());
             expect(body.grant_type).toBe('refresh_token');
             expect(body.refresh_token).toBe(refreshToken);
             return jsonResponse(refreshSuccessBody);

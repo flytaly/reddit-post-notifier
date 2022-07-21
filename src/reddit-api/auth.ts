@@ -42,7 +42,7 @@ const auth = {
     async getAccessToken(account: AuthUser): Promise<string | null> {
         const { accessToken, expiresIn, refreshToken } = account.auth;
         const now = new Date();
-        const expires = new Date(expiresIn - 60000 * 5); // 5 mins before expire
+        const expires = new Date((expiresIn || 0) - 60000 * 5); // 5 mins before expire
 
         const token: string =
             expires > now && accessToken ? accessToken : await auth.renewAccessToken(refreshToken, account.id);
@@ -56,7 +56,7 @@ const auth = {
     getAuthURL(authState: string): string {
         const params = {
             response_type: 'code',
-            redirect_uri: encodeURIComponent(redirectUri),
+            redirect_uri: encodeURIComponent(redirectUri || ''),
             client_id: clientId,
             scope: `${scopes.identity.id} ${scopes.read.id} ${scopes.privatemessages.id} ${scopes.history.id}`,
             state: authState,
@@ -73,7 +73,7 @@ const auth = {
         const responseURL = new URL(response);
 
         if (responseURL.searchParams.has('error')) {
-            throw new AuthError(responseURL.searchParams.get('error'), id);
+            throw new AuthError(responseURL.searchParams.get('error') || '', id);
         }
         if (responseURL.searchParams.get('state') === authState) {
             return responseURL.searchParams.get('code');
@@ -82,7 +82,7 @@ const auth = {
     },
 
     fetchAuthInit(params: Record<string, string>) {
-        const base64Credentials = btoa(`${clientId}:${clientSecret}`);
+        const base64Credentials = btoa(`${clientId || ''}:${clientSecret || ''}`);
         return {
             method: 'POST',
             headers: {
@@ -92,13 +92,13 @@ const auth = {
                 'User-Agent': userAgent,
             },
             body: mapObjToQueryStr(params),
-        };
+        } as RequestInit;
     },
 
     async getTokens(code: string, id: string): Promise<TokenResponseBody> {
         const params = {
             grant_type: 'authorization_code',
-            redirect_uri: encodeURIComponent(redirectUri),
+            redirect_uri: encodeURIComponent(redirectUri || ''),
             code,
         };
 
@@ -109,17 +109,17 @@ const auth = {
 
         const body = (await response.json()) as TokenResponseBody | TokenResponseError;
         if (isErrorTokenResponse(body)) {
-            throw new AuthError(`Couldn't receive tokens. Error: ${body.error}`, id);
+            throw new AuthError(`Couldn't receive tokens. Error: ${body.error || ''}`, id);
         }
 
         return body;
     },
 
     /** @return accessToken */
-    async renewAccessToken(refreshToken: string, id: string): Promise<string> {
+    async renewAccessToken(refreshToken: string | null | undefined, id: string): Promise<string> {
         const params = {
             grant_type: 'refresh_token',
-            refresh_token: refreshToken,
+            refresh_token: refreshToken || '',
         };
         const response = await fetch(auth.accessTokenURL, auth.fetchAuthInit(params));
 
@@ -140,7 +140,7 @@ const auth = {
         }
 
         if (isErrorTokenResponse(body)) {
-            throw new AuthError(`Couldn't refresh access token. ${body.error}: ${body.message}`, id, true);
+            throw new AuthError(`Couldn't refresh access token. ${body.error || ''}: ${body.message || ''}`, id, true);
         }
 
         await storage.saveAuthData({ data: body, id });

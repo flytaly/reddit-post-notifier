@@ -28,7 +28,7 @@
         isUpdating = true;
         isBlocked.block();
         const app = new NotifierApp();
-        await app.updateAccounts(accounts, acc.id);
+        await app.updateAccounts(accounts || {}, acc.id);
         isUpdating = false;
     };
 

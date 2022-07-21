@@ -50,7 +50,7 @@
         }
     };
 
-    const getOnCheckHandler = (id: string, type: PostGroupType) => () => {
+    const getOnCheckHandler = (id: string, type: PostGroupType) => async () => {
         if (type === 'search') return storage.removePostsFrom({ searchId: id });
         if (type === 'subreddit') return storage.removePostsFrom({ subredditId: id });
         if (type === 'user') return storage.removePostsFrom({ followUserIndex: idToUserIdx(id) });

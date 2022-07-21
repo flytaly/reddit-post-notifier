@@ -15,7 +15,7 @@
     import { storageData } from '../store/store';
 
     export let group: PostGroup;
-    export let onCheck: () => Promise<void> | null = null;
+    export let onCheck: (() => Promise<void>) | null = null;
     export let disabled = false;
 
     const linkClickHandler = async (e: Event) => {

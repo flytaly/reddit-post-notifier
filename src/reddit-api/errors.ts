@@ -10,7 +10,7 @@ export class AuthError extends Error {
         this.name = 'AuthError';
         this.message = message;
         this.id = id;
-        this.invalidateToken = invalidateToken;
+        this.invalidateToken = invalidateToken || false;
     }
 }
 

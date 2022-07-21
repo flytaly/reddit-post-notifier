@@ -53,10 +53,10 @@ describe('Start extension', () => {
         expect(msgCallbacks.has('UPDATE_NOW')).toBeTruthy();
         expect(msgCallbacks.has('SCHEDULE_NEXT_UPDATE')).toBeTruthy();
 
-        await msgCallbacks.get('UPDATE_NOW')();
+        await msgCallbacks.get('UPDATE_NOW')?.();
         expect(updateAndSchedule).toHaveBeenCalledWith(true);
 
-        await msgCallbacks.get('SCHEDULE_NEXT_UPDATE')();
+        await msgCallbacks.get('SCHEDULE_NEXT_UPDATE')?.();
         expect(scheduleNextUpdate).toHaveBeenCalled();
     });
 });

@@ -60,7 +60,7 @@ export function filterNewItems<T extends ItemWithDate>(timestamp: number, items:
 
 function extractNewItems<T extends ItemWithDate>(
     response: RedditListingResponse<T>,
-    info: { lastPostCreated?: number },
+    info: { lastPostCreated?: number | null },
 ): T[] | null {
     const items = response.data.children;
     const newItems = info.lastPostCreated ? filterNewItems(info.lastPostCreated, items) : items;
@@ -93,12 +93,16 @@ export default class NotifierApp {
         this.reddit = new RedditApiClient();
     }
 
-    async updateSubreddit({ subOpts, subData = {}, listing }: UpdateSubredditProps) {
+    async updateSubreddit({
+        subOpts,
+        subData = {},
+        listing,
+    }: UpdateSubredditProps): Promise<RedditPostExtended[] | null> {
         const { subreddit, id, filterOpts } = subOpts;
         const info = subData;
 
         // fetch subreddits with error at a slower pace
-        if (info.error && Date.now() - info.lastUpdate < 1000 * 60 * 6) return null;
+        if (info.error && info.lastUpdate && Date.now() - info.lastUpdate < 1000 * 60 * 6) return null;
 
         const response = await reddit.getSubreddit(subreddit).new(listing);
         if (isErrorResponse(response)) {
@@ -123,14 +127,14 @@ export default class NotifierApp {
 
         const data = queryData || {};
 
-        if (data.error && Date.now() - data.lastUpdate < 1000 * 60 * 10) return null;
+        if (data.error && data.lastUpdate && Date.now() - data.lastUpdate < 1000 * 60 * 10) return null;
         const response = subreddit
             ? await reddit.getSubreddit(subreddit).search({ ...listing, q, restrict_sr: 'on' })
             : await reddit.search({ ...listing, q });
 
         if (isErrorResponse(response)) {
             console.error(
-                `Error during fetching posts query ${query.query} on ${query.subreddit || 'reddit'}: `,
+                `Error during fetching posts query ${query.query || ''} on ${query.subreddit || 'reddit'}: `,
                 response,
             );
             await storage.saveQueryData(query.id, { error: response });
@@ -252,11 +256,11 @@ export default class NotifierApp {
     async updateAllMail(accounts: StorageFields['accounts'], options: ExtensionOptions) {
         const msgNotify: MessageNotification = { type: NotificationId.mail, items: [] };
 
-        for (const ac of Object.values(accounts)) {
+        for (const ac of Object.values(accounts || {})) {
             if (ac.auth.refreshToken && ac.checkMail && ac.auth.scope?.includes('privatemessages')) {
                 const newMessages = await this.updateUnreadMsg(ac);
                 if (newMessages?.length && ac.mailNotify) {
-                    msgNotify.items.push({ username: ac.name, len: newMessages.length });
+                    msgNotify.items.push({ username: ac.name || '', len: newMessages.length });
                 }
                 await wait(options.waitTimeout * 1000);
             }
@@ -280,7 +284,7 @@ export default class NotifierApp {
 
                 if (isErrorResponse(response)) {
                     console.error('Error during fetching account information', response);
-                    ac.error = 'Couldn\t fetch account information: ' + response.message;
+                    ac.error = `Couldn\t fetch account information: ${response.message || ''}`;
                     return ac;
                 }
                 if (response.data) {
@@ -308,7 +312,7 @@ export default class NotifierApp {
      * Update reddit accounts information and save them to the storage.
      * If id is passed then update only one account.
      */
-    async updateAccounts(accounts: StorageFields['accounts'], id?: string) {
+    async updateAccounts(accounts: Record<string, AuthUser>, id?: string) {
         const updated = { ...accounts };
         const updateArray = !id ? Object.values(accounts) : [accounts[id]];
         for (const acc of updateArray) {
@@ -318,7 +322,7 @@ export default class NotifierApp {
         const names: string[] = [];
         const filtered = Object.fromEntries(
             Object.entries(updated).filter(([, v]) => {
-                if (names.includes(v.name)) return false;
+                if (names.includes(v.name || '')) return false;
                 if (v.name) names.push(v.name);
                 return true;
             }),
@@ -369,7 +373,6 @@ export default class NotifierApp {
             if (updated) await wait(waitTimeout * 1000);
         }
 
-        // let batch: NewPostsNotification[] = [];
         let postNotif: PostNotification = { type: NotificationId.post, items: [] };
         for (const subOpts of subredditList) {
             if (subOpts.disabled) continue;
@@ -399,9 +402,9 @@ export default class NotifierApp {
             const newMessages = await this.updateQuery({ query, queryData: queryData[query.id], listing: { limit } });
             if (query.notify && newMessages?.length) {
                 postNotif.items.push({
-                    name: query.name || query.query,
+                    name: query.name || query.query || '',
                     len: newMessages.length,
-                    link: getSearchQueryUrl(query.query, query.subreddit, useOldReddit),
+                    link: getSearchQueryUrl(query.query || '', query.subreddit, useOldReddit),
                 });
             }
             await wait(waitTimeout * 1000);

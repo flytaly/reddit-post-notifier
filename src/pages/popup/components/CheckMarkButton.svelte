@@ -2,11 +2,11 @@
     import SvgButton from './SvgButton.svelte';
     import CheckMark from '@assets/check-mark.svg';
 
-    export let clickHandler: (e: MouseEvent) => void | null = null;
-    export let title = null;
+    export let clickHandler: ((e: MouseEvent) => void) | undefined = undefined;
+    export let title = '';
     const handler = (e: MouseEvent) => {
         e.stopPropagation();
-        clickHandler(e);
+        clickHandler?.(e);
     };
 </script>
 

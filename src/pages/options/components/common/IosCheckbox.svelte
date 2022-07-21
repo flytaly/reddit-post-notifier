@@ -1,13 +1,15 @@
 <script lang="ts">
+    import type { InputChangeEv } from './events';
+
     export let checked: boolean = false;
-    export let changeHandler: (e: Event & { currentTarget: EventTarget & HTMLInputElement }) => void = undefined;
+    export let changeHandler: ((e: InputChangeEv) => void) | undefined = undefined;
 
     /** Activate/toggle input on Enter and Space */
     const labelBtnClick = (e: KeyboardEvent & { currentTarget: HTMLLabelElement }) => {
         if (e.key === 'Enter' || e.key == ' ') {
             e.stopPropagation();
             e.preventDefault();
-            e.currentTarget.querySelector('input').click();
+            e.currentTarget.querySelector('input')?.click();
         }
     };
 </script>
