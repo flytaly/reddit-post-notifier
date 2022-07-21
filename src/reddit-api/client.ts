@@ -48,9 +48,6 @@ export default class RedditApiClient {
         const origin = this.accessToken ? this.authOrigin : this.publicOrigin;
         const actualEndpoint = this.accessToken ? endpoint : `${endpoint}.json`;
         const result = await fetch(encodeURI(`${origin}${actualEndpoint}?${query}`), init);
-        if (result.status !== 200) {
-            throw new Error(`${result.status} ${result.statusText}`);
-        }
         return result.json();
     }
 

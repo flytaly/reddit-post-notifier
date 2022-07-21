@@ -2,6 +2,7 @@ import { config } from '../constants';
 import RedditApiClient from './client';
 import auth from './auth';
 import fetchMock from 'jest-fetch-mock';
+import type { RedditError } from './reddit-types';
 
 jest.mock('./auth.ts');
 afterEach(() => jest.clearAllMocks());
@@ -71,6 +72,20 @@ describe('HTTP GET request', () => {
         const reddit = new RedditApiClient();
         const result = await reddit.GET(endpoint, params);
         expect(result).toEqual(response);
+    });
+
+    test('should return error', async () => {
+        const rError: RedditError = {
+            error: 404,
+            message: 'Not Found',
+            reason: 'banned',
+        };
+        fetchMock.mockImplementation(() => {
+            return jsonResponse(rError, 404);
+        });
+        const reddit = new RedditApiClient();
+        const result = await reddit.GET('bannedSub', params);
+        expect(result).toEqual(rError);
     });
 });
 
