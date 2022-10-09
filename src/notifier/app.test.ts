@@ -33,8 +33,8 @@ jest.mock('@/utils/wait.ts');
 jest.mock('@/text-search/post-filter.ts');
 jest.mock('./notifications.ts');
 
-const mockStorage = mocked(storage, true);
-const mockClient = mocked(new RedditApiClient(), true);
+const mockStorage = mocked(storage);
+const mockClient = mocked(new RedditApiClient());
 const mockNotify = mocked(notify);
 
 const getOpts = (opts: Partial<ExtensionOptions> = {}) => ({ ...DEFAULT_OPTIONS, ...opts });
