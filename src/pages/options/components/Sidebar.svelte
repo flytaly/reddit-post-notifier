@@ -1,32 +1,24 @@
 <script lang="ts">
     import { LogoIcon, KoFiIcon } from '@/pages/options/icons';
-    import getMsg from '@/utils/get-message';
     import type { PageId } from '../routes';
-    import { sections } from '../routes';
+    import { routes } from '../routes';
     export let current: PageId;
 </script>
 
 <aside>
-    <a href="./index.html" class="self-center text-skin-text hover:text-skin-text">
+    <a href="./watch.html" class="self-center text-skin-text hover:text-skin-text">
         <div class="logo">
             {@html LogoIcon}
         </div>
     </a>
     <nav class="flex flex-col p-4 leading-8">
-        <a href="./index.html#settings" class:current={current === 'settings'}>
-            {getMsg('optionsNavSettings')}
-        </a>
-        {#each Object.values(sections.settings) as { id, name }}
-            <a href={`./index.html#${id}`} class="ml-4">{name}</a>
-        {/each}
-        <a href="./import-export.html" class:current={current === 'import-export'}>
-            {getMsg('optionsNavImportExport')}
-        </a>
-        <a href="./info.html" class:current={current === 'info'}>
-            {getMsg('optionsNavInfo')}
-        </a>
-        {#each Object.values(sections.info) as { id, name }}
-            <a href={`./info.html#${id}`} class="ml-4">{name}</a>
+        {#each Object.values(routes) as { id, href, name, sections }}
+            <a href={`${href}#${id}`} class:current={current === id}>
+                {name}
+            </a>
+            {#each Object.values(sections) as { id, name }}
+                <a href={`${href}#${id}`} class="ml-4">{name}</a>
+            {/each}
         {/each}
     </nav>
     <div class="mx-2 text-xs">

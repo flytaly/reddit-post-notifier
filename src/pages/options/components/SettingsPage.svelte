@@ -2,14 +2,11 @@
     import storage from '@/storage/storage';
     import getMsg from '@/utils/get-message';
     import { onMount, tick } from 'svelte';
-    import { sections } from '../routes';
+    import { routes } from '../routes';
     import { storageData } from '../store';
     import AccountsBlock from './AccountsBlock.svelte';
-    import FollowUsersBlock from './FollowUsersBlock.svelte';
     import GeneralSettingsBlock from './GeneralSettingsBlock.svelte';
     import Heading from './Heading.svelte';
-    import SearchBlock from './search/SearchBlock.svelte';
-    import SubredditsBlock from './subreddits/SubredditsBlock.svelte';
 
     const dataPromise = storage.getAllData();
 
@@ -25,7 +22,7 @@
         })();
     });
 
-    const s = sections.settings;
+    const s = routes.settings.sections;
 </script>
 
 <div class="w-full">
@@ -33,32 +30,14 @@
         <h1 class="mb-4 text-2xl font-bold uppercase tracking-widest text-skin-gray">
             {getMsg('optionsNavSettings')}
         </h1>
-        <section>
+        <section class="mb-10">
             <Heading id={s.general.id} name={s.general.name} />
             <GeneralSettingsBlock />
         </section>
-        <section>
+        <section class="mb-10">
             <Heading id={s.mail.id} name={getMsg('optionsNavMailFull')} />
             <AccountsBlock />
-        </section>
-        <section>
-            <Heading id={s.subreddit.id} name={s.subreddit.name} />
-            <SubredditsBlock />
-        </section>
-        <section>
-            <Heading id={s['reddit-search'].id} name={s['reddit-search'].name} />
-            <SearchBlock />
-        </section>
-        <section>
-            <Heading id={s['follow-user'].id} name={s['follow-user'].name} />
-            <FollowUsersBlock />
         </section>
         <div class="h-[80vh]" />
     {/if}
 </div>
-
-<style lang="postcss">
-    section {
-        @apply mb-10;
-    }
-</style>

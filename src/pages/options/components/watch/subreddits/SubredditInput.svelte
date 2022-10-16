@@ -6,15 +6,15 @@
     import getMsg from '@/utils/get-message';
     import * as icons from '@/pages/options/icons';
     import { RefreshIcon2 } from '@/pages/options/icons';
-    import { formatError } from '../../format-error';
-    import { isBlocked } from '../../store';
-    import RedditItemsList from '../RedditItemsList.svelte';
+    import { formatError } from '@options/format-error';
+    import { isBlocked } from '@options/store';
+    import RedditItemsList from '@options/components/RedditItemsList.svelte';
     import PostFilterBlock from './PostFilterBlock.svelte';
     import type { InputStatus } from './subreddits-store';
     import { inputStatusStore, subredditStore } from './subreddits-store';
-    import Spinner from '../common/Spinner.svelte';
-    import IosCheckbox from '../common/IosCheckbox.svelte';
-    import NotifyToggle from '../common/NotifyToggle.svelte';
+    import Spinner from '@options/components/common/Spinner.svelte';
+    import IosCheckbox from '@options/components/common/IosCheckbox.svelte';
+    import NotifyToggle from '@options/components/common/NotifyToggle.svelte';
 
     export let subOpts: SubredditOpts;
     export let subData: SubredditData = {};

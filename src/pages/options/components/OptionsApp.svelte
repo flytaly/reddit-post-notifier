@@ -2,13 +2,14 @@
     import { onMount } from 'svelte';
     import { connectToBg } from '@/port';
     import applyTheme from '@/utils/apply-theme';
-    import Sidebar from './Sidebar.svelte';
-    import ShortInfo from './info/ShortInfo.svelte';
-    import Settings from './SettingsPage.svelte';
-    import Info from './info/InfoPage.svelte';
+    import Sidebar from '@options/components/Sidebar.svelte';
+    import ShortInfo from '@options/components/info/ShortInfo.svelte';
+    import Settings from '@options/components/SettingsPage.svelte';
+    import Info from '@options/components/info/InfoPage.svelte';
     import getMsg from '@/utils/get-message';
-    import type { PageId } from '../routes';
-    import BackupPage from './backup/Backup.svelte';
+    import type { PageId } from '@options/routes';
+    import BackupPage from '@options/components/backup/Backup.svelte';
+    import WatchPage from '@options/components/watch/WatchPage.svelte';
 
     export let pageId: PageId = 'settings';
 
@@ -25,6 +26,9 @@
             break;
         case 'import-export':
             page = { cmp: BackupPage, name: getMsg('optionsNavImportExport') };
+            break;
+        case 'watch':
+            page = { cmp: WatchPage, name: getMsg('optionsNavWatch') };
             break;
         default:
             page = { cmp: Settings, name: getMsg('optionsNavSettings') };

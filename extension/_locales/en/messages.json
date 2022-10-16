@@ -80,6 +80,9 @@
     "optionsNavMail": {
         "message": "Messages"
     },
+    "optionsNavWatch": {
+        "message": "Watch"
+    },
     "optionsNavMailFull": {
         "message": "Messages and Accounts"
     },

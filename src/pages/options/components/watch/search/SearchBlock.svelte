@@ -5,8 +5,8 @@
     import { fade } from 'svelte/transition';
     import SearchFieldset from './SearchFieldset.svelte';
     import { searchStore } from './search-store';
-    import AddButton from '../common/AddButton.svelte';
-    import BlockDescription from '../common/BlockDescription.svelte';
+    import AddButton from '@options/components/common/AddButton.svelte';
+    import BlockDescription from '@options/components/common/BlockDescription.svelte';
 </script>
 
 <div>

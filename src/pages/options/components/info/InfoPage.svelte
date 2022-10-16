@@ -1,10 +1,10 @@
 <script lang="ts">
-    import { sections } from '../../routes';
+    import { routes } from '../../routes';
     import Heading from '../Heading.svelte';
     import HelpBlock from './HelpBlock.svelte';
     import ShortcutsTable from './ShortcutsTable.svelte';
 
-    const s = sections.info;
+    const s = routes.info.sections;
 </script>
 
 <section class="mb-8">

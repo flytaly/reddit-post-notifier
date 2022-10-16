@@ -2,9 +2,9 @@
     import getMsg from '@/utils/get-message';
     import { flip } from 'svelte/animate';
     import { fade } from 'svelte/transition';
-    import { storageData } from '../../../popup/store/store';
-    import AddButton from '../common/AddButton.svelte';
-    import BlockDescription from '../common/BlockDescription.svelte';
+    import { storageData } from '@/pages/popup/store/store';
+    import AddButton from '@options/components/common/AddButton.svelte';
+    import BlockDescription from '@options/components/common/BlockDescription.svelte';
     import SubredditInput from './SubredditInput.svelte';
     import { subredditStore } from './subreddits-store';
 </script>

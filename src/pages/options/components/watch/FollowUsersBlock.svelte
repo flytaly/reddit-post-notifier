@@ -3,13 +3,13 @@
     import type { FollowingUser } from '@/storage/storage-types';
     import type { ExtensionOptions } from '@/types/extension-options';
     import getMsg from '@/utils/get-message';
-    import DEFAULT_OPTIONS from '../../../options-default';
-    import { storageData } from '../../popup/store/store';
-    import AddButton from './common/AddButton.svelte';
-    import BlockDescription from './common/BlockDescription.svelte';
+    import DEFAULT_OPTIONS from '@/options-default';
+    import { storageData } from '@/pages/popup/store/store';
+    import AddButton from '@options/components/common/AddButton.svelte';
+    import BlockDescription from '@options/components/common/BlockDescription.svelte';
     import FollowUserInput from './FollowUserInput.svelte';
-    import OptionsItem from './OptionsItem.svelte';
-    import RadioGroup from './RadioGroup.svelte';
+    import OptionsItem from '@options/components/OptionsItem.svelte';
+    import RadioGroup from '@options/components/RadioGroup.svelte';
 
     let options: ExtensionOptions = $storageData.options;
     let usersList: FollowingUser[] = $storageData.usersList || [];

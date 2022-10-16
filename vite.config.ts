@@ -65,6 +65,7 @@ export default defineConfig(({ command }) => {
             alias: {
                 '@assets': r('src/assets'),
                 '@': r('src'),
+                '@options': r('src/pages/options/'),
             },
         },
         plugins: [

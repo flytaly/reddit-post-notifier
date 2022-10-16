@@ -5,12 +5,12 @@
     import getMsg from '@/utils/get-message';
     import { BellIcon, DeleteIcon, RefreshIcon2, WarningIcon } from '@/pages/options/icons';
     import { isBlocked } from '@/pages/options/store';
-    import { formatError } from '../../format-error';
-    import Labeled from '../Labeled.svelte';
-    import RedditItemsList from '../RedditItemsList.svelte';
+    import { formatError } from '@options/format-error';
+    import Labeled from './Labeled.svelte';
+    import RedditItemsList from '@options/components/RedditItemsList.svelte';
     import { searchStore } from './search-store';
-    import TooltipIcon from '../TooltipIcon.svelte';
-    import Spinner from '../common/Spinner.svelte';
+    import TooltipIcon from '@options/components/TooltipIcon.svelte';
+    import Spinner from '@options/components/common/Spinner.svelte';
 
     export let queryObject: QueryOpts;
     export let queryData: QueryData;

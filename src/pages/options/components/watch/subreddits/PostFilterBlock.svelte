@@ -4,7 +4,7 @@
     import { quadOut } from 'svelte/easing';
     import { slide } from 'svelte/transition';
     import PostFilterFields from './PostFilterFields.svelte';
-    import AddButton from '../common/AddButton.svelte';
+    import AddButton from '@options/components/common/AddButton.svelte';
 
     export let ruleList: FilterRule[] = [[{ field: 'title', query: '' }]];
 

@@ -2,13 +2,13 @@
     import NotifierApp from '@/notifier/app';
     import type { FollowingUser } from '@/storage/storage-types';
     import getMsg from '@/utils/get-message';
-    import * as icons from '@/pages/options/icons';
-    import { RefreshIcon2 } from '@/pages/options/icons';
-    import { isBlocked } from '../store';
-    import IosCheckbox from './common/IosCheckbox.svelte';
-    import NotifyToggle from './common/NotifyToggle.svelte';
-    import Spinner from './common/Spinner.svelte';
-    import RedditItemsList from './RedditItemsList.svelte';
+    import * as icons from '@options/icons';
+    import { RefreshIcon2 } from '@options/icons';
+    import { isBlocked } from '@options/store';
+    import IosCheckbox from '@options/components/common/IosCheckbox.svelte';
+    import NotifyToggle from '@options/components/common/NotifyToggle.svelte';
+    import Spinner from '@options/components/common/Spinner.svelte';
+    import RedditItemsList from '@options/components/RedditItemsList.svelte';
 
     export let userInfo: FollowingUser;
     export let commitChanges: () => void;
