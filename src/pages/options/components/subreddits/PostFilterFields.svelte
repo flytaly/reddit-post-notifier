@@ -53,12 +53,12 @@
     };
 </script>
 
-<fieldset class="border border-skin-gray2 rounded text-sm p-3  shadow-md">
-    <legend class="text-xs font-mono">Filter rule {index + 1 || ''}</legend>
+<fieldset class="rounded border border-skin-gray2 p-3 text-sm  shadow-md">
+    <legend class="font-mono text-xs">Filter rule {index + 1 || ''}</legend>
     <div class="field-grid">
         {#each filterRule as searchRule, idx}
             <select
-                class="border-none bg-transparent hover:bg-skin-input hover:shadow-none focus:bg-skin-input rounded"
+                class="rounded border-none bg-transparent hover:bg-skin-input hover:shadow-none focus:bg-skin-input"
                 name={`field_${idx}`}
                 bind:value={searchRule.field}
                 on:change={commitChanges}
@@ -70,31 +70,31 @@
             <div class="mx-2">{matchType(searchRule.field)}</div>
             <input class="w-full rounded" type="text" bind:value={searchRule.query} on:input={debouncedHandler} />
             <button
-                class="py-0 px-1 text-skin-gray border-none bg-transparent hover:bg-transparent hover:shadow-none hover:text-skin-accent"
+                class="border-none bg-transparent py-0 px-1 text-skin-gray hover:bg-transparent hover:text-skin-accent hover:shadow-none"
                 on:click={() => removeField(searchRule.field)}
             >
                 <div class="w-4">{@html XCircleIcon}</div>
             </button>
             <div class="pl-3">
                 {#if idx < filterRule.length - 1}
-                    <div class="py-px px-1 ring-1 ring-skin-gray2 text-center font-mono text-skin-gray rounded">
+                    <div class="rounded py-px px-1 text-center font-mono text-skin-gray ring-1 ring-skin-gray2">
                         AND
                     </div>
                 {/if}
             </div>
         {/each}
     </div>
-    <div class="flex justify-between mt-3">
+    <div class="mt-3 flex justify-between">
         <button
             on:click={addField}
-            class="py-0 px-1 bg-transparent border-transparent hover:border-skin-accent2 rounded">+ add field</button
+            class="rounded border-transparent bg-transparent py-0 px-1 hover:border-skin-accent2">+ add field</button
         >
         <button
             on:click={removeFilter}
-            class="flex items-center p-0 bg-transparent border-transparent hover:text-skin-accent hover:border-skin-accent rounded"
+            class="flex items-center rounded border-transparent bg-transparent p-0 hover:border-skin-accent hover:text-skin-accent"
             title="Delete filter"
         >
-            <div class="h-4 w-4 mr-1">{@html DeleteIcon}</div>
+            <div class="mr-1 h-4 w-4">{@html DeleteIcon}</div>
             <div>remove filter</div>
         </button>
     </div>
@@ -102,7 +102,7 @@
 
 <style lang="postcss">
     .field-grid {
-        @apply grid gap-y-3 gap-x-2 items-center content-center;
+        @apply grid content-center items-center gap-y-3 gap-x-2;
 
         grid-template-columns: max-content max-content 1fr auto auto;
     }

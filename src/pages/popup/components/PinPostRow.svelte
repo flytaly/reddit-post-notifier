@@ -21,14 +21,14 @@
 </script>
 
 {#if redditItem}
-    <div class="flex items-center w-full pr-3 py-1">
+    <div class="flex w-full items-center py-1 pr-3">
         <a
             class="flex-grow px-1"
             href={`${baseUrl}${redditItem.data.permalink}`}
             data-keys-target="post-link"
             data-post-id={redditItem.data.id}
         >
-            <span class="text-skin-text pr-2 text-xs">{`r/${redditItem.data.subreddit}`}</span>
+            <span class="pr-2 text-xs text-skin-text">{`r/${redditItem.data.subreddit}`}</span>
             <span>{getItemTitle(redditItem)}</span>
         </a>
         <span data-keys-target="pin-post">

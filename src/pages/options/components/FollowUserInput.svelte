@@ -95,11 +95,11 @@
     };
 </script>
 
-<div class="flex border border-skin-base bg-skin-input rounded">
+<div class="flex rounded border border-skin-base bg-skin-input">
     <input
         size="13"
         maxlength="20"
-        class="border-none rounded-l rounded-r-none m-0"
+        class="m-0 rounded-l rounded-r-none border-none"
         type="text"
         value={username}
         on:input={(e) => {
@@ -109,7 +109,7 @@
         on:change={saveUsername}
     />
     <button
-        class="py-0 px-2 border-0 border-l rounded-l-none rounded-r min-w-[4rem] text-xs"
+        class="min-w-[4rem] rounded-l-none rounded-r border-0 border-l py-0 px-2 text-xs"
         on:click={saveWatchTarget}
     >
         {saveBtnMessage}
@@ -132,22 +132,22 @@
 
 <div class="ml-auto">
     <button
-        class="icon-button text-skin-accent ml-auto"
+        class="icon-button ml-auto text-skin-accent"
         aria-label={getMsg('optionSubredditsDelete')}
         on:click={onDelete}
     >
-        <div class="w-5 h-5">{@html icons.DeleteIcon}</div>
+        <div class="h-5 w-5">{@html icons.DeleteIcon}</div>
     </button>
 </div>
 
 <div class="col-span-full mt-1 mb-3">
     {#if userInfo.username?.length}
         <button
-            class="flex items-center text-skin-accent2 p-0 border-transparent bg-transparent hover:bg-transparent text-xs"
+            class="flex items-center border-transparent bg-transparent p-0 text-xs text-skin-accent2 hover:bg-transparent"
             on:click={() => void fetchUser()}
             disabled={$isBlocked}
         >
-            <div class="w-5 h-5 mr-1">
+            <div class="mr-1 h-5 w-5">
                 {@html RefreshIcon2}
             </div>
             <span>{getMsg('optionsFollowUserFetch')}</span>

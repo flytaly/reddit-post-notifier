@@ -16,7 +16,7 @@
             <slot name="description" />
         </div>
     {/if}
-    <div class="text-right pr-4">
+    <div class="pr-4 text-right">
         <slot name="controls" />
     </div>
     <slot />
@@ -24,18 +24,18 @@
 
 <style lang="postcss">
     article {
-        @apply flex flex-row items-start font-normal text-sm  mb-6 overflow-hidden p-1;
+        @apply mb-6 flex flex-row items-start overflow-hidden  p-1 text-sm font-normal;
     }
     .column {
         flex-direction: column;
     }
     .description {
-        @apply text-skin-gray flex-grow pr-4 mb-2 leading-6;
+        @apply mb-2 flex-grow pr-4 leading-6 text-skin-gray;
     }
     :not(.column) .description :global([slot='description']) {
         max-width: 90%;
     }
     header {
-        @apply text-skin-text font-bold text-base mb-2;
+        @apply mb-2 text-base font-bold text-skin-text;
     }
 </style>

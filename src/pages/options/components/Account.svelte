@@ -80,12 +80,12 @@
 
 <li>
     <button
-        class="flex items-center text-skin-accent2 p-0 border-transparent bg-transparent hover:bg-transparent text-xs"
+        class="flex items-center border-transparent bg-transparent p-0 text-xs text-skin-accent2 hover:bg-transparent"
         on:click={updateAcc}
         {disabled}
         title="update account information"
     >
-        <div class="w-5 h-5 mr-1">
+        <div class="mr-1 h-5 w-5">
             {@html RefreshIcon2}
         </div>
     </button>
@@ -120,25 +120,25 @@
             title={getMsg('optionAccountsMailNotify_title')}
         />
     </div>
-    <button class="icon-button text-skin-accent ml-auto" on:click={deleteHandler} {disabled} title="Delete the account">
+    <button class="icon-button ml-auto text-skin-accent" on:click={deleteHandler} {disabled} title="Delete the account">
         <div class="h-5 w-5">
             {@html DeleteIcon}
         </div>
     </button>
-    <div class="text-xs col-span-full">
+    <div class="col-span-full text-xs">
         <div class="flex justify-between">
             <button
-                class="flex items-center text-skin-accent2 p-0 border-transparent bg-transparent hover:bg-transparent text-xs ml-8"
+                class="ml-8 flex items-center border-transparent bg-transparent p-0 text-xs text-skin-accent2 hover:bg-transparent"
                 on:click={() => void updateMessages()}
                 {disabled}
             >
-                <div class="w-5 h-5 mr-1">
+                <div class="mr-1 h-5 w-5">
                     {@html RefreshIcon2}
                 </div>
                 <span>{getMsg('optionAccountsFetchBtn')}</span>
             </button>
             <div class="ml-auto" />
-            <button class="bg-transparent rounded-sm py-[1px] px-1" on:click={reAuth} {disabled}>
+            <button class="rounded-sm bg-transparent py-[1px] px-1" on:click={reAuth} {disabled}>
                 {getMsg('optionAccountsReAuthBtn')}</button
             >
         </div>
@@ -152,7 +152,7 @@
         {/if}
 
         {#if showMessages}
-            <div class="max-w-full border p-1 border-skin-delimiter mt-2">
+            <div class="mt-2 max-w-full border border-skin-delimiter p-1">
                 <MessagesList
                     title={`${acc.name || ''} unread private messages`}
                     items={acc.mail?.messages || []}
@@ -168,7 +168,7 @@
 
 <style lang="postcss">
     li {
-        @apply grid gap-x-2 gap-y-1 mb-6 w-full max-w-full items-center;
+        @apply mb-6 grid w-full max-w-full items-center gap-x-2 gap-y-1;
 
         grid-template-columns: min-content minmax(auto, 1fr) auto auto auto;
     }

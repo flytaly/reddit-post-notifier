@@ -30,7 +30,7 @@
 
 <div class="w-full">
     {#if $storageData.isLoaded}
-        <h1 class="text-2xl uppercase font-bold tracking-widest text-skin-gray mb-4">
+        <h1 class="mb-4 text-2xl font-bold uppercase tracking-widest text-skin-gray">
             {getMsg('optionsNavSettings')}
         </h1>
         <section>

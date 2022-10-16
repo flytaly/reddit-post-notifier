@@ -45,14 +45,14 @@
 </script>
 
 <Header />
-<main class="flex flex-col flex-1 min-w-[18rem] min-h-[6rem] max-h-[500px] overflow-x-hidden overflow-y-auto pb-2">
+<main class="flex max-h-[500px] min-h-[6rem] min-w-[18rem] flex-1 flex-col overflow-y-auto overflow-x-hidden pb-2">
     {#if haveItems($storageData)}
         <WatchList />
     {:else}
-        <div class="flex flex-col items-center justify-center py-2 h-full my-auto mx-4 text-center">
+        <div class="my-auto mx-4 flex h-full flex-col items-center justify-center py-2 text-center">
             <span>{getMsg('noQueries')}</span>
-            <a class="flex items-center mt-2 font-medium" href={optionsHref} on:click={optionsClick}>
-                <div class="h-5 w-5 mr-1">
+            <a class="mt-2 flex items-center font-medium" href={optionsHref} on:click={optionsClick}>
+                <div class="mr-1 h-5 w-5">
                     {@html SettingsIcon}
                 </div>
                 <span>{getMsg('openOptions')}</span>

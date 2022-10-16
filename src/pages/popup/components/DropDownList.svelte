@@ -17,7 +17,8 @@
 </script>
 
 <div class="drop-down-list" data-keys-target="list-container" bind:this={containerElement}>
-    <div class="item" tabindex="0" on:click={toggle} data-keys-target="list-row">
+    <!-- svelte-ignore a11y-click-events-have-key-events -->
+    <div class="item" tabindex="0" role="button" on:click={toggle} data-keys-target="list-row">
         <slot name="header-row" />
         <span class="ml-auto mr-3">
             <SvgButton on:click={toggle}>
@@ -28,17 +29,18 @@
         </span>
     </div>
     {#if isExpanded}
-        <div class="flex flex-row ml-2" transition:slide|local={{ duration: 150, easing: quadOut }}>
+        <div class="ml-2 flex flex-row" transition:slide|local={{ duration: 150, easing: quadOut }}>
             <!-- Vertical Line -->
-            <button class="flex w-5 group flex-shrink-0" on:click={toggle}>
-                <span class="w-px ml-1 h-full bg-skin-delimiter group-hover:bg-skin-accent2 group-hover:w-[2px]" />
+            <button class="group flex w-5 flex-shrink-0" on:click={toggle}>
+                <span class="ml-1 h-full w-px bg-skin-delimiter group-hover:w-[2px] group-hover:bg-skin-accent2" />
             </button>
 
-            <ul class="flex flex-col flex-grow" data-floatpreview-target="true">
+            <ul class="flex flex-grow flex-col" data-floatpreview-target="true">
                 {#each items as item (item.data.id)}
                     <li
                         class="item"
                         tabindex="0"
+                        role="button"
                         data-keys-target="post-row"
                         out:rowOutTransition|local={{ duration: 150, id: item.data.id }}
                         animate:flip={{ delay: 100, duration: 100 }}
@@ -56,15 +58,15 @@
 
 <style lang="postcss">
     .drop-down-list {
-        @apply flex flex-col w-full min-w-[12rem] max-w-[32rem];
+        @apply flex w-full min-w-[12rem] max-w-[32rem] flex-col;
     }
 
     .item {
-        @apply flex items-center w-full my-px
+        @apply my-px flex w-full items-center
                border-t border-b border-skin-bg
-               hover:border-skin-delimiter focus:border-skin-delimiter
-               hover:bg-skin-item-hover focus:bg-skin-item-hover
-               focus-visible:outline-none focus-visible:border-skin-outline;
+               hover:border-skin-delimiter hover:bg-skin-item-hover
+               focus:border-skin-delimiter focus:bg-skin-item-hover
+               focus-visible:border-skin-outline focus-visible:outline-none;
     }
 
     :global([slot='list-row']),

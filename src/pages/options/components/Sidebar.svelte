@@ -31,16 +31,17 @@
     </nav>
     <div class="mx-2 text-xs">
         <a
-            class="supportme gap-x-2 leading-normal justify-center text-center rounded-md text-skin-text hover:text-skin-accent group"
+            class="supportme group justify-center gap-x-2 rounded-md text-center leading-normal text-skin-text hover:text-skin-accent"
             href="https://ko-fi.com/flytaly"
             target="_blank"
+            rel="noreferrer"
         >
-            <div class="w-5 flex items-center group-hover:animate-pulse p-0">
+            <div class="flex w-5 items-center p-0 group-hover:animate-pulse">
                 {@html KoFiIcon}
             </div>
             <div>Support me</div>
             <div />
-            <div class="transition-opacity opacity-0 group-hover:opacity-100 group-focus:opacity-100">on Ko-Fi</div>
+            <div class="opacity-0 transition-opacity group-hover:opacity-100 group-focus:opacity-100">on Ko-Fi</div>
         </a>
     </div>
 </aside>
@@ -51,13 +52,13 @@
         grid-template-columns: min-content max-content;
     }
     aside {
-        @apply sticky flex flex-col top-4 pt-2 shadow-sidebar text-sm;
+        @apply sticky top-4 flex flex-col pt-2 text-sm shadow-sidebar;
     }
     a {
         @apply text-skin-text;
     }
     .logo {
-        @apply w-[4.5rem] mb-1 mx-auto translate-x-[2px];
+        @apply mx-auto mb-1 w-[4.5rem] translate-x-[2px];
     }
     .logo :global(.eye) {
         /* ? @apply doesn't work here for some reason */
@@ -67,6 +68,6 @@
         fill: var(--color-accent2);
     }
     .current {
-        @apply text-skin-accent font-bold;
+        @apply font-bold text-skin-accent;
     }
 </style>

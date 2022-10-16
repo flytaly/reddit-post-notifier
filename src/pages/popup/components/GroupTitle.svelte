@@ -29,7 +29,7 @@
     };
 </script>
 
-<div class="flex items-center w-full p-1 pr-4" class:disabled={disabled || group.updatesDisabled}>
+<div class="flex w-full items-center p-1 pr-4" class:disabled={disabled || group.updatesDisabled}>
     {#if onCheck}
         <CheckMarkButton clickHandler={onCheck} title={getMsg('watchListCheckMark_title')} />
     {/if}
@@ -43,7 +43,7 @@
                 {@html SearchIcon}
             </div> -->
         {/if}
-        <span class="mr-auto whitespace-nowrap text-ellipsis overflow-hidden max-w-[40ch]">{group.title}</span>
+        <span class="mr-auto max-w-[40ch] overflow-hidden text-ellipsis whitespace-nowrap">{group.title}</span>
         {#if group.updatesDisabled}
             <div class="h-4 w-4 shrink-0 text-skin-gray" title={getMsg('watchListUpdatesOff')}>
                 {@html UpdatesDisabledIcon}

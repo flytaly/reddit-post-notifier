@@ -35,7 +35,7 @@
     <title>{page.name}</title>
 </svelte:head>
 
-<div class="grid grid-cols-[max-content,minmax(auto,42rem)] gap-x-4 p-3 pt-0 justify-center">
+<div class="grid grid-cols-[max-content,minmax(auto,42rem)] justify-center gap-x-4 p-3 pt-0">
     <div class="sticky top-0">
         <Sidebar current={pageId} />
     </div>

@@ -5,28 +5,28 @@
 @layer components {
     .ios-checkbox {
         /* Checkbox input should be placed before this element with `peer hidden` classes */
-        @apply block relative h-6 w-11 rounded-2xl
-        transition-colors ease-in-out bg-gray-500
-        peer-checked:bg-skin-input-checked hover:brightness-125
+        @apply relative block h-6 w-11 rounded-2xl
+        bg-gray-500 transition-colors ease-in-out
+        before:absolute before:top-1/2
 
-        before:absolute before:block before:h-5 before:w-5 before:bg-white
+        before:left-1 before:block before:h-5 before:w-5 before:-translate-y-1/2
         before:rounded-full
-        before:top-1/2 before:left-1  before:-translate-y-1/2  before:transition-all  before:ease-in-out
+        before:bg-white before:transition-all  before:ease-in-out  hover:brightness-125  peer-checked:bg-skin-input-checked
         peer-checked:before:translate-x-3/4
         peer-checked:before:border-skin-input-checked;
     }
 
     .connected-block {
-        @apply ml-6 relative;
+        @apply relative ml-6;
 
         &::before {
-            @apply absolute w-4 h-1/2 right-full rounded-bl-xl border-skin-gray2;
+            @apply absolute right-full h-1/2 w-4 rounded-bl-xl border-skin-gray2;
 
             content: '';
         }
 
         &::after {
-            @apply absolute w-4 h-1/2 top-1/2 right-full rounded-tl-xl border-skin-gray2;
+            @apply absolute top-1/2 right-full h-1/2 w-4 rounded-tl-xl border-skin-gray2;
 
             content: '';
         }
@@ -54,7 +54,7 @@
     }
 
     .icon-button {
-        @apply flex items-center py-0 px-1 bg-transparent border-transparent hover:bg-transparent hover:scale-105 transition-transform;
+        @apply flex items-center border-transparent bg-transparent py-0 px-1 transition-transform hover:scale-105 hover:bg-transparent;
     }
 }
 

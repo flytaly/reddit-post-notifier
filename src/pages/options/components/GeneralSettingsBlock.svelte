@@ -145,7 +145,7 @@
 
 <style lang="postcss">
     .play-btn {
-        @apply flex items-center bg-skin-input ml-1;
+        @apply ml-1 flex items-center bg-skin-input;
     }
 
     .play-btn :global(svg) {

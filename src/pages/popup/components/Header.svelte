@@ -33,7 +33,7 @@
     };
 </script>
 
-<header class="flex items-center p-1 min-h-[1.2rem] border-b border-skin-delimiter space-x-3">
+<header class="flex min-h-[1.2rem] items-center space-x-3 border-b border-skin-delimiter p-1">
     <span class="flex flex-1 items-center space-x-2">
         <SvgButton
             disabled={loading}
@@ -48,7 +48,7 @@
     </span>
 
     <a
-        class="flex gap-1 text-current group"
+        class="group flex gap-1 text-current"
         class:accent={messagesCount}
         on:click={onMailClick}
         title={getMsg('headerMailLink_title')}
@@ -57,7 +57,7 @@
         {#if messagesCount}
             <span>{messagesCount}</span>
         {/if}
-        <div class="w-5 h-4 group-hover:scale-110 group-active:scale-95">
+        <div class="h-4 w-5 group-hover:scale-110 group-active:scale-95">
             {@html MailIcon}
         </div>
     </a>

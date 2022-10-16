@@ -133,14 +133,14 @@
     };
 </script>
 
-<div class="subreddit-grid rounded-md my-4" class:expanded={showFilterBlock}>
+<div class="subreddit-grid my-4 rounded-md" class:expanded={showFilterBlock}>
     <div
         class={`flex border rounded p-0 border-skin-base ${
             inputStatus.error || fetchError ? 'border-skin-error bg-skin-error-bg' : 'bg-transparent'
         } rounded-t h-full`}
     >
         <input
-            class="rounded-l rounded-r-none w-full border-none"
+            class="w-full rounded-l rounded-r-none border-none"
             type="text"
             bind:this={subredditInputRef}
             bind:value={subOpts.subreddit}
@@ -152,13 +152,13 @@
         />
 
         <button
-            class="min-w-[5rem] py-0 px-2 border-0 border-l rounded-r rounded-l-none w-min text-xs"
+            class="w-min min-w-[5rem] rounded-r rounded-l-none border-0 border-l py-0 px-2 text-xs"
             on:click={() => saveInputs()}
         >
             {#if inputStatus.saved}
                 <div class="flex items-center text-skin-success">
-                    <div class="w-4 h-4 mr-1 flex-shrink-0">{@html icons.SaveIcon}</div>
-                    <span class="text-skin-success font-medium">{getMsg('savedLabel')}</span>
+                    <div class="mr-1 h-4 w-4 flex-shrink-0">{@html icons.SaveIcon}</div>
+                    <span class="font-medium text-skin-success">{getMsg('savedLabel')}</span>
                 </div>
             {:else if inputStatus.error}
                 <div class="flex justify-center">
@@ -193,7 +193,7 @@
     />
 
     <button
-        class="flex item-center ml-auto py-0 px-0 bg-transparent border-transparent text-skin-accent hover:bg-transparent"
+        class="item-center ml-auto flex border-transparent bg-transparent py-0 px-0 text-skin-accent hover:bg-transparent"
         aria-label={getMsg('optionSubredditsFilter_title')}
         on:focus={showLabel}
         on:mouseover={showLabel}
@@ -206,9 +206,9 @@
             transition-colors ${filterOpts?.enabled ? 'bg-skin-input-checked' : 'bg-gray-500'}`}
         >
             {#if filterOpts?.enabled}
-                <div class="w-5 h-5">{@html icons.FilterIcon}</div>
+                <div class="h-5 w-5">{@html icons.FilterIcon}</div>
             {:else}
-                <div class="w-5 h-5">{@html icons.FilterOffIcon}</div>
+                <div class="h-5 w-5">{@html icons.FilterOffIcon}</div>
             {/if}
             <span class="ml-[2px]"
                 >{getMsg('optionSubredditsFilter')} ({(filterOpts?.enabled && filterOpts?.rules?.length) || 0})</span
@@ -217,14 +217,14 @@
     </button>
     <div>
         <button
-            class="icon-button text-skin-accent ml-auto"
+            class="icon-button ml-auto text-skin-accent"
             aria-label={getMsg('optionSubredditsDelete')}
             on:click={() => subredditStore.deleteSubreddit(subOpts.id)}
             on:focus={showLabel}
             on:mouseover={showLabel}
             on:mouseleave={hideLabel}
         >
-            <div class="w-5 h-5">{@html icons.DeleteIcon}</div>
+            <div class="h-5 w-5">{@html icons.DeleteIcon}</div>
         </button>
     </div>
 
@@ -234,24 +234,24 @@
         <div class={`rounded-b p-1 text-xs ${inputStatus.error || fetchError ? 'bg-skin-error-bg' : 'bg-blue'}`}>
             {#if inputStatus.error || fetchError}
                 <div class="flex items-center">
-                    <div class="w-4 h-4 mr-1 text-skin-error flex-shrink-0">{@html icons.WarningIcon}</div>
+                    <div class="mr-1 h-4 w-4 flex-shrink-0 text-skin-error">{@html icons.WarningIcon}</div>
                     <div>{inputStatus.error || fetchError}</div>
                 </div>
             {/if}
         </div>
         <button
-            class="flex items-center text-skin-accent2 p-0 border-transparent bg-transparent hover:bg-transparent text-xs"
+            class="flex items-center border-transparent bg-transparent p-0 text-xs text-skin-accent2 hover:bg-transparent"
             on:click={() => void fetchPosts()}
             title={getMsg('optionsSubredditFetch_title')}
             disabled={$isBlocked || !subOpts.subreddit || !!inputStatus.error}
         >
-            <div class="w-5 h-5 mr-1">
+            <div class="mr-1 h-5 w-5">
                 {@html RefreshIcon2}
             </div>
             <span>{getMsg('optionsSubredditFetch')}</span>
         </button>
     </div>
-    <div id="inputs-label" class="p-1 mb-2 text-right col-start-2 col-span-full text-xs italic">
+    <div id="inputs-label" class="col-span-full col-start-2 mb-2 p-1 text-right text-xs italic">
         <span>{labelText}</span>
         &nbsp;
     </div>
@@ -259,7 +259,7 @@
     <Spinner show={isLoading} />
 
     {#if showPosts}
-        <div class="col-span-full border p-1 border-skin-delimiter ">
+        <div class="col-span-full border border-skin-delimiter p-1 ">
             <RedditItemsList
                 title={`The latest posts in the subreddit. ${
                     subOpts.filterOpts?.enabled ? 'With filters.' : 'Without filters.'
@@ -280,11 +280,11 @@
 
 <style lang="postcss">
     .subreddit-grid {
-        @apply grid p-1 items-start gap-x-3 w-full;
+        @apply grid w-full items-start gap-x-3 p-1;
 
         grid-template-columns: minmax(10rem, 20rem) auto auto auto 1fr;
     }
     .expanded {
-        @apply ring-skin-delimiter bg-skin-bg2 shadow-sidebar;
+        @apply bg-skin-bg2 shadow-sidebar ring-skin-delimiter;
     }
 </style>

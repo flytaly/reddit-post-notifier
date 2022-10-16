@@ -51,17 +51,17 @@
     };
 </script>
 
-<div class="flex items-center w-full py-[0.125rem] pr-3" data-post-id={post.data.id}>
+<div class="flex w-full items-center py-[0.125rem] pr-3" data-post-id={post.data.id}>
     <CheckMarkButton clickHandler={() => removePost(post.data.id)} title={getMsg('watchListItemCheckMark_title')} />
     <a
-        class="text-skin-link flex-grow px-1 py-[0.125rem]"
+        class="flex-grow px-1 py-[0.125rem] text-skin-link"
         {href}
         data-keys-target="post-link"
         on:click|preventDefault|stopPropagation={onLinkClick}
         data-post-id={post.data.id}
     >
         {#if group.isMultireddit}
-            <span class="text-skin-text text-xs mr-1">{`r/${post.data.subreddit}`}</span>
+            <span class="mr-1 text-xs text-skin-text">{`r/${post.data.subreddit}`}</span>
         {/if}
         {getItemTitle(post)}</a
     >

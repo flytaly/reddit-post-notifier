@@ -22,9 +22,10 @@
     on:mouseleave
     on:keydown={labelBtnClick}
     tabindex="0"
+    role="button"
     {...$$restProps}
 >
-    <input class="hidden peer" type="checkbox" bind:checked on:change={changeHander} />
+    <input class="peer hidden" type="checkbox" bind:checked on:change={changeHander} />
     <div
         class={`flex items-center justify-center select-none
             text-gray-50 rounded-2xl py-[2px] px-2 hover:brightness-110 transition-colors ${
@@ -32,9 +33,9 @@
             }`}
     >
         {#if checked}
-            <div class="w-5 h-5">{@html NotifyIcon}</div>
+            <div class="h-5 w-5">{@html NotifyIcon}</div>
         {:else}
-            <div class="w-5 h-5">{@html NotifyOffIcon}</div>
+            <div class="h-5 w-5">{@html NotifyOffIcon}</div>
         {/if}
         <span class="ml-[2px]">{getMsg('notifyLabel')}</span>
     </div>

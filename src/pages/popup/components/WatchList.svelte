@@ -76,8 +76,8 @@
                 rowOutTransition={slideHorizontal}
             >
                 <div slot="header-row">
-                    <div class="flex items-center w-full p-1 pr-4 pb-2">
-                        <div class="w-4 h-4 mr-1">{@html Pin}</div>
+                    <div class="flex w-full items-center p-1 pr-4 pb-2">
+                        <div class="mr-1 h-4 w-4">{@html Pin}</div>
                         <span>{`Pinned posts (${data.pinnedPostList.length})`}</span>
                     </div>
                 </div>
@@ -108,7 +108,7 @@
         </div>
     {/each}
     {#if !groupsWithPosts.length}
-        <div class="text-skin-gray my-4 mx-auto">{getMsg('noPosts')}</div>
+        <div class="my-4 mx-auto text-skin-gray">{getMsg('noPosts')}</div>
     {/if}
 
     <!-- EMPTY GROUPS -->
@@ -126,6 +126,6 @@
     }
 
     .delimiter {
-        @apply border-t border-skin-gray border-dashed w-full my-2;
+        @apply my-2 w-full border-t border-dashed border-skin-gray;
     }
 </style>

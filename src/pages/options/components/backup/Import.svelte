@@ -44,11 +44,11 @@
 <section class="mb-8 text-sm">
     <Heading id="import" name={'Import config'} />
     <div
-        class="bg-skin-bg2 flex items-center justify-between space-x-4 border border-b-0 border-skin-base p-1 rounded-t-md"
+        class="flex items-center justify-between space-x-4 rounded-t-md border border-b-0 border-skin-base bg-skin-bg2 p-1"
     >
         <span class="text-sm">Paste configuration below or import from a file</span>
         <label
-            class="flex items-center hover:text-skin-accent bg-transparent hover:bg-transparent py-0 px-1 border-none disabled:cursor-default"
+            class="flex items-center border-none bg-transparent py-0 px-1 hover:bg-transparent hover:text-skin-accent disabled:cursor-default"
             for="import-file"
         >
             <input type="file" accept="application/json" id="import-file" bind:this={fileInput} />
@@ -75,6 +75,6 @@
 
 <style lang="postcss">
     textarea {
-        @apply w-full bg-skin-input font-mono border border-skin-base focus-visible:outline-none focus-visible:ring-1 ring-skin-outline;
+        @apply w-full border border-skin-base bg-skin-input font-mono ring-skin-outline focus-visible:outline-none focus-visible:ring-1;
     }
 </style>

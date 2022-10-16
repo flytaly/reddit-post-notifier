@@ -34,7 +34,7 @@
         @apply group-hover:scale-110 group-active:scale-95 group-disabled:scale-100;
     }
     .with-text {
-        @apply px-1 border border-skin-base
-        bg-skin-btn hover:bg-skin-btn-hover disabled:hover:bg-skin-btn active:bg-skin-btn-active;
+        @apply border border-skin-base bg-skin-btn
+        px-1 hover:bg-skin-btn-hover active:bg-skin-btn-active disabled:hover:bg-skin-btn;
     }
 </style>

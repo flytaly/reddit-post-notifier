@@ -25,9 +25,9 @@
     };
 </script>
 
-<div transition:slide={{ duration: 150, easing: quadOut }} class="mt-2 w-full col-span-full space-y-2">
+<div transition:slide={{ duration: 150, easing: quadOut }} class="col-span-full mt-2 w-full space-y-2">
     <div class="ml-6">
-        <div class="font-medium text-sm">Post filters</div>
+        <div class="text-sm font-medium">Post filters</div>
         <div class="text-sm">
             Check if the subreddit's posts fit at least one of the rules below. Filter words in the title and post's
             text fields are case-insensitive and can be stemmed (dogs = dog).
@@ -45,7 +45,7 @@
                 />
             </div>
             {#if ruleList.length - 1 !== index}
-                <div class="text-sm font-mono py-1">OR</div>
+                <div class="py-1 font-mono text-sm">OR</div>
             {/if}
         {/each}
     </div>

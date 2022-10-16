@@ -15,12 +15,13 @@
 </script>
 
 <label
-    class="flex space-x-1 items-center"
+    class="flex items-center space-x-1"
     on:keydown={labelBtnClick}
     tabindex="0"
     on:focus
     on:mouseover
     on:mouseleave
+    role="button"
     {...$$restProps}
 >
     <input class="peer hidden" type="checkbox" bind:checked on:change={changeHandler} />

@@ -54,7 +54,7 @@
     </div>
     <div>
         <div>
-            <div class="bg-skin-bg2 flex space-x-4 justify-end border border-b-0 border-skin-base p-1 rounded-t-md">
+            <div class="flex justify-end space-x-4 rounded-t-md border border-b-0 border-skin-base bg-skin-bg2 p-1">
                 {#await dataPromise}
                     <div class="mr-auto">Loading</div>
                 {:then data}
@@ -79,7 +79,7 @@
                 {/await}
             </div>
             <div
-                class="border border-skin-base w-full h-56 p-1 rounded-b-md whitespace-pre-wrap overflow-y-scroll font-mono"
+                class="h-56 w-full overflow-y-scroll whitespace-pre-wrap rounded-b-md border border-skin-base p-1 font-mono"
             >
                 {#await dataPromise}
                     <div class="w-full h-60">Loading</div>

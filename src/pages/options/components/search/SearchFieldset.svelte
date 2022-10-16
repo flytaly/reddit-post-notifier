@@ -84,10 +84,10 @@
     };
 </script>
 
-<fieldset class="border border-skin-base text-sm p-2" data-testid="search-fieldset">
-    <legend class="font-semibold text-base mb-2 px-1">{getMsg('optionSearchLegend')}</legend>
+<fieldset class="border border-skin-base p-2 text-sm" data-testid="search-fieldset">
+    <legend class="mb-2 px-1 text-base font-semibold">{getMsg('optionSearchLegend')}</legend>
 
-    <div class="relative grid items-center gap-2 grid-cols-[auto,1fr] mb-2">
+    <div class="relative mb-2 grid grid-cols-[auto,1fr] items-center gap-2">
         <div class="absolute right-2 top-4 text-skin-success">{saveMsg}</div>
         <label for={ids.name}>{getMsg('optionSearchName')}</label>
         <span class="flex items-center">
@@ -140,20 +140,25 @@
 
         <div />
         <div class="-mt-1">
-            <a class="underline text-sm" href="https://www.reddit.com/wiki/search#wiki_field_search" target="_blank"
-                >{getMsg('optionSearchWiki')}</a
+            <a
+                class="text-sm underline"
+                href="https://www.reddit.com/wiki/search#wiki_field_search"
+                target="_blank"
+                rel="noreferrer"
             >
+                {getMsg('optionSearchWiki')}
+            </a>
         </div>
     </div>
 
     {#if fetchError}
-        <div class="flex items-center ml-4 text-skin-error">
-            <div class="w-5 h-5 mr-1">{@html WarningIcon}</div>
+        <div class="ml-4 flex items-center text-skin-error">
+            <div class="mr-1 h-5 w-5">{@html WarningIcon}</div>
             {fetchError}
         </div>
     {/if}
 
-    <div class="flex justify-between items-center mt-2 mb-2 pl-4">
+    <div class="mt-2 mb-2 flex items-center justify-between pl-4">
         <Labeled>
             <input slot="input" type="checkbox" bind:checked={queryObject.notify} on:change={inputHandler} />
             <span slot="description">
@@ -170,10 +175,10 @@
             </span>
         </Labeled>
         <button
-            class="flex items-center rounded ml-auto text-skin-accent  border-transparent hover:border-skin-accent bg-transparent hover:bg-skin-input"
+            class="ml-auto flex items-center rounded border-transparent  bg-transparent text-skin-accent hover:border-skin-accent hover:bg-skin-input"
             on:click={deleteHandler}
         >
-            <div class="w-5 h-5 mr-2 flex-shrink-0">{@html DeleteIcon}</div>
+            <div class="mr-2 h-5 w-5 flex-shrink-0">{@html DeleteIcon}</div>
             <div>
                 {getMsg('optionSearchDelete')}
             </div>
@@ -181,12 +186,12 @@
     </div>
 
     <button
-        class="flex items-center text-skin-accent2 p-0 mb-2 ml-4  border-transparent bg-transparent hover:bg-transparent text-xs transition-colors"
+        class="mb-2 ml-4 flex items-center border-transparent bg-transparent  p-0 text-xs text-skin-accent2 transition-colors hover:bg-transparent"
         on:click={() => void fetchPosts()}
         title="click to fetch and show the latest post from the Reddit search"
         disabled={$isBlocked || !queryObject.query || !!subredditError}
     >
-        <div class="w-5 h-5 mr-1">
+        <div class="mr-1 h-5 w-5">
             {@html RefreshIcon2}
         </div>
         <span>{getMsg('optionSearchFetch')}</span>
@@ -195,7 +200,7 @@
     <Spinner show={isLoading} />
 
     {#if showPosts}
-        <div class="border p-1 border-skin-delimiter ">
+        <div class="border border-skin-delimiter p-1 ">
             <RedditItemsList
                 title={`The latest posts in the search.`}
                 items={queryData.posts || []}

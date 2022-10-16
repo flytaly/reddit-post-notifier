@@ -10,7 +10,7 @@
     };
 </script>
 
-<span class="mr-1 text-skin-gray hover:text-skin-success hover:scale-105" data-keys-target="check-mark">
+<span class="mr-1 text-skin-gray hover:scale-105 hover:text-skin-success" data-keys-target="check-mark">
     <SvgButton on:click={handler} {title}>
         {@html CheckMark}
     </SvgButton>

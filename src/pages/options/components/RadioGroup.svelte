@@ -7,13 +7,13 @@
     export let name = '';
 </script>
 
-<form class="flex overflow-visible py-1 bg-skin-input" on:change={() => onChange(currentValue)}>
+<form class="flex overflow-visible bg-skin-input py-1" on:change={() => onChange(currentValue)}>
     {#each valueList as { value, id, label }}
-        <div class="overflow-visible group px-[2px]">
-            <input class="absolute opacity-0 peer" type="radio" bind:group={currentValue} {value} {id} {name} />
+        <div class="group overflow-visible px-[2px]">
+            <input class="peer absolute opacity-0" type="radio" bind:group={currentValue} {value} {id} {name} />
             <label
                 class="border border-skin-base bg-skin-input px-2 py-1
-                text-skin-text text-sm
+                text-sm text-skin-text
                 transition-colors
                 hover:brightness-90 active:brightness-125
                 group-first:rounded-l group-last:rounded-r
@@ -22,8 +22,8 @@
                 peer-checked:hover:brightness-110
                 peer-focus-visible:border-skin-outline
                 peer-focus-visible:ring
-                peer-focus-visible:ring-offset-1
                 peer-focus-visible:ring-skin-outline
+                peer-focus-visible:ring-offset-1
             "
                 for={id}>{label}</label
             >

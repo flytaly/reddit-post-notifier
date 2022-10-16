@@ -29,10 +29,10 @@
     };
 </script>
 
-<div class="flex items-center w-full py-[0.125rem] pr-3" data-post-id={item.data.id}>
+<div class="flex w-full items-center py-[0.125rem] pr-3" data-post-id={item.data.id}>
     <CheckMarkButton clickHandler={() => removePost(item.data.id)} title={getMsg('watchListItemCheckMark_title')} />
     <a
-        class="text-skin-link flex-grow px-1 py-[0.125rem]"
+        class="flex-grow px-1 py-[0.125rem] text-skin-link"
         {href}
         on:click|preventDefault|stopPropagation={onLinkClick}
         data-keys-target="post-link"

@@ -48,11 +48,13 @@
                 You can stay up to date with Reddit Search by adding a query in the "search query" field in the
                 <a href={'./index.html#' + sections.settings['reddit-search'].id}>Reddit Search</a>
                 section. Look at the
-                <a href="https://www.reddit.com/wiki/search#wiki_field_search" target="_blank">Reddit Search wiki</a>
+                <a href="https://www.reddit.com/wiki/search#wiki_field_search" target="_blank" rel="noreferrer">
+                    Reddit Search wiki
+                </a>
                 to learn supported keywords and
-                <a href="https://www.reddit.com/wiki/search#wiki_boolean_operators" target="_blank">
-                    boolean operators</a
-                >.
+                <a href="https://www.reddit.com/wiki/search#wiki_boolean_operators" target="_blank" rel="noreferrer">
+                    boolean operators
+                </a>.
             </div>
             <br />
             <div>
@@ -70,7 +72,7 @@
             </div>
             <div>
                 To receive notifications don't forget to select the checkbox with
-                <span class="icon inline-block w-4 h-4">
+                <span class="icon inline-block h-4 w-4">
                     {@html BellIcon}
                 </span>
                 icon.
@@ -104,11 +106,11 @@
 
 <style lang="postcss">
     summary {
-        @apply font-semibold text-base mb-2;
+        @apply mb-2 text-base font-semibold;
     }
 
     .query-example {
-        @apply mb-2 font-mono pl-2 border border-skin-base;
+        @apply mb-2 border border-skin-base pl-2 font-mono;
     }
 
     .icon :global(svg) {

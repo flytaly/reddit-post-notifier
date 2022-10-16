@@ -60,9 +60,9 @@
 
 <article>
     <header>
-        <div class="flex justify-between items-center my-1">
+        <div class="my-1 flex items-center justify-between">
             <div>{title}</div>
-            <button class="p-0 mr-2 border-none bg-transparent h-4 w-4" on:click={onClose} title="close">
+            <button class="mr-2 h-4 w-4 border-none bg-transparent p-0" on:click={onClose} title="close">
                 {@html XCircleIcon}
             </button>
         </div>
@@ -79,9 +79,10 @@
                 <span>: </span>
             </div>
             <a
-                class="overflow-hidden whitespace-nowrap overflow-ellipsis break-all  hover:underline"
+                class="overflow-hidden overflow-ellipsis whitespace-nowrap break-all  hover:underline"
                 href={item.link}
                 target="_blank"
+                rel="noreferrer"
             >
                 {#if item.flair}
                     <span class="text-skin-text">
@@ -98,7 +99,7 @@
 
 <style lang="postcss">
     .user-items-grid {
-        @apply grid gap-x-2 gap-y-0 mt-2;
+        @apply mt-2 grid gap-x-2 gap-y-0;
 
         grid-template-columns: auto auto 1fr;
     }

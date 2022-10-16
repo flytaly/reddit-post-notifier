@@ -31,7 +31,7 @@
 
 <style lang="postcss">
     .grid-header {
-        @apply grid p-1 items-start gap-x-3 w-full font-bold;
+        @apply grid w-full items-start gap-x-3 p-1 font-bold;
 
         grid-template-columns: minmax(10rem, 20rem) 3rem 4rem 4rem 2rem;
     }

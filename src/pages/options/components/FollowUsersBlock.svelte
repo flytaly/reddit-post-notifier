@@ -107,7 +107,7 @@
 
 <style lang="postcss">
     .user-input-grid {
-        @apply grid grid-cols-5 gap-x-5 items-center;
+        @apply grid grid-cols-5 items-center gap-x-5;
 
         grid-template-columns: repeat(4, max-content) 1fr;
     }
