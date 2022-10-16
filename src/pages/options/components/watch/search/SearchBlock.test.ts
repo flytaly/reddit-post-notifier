@@ -1,9 +1,9 @@
-/* eslint-disable @typescript-eslint/unbound-method */
+/* eslint-disable @typescript-eslint/no-unsafe-return, @typescript-eslint/unbound-method */
 import { test } from '@jest/globals';
 import { fireEvent, getByLabelText, render, waitFor } from '@testing-library/svelte';
 import storage from '@/storage';
 import type { QueryData, QueryOpts } from '@/storage/storage-types';
-import SearchBlock from '../components/search/SearchBlock.svelte';
+import SearchBlock from './SearchBlock.svelte';
 import getMsg from '@/utils/get-message';
 import { mocked } from 'jest-mock';
 import { dataFields } from '@/storage/fields';
@@ -13,7 +13,6 @@ import cloneDeep from 'lodash.clonedeep';
 jest.mock('@/storage/storage.ts');
 jest.mock('@/utils/get-message.ts');
 jest.mock('@/utils/index.ts', () => ({
-    // @ts-ignore
     ...jest.requireActual('@/utils/index.ts'),
     debounce: jest.fn((f: () => unknown) => f),
 }));

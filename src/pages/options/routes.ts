@@ -6,6 +6,10 @@ export const routes = {
         href: './watch.html',
         name: getMsg('optionsNavWatch'),
         sections: {
+            mail: {
+                id: 'mail',
+                name: getMsg('optionsNavMail'),
+            },
             subreddit: {
                 id: 'subreddit',
                 name: getMsg('optionsNavSubreddits'),
@@ -24,16 +28,7 @@ export const routes = {
         id: 'settings',
         href: './index.html',
         name: getMsg('optionsNavSettings'),
-        sections: {
-            general: {
-                id: 'general',
-                name: getMsg('optionsNavGeneral'),
-            },
-            mail: {
-                id: 'mail',
-                name: getMsg('optionsNavMail'),
-            },
-        },
+        sections: {}
     },
     'import-export': {
         id: 'import-export',

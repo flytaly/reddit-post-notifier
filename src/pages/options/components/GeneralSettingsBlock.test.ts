@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/unbound-method */
-import GeneralSettingsBlock from '../components/GeneralSettingsBlock.svelte';
+import GeneralSettingsBlock from './GeneralSettingsBlock.svelte';
 import { fireEvent, render, waitFor } from '@testing-library/svelte';
 import DEFAULT_OPTIONS from '@/options-default';
 import getMsg from '@/utils/get-message';

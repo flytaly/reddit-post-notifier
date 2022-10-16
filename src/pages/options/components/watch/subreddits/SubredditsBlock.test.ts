@@ -1,12 +1,11 @@
-/* eslint-disable @typescript-eslint/no-unsafe-return */
-/* eslint-disable @typescript-eslint/unbound-method */
+/* eslint-disable @typescript-eslint/no-unsafe-return,  @typescript-eslint/unbound-method */
 import { fireEvent, render, waitFor } from '@testing-library/svelte';
 import { cloneDeep } from 'lodash';
 import { mocked } from 'jest-mock';
 import storage from '@/storage/storage';
 import type { SubredditData, SubredditOpts } from '@/storage/storage-types';
 import getMsg from '@/utils/get-message';
-import SubredditsBlock from '../components/subreddits/SubredditsBlock.svelte';
+import SubredditsBlock from './SubredditsBlock.svelte';
 import { tick } from 'svelte';
 import { dataFields } from '@/storage/fields';
 
@@ -14,7 +13,6 @@ let idx = 0;
 jest.mock('@/storage/storage.ts');
 jest.mock('@/utils/get-message.ts');
 jest.mock('@/utils/index.ts', () => ({
-    // @ts-ignore
     ...jest.requireActual('@/utils/index.ts'),
     debounce: jest.fn((f: () => unknown) => f),
     generateId: jest.fn(() => `fakeId_${idx++}`),

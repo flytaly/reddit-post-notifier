@@ -4,10 +4,11 @@
     import { onMount, tick } from 'svelte';
     import { routes } from '@options/routes';
     import { storageData } from '@options/store';
-    import FollowUsersBlock from './FollowUsersBlock.svelte';
     import Heading from '@options/components/Heading.svelte';
+    import FollowUsersBlock from './FollowUsersBlock.svelte';
     import SearchBlock from './search/SearchBlock.svelte';
     import SubredditsBlock from './subreddits/SubredditsBlock.svelte';
+    import AccountsBlock from './AccountsBlock.svelte';
 
     const dataPromise = storage.getAllData();
 
@@ -31,6 +32,10 @@
         <h1 class="mb-4 text-2xl font-bold uppercase tracking-widest text-skin-gray">
             {getMsg('optionsNavWatch')}
         </h1>
+        <section>
+            <Heading id={s.mail.id} name={s.mail.name} />
+            <AccountsBlock />
+        </section>
         <section>
             <Heading id={s.subreddit.id} name={s.subreddit.name} />
             <SubredditsBlock />

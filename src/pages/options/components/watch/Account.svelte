@@ -4,11 +4,11 @@
     import type { AuthUser, StorageFields } from '@/storage/storage-types';
     import getMsg from '@/utils/get-message';
     import { onMount } from 'svelte';
-    import { AccountIcon, DeleteIcon, RefreshIcon2 } from '../icons';
-    import { isBlocked } from '../store';
-    import IosCheckbox from './common/IosCheckbox.svelte';
-    import NotifyToggle from './common/NotifyToggle.svelte';
-    import Spinner from './common/Spinner.svelte';
+    import { AccountIcon, DeleteIcon, RefreshIcon2 } from '@options/icons';
+    import { isBlocked } from '@options/store';
+    import IosCheckbox from '@options/components/common/IosCheckbox.svelte';
+    import NotifyToggle from '@options/components/common/NotifyToggle.svelte';
+    import Spinner from '@options/components/common/Spinner.svelte';
     import MessagesList from './MessagesList.svelte';
 
     export let accounts: StorageFields['accounts'];

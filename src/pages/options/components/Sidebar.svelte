@@ -1,7 +1,7 @@
 <script lang="ts">
     import { LogoIcon, KoFiIcon } from '@/pages/options/icons';
-    import type { PageId } from '../routes';
-    import { routes } from '../routes';
+    import type { PageId } from '@options/routes';
+    import { routes } from '@options/routes';
     export let current: PageId;
 </script>
 

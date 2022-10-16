@@ -8,6 +8,7 @@ module.exports = {
     moduleNameMapper: {
         '^@/(.*)$': '<rootDir>/src/$1',
         '^@assets/(.*)$': '<rootDir>/src/assets/$1',
+        '^@options/(.*)$': '<rootDir>/src/pages/options/$1',
     },
     moduleFileExtensions: ['js', 'svelte', 'mjs', 'ts'],
     setupFilesAfterEnv: ['@testing-library/jest-dom/extend-expect', '<rootDir>/src/test-utils/setupTest.ts'],

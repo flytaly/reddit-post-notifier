@@ -2,10 +2,10 @@
     import auth from '@/reddit-api/auth';
     import type { AuthUser, StorageFields } from '@/storage/storage-types';
     import getMsg from '@/utils/get-message';
-    import { isBlocked, storageData } from '../store';
+    import { isBlocked, storageData } from '@options/store';
     import Account from './Account.svelte';
-    import AddButton from './common/AddButton.svelte';
-    import BlockDescription from './common/BlockDescription.svelte';
+    import AddButton from '@options/components/common/AddButton.svelte';
+    import BlockDescription from '@options/components/common/BlockDescription.svelte';
 
     let accounts: StorageFields['accounts'] = $storageData.accounts;
     let accList: AuthUser[] = [];

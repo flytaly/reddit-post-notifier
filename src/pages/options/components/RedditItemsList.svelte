@@ -1,6 +1,6 @@
 <script lang="ts">
     import type { RedditItem } from '@/reddit-api/reddit-types';
-    import { XCircleIcon } from '../icons';
+    import { XCircleIcon } from '@options/icons';
 
     export let items: RedditItem[] = [];
     export let title = '';
