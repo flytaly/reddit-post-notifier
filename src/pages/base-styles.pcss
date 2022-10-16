@@ -18,39 +18,39 @@
 
     .connected-block {
         @apply ml-6 relative;
-    }
 
-    .connected-block::before {
-        @apply absolute w-4 h-1/2 right-full rounded-bl-xl border-skin-gray2;
+        &::before {
+            @apply absolute w-4 h-1/2 right-full rounded-bl-xl border-skin-gray2;
 
-        content: '';
-    }
+            content: '';
+        }
 
-    .connected-block::after {
-        @apply absolute w-4 h-1/2 top-1/2 right-full rounded-tl-xl border-skin-gray2;
+        &::after {
+            @apply absolute w-4 h-1/2 top-1/2 right-full rounded-tl-xl border-skin-gray2;
 
-        content: '';
-    }
+            content: '';
+        }
 
-    .connected-block:first-child::after {
-        @apply border-l border-t;
-    }
+        &:first-child::after {
+            @apply border-l border-t;
+        }
 
-    .connected-block:last-child::before {
-        @apply border-l border-b;
-    }
+        &:last-child::before {
+            @apply border-l border-b;
+        }
 
-    .connected-block:not(:first-child):not(:last-child)::after {
-        @apply border-l border-t;
-    }
+        &:not(:first-child, :last-child)::after {
+            @apply border-l border-t;
+        }
 
-    .connected-block:not(:first-child):not(:last-child)::before {
-        @apply border-l;
-    }
+        &:not(:first-child, :last-child)::before {
+            @apply border-l;
+        }
 
-    .connected-block:first-child:last-child::after,
-    .connected-block:first-child:last-child::before {
-        @apply border-none;
+        &:first-child:last-child::after,
+        &:first-child:last-child::before {
+            @apply border-none;
+        }
     }
 
     .icon-button {
