@@ -203,7 +203,7 @@
         <div
             class={`flex items-center justify-center select-none
             text-gray-50 rounded-2xl py-[2px] px-2 hover:brightness-110
-            transition-colors ${filterOpts?.enabled ? 'bg-skin-input-checked' : 'bg-gray-500'}`}
+            transition-colors ${filterOpts?.enabled ? 'bg-skin-input-checked' : 'bg-skin-gray2'}`}
         >
             {#if filterOpts?.enabled}
                 <div class="h-5 w-5">{@html icons.FilterIcon}</div>

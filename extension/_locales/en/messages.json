@@ -207,7 +207,7 @@
         "message": "fetch and display unread messages"
     },
     "optionSubredditsDescription": {
-        "message": "Monitor every post in a subreddit. You can filter posts based on given rule. In general, it's recommended to use Reddit Search instead of filters."
+        "message": "Monitor every post in a subreddit. You can filter posts based on a given rule. In general, it's recommended to use Reddit Search instead of filters."
     },
     "optionSubredditsName": {
         "message": "Subreddit name"

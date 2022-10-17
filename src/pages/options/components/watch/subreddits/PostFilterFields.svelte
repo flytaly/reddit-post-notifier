@@ -53,7 +53,7 @@
     };
 </script>
 
-<fieldset class="rounded border border-skin-gray2 p-3 text-sm  shadow-md">
+<fieldset class="rounded border border-skin-delimiter p-3 text-sm  shadow-md">
     <legend class="font-mono text-xs">Filter rule {index + 1 || ''}</legend>
     <div class="field-grid">
         {#each filterRule as searchRule, idx}
@@ -77,7 +77,7 @@
             </button>
             <div class="pl-3">
                 {#if idx < filterRule.length - 1}
-                    <div class="rounded py-px px-1 text-center font-mono text-skin-gray ring-1 ring-skin-gray2">
+                    <div class="rounded py-px px-1 text-center font-mono text-skin-gray ring-1 ring-skin-delimiter">
                         AND
                     </div>
                 {/if}
@@ -91,7 +91,7 @@
         >
         <button
             on:click={removeFilter}
-            class="flex items-center rounded border-transparent bg-transparent p-0 hover:border-skin-accent hover:text-skin-accent"
+            class="flex items-center rounded border-transparent bg-transparent p-0 px-1 hover:border-skin-accent hover:text-skin-accent"
             title="Delete filter"
         >
             <div class="mr-1 h-4 w-4">{@html DeleteIcon}</div>
