@@ -55,6 +55,5 @@
 </div>
 
 <style global lang="postcss">
-    @import '../../../../node_modules/tippy.js/dist/tippy.css';
     @import './OptionsApp.pcss';
 </style>

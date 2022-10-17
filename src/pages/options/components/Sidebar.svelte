@@ -5,7 +5,7 @@
     export let current: PageId;
 </script>
 
-<aside class="mt-4 flex flex-col pt-2 text-sm shadow-sidebar">
+<aside class="mt-4 flex flex-col text-sm hover:shadow-sidebar sticky top-4">
     <a href="./watch.html" class="self-center text-skin-text hover:text-skin-text">
         <div class="logo">
             {@html LogoIcon}
@@ -13,7 +13,7 @@
     </a>
     <nav class="flex flex-col p-4 leading-8">
         {#each Object.values(routes) as { id, href, name, sections }}
-            <a href={`${href}#${id}`} class:current={current === id}>
+            <a href={href} class:current={current === id}>
                 {name}
             </a>
             {#each Object.values(sections) as { id, name }}
