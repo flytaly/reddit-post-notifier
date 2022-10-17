@@ -13,7 +13,8 @@
         "target": "ES2019",
         "outDir": "./dist",
         "module": "ES2020",
-        "strictNullChecks": true
+        "strictNullChecks": true,
+        "plugins": [{ "name": "typescript-svelte-plugin" }]
     },
     "include": [
         "./vite.config.ts",

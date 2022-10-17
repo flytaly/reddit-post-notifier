@@ -29,7 +29,7 @@
 
 <div class="w-full">
     {#if $storageData.isLoaded}
-        <h1 class="mb-4 text-2xl font-bold uppercase tracking-widest text-skin-gray">
+        <h1 class="mb-2 text-xl font-bold uppercase tracking-widest text-skin-gray">
             {getMsg('optionsNavWatch')}
         </h1>
         <section>
@@ -54,6 +54,6 @@
 
 <style lang="postcss">
     section {
-        @apply mb-10;
+        @apply mb-7;
     }
 </style>

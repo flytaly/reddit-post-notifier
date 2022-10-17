@@ -10,6 +10,7 @@ export { default as HelpCircleIcon } from '@assets/help-circle.svg';
 export { default as JsonIcon } from '@assets/json-file.svg';
 export { default as KoFiIcon } from '@assets/ko-fi-icon.svg';
 export { default as LoadingIcon } from '@assets/loading.svg';
+export { default as LoginIcon } from '@assets/login.svg';
 export { default as LogoIcon } from '@assets/logo.svg';
 export { default as NotifyIcon } from '@assets/notify.svg';
 export { default as NotifyOffIcon } from '@assets/notify-off.svg';

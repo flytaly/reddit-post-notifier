@@ -6,6 +6,7 @@
     import Account from './Account.svelte';
     import AddButton from '@options/components/common/AddButton.svelte';
     import BlockDescription from '@options/components/common/BlockDescription.svelte';
+    import { routes } from '../../routes';
 
     let accounts: StorageFields['accounts'] = $storageData.accounts;
     let accList: AuthUser[] = [];
@@ -39,7 +40,7 @@
         <span>
             {getMsg('optionAccountsDescription')}
         </span>
-        <a href="#info">{getMsg('optionReadMore')}</a>
+        <a href={routes.info.href}>{getMsg('optionReadMore')}</a>
     </BlockDescription>
     <div class="my-4">
         {#if accList?.length}

@@ -186,7 +186,7 @@
         "message": "reauthorize"
     },
     "optionAccountsAddBtn": {
-        "message": "Add account"
+        "message": "Add an account"
     },
     "optionAccountsMailCheck": {
         "message": "Watch for Messages"
@@ -201,6 +201,9 @@
         "message": "update the account's information"
     },
     "optionAccountsFetchBtn": {
+        "message": "fetch messages"
+    },
+    "optionAccountsFetchBtnDesc": {
         "message": "fetch and display unread messages"
     },
     "optionSubredditsDescription": {

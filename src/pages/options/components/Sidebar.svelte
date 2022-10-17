@@ -5,7 +5,7 @@
     export let current: PageId;
 </script>
 
-<aside>
+<aside class="mt-4 flex flex-col pt-2 text-sm shadow-sidebar">
     <a href="./watch.html" class="self-center text-skin-text hover:text-skin-text">
         <div class="logo">
             {@html LogoIcon}
@@ -42,9 +42,6 @@
     .supportme {
         display: grid;
         grid-template-columns: min-content max-content;
-    }
-    aside {
-        @apply sticky top-4 flex flex-col pt-2 text-sm shadow-sidebar;
     }
     a {
         @apply text-skin-text;

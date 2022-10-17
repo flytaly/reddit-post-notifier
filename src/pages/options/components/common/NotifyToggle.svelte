@@ -1,10 +1,12 @@
 <script lang="ts">
     import getMsg from '@/utils/get-message';
     import type { InputChangeEv } from './events';
-    import { NotifyIcon, NotifyOffIcon } from '../../icons';
+    import { NotifyIcon, NotifyOffIcon } from '@options/icons';
+    import { tooltip } from '@options/tooltip';
 
     export let checked: boolean = false;
     export let changeHander: ((e: InputChangeEv) => void) | undefined = undefined;
+    export let tooltipText: string = '';
 
     const labelBtnClick = (e: KeyboardEvent & { currentTarget: HTMLLabelElement }) => {
         if (e.key === 'Enter' || e.key == ' ') {
@@ -23,6 +25,7 @@
     on:keydown={labelBtnClick}
     tabindex="0"
     role="button"
+    use:tooltip={{ content: tooltipText }}
     {...$$restProps}
 >
     <input class="peer hidden" type="checkbox" bind:checked on:change={changeHander} />

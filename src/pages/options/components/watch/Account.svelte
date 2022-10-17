@@ -3,12 +3,13 @@
     import storage from '@/storage';
     import type { AuthUser, StorageFields } from '@/storage/storage-types';
     import getMsg from '@/utils/get-message';
-    import { onMount } from 'svelte';
-    import { AccountIcon, DeleteIcon, RefreshIcon2 } from '@options/icons';
-    import { isBlocked } from '@options/store';
     import IosCheckbox from '@options/components/common/IosCheckbox.svelte';
     import NotifyToggle from '@options/components/common/NotifyToggle.svelte';
     import Spinner from '@options/components/common/Spinner.svelte';
+    import { AccountIcon, DeleteIcon, LoginIcon, RefreshIcon2 } from '@options/icons';
+    import { isBlocked } from '@options/store';
+    import { tooltip } from '@options/tooltip';
+    import { onMount } from 'svelte';
     import MessagesList from './MessagesList.svelte';
 
     export let accounts: StorageFields['accounts'];
@@ -83,13 +84,14 @@
         class="flex items-center border-transparent bg-transparent p-0 text-xs text-skin-accent2 hover:bg-transparent"
         on:click={updateAcc}
         {disabled}
-        title="update account information"
+        use:tooltip={{ content: "update account's information" }}
     >
-        <div class="mr-1 h-5 w-5">
+        <div class="h-5 w-5">
             {@html RefreshIcon2}
         </div>
     </button>
-    <div class="flex items-center gap-1 ">
+
+    <div class="flex items-center gap-1">
         <Spinner show={isUpdating} label="" />
         {#if !isUpdating}
             {#if acc.img}
@@ -99,48 +101,76 @@
                     {@html AccountIcon}
                 </div>
             {/if}
-            <span>
+            <span class="overflow-hidden text-ellipsis">
                 {acc.name || `~ no account info`}
             </span>
         {/if}
     </div>
-    <div class="mx-4">
+
+    <!--Fetch Messages-->
+    <div class="ml-4">
+        <button
+            class="flex items-center border-transparent bg-transparent p-0 text-xs text-skin-accent2 hover:bg-transparent"
+            on:click={() => void updateMessages()}
+            use:tooltip={{ content: getMsg('optionAccountsFetchBtnDesc') }}
+            {disabled}
+        >
+            <div class="mr-1 h-5 w-5">
+                {@html RefreshIcon2}
+            </div>
+            <span class="text-skin-text">{getMsg('optionAccountsFetchBtn')}</span>
+        </button>
+    </div>
+
+    <!--Disable/Enable-->
+    <div class="ml-4">
         <IosCheckbox
             checked={acc.checkMail}
             changeHandler={checkMailCommit}
-            title={getMsg('optionAccountsMailCheck_title')}
+            tooltipText={getMsg('optionAccountsMailCheck_title')}
         >
             <span class="text-xs">{getMsg('optionAccountsMailCheck')}</span>
         </IosCheckbox>
     </div>
-    <div class="mx-4">
+
+    <!--Notify-->
+    <div class="ml-4 flex">
         <NotifyToggle
             checked={acc.mailNotify}
             changeHander={notifyMailCommit}
-            title={getMsg('optionAccountsMailNotify_title')}
+            tooltipText={getMsg('optionAccountsMailNotify_title')}
         />
     </div>
-    <button class="icon-button ml-auto text-skin-accent" on:click={deleteHandler} {disabled} title="Delete the account">
-        <div class="h-5 w-5">
-            {@html DeleteIcon}
-        </div>
-    </button>
+
+    <!--Remove-->
+    <div class="ml-auto">
+        <button
+            class="icon-button text-skin-accent"
+            on:click={deleteHandler}
+            {disabled}
+            use:tooltip={{ content: 'remove this account' }}
+        >
+            <div class="h-5 w-5">
+                {@html DeleteIcon}
+            </div>
+        </button>
+    </div>
+
+    <!--Login-->
+    <div>
+        <button
+            class="icon-button"
+            use:tooltip={{ content: getMsg('optionAccountsReAuthBtn') }}
+            on:click={reAuth}
+            {disabled}
+        >
+            <span class="mr-1 h-5 w-5">{@html LoginIcon}</span>
+        </button>
+    </div>
+
     <div class="col-span-full text-xs">
         <div class="flex justify-between">
-            <button
-                class="ml-8 flex items-center border-transparent bg-transparent p-0 text-xs text-skin-accent2 hover:bg-transparent"
-                on:click={() => void updateMessages()}
-                {disabled}
-            >
-                <div class="mr-1 h-5 w-5">
-                    {@html RefreshIcon2}
-                </div>
-                <span>{getMsg('optionAccountsFetchBtn')}</span>
-            </button>
             <div class="ml-auto" />
-            <button class="rounded-sm bg-transparent py-[1px] px-1" on:click={reAuth} {disabled}>
-                {getMsg('optionAccountsReAuthBtn')}</button
-            >
         </div>
         <Spinner show={isUpdatingMessages} />
         {#if errorList?.length}
@@ -168,8 +198,8 @@
 
 <style lang="postcss">
     li {
-        @apply mb-6 grid w-full max-w-full items-center gap-x-2 gap-y-1;
+        @apply mb-4 grid w-full max-w-full items-center gap-x-2 gap-y-1;
 
-        grid-template-columns: min-content minmax(auto, 1fr) auto auto auto;
+        grid-template-columns: min-content minmax(10rem, 15rem) max-content max-content auto min-content min-content;
     }
 </style>

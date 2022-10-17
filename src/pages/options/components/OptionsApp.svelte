@@ -39,16 +39,19 @@
     <title>{page.name}</title>
 </svelte:head>
 
-<div class="grid grid-cols-[max-content,minmax(auto,42rem)] justify-center gap-x-4 p-3 pt-0">
-    <div class="sticky top-0">
+<div
+    class="mx-auto grid max-w-[100rem] grid-cols-[max-content,1fr] justify-center gap-x-4 p-3 pt-0 xl:grid-cols-[max-content,1fr,min-content]"
+>
+    <div>
         <Sidebar current={pageId} />
     </div>
-    <div class="w-full max-w-2xl">
+    <div class="w-full">
         <div class="mt-4 mb-5">
             <ShortInfo />
         </div>
         <svelte:component this={page.cmp} />
     </div>
+    <div class="hidden w-52 xl:block" />
 </div>
 
 <style global lang="postcss">
