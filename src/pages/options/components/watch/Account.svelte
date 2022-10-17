@@ -198,7 +198,7 @@
 
 <style lang="postcss">
     li {
-        @apply mb-4 grid w-full max-w-full items-center gap-x-2 gap-y-1;
+        @apply mb-2 grid w-full max-w-full items-center gap-x-2 gap-y-1;
 
         grid-template-columns: min-content minmax(10rem, 18rem) max-content max-content auto min-content min-content;
     }

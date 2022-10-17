@@ -1,20 +1,21 @@
 <script lang="ts">
     import NotifierApp from '@/notifier/app';
+    import * as icons from '@/pages/options/icons';
+    import { RefreshIcon2 } from '@/pages/options/icons';
+    import { tooltip } from '@/pages/options/tooltip';
     import type { PostFilterOptions, SubredditData, SubredditOpts } from '@/storage/storage-types';
     import type { FilterRule, SearchableField } from '@/text-search/post-filter';
     import { debounce, testMultireddit } from '@/utils';
     import getMsg from '@/utils/get-message';
-    import * as icons from '@/pages/options/icons';
-    import { RefreshIcon2 } from '@/pages/options/icons';
+    import IosCheckbox from '@options/components/common/IosCheckbox.svelte';
+    import NotifyToggle from '@options/components/common/NotifyToggle.svelte';
+    import Spinner from '@options/components/common/Spinner.svelte';
+    import RedditItemsList from '@options/components/RedditItemsList.svelte';
     import { formatError } from '@options/format-error';
     import { isBlocked } from '@options/store';
-    import RedditItemsList from '@options/components/RedditItemsList.svelte';
     import PostFilterBlock from './PostFilterBlock.svelte';
     import type { InputStatus } from './subreddits-store';
     import { inputStatusStore, subredditStore } from './subreddits-store';
-    import Spinner from '@options/components/common/Spinner.svelte';
-    import IosCheckbox from '@options/components/common/IosCheckbox.svelte';
-    import NotifyToggle from '@options/components/common/NotifyToggle.svelte';
 
     export let subOpts: SubredditOpts;
     export let subData: SubredditData = {};
@@ -113,14 +114,6 @@
         saveInputsDebounced();
     };
 
-    let labelText = '';
-    const showLabel = (e: Event) => {
-        labelText = (e.currentTarget as HTMLElement).getAttribute('aria-label') || '';
-    };
-    const hideLabel = () => {
-        labelText = '';
-    };
-
     const toggleFilters = () => {
         if (!showFilterBlock && !subOpts.filterOpts) {
             subOpts.filterOpts = {
@@ -133,7 +126,7 @@
     };
 </script>
 
-<div class="subreddit-grid my-4 rounded-md" class:expanded={showFilterBlock}>
+<div class="subreddit-grid rounded-md" class:expanded={showFilterBlock}>
     <div
         class={`flex border rounded p-0 border-skin-base ${
             inputStatus.error || fetchError ? 'border-skin-error bg-skin-error-bg' : 'bg-transparent'
@@ -145,9 +138,6 @@
             bind:this={subredditInputRef}
             bind:value={subOpts.subreddit}
             on:input={inputHandler}
-            on:focus={showLabel}
-            on:mouseover={showLabel}
-            on:mouseleave={hideLabel}
             aria-label={getMsg('optionSubredditsInput_title')}
         />
 
@@ -173,10 +163,7 @@
     </div>
 
     <IosCheckbox
-        aria-label={getMsg('optionSubredditsDisable_title')}
-        on:focus={showLabel}
-        on:mouseover={showLabel}
-        on:mouseleave={hideLabel}
+        tooltipText={getMsg('optionSubredditsDisable_title')}
         bind:checked={isActive}
         changeHandler={() => saveInputs()}
         data-testid="isActive"
@@ -185,19 +172,14 @@
     <NotifyToggle
         bind:checked={subOpts.notify}
         changeHander={() => saveInputs()}
-        aria-label={getMsg('optionSubredditsNotify_title')}
-        on:focus={showLabel}
-        on:mouseover={showLabel}
-        on:mouseleave={hideLabel}
+        tooltipText={getMsg('optionSubredditsNotify_title')}
         data-testid="notify"
     />
 
     <button
         class="item-center ml-auto flex border-transparent bg-transparent py-0 px-0 text-skin-accent hover:bg-transparent"
+        use:tooltip={{ content: getMsg('optionSubredditsFilter_title') }}
         aria-label={getMsg('optionSubredditsFilter_title')}
-        on:focus={showLabel}
-        on:mouseover={showLabel}
-        on:mouseleave={hideLabel}
         on:click={toggleFilters}
     >
         <div
@@ -210,19 +192,30 @@
             {:else}
                 <div class="h-5 w-5">{@html icons.FilterOffIcon}</div>
             {/if}
-            <span class="ml-[2px]"
-                >{getMsg('optionSubredditsFilter')} ({(filterOpts?.enabled && filterOpts?.rules?.length) || 0})</span
-            >
+            <span class="ml-[2px]">
+                {getMsg('optionSubredditsFilter')} ({(filterOpts?.enabled && filterOpts?.rules?.length) || 0})
+            </span>
         </div>
     </button>
     <div>
         <button
+            class="flex items-center border-transparent bg-transparent p-0 text-xs text-skin-text hover:bg-transparent hover:text-skin-accent2 disabled:text-skin-gray"
+            on:click={() => void fetchPosts()}
+            use:tooltip={{ content: getMsg('optionsSubredditFetchDesc') }}
+            disabled={$isBlocked || !subOpts.subreddit || !!inputStatus.error}
+        >
+            <div class="mr-1 h-5 w-5 text-skin-accent2">
+                {@html RefreshIcon2}
+            </div>
+            <span>{getMsg('optionsSubredditFetch')}</span>
+        </button>
+    </div>
+    <div>
+        <button
             class="icon-button ml-auto text-skin-accent"
             aria-label={getMsg('optionSubredditsDelete')}
+            use:tooltip={{ content: getMsg('optionSubredditsDelete') }}
             on:click={() => subredditStore.deleteSubreddit(subOpts.id)}
-            on:focus={showLabel}
-            on:mouseover={showLabel}
-            on:mouseleave={hideLabel}
         >
             <div class="h-5 w-5">{@html icons.DeleteIcon}</div>
         </button>
@@ -239,21 +232,6 @@
                 </div>
             {/if}
         </div>
-        <button
-            class="flex items-center border-transparent bg-transparent p-0 text-xs text-skin-accent2 hover:bg-transparent"
-            on:click={() => void fetchPosts()}
-            title={getMsg('optionsSubredditFetch_title')}
-            disabled={$isBlocked || !subOpts.subreddit || !!inputStatus.error}
-        >
-            <div class="mr-1 h-5 w-5">
-                {@html RefreshIcon2}
-            </div>
-            <span>{getMsg('optionsSubredditFetch')}</span>
-        </button>
-    </div>
-    <div id="inputs-label" class="col-span-full col-start-2 mb-2 p-1 text-right text-xs italic">
-        <span>{labelText}</span>
-        &nbsp;
     </div>
 
     <Spinner show={isLoading} />
@@ -282,7 +260,7 @@
     .subreddit-grid {
         @apply grid w-full items-start gap-x-3 p-1;
 
-        grid-template-columns: minmax(10rem, 20rem) auto auto auto 1fr;
+        grid-template-columns: minmax(10rem, 20rem) max-content max-content max-content max-content 1fr;
     }
     .expanded {
         @apply bg-skin-bg2 shadow-sidebar ring-skin-delimiter;

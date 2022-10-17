@@ -7,12 +7,13 @@
     import BlockDescription from '@options/components/common/BlockDescription.svelte';
     import SubredditInput from './SubredditInput.svelte';
     import { subredditStore } from './subreddits-store';
+    import { routes } from '@/pages/options/routes';
 </script>
 
 <div>
     <BlockDescription>
         <span>{getMsg('optionSubredditsDescription')}</span>
-        <a href="#info">{getMsg('optionReadMore')}</a>
+        <a href={routes.info.href}>{getMsg('optionReadMore')}</a>
     </BlockDescription>
     <div class="grid-header">
         <div>{getMsg('optionSubredditsName')}</div>
@@ -22,7 +23,7 @@
         <div />
     </div>
     {#each $subredditStore as subOpts (subOpts.id)}
-        <div class="mb-1" transition:fade|local={{ duration: 200 }} animate:flip={{ delay: 230, duration: 150 }}>
+        <div transition:fade|local={{ duration: 200 }} animate:flip={{ delay: 230, duration: 150 }}>
             <SubredditInput bind:subOpts subData={$storageData.subreddits[subOpts.id] || {}} />
         </div>
     {/each}
@@ -31,7 +32,7 @@
 
 <style lang="postcss">
     .grid-header {
-        @apply grid w-full items-start gap-x-3 p-1 font-bold;
+        @apply mb-2 grid w-full items-start gap-x-3 px-2 font-bold;
 
         grid-template-columns: minmax(10rem, 20rem) 3rem 4rem 4rem 2rem;
     }

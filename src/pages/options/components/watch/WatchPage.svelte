@@ -54,6 +54,6 @@
 
 <style lang="postcss">
     section {
-        @apply mb-7;
+        @apply mb-4;
     }
 </style>

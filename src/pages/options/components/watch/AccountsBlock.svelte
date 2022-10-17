@@ -42,7 +42,7 @@
         </span>
         <a href={routes.info.href}>{getMsg('optionReadMore')}</a>
     </BlockDescription>
-    <div class="my-4">
+    <div class="my-2">
         {#if accList?.length}
             <ul>
                 {#each accList as acc (acc.id)}

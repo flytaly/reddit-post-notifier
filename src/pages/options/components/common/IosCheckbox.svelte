@@ -25,6 +25,7 @@
     on:mouseleave
     role="button"
     use:tooltip={{ content: tooltipText }}
+    area-label={{ tooltipText }}
     {...$$restProps}
 >
     <input class="peer hidden" type="checkbox" bind:checked on:change={changeHandler} />

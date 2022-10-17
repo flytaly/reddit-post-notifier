@@ -207,7 +207,7 @@
         "message": "fetch and display unread messages"
     },
     "optionSubredditsDescription": {
-        "message": "Monitor every post in a subreddit. You can filter posts based on a given rule. In general, it's recommended to use Reddit Search instead of filters."
+        "message": "Monitor every post in a subreddit. You can filter posts based on a given rule, but it's recommended to use Reddit Search instead of filters."
     },
     "optionSubredditsName": {
         "message": "Subreddit name"
@@ -225,7 +225,7 @@
         "message": "Filter posts"
     },
     "optionSubredditsDisable_title": {
-        "message": "Disable/Enable subreddit updates"
+        "message": "Disable or enable subreddit updates"
     },
     "optionSubredditsFilter": {
         "message": "Filters"
@@ -257,11 +257,11 @@
     "optionSubredditsDelete": {
         "message": "Delete the subreddit"
     },
-    "optionsSubredditFetch_title": {
-        "message": "click to fetch and show the latest post from the subreddit"
-    },
     "optionsSubredditFetch": {
-        "message": "fetch and display the latest subreddit's posts"
+        "message": "fetch posts"
+    },
+    "optionsSubredditFetchDesc": {
+        "message": "fetch and show the latest post from the subreddit"
     },
     "optionSubredditsAdd": {
         "message": "Add new subreddit"
