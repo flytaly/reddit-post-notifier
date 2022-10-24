@@ -12,7 +12,7 @@
     import { formatError } from '@options/format-error';
     import { isBlocked } from '@options/store';
     import TooltipIcon from '@options/components/TooltipIcon.svelte';
-    import WatchInputBlock from '../WatchItem.svelte';
+    import WatchItem from '../WatchItem.svelte';
     import PostFilterBlock from './PostFilterBlock.svelte';
     import type { InputStatus } from './subreddits-store';
     import { inputStatusStore, subredditStore } from './subreddits-store';
@@ -133,10 +133,10 @@
     };
 </script>
 
-<WatchInputBlock
+<WatchItem
     bind:isActive
     bind:showEditBlock
-    name={subOpts.name || subOpts.subreddit || showEditBlock ? getName() : 'click to edit...'}
+    name={subOpts.name || subOpts.subreddit || showEditBlock ? getName() : 'click here to edit...'}
     onActiveToggle={() => void saveInputs()}
     onDelete={() => void subredditStore.deleteSubreddit(subOpts.id)}
     onFetch={() => void fetchPosts()}
@@ -163,6 +163,7 @@
             {/if}
         </div>
     </div>
+
     <div slot="toggles" class="flex gap-3">
         <NotifyToggle
             bind:checked={subOpts.notify}
@@ -243,7 +244,7 @@
             <PostFilterBlock {ruleList} {saveInputs} subId={subOpts.id} />
         </div>
     </div>
-</WatchInputBlock>
+</WatchItem>
 
 <style lang="postcss">
     .error {

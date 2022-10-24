@@ -88,6 +88,7 @@ export const extractPostGroups = (storageData: StorageFields) => {
             isMultireddit: q.subreddit ? q.subreddit.includes('+') : true,
             error: formatError(query?.error),
             notify: q.notify ? 'on' : 'off',
+            updatesDisabled: q.disabled,
         };
         if (length) {
             groupsWithPosts.push(group);

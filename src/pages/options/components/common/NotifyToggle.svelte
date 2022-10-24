@@ -24,10 +24,9 @@
     tabindex="0"
     role="button"
     use:tooltip={{ content: tooltipText }}
-    area-label={tooltipText}
     {...$$restProps}
 >
-    <input class="peer hidden" type="checkbox" bind:checked on:change={changeHander} />
+    <input class="peer hidden" type="checkbox" aria-label={tooltipText} bind:checked on:change={changeHander} />
     <div class="flex">
         {#if checked}
             <div class="h-5 w-5">{@html NotifyIcon}</div>

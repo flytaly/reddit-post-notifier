@@ -18,9 +18,9 @@
     };
 </script>
 
-<div class="rounded-md" class:expanded={showEditBlock}>
+<div class="rounded-md hover:ring-1 hover:ring-skin-delimiter" class:expanded={showEditBlock} {...$$restProps}>
     <div
-        class="subreddit-grid rounded-md border border-dashed border-transparent bg-skin-bg"
+        class="watch-item-grid rounded-md border border-dashed border-transparent bg-skin-bg"
         class:delimiter={showEditBlock}
     >
         <!-- Input name -->
@@ -100,7 +100,7 @@
 
 <style lang="postcss">
     .expanded {
-        @apply bg-skin-bg2 shadow-input-expand ring-skin-delimiter;
+        @apply bg-skin-bg2 shadow-input-expand;
     }
     .delimiter {
         @apply border-b-skin-delimiter;

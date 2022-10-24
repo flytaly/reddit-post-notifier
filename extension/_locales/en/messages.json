@@ -206,14 +206,26 @@
     "optionAccountsFetchBtnDesc": {
         "message": "fetch and display unread messages"
     },
+    "optionWatchInputNameColumn": {
+        "message": "Name"
+    },
+    "optionWatchInputActiveColumn": {
+        "message": "Enabled"
+    },
+    "optionWatchInputDisable": {
+        "message": "Disable or enable updates"
+    },
+    "optionWatchInputDelete": {
+        "message": "Delete the item"
+    },
+    "optionsWatchInputFetchDesc": {
+        "message": "fetch and show the latest post"
+    },
     "optionSubredditsDescription": {
         "message": "Monitor every post in a subreddit. You can filter posts based on a given rule, but it's recommended to use Reddit Search instead of filters."
     },
     "optionSubredditsName": {
         "message": "Subreddit name"
-    },
-    "optionSubredditsActive": {
-        "message": "Active"
     },
     "optionSubredditsInputLabel": {
         "message": "Subreddit:"
@@ -238,9 +250,6 @@
     },
     "optionSubredditsFilter_title": {
         "message": "Filter posts"
-    },
-    "optionWatchInputDisable": {
-        "message": "Disable or enable updates"
     },
     "optionSubredditsFilter": {
         "message": "Filters"
@@ -269,23 +278,14 @@
     "addField": {
         "message": "add field"
     },
-    "optionWatchInputDelete": {
-        "message": "Delete the item"
-    },
     "optionsSubredditFetch": {
         "message": "fetch posts"
-    },
-    "optionsWatchInputFetchDesc": {
-        "message": "fetch and show the latest post"
     },
     "optionSubredditsAdd": {
         "message": "Add new subreddit"
     },
     "optionSearchDescription": {
         "message": "You can stay up to date with reddit search by adding a query in the \"search query\" field. Look at the <a href=\"https://www.reddit.com/wiki/search#wiki_field_search\" target=\"_blank\">reddit search wiki</a> to learn supported keywords and <a href=\"https://www.reddit.com/wiki/search#wiki_boolean_operators\" target=\"_blank\">boolean operators</a>."
-    },
-    "optionSearchLegend": {
-        "message": "Watch for specific posts"
     },
     "optionSearchName": {
         "message": "Name:",
@@ -333,9 +333,6 @@
     },
     "optionSearchDelete": {
         "message": "Delete the search"
-    },
-    "optionSearchFetch": {
-        "message": "Fetch and display the latest posts"
     },
     "optionsSearchAddNew": {
         "message": "Add new search"

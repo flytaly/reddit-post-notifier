@@ -24,13 +24,13 @@
             </div>
         </span>
     </BlockDescription>
-    <div class="subreddit-grid">
-        <div class="px-2 font-bold">{getMsg('optionSubredditsName')}</div>
+    <div class="watch-item-grid">
+        <div class="px-2 font-bold">{getMsg('optionWatchInputNameColumn')}</div>
         <div class="invisible flex font-normal">
             <div class="mr-1 h-5 w-5">{@html RefreshIcon2}</div>
             <span>{getMsg('optionsSubredditFetch')}</span>
         </div>
-        <div class="w-12 text-center font-bold">{getMsg('optionSubredditsActive')}</div>
+        <div class="w-12 text-center font-bold">{getMsg('optionWatchInputActiveColumn')}</div>
         <div />
         <div />
         <div />
