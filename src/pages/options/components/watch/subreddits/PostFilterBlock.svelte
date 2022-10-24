@@ -38,7 +38,7 @@
             </span>
             <span
                 class="inline-flex items-center gap-1 text-skin-accent2"
-                use:tooltip={{ content: getMsg('helpFiltersVsSearch') }}
+                use:tooltip={{ content: getMsg('helpFiltersVsSearch'), allowHTML: true }}
             >
                 Filters vs Reddit Search
                 <div class="h-4 w-4">

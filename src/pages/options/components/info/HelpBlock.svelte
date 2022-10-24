@@ -84,21 +84,16 @@
     </details>
 
     <details class="mt-6">
-        <summary>Filters vs Reddit Search and delayed notifications</summary>
+        <summary>{getMsg('helpFiltersVsSearchTitle')}</summary>
         <div class="ml-6">
-            {getMsg('helpFiltersVsSearch')}
+            {@html getMsg('helpFiltersVsSearch')}
         </div>
     </details>
 
     <details class="mt-6">
-        <summary>Account authorization</summary>
+        <summary>{getMsg('helpAccountTitle')}</summary>
         <div class="ml-8">
-            <p>
-                You can connect Reddit accounts to check its private messages and use Reddit OAuth API. Reddit private
-                API has fewer restrictions so the extension will try to use it if possible. But if you don't want to
-                connect your account, then Reddit public API will be used.
-            </p>
-            <p>All authorization data is stored locally in your browser's storage and isn't shared with anyone.</p>
+            {@html getMsg('helpAccount')}
         </div>
     </details>
 </div>

@@ -352,7 +352,16 @@
     "optionsFollowUserAdd": {
         "message": "Add user to follow"
     },
+    "helpFiltersVsSearchTitle": {
+        "message": "Filters vs Reddit Search and delayed notifications"
+    },
     "helpFiltersVsSearch": {
-        "message": "Reddit Search is a Reddit feature while post filter is an extension's tool. Reddit Search is more versatile and generally recommended to use. Also, it's easier to miss some posts with filters because they are applied only to a bunch of the latest posts. But one downside of Reddit Search is that it may not work with the most recent posts that become searchable only after some time (1-15 minutes). So if you need faster notifications use Filters instead of Reddit Search."
+        "message": "<p><i>Reddit Search</i> is a Reddit feature while <i>post filter</i> is an extension's tool. Reddit Search is more versatile and generally recommended to use. Also, it's easier to miss some posts with filters because they are applied only to a bunch of the latest posts.</p><p>But one downside of Reddit Search is that it may not work with the most recent posts that become searchable only after some time (1-15 minutes).</p><p>So if you need faster notifications use Filters instead of Reddit Search.</p>"
+    },
+    "helpAccountTitle": {
+        "message": "Account authorization"
+    },
+    "helpAccount": {
+        "message": "<p>You can connect Reddit accounts to check its private messages and use Reddit OAuth API. Reddit private API has fewer restrictions so the extension will try to use it if possible. But if you don't want to connect your account, then Reddit public API will be used.</p><p>All authorization data is stored locally in your browser's storage and isn't shared with anyone.</p>"
     }
 }
