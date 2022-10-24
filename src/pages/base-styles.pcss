@@ -16,6 +16,16 @@
         peer-checked:before:border-skin-input-checked;
     }
 
+    .toggle-button {
+        @apply flex select-none items-center justify-center rounded-2xl
+            border-none bg-skin-gray2 py-[2px] px-2 text-sm text-gray-50 transition-colors
+            hover:bg-skin-gray2 hover:brightness-110;
+
+        &-on {
+            @apply bg-skin-input-checked hover:bg-skin-input-checked;
+        }
+    }
+
     .connected-block {
         @apply relative ml-6;
 
@@ -62,6 +72,10 @@
     @apply outline-none;
 }
 
+:focus:not(:focus-visible) {
+  outline: none;
+}
+
 :focus-visible {
     @apply outline-skin-outline;
 }
@@ -90,7 +104,7 @@
     --color-link: #016ed8;
 
     /* shadows */
-    --shadow-sidebar: 0 0 3px 0 rgba(0, 0, 0, 0.5);
+    --shadow-input-expand: 0 0 3px 0 rgba(0, 0, 0, 0.6);
     --shadow-input-hover: 0 0 3px 3px var(--color-input-bg-hover);
 }
 
@@ -118,7 +132,7 @@
     --color-link: #98c0ff;
 
     /* shadows */
-    --shadow-sidebar: 0 0 3px 0 rgba(255, 255, 255, 0.4);
+    --shadow-input-expand: 0 0 3px 0 rgba(255, 255, 255, 0.5);
     --shadow-input-hover: 0 0 3px 3px var(--color-input-bg-hover);
 }
 
@@ -146,6 +160,6 @@
     --color-link: #98c0ff;
 
     /* shadows */
-    --shadow-sidebar: 0 0 3px 0 rgba(255, 255, 255, 0.4);
+    --shadow-input-expand: 0 0 3px 0 rgba(255, 255, 255, 0.5);
     --shadow-input-hover: 0 0 3px 3px var(--color-input-bg-hover);
 }

@@ -58,7 +58,7 @@ export const extractPostGroups = (storageData: StorageFields) => {
             type: 'subreddit',
             id: s.id,
             href: getSubredditUrl(s.subreddit, useOldReddit),
-            title: `r/${s.subreddit} (${length})`,
+            title: (s.name || `r/${s.subreddit}`) + ` (${length})`,
             lastPostCreated,
             size: length,
             isMultireddit: s.subreddit.includes('+'),

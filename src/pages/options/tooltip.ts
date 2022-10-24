@@ -7,9 +7,14 @@ export function tooltip(node: Element, params: Partial<Props>) {
         duration: [300, 0],
         ...params,
     });
+    if (!params.content) {
+        tip.disable();
+    }
     return {
         update: (newParams: Partial<Props>) => {
             tip.setProps(newParams);
+            if (!params.content) return tip.disable();
+            tip.enable();
         },
         destroy: () => {
             tip.destroy();

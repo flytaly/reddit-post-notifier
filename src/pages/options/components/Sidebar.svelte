@@ -1,11 +1,11 @@
 <script lang="ts">
-    import { LogoIcon, KoFiIcon } from '@/pages/options/icons';
+    import { KoFiIcon, LogoIcon } from '@/pages/options/icons';
     import type { PageId } from '@options/routes';
     import { routes } from '@options/routes';
     export let current: PageId;
 </script>
 
-<aside class="mt-4 flex flex-col text-sm hover:shadow-sidebar sticky top-4">
+<aside class="sticky top-4 mt-4 flex flex-col text-sm">
     <a href="./watch.html" class="self-center text-skin-text hover:text-skin-text">
         <div class="logo">
             {@html LogoIcon}
@@ -13,7 +13,7 @@
     </a>
     <nav class="flex flex-col p-4 leading-8">
         {#each Object.values(routes) as { id, href, name, sections }}
-            <a href={href} class:current={current === id}>
+            <a {href} class:current={current === id}>
                 {name}
             </a>
             {#each Object.values(sections) as { id, name }}

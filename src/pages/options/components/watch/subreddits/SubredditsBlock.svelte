@@ -7,7 +7,8 @@
     import BlockDescription from '@options/components/common/BlockDescription.svelte';
     import SubredditInput from './SubredditInput.svelte';
     import { subredditStore } from './subreddits-store';
-    import { routes } from '@/pages/options/routes';
+    import { routes } from '@options/routes';
+    import { RefreshIcon2 } from '@options/icons';
 </script>
 
 <div>
@@ -15,25 +16,22 @@
         <span>{getMsg('optionSubredditsDescription')}</span>
         <a href={routes.info.href}>{getMsg('optionReadMore')}</a>
     </BlockDescription>
-    <div class="grid-header">
-        <div>{getMsg('optionSubredditsName')}</div>
-        <div>{getMsg('optionSubredditsActive')}</div>
+    <div class="subreddit-grid">
+        <div class="px-2 font-bold">{getMsg('optionSubredditsName')}</div>
+        <div class="invisible flex font-normal">
+            <div class="mr-1 h-5 w-5">{@html RefreshIcon2}</div>
+            <span>{getMsg('optionsSubredditFetch')}</span>
+        </div>
+        <div class="w-12 text-center font-bold">{getMsg('optionSubredditsActive')}</div>
+        <div />
         <div />
         <div />
         <div />
     </div>
     {#each $subredditStore as subOpts (subOpts.id)}
-        <div transition:fade|local={{ duration: 200 }} animate:flip={{ delay: 230, duration: 150 }}>
+        <div class="mb-2" transition:fade|local={{ duration: 200 }} animate:flip={{ delay: 230, duration: 150 }}>
             <SubredditInput bind:subOpts subData={$storageData.subreddits[subOpts.id] || {}} />
         </div>
     {/each}
     <AddButton clickHandler={subredditStore.addSubreddit}>{getMsg('optionSubredditsAdd')}</AddButton>
 </div>
-
-<style lang="postcss">
-    .grid-header {
-        @apply mb-2 grid w-full items-start gap-x-3 px-2 font-bold;
-
-        grid-template-columns: minmax(10rem, 20rem) 3rem 4rem 4rem 2rem;
-    }
-</style>

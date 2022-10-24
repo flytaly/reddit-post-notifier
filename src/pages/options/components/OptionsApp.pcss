@@ -2,6 +2,25 @@
 @import url('tippy.js/dist/tippy.css');
 @import url('tippy.js/themes/material.css');
 
+@layer components {
+    .standart-button {
+        @apply select-none appearance-none
+        rounded-sm
+        border
+        border-skin-base bg-skin-input
+        px-3 py-1
+        text-sm
+        shadow-none hover:bg-skin-btn-hover
+        hover:brightness-110 active:brightness-125;
+    }
+
+    .subreddit-grid {
+        @apply grid w-full items-center gap-x-3 p-1;
+
+        grid-template-columns: minmax(10rem, 20rem) repeat(4, max-content) 1fr max-content;
+    }
+}
+
 body {
     @apply overflow-y-scroll bg-skin-bg text-skin-text;
 }
@@ -12,36 +31,22 @@ a {
 
 input,
 [type='number'] {
-    @apply /*
-        */
-        /*
-        */
-        rounded-sm
-        border
-        border-skin-base
+    @apply rounded-sm border border-skin-base
         bg-skin-input
-        px-2
-        py-1 text-sm text-skin-text
+        px-2 py-1 
+        text-sm text-skin-text
         ring-offset-1
-        hover:bg-skin-input-hover hover:shadow-input focus-visible:border-skin-outline
+        hover:bg-skin-input-hover
+        hover:shadow-input
+        focus:outline-none 
+        focus-visible:border-skin-outline
         focus-visible:ring-1
-        focus-visible:ring-skin-outline;
+        focus-visible:ring-skin-outline
+        focus-visible:ring-offset-0;
 }
 
 input:invalid {
     @apply border-skin-error ring-1 ring-skin-error ring-offset-0;
-}
-
-.is-button,
-button {
-    @apply select-none appearance-none
-        rounded-sm
-        border
-        border-skin-base bg-skin-input
-        px-3 py-1
-        text-sm
-        shadow-none hover:bg-skin-btn-hover
-        hover:brightness-110 active:brightness-125;
 }
 
 :disabled {

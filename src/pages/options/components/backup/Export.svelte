@@ -42,7 +42,7 @@
 
 <section class="mb-8">
     <Heading id="export" name={'Export config'} />
-    <div class="mb-2 space-y-2">
+    <div class="my-2 max-w-max">
         <IosCheckbox bind:checked={withAccs} title="Include accounts data">
             <span class="text-sm">Include accounts data</span>
         </IosCheckbox>

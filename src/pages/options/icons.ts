@@ -4,6 +4,7 @@ export { default as BellIcon } from '@assets/bell.svg';
 export { default as CheckMarkIcon } from '@assets/check-mark.svg';
 export { default as CopyIcon } from '@assets/copy.svg';
 export { default as DeleteIcon } from '@assets/delete.svg';
+export { default as EditIcon } from '@assets/edit.svg';
 export { default as FilterIcon } from '@assets/filter-on.svg';
 export { default as FilterOffIcon } from '@assets/filter-off.svg';
 export { default as HelpCircleIcon } from '@assets/help-circle.svg';

@@ -175,7 +175,7 @@
             </span>
         </Labeled>
         <button
-            class="ml-auto flex items-center rounded border-transparent  bg-transparent text-skin-accent hover:border-skin-accent hover:bg-skin-input"
+            class="standart-button ml-auto flex items-center rounded border-transparent  bg-transparent text-skin-accent hover:border-skin-accent hover:bg-skin-input"
             on:click={deleteHandler}
         >
             <div class="mr-2 h-5 w-5 flex-shrink-0">{@html DeleteIcon}</div>

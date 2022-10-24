@@ -124,7 +124,7 @@
                     <option value={soundFileId}>{`Sound ${idx + 1}`}</option>
                 {/each}
             </select>
-            <button class="play-btn" on:click={playSound} title="play">
+            <button class="standart-button play-btn" on:click={playSound} title="play">
                 {@html PlayIcon}
             </button>
         </div>

@@ -215,8 +215,23 @@
     "optionSubredditsActive": {
         "message": "Active"
     },
+    "optionSubredditsInputLabel": {
+        "message": "Subreddit:"
+    },
     "optionSubredditsInput_title": {
-        "message": "Enter subreddit (multireddit) name"
+        "message": "Enter subreddit (or multireddit) name"
+    },
+    "optionSubredditsInput_placeholder": {
+        "message": "e.g.: Midjourney+StableDiffusion"
+    },
+    "optionSubredditsInputNameLabel": {
+        "message": "Name:"
+    },
+    "optionSubredditsInputName_title": {
+        "message": "Optional name (can be empty)"
+    },
+    "optionSubredditsInputName_placeholder": {
+        "message": "e.g.: AI Images"
     },
     "optionSubredditsNotify_title": {
         "message": "Show desktop notifications"

@@ -84,14 +84,9 @@ describe('Subreddit settings', () => {
         await tick();
 
         // NOTIFY
-        const notifyElems = getAllByLabelText(getMsg('optionSubredditsNotify_title'));
+        const notifyElems = getAllByLabelText(getMsg('notifyLabel'), { exact: false });
         await fireEvent.click(notifyElems[0]);
-        expect(storage.saveSubredditOpts).toHaveBeenCalledWith(
-            like({
-                ...subList[0],
-                notify: !subList[0].notify,
-            }),
-        );
+        expect(storage.saveSubredditOpts).toHaveBeenCalledWith(like({ ...subList[0], notify: !subList[0].notify }));
 
         // DISABLE
         const isActiveElem = getAllByLabelText(getMsg('optionSubredditsDisable_title'));
@@ -135,7 +130,7 @@ describe('Subreddit settings', () => {
         for (const subreddit of ['!not', '12', 'aww+3']) {
             await fireEvent.input(input, { target: { value: subreddit } });
             await waitFor(() => {
-                expect(getByText(/Invalid subreddit name/)).toBeInTheDocument();
+                expect(getByText(/Invalid subreddit\/multireddit name/)).toBeInTheDocument();
             });
             expect(storage.saveSubredditOpts).not.toHaveBeenCalledWith(expect.objectContaining({ subreddit }));
         }

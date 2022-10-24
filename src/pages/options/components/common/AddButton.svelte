@@ -6,7 +6,7 @@
 </script>
 
 <button
-    class="flex items-center rounded border-transparent bg-transparent p-1 text-skin-accent2 hover:border-skin-accent2 disabled:hover:border-skin-gray"
+    class="standart-button flex items-center rounded border-transparent bg-transparent p-1 text-skin-accent2 hover:border-skin-accent2 disabled:hover:border-skin-gray"
     on:click={clickHandler}
     {disabled}
 >

@@ -25,7 +25,7 @@
     };
 </script>
 
-<div transition:slide={{ duration: 150, easing: quadOut }} class="col-span-full mt-2 w-full space-y-2">
+<div transition:slide={{ duration: 150, easing: quadOut }} class="w-full space-y-2">
     <div class="ml-6">
         <div class="text-sm font-medium">Post filters</div>
         <div class="text-sm">
