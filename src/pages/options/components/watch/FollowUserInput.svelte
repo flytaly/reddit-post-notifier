@@ -95,11 +95,11 @@
     };
 </script>
 
-<div class="flex rounded border border-skin-base bg-skin-input">
+<div class="flex rounded border border-skin-base bg-skin-input hover:shadow-input">
     <input
         size="13"
         maxlength="20"
-        class="m-0 rounded-l rounded-r-none border-none"
+        class="m-0 rounded-l rounded-r-none border-none hover:shadow-none"
         type="text"
         value={username}
         on:input={(e) => {
@@ -133,7 +133,7 @@
 <div class="ml-auto">
     <button
         class="icon-button ml-auto text-skin-accent"
-        aria-label={getMsg('optionSubredditsDelete')}
+        aria-label={getMsg('optionWatchInputDelete')}
         on:click={onDelete}
     >
         <div class="h-5 w-5">{@html icons.DeleteIcon}</div>
