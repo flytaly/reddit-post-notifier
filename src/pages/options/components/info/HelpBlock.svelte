@@ -2,6 +2,7 @@
     import { BellIcon } from '@/pages/options/icons';
     import { storageData } from '../../store';
     import { routes } from '../../routes';
+    import getMsg from '@/utils/get-message';
 
     let limit = 10;
     $: limit = $storageData.options.limit || 10;
@@ -85,11 +86,7 @@
     <details class="mt-6">
         <summary>Filters vs Reddit Search and delayed notifications</summary>
         <div class="ml-6">
-            Reddit Search is a Reddit feature while post filter is an extension's tool. Reddit Search is more versatile
-            and generally recommended to use. Also, it's easier to miss some posts with filters because they are applied
-            only to a bunch of the latest posts. But one downside of Reddit Search is that it may not work with the most
-            recent posts that become searchable only after some time (1-15 minutes). So if you need faster notifications
-            use Filters instead of Reddit Search.
+            {getMsg('helpFiltersVsSearch')}
         </div>
     </details>
 

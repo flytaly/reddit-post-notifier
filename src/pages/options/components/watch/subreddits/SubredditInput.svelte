@@ -27,17 +27,17 @@
     let fetchError = '';
     let showPosts = false;
     let isLoading = false;
-    let inputName = '';
 
-    let showEditBlock = true;
+    let showEditBlock = false;
     let subredditInputRef: HTMLInputElement;
 
     $: filterOpts = subOpts.filterOpts || {};
-    $: ruleList = filterOpts?.rules || [[{ field: 'title', query: '' }]];
+    $: ruleList = filterOpts?.rules || [];
     $: inputStatus = $inputStatusStore[subOpts.id] || {};
     $: fetchError = formatError(subData.error);
     $: errorMessage = inputStatus.error || fetchError;
-    $: inputName = subOpts.name ? subOpts.name : `r/${subOpts.subreddit}`;
+
+    const getName = () => subOpts.name || `r/${subOpts.subreddit}`;
 
     const fetchPosts = async () => {
         if (!subOpts.subreddit || inputStatus.error) return;
@@ -119,14 +119,17 @@
     };
 
     const toggleEditBlock = () => {
+        if (!showEditBlock && showPosts) showPosts = false;
+        showEditBlock = !showEditBlock;
+    };
+
+    const onFilterClick = () => {
         if (!showEditBlock && !subOpts.filterOpts) {
             subOpts.filterOpts = {
                 rules: [[{ field: 'title', query: '' }]],
             };
         }
-
-        if (!showEditBlock && showPosts) showPosts = false;
-        showEditBlock = !showEditBlock;
+        toggleEditBlock();
     };
 </script>
 
@@ -137,8 +140,11 @@
     >
         <!-- Subreddit name -->
         <button class="flex h-full border-none p-0 px-2 text-left text-sm" on:click={toggleEditBlock}>
-            <div class="w-full overflow-hidden text-ellipsis whitespace-nowrap font-bold">
-                {inputName}
+            <div
+                class="w-full overflow-hidden text-ellipsis whitespace-nowrap"
+                class:font-bold={subOpts.name || subOpts.subreddit}
+            >
+                {subOpts.name || subOpts.subreddit ? getName() : 'click to edit...'}
             </div>
             {#if errorMessage}
                 <div class="flex justify-center" use:tooltip={{ content: errorMessage }}>
@@ -182,7 +188,7 @@
             class:toggle-button-on={filterOpts?.enabled}
             use:tooltip={{ content: getMsg('optionSubredditsFilter_title') }}
             aria-label={getMsg('optionSubredditsFilter_title')}
-            on:click={toggleEditBlock}
+            on:click={onFilterClick}
         >
             {#if filterOpts?.enabled}
                 <div class="h-5 w-5">{@html icons.FilterIcon}</div>
@@ -237,7 +243,7 @@
     </div>
     <!-- Editor -->
     {#if showEditBlock}
-        <div class="col-span-full m-2">
+        <div class="col-span-full m-2 pb-2">
             <div class="mb-3 flex rounded-b text-xs">
                 {#if errorMessage}
                     <div class="flex items-center font-bold text-skin-error">
@@ -257,7 +263,7 @@
                 </div>
             </div>
 
-            <div class="grid grid-cols-[auto,1fr] items-center gap-2 text-sm">
+            <div class="mb-4 grid grid-cols-[auto,1fr] items-center gap-2 text-sm">
                 <label for={`name_${subOpts.id}`}>{getMsg('optionSubredditsInputNameLabel')}</label>
                 <div class="flex items-center gap-2">
                     <input
@@ -272,7 +278,7 @@
                     <TooltipIcon message={getMsg('optionSubredditsInputName_title')} />
                 </div>
 
-                <label for={`subreddit_${subOpts.id}`}>{getMsg('optionSubredditsInputLabel')}</label>
+                <label class="font-bold" for={`subreddit_${subOpts.id}`}>{getMsg('optionSubredditsInputLabel')}</label>
                 <div class="flex items-center gap-2">
                     <input
                         id={`subreddit_${subOpts.id}`}

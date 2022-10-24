@@ -5,8 +5,11 @@
     import { slide } from 'svelte/transition';
     import PostFilterFields from './PostFilterFields.svelte';
     import AddButton from '@options/components/common/AddButton.svelte';
+    import getMsg from '@/utils/get-message';
+    import { HelpCircleIcon } from '@/pages/options/icons';
+    import { tooltip } from '@/pages/options/tooltip';
 
-    export let ruleList: FilterRule[] = [[{ field: 'title', query: '' }]];
+    export let ruleList: FilterRule[] = [];
 
     export let saveInputs: (filter: PostFilterOptions) => void;
     export let subId: string;
@@ -29,8 +32,19 @@
     <div class="ml-6">
         <div class="text-sm font-medium">Post filters</div>
         <div class="text-sm">
-            Check if the subreddit's posts fit at least one of the rules below. Filter words in the title and post's
-            text fields are case-insensitive and can be stemmed (dogs = dog).
+            <span>
+                Check if the subreddit's posts fit at least one of the rules below. Filter words in the title and post's
+                text fields are case-insensitive and can be stemmed (dogs = dog).
+            </span>
+            <span
+                class="inline-flex items-center gap-1 text-skin-accent2"
+                use:tooltip={{ content: getMsg('helpFiltersVsSearch') }}
+            >
+                Filters vs Reddit Search
+                <div class="h-4 w-4">
+                    {@html HelpCircleIcon}
+                </div>
+            </span>
         </div>
     </div>
     <div class="flex flex-col">

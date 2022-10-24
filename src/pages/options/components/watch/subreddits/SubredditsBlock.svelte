@@ -7,14 +7,22 @@
     import BlockDescription from '@options/components/common/BlockDescription.svelte';
     import SubredditInput from './SubredditInput.svelte';
     import { subredditStore } from './subreddits-store';
-    import { routes } from '@options/routes';
-    import { RefreshIcon2 } from '@options/icons';
+    import { HelpCircleIcon, RefreshIcon2 } from '@options/icons';
+    import { tooltip } from '@/pages/options/tooltip';
 </script>
 
 <div>
     <BlockDescription>
         <span>{getMsg('optionSubredditsDescription')}</span>
-        <a href={routes.info.href}>{getMsg('optionReadMore')}</a>
+        <span
+            class="inline-flex items-center gap-1 text-skin-accent2"
+            use:tooltip={{ content: getMsg('helpFiltersVsSearch') }}
+        >
+            Filters vs Reddit Search
+            <div class="h-4 w-4">
+                {@html HelpCircleIcon}
+            </div>
+        </span>
     </BlockDescription>
     <div class="subreddit-grid">
         <div class="px-2 font-bold">{getMsg('optionSubredditsName')}</div>

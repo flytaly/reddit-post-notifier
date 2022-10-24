@@ -10,7 +10,7 @@ function createStore() {
     const { set, subscribe, update } = writable<SubredditOpts[]>([], () => {
         void storage.getSubredditList().then((list) => {
             const empty = genEmpty();
-            set(list?.length ? [...list, empty] : [empty]);
+            set(list?.length ? list : [empty]);
         });
     });
 
