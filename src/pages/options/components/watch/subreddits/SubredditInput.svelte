@@ -82,12 +82,12 @@
         const _subreddit = subOpts.subreddit?.trim().replace(/\s/g, '+');
         if (!_subreddit || !testMultireddit(_subreddit)) {
             const msg = 'Invalid subreddit/multireddit name';
-            subredditInputRef.setCustomValidity(msg);
+            subredditInputRef?.setCustomValidity(msg);
 
             $inputStatusStore[subOpts.id] = { error: msg };
             return;
         }
-        subredditInputRef.setCustomValidity('');
+        subredditInputRef?.setCustomValidity('');
 
         const shouldRemoveData = !!filter;
 
@@ -139,15 +139,19 @@
         class:delimiter={showEditBlock}
     >
         <!-- Subreddit name -->
-        <button class="flex h-full border-none p-0 px-2 text-left text-sm" on:click={toggleEditBlock}>
+        <button
+            class="flex h-full border-none p-0 px-2 text-left text-sm"
+            on:click={toggleEditBlock}
+            data-testid="input-name"
+        >
             <div
                 class="w-full overflow-hidden text-ellipsis whitespace-nowrap"
                 class:font-bold={subOpts.name || subOpts.subreddit}
             >
-                {subOpts.name || subOpts.subreddit ? getName() : 'click to edit...'}
+                {subOpts.name || subOpts.subreddit || showEditBlock ? getName() : 'click to edit...'}
             </div>
             {#if errorMessage}
-                <div class="flex justify-center" use:tooltip={{ content: errorMessage }}>
+                <div class="flex justify-center" use:tooltip={{ content: errorMessage }} data-testid="warning-icon">
                     <div class="h-5 w-5 text-skin-error">
                         {@html icons.WarningIcon}
                     </div>
@@ -244,14 +248,14 @@
     <!-- Editor -->
     {#if showEditBlock}
         <div class="col-span-full m-2 pb-2">
-            <div class="mb-3 flex rounded-b text-xs">
+            <div class="mb-3 flex justify-between rounded-b text-xs">
                 {#if errorMessage}
                     <div class="flex items-center font-bold text-skin-error">
                         <div class="mr-1 h-4 w-4 flex-shrink-0 text-skin-error">{@html icons.WarningIcon}</div>
                         <div>{errorMessage}</div>
                     </div>
                 {/if}
-                <div class="ml-auto mr-4 min-h-[1rem] font-medium text-skin-success">
+                <div class="mr-4 min-h-[1rem] font-medium text-skin-success">
                     {#if inputStatus.saved}
                         <div class="flex items-center">
                             <div class="mr-1 h-4 w-4 flex-shrink-0">{@html icons.SaveIcon}</div>
