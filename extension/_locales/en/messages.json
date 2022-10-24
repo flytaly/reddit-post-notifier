@@ -239,8 +239,8 @@
     "optionSubredditsFilter_title": {
         "message": "Filter posts"
     },
-    "optionSubredditsDisable_title": {
-        "message": "Disable or enable subreddit updates"
+    "optionWatchInputDisable": {
+        "message": "Disable or enable updates"
     },
     "optionSubredditsFilter": {
         "message": "Filters"
@@ -269,14 +269,14 @@
     "addField": {
         "message": "add field"
     },
-    "optionSubredditsDelete": {
-        "message": "Delete the subreddit"
+    "optionWatchInputDelete": {
+        "message": "Delete the item"
     },
     "optionsSubredditFetch": {
         "message": "fetch posts"
     },
-    "optionsSubredditFetchDesc": {
-        "message": "fetch and show the latest post from the subreddit"
+    "optionsWatchInputFetchDesc": {
+        "message": "fetch and show the latest post"
     },
     "optionSubredditsAdd": {
         "message": "Add new subreddit"
@@ -332,8 +332,7 @@
         "description": "Option: show notifications of new posts in the search"
     },
     "optionSearchDelete": {
-        "message": "Delete the search",
-        "description": "Button: delete the search"
+        "message": "Delete the search"
     },
     "optionSearchFetch": {
         "message": "Fetch and display the latest posts"

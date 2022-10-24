@@ -6,13 +6,13 @@
     import type { FilterRule, SearchableField } from '@/text-search/post-filter';
     import { debounce, testMultireddit } from '@/utils';
     import getMsg from '@/utils/get-message';
-    import IosCheckbox from '@options/components/common/IosCheckbox.svelte';
     import NotifyToggle from '@options/components/common/NotifyToggle.svelte';
     import Spinner from '@options/components/common/Spinner.svelte';
     import RedditItemsList from '@options/components/RedditItemsList.svelte';
     import { formatError } from '@options/format-error';
     import { isBlocked } from '@options/store';
-    import TooltipIcon from '../../TooltipIcon.svelte';
+    import TooltipIcon from '@options/components/TooltipIcon.svelte';
+    import WatchInputBlock from '../WatchItem.svelte';
     import PostFilterBlock from './PostFilterBlock.svelte';
     import type { InputStatus } from './subreddits-store';
     import { inputStatusStore, subredditStore } from './subreddits-store';
@@ -133,59 +133,43 @@
     };
 </script>
 
-<div class="rounded-md" class:expanded={showEditBlock}>
-    <div
-        class="subreddit-grid rounded-md border border-dashed border-transparent bg-skin-bg"
-        class:delimiter={showEditBlock}
-    >
-        <!-- Subreddit name -->
-        <button
-            class="flex h-full border-none p-0 px-2 text-left text-sm"
-            on:click={toggleEditBlock}
-            data-testid="input-name"
-        >
-            <div
-                class="w-full overflow-hidden text-ellipsis whitespace-nowrap"
-                class:font-bold={subOpts.name || subOpts.subreddit}
-            >
-                {subOpts.name || subOpts.subreddit || showEditBlock ? getName() : 'click to edit...'}
-            </div>
-            {#if errorMessage}
-                <div class="flex justify-center" use:tooltip={{ content: errorMessage }} data-testid="warning-icon">
-                    <div class="h-5 w-5 text-skin-error">
-                        {@html icons.WarningIcon}
-                    </div>
+<WatchInputBlock
+    bind:isActive
+    bind:showEditBlock
+    name={subOpts.name || subOpts.subreddit || showEditBlock ? getName() : 'click to edit...'}
+    onActiveToggle={() => void saveInputs()}
+    onDelete={() => void subredditStore.deleteSubreddit(subOpts.id)}
+    onFetch={() => void fetchPosts()}
+    disabled={$isBlocked || !subOpts.subreddit || !!inputStatus.error}
+    {errorMessage}
+>
+    <div slot="posts-block">
+        <!-- Post list row -->
+        <div class="col-span-full">
+            <Spinner show={isLoading} />
+            {#if showPosts}
+                <div class="col-span-full mt-2 border border-skin-delimiter p-1">
+                    <RedditItemsList
+                        title={`The latest posts in the subreddit. ${
+                            subOpts.filterOpts?.enabled ? 'With filters.' : 'Without filters.'
+                        }`}
+                        items={subData.posts || []}
+                        limit={10}
+                        onClose={() => {
+                            showPosts = false;
+                        }}
+                    />
                 </div>
             {/if}
-        </button>
-
-        <!-- Fetch posts -->
-        <button
-            class="flex items-center p-0 text-xs text-skin-text hover:text-skin-accent2 disabled:text-skin-gray"
-            on:click={() => void fetchPosts()}
-            use:tooltip={{ content: getMsg('optionsSubredditFetchDesc') }}
-            disabled={$isBlocked || !subOpts.subreddit || !!inputStatus.error}
-        >
-            <div class="mr-1 h-5 w-5 text-skin-accent2">
-                {@html icons.RefreshIcon2}
-            </div>
-            <span>{getMsg('optionsSubredditFetch')}</span>
-        </button>
-
-        <IosCheckbox
-            tooltipText={getMsg('optionSubredditsDisable_title')}
-            bind:checked={isActive}
-            changeHandler={() => saveInputs()}
-            data-testid="isActive"
-        />
-
+        </div>
+    </div>
+    <div slot="toggles" class="flex gap-3">
         <NotifyToggle
             bind:checked={subOpts.notify}
             changeHander={() => saveInputs()}
             tooltipText={getMsg('optionSubredditsNotify_title')}
             data-testid="notify"
         />
-
         <!-- Toggle Filters -->
         <button
             class="toggle-button"
@@ -203,50 +187,8 @@
                 {getMsg('optionSubredditsFilter')} ({(filterOpts?.enabled && filterOpts?.rules?.length) || 0})
             </span>
         </button>
-
-        <!-- Toggle editor -->
-        <button
-            class="flex items-center justify-start border-transparent bg-transparent px-2 py-0"
-            on:click={toggleEditBlock}
-        >
-            <span class="h-5 w-5">
-                {@html icons.EditIcon}
-            </span>
-            <span>Edit</span>
-        </button>
-
-        <!-- Delete -->
-        <button
-            class="icon-button text-skin-accent"
-            aria-label={getMsg('optionSubredditsDelete')}
-            use:tooltip={{ content: getMsg('optionSubredditsDelete') }}
-            on:click={() => subredditStore.deleteSubreddit(subOpts.id)}
-        >
-            <div class="h-5 w-5">{@html icons.DeleteIcon}</div>
-        </button>
-
-        <!-- Post list row -->
-        <div class="col-span-full">
-            <Spinner show={isLoading} />
-
-            {#if showPosts}
-                <div class="col-span-full mt-2 border border-skin-delimiter p-1">
-                    <RedditItemsList
-                        title={`The latest posts in the subreddit. ${
-                            subOpts.filterOpts?.enabled ? 'With filters.' : 'Without filters.'
-                        }`}
-                        items={subData.posts || []}
-                        limit={10}
-                        onClose={() => {
-                            showPosts = false;
-                        }}
-                    />
-                </div>
-            {/if}
-        </div>
     </div>
-    <!-- Editor -->
-    {#if showEditBlock}
+    <div>
         <div class="col-span-full m-2 pb-2">
             <div class="mb-3 flex justify-between rounded-b text-xs">
                 {#if errorMessage}
@@ -298,19 +240,12 @@
                     <TooltipIcon message={getMsg('optionSubredditsInput_title')} />
                 </div>
             </div>
-
             <PostFilterBlock {ruleList} {saveInputs} subId={subOpts.id} />
         </div>
-    {/if}
-</div>
+    </div>
+</WatchInputBlock>
 
 <style lang="postcss">
-    .expanded {
-        @apply bg-skin-bg2 shadow-input-expand ring-skin-delimiter;
-    }
-    .delimiter {
-        @apply border-b-skin-delimiter;
-    }
     .error {
         @apply border-skin-error;
     }

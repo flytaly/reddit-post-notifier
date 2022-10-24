@@ -81,7 +81,7 @@ describe('Subreddit settings', () => {
         expect(storage.saveSubredditOpts).toHaveBeenCalledWith(like({ ...subList[0], notify: !subList[0].notify }));
 
         // DISABLE
-        const isActiveElem = getAllByLabelText(getMsg('optionSubredditsDisable_title'));
+        const isActiveElem = getAllByLabelText(getMsg('optionWatchInputDisable'));
 
         mocked(storage.saveSubredditOpts).mockClear();
         await fireEvent.click(isActiveElem[1]);
@@ -104,7 +104,7 @@ describe('Subreddit settings', () => {
         await waitFor(() => {
             expect(getAllByTestId('input-name')).toHaveLength(len + 1);
         });
-        const DelBtn = getAllByLabelText(getMsg('optionSubredditsDelete'));
+        const DelBtn = getAllByLabelText(getMsg('optionWatchInputDelete'));
         await fireEvent.click(DelBtn[0]);
 
         expect(storage.removeSubreddits).toHaveBeenCalledWith([subList[0].id]);
