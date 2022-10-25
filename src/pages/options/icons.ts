@@ -1,5 +1,6 @@
 export { default as AccountIcon } from '@assets/account.svg';
 export { default as AddIcon } from '@assets/add.svg';
+export { default as BackupIcon } from '@assets/backup.svg';
 export { default as BellIcon } from '@assets/bell.svg';
 export { default as CheckMarkIcon } from '@assets/check-mark.svg';
 export { default as CopyIcon } from '@assets/copy.svg';
@@ -19,5 +20,7 @@ export { default as OpenInNew } from '@assets/open-in-new.svg';
 export { default as PlayIcon } from '@assets/play.svg';
 export { default as RefreshIcon2 } from '@assets/refresh2.svg';
 export { default as SaveIcon } from '@assets/save.svg';
+export { default as SettingsIcon } from '@assets/settings.svg';
 export { default as WarningIcon } from '@assets/warning.svg';
+export { default as WatchListIcon } from '@assets/watchlist.svg';
 export { default as XCircleIcon } from '@assets/x-circle-fill.svg';

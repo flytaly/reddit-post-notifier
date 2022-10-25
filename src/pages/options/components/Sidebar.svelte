@@ -1,8 +1,16 @@
 <script lang="ts">
-    import { KoFiIcon, LogoIcon } from '@/pages/options/icons';
+    import { BackupIcon, KoFiIcon, LogoIcon, WatchListIcon } from '@/pages/options/icons';
     import type { PageId } from '@options/routes';
     import { routes } from '@options/routes';
+    import { SettingsIcon, HelpCircleIcon  } from '@options/icons';
     export let current: PageId;
+
+    const pageIcons: Record<PageId, string> = {
+        watch: WatchListIcon,
+        'import-export': BackupIcon,
+        settings: SettingsIcon,
+        info: HelpCircleIcon,
+    };
 </script>
 
 <aside class="sticky top-4 mt-4 flex flex-col text-sm">
@@ -13,11 +21,14 @@
     </a>
     <nav class="flex flex-col p-4 leading-8">
         {#each Object.values(routes) as { id, href, name, sections }}
-            <a {href} class:current={current === id}>
+            <a {href} class:current={current === id} class="flex items-center"> 
+                {#if pageIcons[id]}
+                <span class="w-5 h-5 mr-1">{@html pageIcons[id]}</span>
+                {/if}
                 {name}
             </a>
             {#each Object.values(sections) as { id, name }}
-                <a href={`${href}#${id}`} class="ml-4">{name}</a>
+                <a href={`${href}#${id}`} class="ml-8">{name}</a>
             {/each}
         {/each}
     </nav>
