@@ -18,6 +18,7 @@ export { default as NotifyIcon } from '@assets/notify.svg';
 export { default as NotifyOffIcon } from '@assets/notify-off.svg';
 export { default as OpenInNew } from '@assets/open-in-new.svg';
 export { default as PlayIcon } from '@assets/play.svg';
+export { default as RefreshIcon } from '@assets/refresh.svg';
 export { default as RefreshIcon2 } from '@assets/refresh2.svg';
 export { default as SaveIcon } from '@assets/save.svg';
 export { default as SettingsIcon } from '@assets/settings.svg';

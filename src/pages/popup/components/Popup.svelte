@@ -64,5 +64,5 @@
 
 <style global lang="postcss">
     @import './Popup.pcss';
-    @import '../../../../node_modules/nprogress/nprogress.css';
+    @import '@/../node_modules/nprogress/nprogress.css';
 </style>

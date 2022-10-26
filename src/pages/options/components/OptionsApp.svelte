@@ -1,6 +1,6 @@
 <script lang="ts">
+    import nProgress from 'nprogress';
     import { onMount } from 'svelte';
-    import { connectToBg } from '@/port';
     import applyTheme from '@/utils/apply-theme';
     import Sidebar from '@options/components/Sidebar.svelte';
     import ShortInfo from '@options/components/info/ShortInfo.svelte';
@@ -10,12 +10,14 @@
     import type { PageId } from '@options/routes';
     import BackupPage from '@options/components/backup/Backup.svelte';
     import WatchPage from '@options/components/watch/WatchPage.svelte';
+    import { RefreshIcon } from '@options/icons';
+    import { isUpdating } from '@options/store';
 
     export let pageId: PageId = 'settings';
 
     onMount(() => {
         void applyTheme();
-        connectToBg('options');
+        nProgress.configure({ showSpinner: false });
     });
 
     let page: { cmp: typeof Settings; name: string } = { cmp: Settings, name: getMsg('optionsNavSettings') };
@@ -46,8 +48,14 @@
         <Sidebar current={pageId} />
     </div>
     <div class="w-full">
-        <div class="mt-4 mb-5">
+        <div class="mt-4 mb-5 flex items-center justify-between">
             <ShortInfo />
+            {#if $isUpdating}
+                <div class="flex items-center rounded-md border border-skin-delimiter p-1">
+                    <div class="mr-1 h-4 w-4" class:animate-spin={$isUpdating}>{@html RefreshIcon}</div>
+                    <div>Updating</div>
+                </div>
+            {/if}
         </div>
         <svelte:component this={page.cmp} />
     </div>
@@ -56,4 +64,5 @@
 
 <style global lang="postcss">
     @import './OptionsApp.pcss';
+    @import '@/../node_modules/nprogress/nprogress.css';
 </style>

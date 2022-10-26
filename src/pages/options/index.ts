@@ -1,4 +1,4 @@
-import Options from '@/pages/options/components/OptionsApp.svelte';
+import Options from '@options/components/OptionsApp.svelte';
 import type { PageId } from './routes';
 
 const app = new Options({
