@@ -43,7 +43,7 @@
         @apply text-skin-text;
     }
     .heart {
-        @apply text-rose-500;
+        @apply text-rose-300;
     }
     .logo {
         @apply mx-auto mb-1 w-[4.5rem] translate-x-[2px];
