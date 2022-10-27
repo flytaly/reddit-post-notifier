@@ -1,8 +1,9 @@
 import type { StorageFields } from '@/storage/storage-types';
 import { getInboxUrl, getSearchQueryUrl, getSubredditUrl, getUserProfileUrl } from '@/utils';
 import { formatError } from '@options/format-error';
-import { idToUserIdx } from '.';
+import { idToUserIdx } from './index';
 import type { RedditItem, RedditMessage } from '../../../reddit-api/reddit-types';
+import storage from '@/storage';
 
 export type PostGroupType = 'subreddit' | 'search' | 'user' | 'message';
 
@@ -146,4 +147,11 @@ export const getGroupItems = (
         return data.accounts?.[id]?.mail?.messages || [];
     }
     return [];
+};
+
+export const removePostsFromGroup = async (id: string, type: PostGroupType) => {
+    if (type === 'search') return storage.removePostsFrom({ searchId: id });
+    if (type === 'subreddit') return storage.removePostsFrom({ subredditId: id });
+    if (type === 'user') return storage.removePostsFrom({ followUserIndex: idToUserIdx(id) });
+    if (type === 'message') return storage.removeMessages(id);
 };

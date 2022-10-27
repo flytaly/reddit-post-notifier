@@ -1,11 +1,10 @@
 <script lang="ts">
     /* eslint-disable @typescript-eslint/no-unsafe-argument */
     import Pin from '@/assets/pin.svg';
-    import storage from '@/storage';
     import type { StorageFields } from '@/storage/storage-types';
     import getMsg from '@/utils/get-message';
-    import { getGroupItems } from '../helpers/post-group';
-    import type { PostGroup, PostGroupType } from '../helpers/post-group';
+    import { getGroupItems, removePostsFromGroup } from '../helpers/post-group';
+    import type { PostGroup } from '../helpers/post-group';
     import { extractPostGroups } from '../helpers/post-group';
     import type { SlideConfig } from '../helpers/transition';
     import { slideHorizontal } from '../helpers/transition';
@@ -13,7 +12,6 @@
     import DropDownList from './DropDownList.svelte';
     import GroupTitle from './GroupTitle.svelte';
     import PinPostRow from './PinPostRow.svelte';
-    import { idToUserIdx } from '../helpers';
     import Row from './Row.svelte';
 
     let groupsWithPosts: PostGroup[] = [];
@@ -48,13 +46,6 @@
         } else {
             expanded = new Set(expanded.add(id));
         }
-    };
-
-    const getOnCheckHandler = (id: string, type: PostGroupType) => async () => {
-        if (type === 'search') return storage.removePostsFrom({ searchId: id });
-        if (type === 'subreddit') return storage.removePostsFrom({ subredditId: id });
-        if (type === 'user') return storage.removePostsFrom({ followUserIndex: idToUserIdx(id) });
-        if (type === 'message') return storage.removeMessages(id);
     };
 
     const pinTransition = (node: Element, props: SlideConfig) => slideHorizontal(node, props);
@@ -99,7 +90,7 @@
                 rowOutTransition={pinTransition}
             >
                 <div slot="header-row">
-                    <GroupTitle onCheck={getOnCheckHandler(g.id, g.type)} group={g} />
+                    <GroupTitle onCheck={() => removePostsFromGroup(g.id, g.type)} group={g} />
                 </div>
                 <div slot="list-row" let:item>
                     <Row group={g} {item} />

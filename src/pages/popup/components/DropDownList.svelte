@@ -58,7 +58,7 @@
 
 <style lang="postcss">
     .drop-down-list {
-        @apply flex w-full min-w-[12rem] max-w-[32rem] flex-col;
+        @apply flex w-full min-w-[18rem] flex-col;
     }
 
     .item {
