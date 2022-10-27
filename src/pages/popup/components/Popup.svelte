@@ -13,6 +13,11 @@
     import handleKeydownEvent from '../helpers/handle-keys';
     import SettingsIcon from '@/assets/settings.svg';
     import type { StorageFields } from '@/storage/storage-types';
+    import { extractPostGroups } from '../helpers/post-group';
+    import type { PostGroup } from '../helpers/post-group';
+
+    let groupsWithPosts: PostGroup[] = [];
+    let groupsWithoutPosts: PostGroup[] = [];
 
     onMount(() => {
         void applyTheme();
@@ -23,6 +28,8 @@
             document.removeEventListener('keydown', handleKeydownEvent);
         };
     });
+
+    $: ({ groupsWithPosts, groupsWithoutPosts } = extractPostGroups($storageData));
 
     const optionsHref = browser.runtime.getURL('options.html');
     const optionsClick = async (e: MouseEvent) => {
@@ -44,12 +51,12 @@
     };
 </script>
 
-<Header />
+<Header {groupsWithPosts} />
 <main
     class="flex max-h-[500px] min-h-[6rem] min-w-[22rem] max-w-[32rem] flex-1 flex-col overflow-y-auto overflow-x-hidden pb-2"
 >
     {#if haveItems($storageData)}
-        <WatchList />
+        <WatchList {groupsWithPosts} {groupsWithoutPosts} />
     {:else}
         <div class="my-auto mx-4 flex h-full flex-col items-center justify-center py-2 text-center">
             <span>{getMsg('noQueries')}</span>

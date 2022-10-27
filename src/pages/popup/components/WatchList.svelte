@@ -5,7 +5,6 @@
     import getMsg from '@/utils/get-message';
     import { getGroupItems, removePostsFromGroup } from '../helpers/post-group';
     import type { PostGroup } from '../helpers/post-group';
-    import { extractPostGroups } from '../helpers/post-group';
     import type { SlideConfig } from '../helpers/transition';
     import { slideHorizontal } from '../helpers/transition';
     import { storageData } from '../store/store';
@@ -14,14 +13,14 @@
     import PinPostRow from './PinPostRow.svelte';
     import Row from './Row.svelte';
 
-    let groupsWithPosts: PostGroup[] = [];
-    let groupsWithoutPosts: PostGroup[] = [];
+    export let groupsWithPosts: PostGroup[] = [];
+    export let groupsWithoutPosts: PostGroup[] = [];
+
     let expanded = new Set<string>();
     let initialLoading = true;
     let data: StorageFields;
 
     $: data = $storageData;
-    $: ({ groupsWithPosts, groupsWithoutPosts } = extractPostGroups(data));
 
     $: if (initialLoading) {
         if (groupsWithPosts.length === 1) {

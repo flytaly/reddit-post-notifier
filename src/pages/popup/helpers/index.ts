@@ -12,5 +12,5 @@ export function getItemTitle(post: RedditItem) {
 export function idToUserIdx(id: string): number | null {
     const indexNum = parseInt(id.split('_')[1]);
     if (!isNaN(indexNum)) return indexNum;
-    return null; 
+    return null;
 }

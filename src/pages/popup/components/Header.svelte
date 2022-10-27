@@ -10,7 +10,11 @@
     import SvgButton from './SvgButton.svelte';
     import { getInboxUrl } from '@/utils';
     import storage from '@/storage/storage';
-    import { extractPostGroups, removePostsFromGroup } from '../helpers/post-group';
+    import { removePostsFromGroup, type PostGroup } from '../helpers/post-group';
+
+    export let groupsWithPosts: PostGroup[] = [];
+
+    $: console.log(groupsWithPosts);
 
     let loading = false;
     let messagesCount = 0;
@@ -34,8 +38,6 @@
     };
 
     const onOpenAll = async () => {
-        const data = $storageData;
-        const { groupsWithPosts } = extractPostGroups(data);
         for (const group of groupsWithPosts) {
             if ($storageData.options.delListAfterOpening) {
                 await removePostsFromGroup(group.id, group.type);
@@ -57,7 +59,12 @@
         </span>
     </SvgButton>
 
-    <SvgButton on:click={onOpenAll} text="open all" title="Open all items">
+    <SvgButton
+        on:click={onOpenAll}
+        text="open all"
+        title="Open all unread items"
+        disabled={groupsWithPosts.length == 0}
+    >
         {@html OpenIcon}
     </SvgButton>
 

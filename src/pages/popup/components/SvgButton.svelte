@@ -28,13 +28,12 @@
 
 <style lang="postcss">
     .svg-button {
-        @apply flex items-center justify-center p-0 transition;
+        @apply flex items-center justify-center p-0 transition disabled:text-skin-gray2;
     }
     .icon {
         @apply group-hover:scale-110 group-active:scale-95 group-disabled:scale-100;
     }
-    .with-text {
-        @apply bg-skin-bg2 px-1 ring-skin-delimiter
-        hover:bg-skin-btn hover:ring-1  active:brightness-110 hover:disabled:bg-skin-bg2;
+    .with-text:not(:disabled) {
+        @apply px-1 ring-skin-delimiter hover:bg-skin-btn hover:ring-1 active:brightness-110;
     }
 </style>
