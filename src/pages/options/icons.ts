@@ -30,6 +30,7 @@ export { default as RefreshIcon2 } from '@assets/refresh2.svg';
 export { default as SaveIcon } from '@assets/save.svg';
 export { default as SettingsIcon } from '@assets/settings.svg';
 export { default as StarIcon } from '@assets/star.svg';
+export { default as UploadIcon } from '@assets/upload.svg';
 export { default as WarningIcon } from '@assets/warning.svg';
 export { default as WatchListIcon } from '@assets/watchlist.svg';
 export { default as XCircleIcon } from '@assets/x-circle-fill.svg';

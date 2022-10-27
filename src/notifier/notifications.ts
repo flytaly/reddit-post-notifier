@@ -1,7 +1,6 @@
 import { browser } from 'webextension-polyfill-ts';
 import type { Notifications } from 'webextension-polyfill-ts';
-import type { SoundId } from '../sounds';
-import { notificationSoundFiles } from '../sounds';
+import { getAudioSrc, type SoundId } from '../sounds';
 import storage from '../storage';
 import { redditOldUrl, redditUrl } from '../utils';
 
@@ -10,12 +9,11 @@ async function getBaseUrl() {
     return options.useOldReddit ? redditOldUrl : redditUrl;
 }
 
-function playAudio(audioId: SoundId) {
-    const file = notificationSoundFiles[audioId];
-    if (!file) return;
-
+async function playAudio(audioId: SoundId) {
+    const src = await getAudioSrc(audioId);
+    if (!src) return;
     const audio = new Audio();
-    audio.src = browser.runtime.getURL(file);
+    audio.src = src;
     return audio.play();
 }
 

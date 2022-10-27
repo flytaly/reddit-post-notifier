@@ -156,7 +156,7 @@
         "message": "Play sound on notification"
     },
     "optionNotificationAudioIdDescription": {
-        "message": "If you don't have sound on notifications, you can choose one from the list"
+        "message": "If you don't have sound on notifications, you can choose one from the list or upload an audio file into the browser storage."
     },
     "optionUseOldReddit": {
         "message": "Use old reddit to open links"

@@ -11,4 +11,5 @@ export const dataFields: StorageFields = {
     pinnedPostList: [],
     notifications: [],
     usersList: [],
+    /* audio: {} */
 };

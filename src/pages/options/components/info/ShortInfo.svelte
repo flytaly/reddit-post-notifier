@@ -18,7 +18,7 @@
             <span class="ml-1 text-base">{`v. ${version}`}</span>
         </div>
         <div class="flex gap-1 text-sm">
-            <a href={addonHref} class="inline-flex items-center group" target="_blank" rel="noreferrer">
+            <a href={addonHref} class="group inline-flex items-center" target="_blank" rel="noreferrer">
                 <span class="mr-1 h-4 w-4 text-skin-text group-hover:text-skin-accent">{@html StarIcon}</span>
                 <span>rating</span>
             </a>
@@ -27,13 +27,13 @@
                 href="https://github.com/flytaly/reddit-post-notifier"
                 target="_blank"
                 rel="noreferrer"
-                class="inline-flex items-center group"
+                class="group inline-flex items-center"
             >
                 <span class="mr-1 h-4 w-4 text-skin-text group-hover:text-skin-accent">{@html GithubIcon}</span>
                 <span>github</span>
             </a>
             <span>|</span>
-            <a href={routes.donate.href} class="group inline-flex items-center group">
+            <a href={routes.donate.href} class="group group inline-flex items-center">
                 <span class="mr-1 h-4 w-4 text-rose-200 group-hover:text-rose-500">{@html HeartIcon}</span>
                 <span>support development</span>
             </a>

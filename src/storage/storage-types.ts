@@ -107,4 +107,5 @@ export type StorageFields = {
     subredditList: SubredditOpts[];
     subreddits: Record<string, SubredditData>;
     usersList?: FollowingUser[];
+    audio?: { dataUrl?: string };
 };
