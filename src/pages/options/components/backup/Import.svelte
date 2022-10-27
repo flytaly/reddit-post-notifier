@@ -64,7 +64,7 @@
             wasImported = false;
         }}
     />
-    <button class="standart-button" on:click={() => void onImport()} disabled={importing}>Import</button>
+    <button class="standard-button" on:click={() => void onImport()} disabled={importing}>Import</button>
     {#if errMessage}
         <div class="text-skin-error">{errMessage}</div>
     {/if}

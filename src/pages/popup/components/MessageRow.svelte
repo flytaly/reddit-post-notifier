@@ -13,9 +13,10 @@
     export let item: RedditMessage;
 
     let options: ExtensionOptions = $storageData.options;
-    $: options = $storageData.options;
+    let href: string;
 
-    const href = getInboxUrl(options.useOldReddit);
+    $: options = $storageData.options;
+    $: href = getInboxUrl(options);
 
     const removePost = async (messageId: string) => {
         await storage.removeMessage({ accId: group.id, messageId });

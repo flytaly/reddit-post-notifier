@@ -1,6 +1,7 @@
 import type { RedditScope } from '@/reddit-api/scopes';
 import type redditScopes from '@/reddit-api/scopes';
 import type { StorageFields } from '@/storage/storage-types';
+import type { ExtensionOptions } from '@/types/extension-options';
 import type { RedditPost, RedditPostData, RedditPostExtended } from '../reddit-api/reddit-types';
 
 /* eslint-disable @typescript-eslint/explicit-module-boundary-types */
@@ -19,32 +20,60 @@ export const testMultireddit = (subs: string) => subs.split('+').every((s) => su
 export const redditUrl = 'https://reddit.com';
 export const redditOldUrl = 'https://old.reddit.com';
 
+export const getRedditBaseUrl = (urlType: ExtensionOptions['redditUrlType'], customUrl: string): string => {
+    switch (urlType) {
+        case 'old':
+            return redditOldUrl;
+        case 'custom':
+            return customUrl;
+        default:
+            return redditUrl;
+    }
+};
+
 export const generateId = () => Math.random().toString(36).substring(2, 6) + new Date().getTime().toString(36);
 
-export const getSubredditUrl = (subreddit: string, oldReddit = false): string =>
-    `${oldReddit ? redditOldUrl : redditUrl}/r/${subreddit}/new`;
+type UrlOpts = Pick<ExtensionOptions, 'redditUrlType' | 'customRedditUrl'>;
 
-export const getInboxUrl = (oldReddit = false): string => `${oldReddit ? redditOldUrl : redditUrl}/message/inbox`;
+export const constructUrl = (endpoint: string, opts: UrlOpts): string => {
+    try {
+        return new URL(endpoint, getRedditBaseUrl(opts.redditUrlType, opts.customRedditUrl)).href;
+    } catch (error) {
+        return new URL(endpoint, redditUrl).href;
+    }
+};
 
-export const getSearchQueryUrl = (query = '', subreddit = '', oldReddit = false): string => {
+export const getSubredditUrl = (subreddit: string, opts: UrlOpts): string => {
+    const endpoint = `/r/${subreddit}/new`;
+    return constructUrl(endpoint, opts);
+};
+
+export const getInboxUrl = (opts: UrlOpts): string => {
+    const endpoint = '/message/inbox';
+    return constructUrl(endpoint, opts);
+};
+
+export const getSearchQueryUrl = (query = '', subreddit = '', opts: UrlOpts): string => {
     const endpoint = subreddit
         ? `/r/${subreddit}/search?sort=new&restrict_sr=on&q=${query}`
         : `/search?q=${query}&sort=new`;
 
-    return `${oldReddit ? redditOldUrl : redditUrl}${endpoint}`;
+    return constructUrl(endpoint, opts);
 };
 
 export const getUserProfileUrl = (
     username: string,
     type: 'overview' | 'submitted' | 'comments' = 'overview',
-    oldReddit = false,
-) => {
-    const base = `${oldReddit ? redditOldUrl : redditUrl}/user/${username}`;
-    if (type === 'comments') return `${base}/comments`;
-    if (type === 'submitted') {
-        return oldReddit ? `${base}/submitted` : `${base}/posts`;
+    opts: UrlOpts,
+): string => {
+    let endpoint = `/user/${username}`;
+    if (type === 'comments') {
+        endpoint += '/comments';
     }
-    return base;
+    if (type === 'submitted') {
+        endpoint += opts.redditUrlType == 'old' ? '/submitted' : '/posts';
+    }
+    return constructUrl(endpoint, opts);
 };
 
 export const debounce = (func: (...args: unknown[]) => unknown, waitMs: number) => {

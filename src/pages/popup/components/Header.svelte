@@ -14,11 +14,8 @@
 
     export let groupsWithPosts: PostGroup[] = [];
 
-    $: console.log(groupsWithPosts);
-
     let loading = false;
     let messagesCount = 0;
-    const inboxHref = getInboxUrl();
 
     $: loading = $isUpdating;
     $: {
@@ -74,7 +71,7 @@
             class:accent={messagesCount}
             on:click={onMailClick}
             title={getMsg('headerMailLink_title')}
-            href={inboxHref}
+            href={getInboxUrl($storageData.options)}
         >
             <span>{messagesCount || ''}</span>
             <div class="h-5 w-5 group-hover:scale-110 group-active:scale-95">

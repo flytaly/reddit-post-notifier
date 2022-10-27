@@ -8,7 +8,8 @@
     import { OpenInNew, PlayIcon, SaveIcon, UploadIcon } from '@/pages/options/icons';
     import OptionsItem from './OptionsItem.svelte';
     import RadioGroup from './RadioGroup.svelte';
-    import { storageData } from '@/pages/options/store';
+    import { storageData } from '@options/store';
+    import ChangeUrlInput from './ChangeUrlInput.svelte';
 
     const themeValueList: Array<{ value: ExtensionOptions['theme']; id: string; label: string }> = [
         { value: 'light', id: 'light', label: getMsg('optionThemeLight') },
@@ -159,7 +160,7 @@
                 {/each}
                 <option value="custom">Custom sound file</option>
             </select>
-            <button class="standart-button play-btn" on:click={getSoundAndPlay} title="play">
+            <button class="standard-button play-btn" on:click={getSoundAndPlay} title="play">
                 {@html PlayIcon}
             </button>
         </div>
@@ -194,17 +195,7 @@
     </div>
 </OptionsItem>
 
-<OptionsItem title={getMsg('optionUseOldReddit')} labelFor="useOldReddit">
-    <div slot="description">{getMsg('optionUseOldRedditDescription')}</div>
-    <div slot="controls">
-        <input
-            id="useOldReddit"
-            type="checkbox"
-            bind:checked={$storageData.options.useOldReddit}
-            on:change={() => storage.saveOptions({ useOldReddit: $storageData.options.useOldReddit })}
-        />
-    </div>
-</OptionsItem>
+<ChangeUrlInput />
 
 <style lang="postcss">
     .play-btn {

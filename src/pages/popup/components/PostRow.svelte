@@ -3,7 +3,7 @@
     import type { RedditItem } from '@/reddit-api/reddit-types';
     import storage from '@/storage';
     import type { ExtensionOptions } from '@/types/extension-options';
-    import { redditOldUrl, redditUrl } from '@/utils';
+    import { constructUrl } from '@/utils';
     import getMsg from '@/utils/get-message';
     import { browser } from 'webextension-polyfill-ts';
     import { getItemTitle, idToUserIdx } from '../helpers';
@@ -16,10 +16,10 @@
     export let post: RedditItem;
 
     let options: ExtensionOptions = $storageData.options;
-    $: options = $storageData.options;
+    let href: string;
 
-    const baseUrl = options.useOldReddit ? redditOldUrl : redditUrl;
-    const href = `${baseUrl}${post.data.permalink}`;
+    $: options = $storageData.options;
+    $: href = constructUrl(post.data.permalink, options);
 
     const removePost = async (id: string) => {
         const itemId = group.id;

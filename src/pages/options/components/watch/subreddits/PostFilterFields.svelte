@@ -87,13 +87,13 @@
     <div class="mt-3 flex justify-between">
         <button
             on:click={addField}
-            class="standart-button rounded border-transparent bg-transparent py-0 px-1 hover:border-skin-accent2"
+            class="standard-button rounded border-transparent bg-transparent py-0 px-1 hover:border-skin-accent2"
         >
             + add field
         </button>
         <button
             on:click={removeFilter}
-            class="standart-button flex items-center rounded border-transparent bg-transparent p-0 px-1 hover:border-skin-accent hover:text-skin-accent"
+            class="standard-button flex items-center rounded border-transparent bg-transparent p-0 px-1 hover:border-skin-accent hover:text-skin-accent"
             title="Delete filter"
         >
             <div class="mr-1 h-4 w-4">{@html DeleteIcon}</div>

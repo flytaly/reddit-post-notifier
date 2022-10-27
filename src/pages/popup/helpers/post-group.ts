@@ -26,7 +26,6 @@ export const extractPostGroups = (storageData: StorageFields) => {
     const groupsWithoutPosts: PostGroup[] = [];
 
     const accList = Object.values(storageData.accounts || {});
-    const { useOldReddit } = storageData.options;
 
     accList.forEach((a) => {
         let error = a.error || a.auth.error;
@@ -36,7 +35,7 @@ export const extractPostGroups = (storageData: StorageFields) => {
         const group: PostGroup = {
             type: 'message',
             id: a.id,
-            href: getInboxUrl(useOldReddit),
+            href: getInboxUrl(storageData.options),
             title: `${a.name || ''} inbox (${length})`,
             lastPostCreated,
             size: length,
@@ -58,7 +57,7 @@ export const extractPostGroups = (storageData: StorageFields) => {
         const group: PostGroup = {
             type: 'subreddit',
             id: s.id,
-            href: getSubredditUrl(s.subreddit, useOldReddit),
+            href: getSubredditUrl(s.subreddit, storageData.options),
             title: (s.name || `r/${s.subreddit}`) + ` (${length})`,
             lastPostCreated,
             size: length,
@@ -82,7 +81,7 @@ export const extractPostGroups = (storageData: StorageFields) => {
         const group: PostGroup = {
             type: 'search',
             id: q.id,
-            href: getSearchQueryUrl(q.query, q.subreddit, useOldReddit),
+            href: getSearchQueryUrl(q.query, q.subreddit, storageData.options),
             title: `${q.name || q.query || ''} (${length})`,
             lastPostCreated,
             size: length,
@@ -108,7 +107,7 @@ export const extractPostGroups = (storageData: StorageFields) => {
         const group: PostGroup = {
             type: 'user',
             id: `user_${idx}`,
-            href: getUserProfileUrl(u.username, u.watch, useOldReddit),
+            href: getUserProfileUrl(u.username, u.watch, storageData.options),
             title: `u/${u.username} ${watchType} (${length})`,
             lastPostCreated: u.lastPostCreated,
             size: length,
@@ -141,7 +140,7 @@ export const getGroupItems = (
     }
     if (type === 'user') {
         const idx = idToUserIdx(id);
-        if (idx !== undefined) return data.usersList?.[idx]?.data || [];
+        if (idx !== null) return data.usersList?.[idx]?.data || [];
     }
     if (type === 'message') {
         return data.accounts?.[id]?.mail?.messages || [];
@@ -152,6 +151,10 @@ export const getGroupItems = (
 export const removePostsFromGroup = async (id: string, type: PostGroupType) => {
     if (type === 'search') return storage.removePostsFrom({ searchId: id });
     if (type === 'subreddit') return storage.removePostsFrom({ subredditId: id });
-    if (type === 'user') return storage.removePostsFrom({ followUserIndex: idToUserIdx(id) });
+    if (type === 'user') {
+        const index = idToUserIdx(id);
+        if (index == null) return;
+        return storage.removePostsFrom({ followUserIndex: index });
+    }
     if (type === 'message') return storage.removeMessages(id);
 };

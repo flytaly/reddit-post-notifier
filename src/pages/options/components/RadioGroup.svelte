@@ -7,7 +7,7 @@
     export let name = '';
 </script>
 
-<form class="flex overflow-visible bg-skin-input py-1" on:change={() => onChange(currentValue)}>
+<form class="flex w-max overflow-visible bg-skin-input py-1" on:change={() => onChange(currentValue)}>
     {#each valueList as { value, id, label }}
         <div class="group overflow-visible px-[2px]">
             <input class="peer absolute opacity-0" type="radio" bind:group={currentValue} {value} {id} {name} />

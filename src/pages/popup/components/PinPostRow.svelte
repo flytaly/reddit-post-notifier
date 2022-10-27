@@ -2,7 +2,7 @@
     import { RedditObjectKind } from '@/reddit-api/reddit-types';
     import type { RedditItem, RedditMessage } from '@/reddit-api/reddit-types';
     import storage from '@/storage';
-    import { redditOldUrl, redditUrl } from '@/utils';
+    import { constructUrl } from '@/utils';
     import PinRemove from '@assets/pin-remove.svg';
     import { getItemTitle } from '../helpers';
     import { storageData } from '../store/store';
@@ -11,7 +11,8 @@
 
     export let item: RedditItem | RedditMessage;
 
-    const baseUrl = $storageData.options.useOldReddit ? redditOldUrl : redditUrl;
+    let href: string;
+    $: href = constructUrl(redditItem.data.permalink, $storageData.options);
 
     let redditItem: RedditItem;
 
@@ -22,12 +23,7 @@
 
 {#if redditItem}
     <div class="flex w-full items-center py-1 pr-3">
-        <a
-            class="flex-grow px-1"
-            href={`${baseUrl}${redditItem.data.permalink}`}
-            data-keys-target="post-link"
-            data-post-id={redditItem.data.id}
-        >
+        <a class="flex-grow px-1" {href} data-keys-target="post-link" data-post-id={redditItem.data.id}>
             <span class="pr-2 text-xs text-skin-text">{`r/${redditItem.data.subreddit}`}</span>
             <span>{getItemTitle(redditItem)}</span>
         </a>

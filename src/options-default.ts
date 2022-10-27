@@ -10,8 +10,9 @@ const DEFAULT_OPTIONS: ExtensionOptions = {
     delListAfterOpening: false,
     hideEmptyGroups: false,
     notificationSoundId: null,
-    useOldReddit: false,
     pollUserInterval: 10 * 60,
+    redditUrlType: 'new',
+    customRedditUrl: 'https://troddit.com/',
 };
 
 export default DEFAULT_OPTIONS;
