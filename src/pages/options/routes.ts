@@ -28,7 +28,7 @@ export const routes = {
         id: 'settings',
         href: './index.html',
         name: getMsg('optionsNavSettings'),
-        sections: {}
+        sections: {},
     },
     'import-export': {
         id: 'import-export',
@@ -50,6 +50,12 @@ export const routes = {
                 name: getMsg('optionsNavShortcuts'),
             },
         },
+    },
+    donate: {
+        id: 'donate',
+        href: './donate.html',
+        name: 'Donate',
+        sections: {},
     },
 } as const;
 

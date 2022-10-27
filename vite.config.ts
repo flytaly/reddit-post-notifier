@@ -57,6 +57,7 @@ export default defineConfig(({ command }) => {
                     options: r('src/pages/options/index.html'),
                     info: r('src/pages/options/info.html'),
                     backup: r('src/pages/options/import-export.html'),
+                    donate: r('src/pages/options/donate.html'),
                 },
             },
         },

@@ -12,6 +12,7 @@
     import WatchPage from '@options/components/watch/WatchPage.svelte';
     import { RefreshIcon } from '@options/icons';
     import { isUpdating } from '@options/store';
+    import DonatePage from './DonatePage.svelte';
 
     export let pageId: PageId = 'settings';
 
@@ -31,6 +32,9 @@
             break;
         case 'watch':
             page = { cmp: WatchPage, name: getMsg('optionsNavWatch') };
+            break;
+        case 'donate':
+            page = { cmp: DonatePage, name: 'Donate' };
             break;
         default:
             page = { cmp: Settings, name: getMsg('optionsNavSettings') };

@@ -1,8 +1,9 @@
 <script lang="ts">
-    import { BackupIcon, KoFiIcon, LogoIcon, WatchListIcon } from '@/pages/options/icons';
+    import { BackupIcon, HeartIcon, LogoIcon, WatchListIcon } from '@/pages/options/icons';
     import type { PageId } from '@options/routes';
     import { routes } from '@options/routes';
-    import { SettingsIcon, HelpCircleIcon  } from '@options/icons';
+    import { SettingsIcon, HelpCircleIcon } from '@options/icons';
+
     export let current: PageId;
 
     const pageIcons: Record<PageId, string> = {
@@ -10,6 +11,7 @@
         'import-export': BackupIcon,
         settings: SettingsIcon,
         info: HelpCircleIcon,
+        donate: HeartIcon,
     };
 </script>
 
@@ -21,9 +23,11 @@
     </a>
     <nav class="flex flex-col p-4 leading-8">
         {#each Object.values(routes) as { id, href, name, sections }}
-            <a {href} class:current={current === id} class="flex items-center"> 
+            <a {href} class:current={current === id} class="flex items-center">
                 {#if pageIcons[id]}
-                <span class="w-5 h-5 mr-1">{@html pageIcons[id]}</span>
+                    <span class="mr-1 h-5 w-5" class:heart={id === 'donate'}>
+                        {@html pageIcons[id]}
+                    </span>
                 {/if}
                 {name}
             </a>
@@ -32,30 +36,14 @@
             {/each}
         {/each}
     </nav>
-    <div class="mx-2 text-xs">
-        <a
-            class="supportme group justify-center gap-x-2 rounded-md text-center leading-normal text-skin-text hover:text-skin-accent"
-            href="https://ko-fi.com/flytaly"
-            target="_blank"
-            rel="noreferrer"
-        >
-            <div class="flex w-5 items-center p-0 group-hover:animate-pulse">
-                {@html KoFiIcon}
-            </div>
-            <div>Support me</div>
-            <div />
-            <div class="opacity-0 transition-opacity group-hover:opacity-100 group-focus:opacity-100">on Ko-Fi</div>
-        </a>
-    </div>
 </aside>
 
 <style lang="postcss">
-    .supportme {
-        display: grid;
-        grid-template-columns: min-content max-content;
-    }
     a {
         @apply text-skin-text;
+    }
+    .heart {
+        @apply text-rose-500;
     }
     .logo {
         @apply mx-auto mb-1 w-[4.5rem] translate-x-[2px];
