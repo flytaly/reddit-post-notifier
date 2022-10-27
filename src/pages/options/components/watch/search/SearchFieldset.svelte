@@ -23,7 +23,7 @@
     let name = '';
 
     let isActive = !queryObject.disabled;
-    let showEditBlock = false;
+    let showEditBlock = !queryObject.query;
 
     let errorMessage = '';
     let subredditError = '';

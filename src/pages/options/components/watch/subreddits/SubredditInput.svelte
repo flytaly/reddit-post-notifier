@@ -28,7 +28,7 @@
     let showPosts = false;
     let isLoading = false;
 
-    let showEditBlock = false;
+    let showEditBlock = !subOpts?.subreddit;
     let subredditInputRef: HTMLInputElement;
 
     $: filterOpts = subOpts.filterOpts || {};

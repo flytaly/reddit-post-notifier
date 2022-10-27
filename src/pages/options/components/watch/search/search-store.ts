@@ -8,8 +8,8 @@ const genEmpty = (): QueryOpts => ({ id: generateId() });
 function createStore() {
     const { set, subscribe, update } = writable<QueryOpts[]>([], () => {
         void storage.getQueriesList().then((list) => {
-            const empty = genEmpty();
-            set(list?.length ? [...list] : [empty]);
+            /* const empty = genEmpty(); */
+            set(list?.length ? [...list] : []);
         });
     });
 
