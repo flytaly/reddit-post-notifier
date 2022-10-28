@@ -2,6 +2,7 @@
     import { browser } from 'webextension-polyfill-ts';
     import RefreshIcon from '@assets/refresh.svg';
     import SettingsIcon from '@assets/settings.svg';
+    import OpenIcon from '@assets/open-in-new.svg';
     import MailIcon from '@assets/mail.svg';
     import { sendToBg } from '@/port';
     import getMsg from '@/utils/get-message';
@@ -9,15 +10,16 @@
     import SvgButton from './SvgButton.svelte';
     import { getInboxUrl } from '@/utils';
     import storage from '@/storage/storage';
+    import { removePostsFromGroup, type PostGroup } from '../helpers/post-group';
+
+    export let groupsWithPosts: PostGroup[] = [];
 
     let loading = false;
     let messagesCount = 0;
-    const inboxHref = getInboxUrl();
 
     $: loading = $isUpdating;
     $: {
         messagesCount = 0;
-        // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
         Object.values($storageData.accounts || {})?.forEach((a) => {
             messagesCount = a.mail?.messages?.length || 0;
         });
@@ -31,38 +33,51 @@
     const onMailClick = async () => {
         if (messagesCount) await storage.removeMessages();
     };
+
+    const onOpenAll = async () => {
+        for (const group of groupsWithPosts) {
+            if ($storageData.options.delListAfterOpening) {
+                await removePostsFromGroup(group.id, group.type);
+            }
+            void browser.tabs.create({ url: group.href, active: false });
+        }
+    };
 </script>
 
-<header class="flex items-center p-1 min-h-[1.2rem] border-b border-skin-delimiter space-x-3">
-    <span class="flex flex-1 items-center space-x-2">
-        <SvgButton
-            disabled={loading}
-            on:click={() => sendToBg('UPDATE_NOW')}
-            title={getMsg('headerUpdateBtn_title')}
-            text={loading ? 'updating' : 'update'}
-        >
-            <span class={`flex ${loading ? 'animate-spin' : ''}`}>
-                {@html RefreshIcon}
-            </span>
-        </SvgButton>
-    </span>
-
-    <a
-        class="flex gap-1 text-current group"
-        class:accent={messagesCount}
-        on:click={onMailClick}
-        title={getMsg('headerMailLink_title')}
-        href={inboxHref}
+<header class="flex min-h-[1.2rem] items-center justify-between space-x-3 border-b border-skin-delimiter p-1">
+    <SvgButton
+        disabled={loading}
+        on:click={() => sendToBg('UPDATE_NOW')}
+        title={getMsg('headerUpdateBtn_title')}
+        text={loading ? 'updating' : 'update'}
     >
-        {#if messagesCount}
-            <span>{messagesCount}</span>
-        {/if}
-        <div class="w-5 h-4 group-hover:scale-110 group-active:scale-95">
-            {@html MailIcon}
-        </div>
-    </a>
+        <span class={`flex ${loading ? 'animate-spin' : ''}`}>
+            {@html RefreshIcon}
+        </span>
+    </SvgButton>
 
-    <span class="flex items-center space-x-3">
+    <SvgButton
+        on:click={onOpenAll}
+        text="open all"
+        title="Open all unread items"
+        disabled={groupsWithPosts.length == 0}
+    >
+        {@html OpenIcon}
+    </SvgButton>
+
+    <span class="flex items-center space-x-2">
+        <a
+            class="group flex items-center gap-1 text-current"
+            class:accent={messagesCount}
+            on:click={onMailClick}
+            title={getMsg('headerMailLink_title')}
+            href={getInboxUrl($storageData.options)}
+        >
+            <span>{messagesCount || ''}</span>
+            <div class="h-5 w-5 group-hover:scale-110 group-active:scale-95">
+                {@html MailIcon}
+            </div>
+        </a>
         <SvgButton
             text={getMsg('headerOptionsBtn')}
             on:click={onOptionClick}

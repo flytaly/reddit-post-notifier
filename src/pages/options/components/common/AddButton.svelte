@@ -6,11 +6,11 @@
 </script>
 
 <button
-    class="flex items-center rounded p-1 bg-transparent border-transparent hover:border-skin-accent2 text-skin-accent2 disabled:hover:border-skin-gray"
+    class="standard-button flex items-center rounded border-transparent bg-transparent p-1 text-skin-accent2 hover:border-skin-accent2 disabled:hover:border-skin-gray"
     on:click={clickHandler}
     {disabled}
 >
-    <span class="w-5 h-5 mr-1">
+    <span class="mr-1 h-5 w-5">
         {@html AddIcon}
     </span>
     <slot />

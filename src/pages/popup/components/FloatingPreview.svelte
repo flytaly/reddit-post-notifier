@@ -129,10 +129,10 @@
 
 <style lang="postcss">
     .preview {
-        @apply absolute max-w-[18rem] max-h-[13rem] p-1
-                text-xs break-words overflow-hidden
-                bg-skin-bg
-                border border-skin-base
-                z-50;
+        @apply absolute z-50 max-h-[13rem] max-w-[18rem]
+                overflow-hidden break-words border
+                border-skin-base
+                bg-skin-bg p-1
+                text-xs;
     }
 </style>

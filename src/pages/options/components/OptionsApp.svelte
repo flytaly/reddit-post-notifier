@@ -1,20 +1,24 @@
 <script lang="ts">
+    import nProgress from 'nprogress';
     import { onMount } from 'svelte';
-    import { connectToBg } from '@/port';
     import applyTheme from '@/utils/apply-theme';
-    import Sidebar from './Sidebar.svelte';
-    import ShortInfo from './info/ShortInfo.svelte';
-    import Settings from './SettingsPage.svelte';
-    import Info from './info/InfoPage.svelte';
+    import Sidebar from '@options/components/Sidebar.svelte';
+    import ShortInfo from '@options/components/info/ShortInfo.svelte';
+    import Settings from '@options/components/SettingsPage.svelte';
+    import Info from '@options/components/info/InfoPage.svelte';
     import getMsg from '@/utils/get-message';
-    import type { PageId } from '../routes';
-    import BackupPage from './backup/Backup.svelte';
+    import type { PageId } from '@options/routes';
+    import BackupPage from '@options/components/backup/Backup.svelte';
+    import WatchPage from '@options/components/watch/WatchPage.svelte';
+    import { RefreshIcon } from '@options/icons';
+    import { isUpdating } from '@options/store';
+    import DonatePage from './DonatePage.svelte';
 
     export let pageId: PageId = 'settings';
 
     onMount(() => {
         void applyTheme();
-        connectToBg('options');
+        nProgress.configure({ showSpinner: false });
     });
 
     let page: { cmp: typeof Settings; name: string } = { cmp: Settings, name: getMsg('optionsNavSettings') };
@@ -26,6 +30,12 @@
         case 'import-export':
             page = { cmp: BackupPage, name: getMsg('optionsNavImportExport') };
             break;
+        case 'watch':
+            page = { cmp: WatchPage, name: getMsg('optionsNavWatch') };
+            break;
+        case 'donate':
+            page = { cmp: DonatePage, name: 'Donate' };
+            break;
         default:
             page = { cmp: Settings, name: getMsg('optionsNavSettings') };
     }
@@ -35,19 +45,28 @@
     <title>{page.name}</title>
 </svelte:head>
 
-<div class="grid grid-cols-[max-content,minmax(auto,42rem)] gap-x-4 p-3 pt-0 justify-center">
-    <div class="sticky top-0">
+<div
+    class="mx-auto grid max-w-[100rem] grid-cols-[max-content,1fr] justify-center gap-x-4 p-3 pt-0 xl:grid-cols-[max-content,1fr,min-content]"
+>
+    <div>
         <Sidebar current={pageId} />
     </div>
-    <div class="w-full max-w-2xl">
-        <div class="mt-4 mb-5">
+    <div class="w-full">
+        <div class="mt-4 mb-5 flex items-center justify-between">
             <ShortInfo />
+            {#if $isUpdating}
+                <div class="flex items-center rounded-md border border-skin-delimiter p-1">
+                    <div class="mr-1 h-4 w-4" class:animate-spin={$isUpdating}>{@html RefreshIcon}</div>
+                    <div>Updating</div>
+                </div>
+            {/if}
         </div>
         <svelte:component this={page.cmp} />
     </div>
+    <div class="hidden w-52 xl:block" />
 </div>
 
 <style global lang="postcss">
-    @import '../../../../node_modules/tippy.js/dist/tippy.css';
     @import './OptionsApp.pcss';
+    @import '@/../node_modules/nprogress/nprogress.css';
 </style>

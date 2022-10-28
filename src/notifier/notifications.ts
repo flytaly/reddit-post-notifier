@@ -1,21 +1,14 @@
 import { browser } from 'webextension-polyfill-ts';
 import type { Notifications } from 'webextension-polyfill-ts';
-import type { SoundId } from '../sounds';
-import { notificationSoundFiles } from '../sounds';
+import { getAudioSrc, type SoundId } from '../sounds';
 import storage from '../storage';
-import { redditOldUrl, redditUrl } from '../utils';
+import { getInboxUrl } from '../utils';
 
-async function getBaseUrl() {
-    const options = await storage.getOptions();
-    return options.useOldReddit ? redditOldUrl : redditUrl;
-}
-
-function playAudio(audioId: SoundId) {
-    const file = notificationSoundFiles[audioId];
-    if (!file) return;
-
+async function playAudio(audioId: SoundId) {
+    const src = await getAudioSrc(audioId);
+    if (!src) return;
     const audio = new Audio();
-    audio.src = browser.runtime.getURL(file);
+    audio.src = src;
     return audio.play();
 }
 
@@ -77,8 +70,8 @@ function notify(notif: Notification, soundId?: SoundId | null) {
 
         const nOpts: NotificationOpts = { ...opts, title: 'Reddit: new mail', message };
 
-        void getBaseUrl().then((baseUrl) => {
-            const url = `${baseUrl}/message/unread/`;
+        void storage.getOptions().then((opts) => {
+            const url = getInboxUrl(opts);
             return createNotification(`${NotificationId.mail}__${Date.now()}`, nOpts, [url]);
         });
     }

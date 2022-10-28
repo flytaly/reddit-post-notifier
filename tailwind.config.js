@@ -34,7 +34,7 @@ module.exports = {
                 },
             },
             boxShadow: {
-                sidebar: 'var(--shadow-sidebar)',
+                'input-expand': 'var(--shadow-input-expand)',
                 input: 'var(--shadow-input-hover)',
             },
         },

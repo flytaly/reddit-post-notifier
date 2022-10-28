@@ -1,15 +1,15 @@
 <script lang="ts">
     import { sendToBg } from '@/port';
-    import { notificationSoundFiles } from '@/sounds';
+    import { getAudioSrc, notificationSoundFiles } from '@/sounds';
     import storage from '@/storage';
     import type { ExtensionOptions } from '@/types/extension-options';
     import applyTheme from '@/utils/apply-theme';
     import getMsg from '@/utils/get-message';
-    import { OpenInNew, PlayIcon } from '@/pages/options/icons';
-    import { browser } from 'webextension-polyfill-ts';
+    import { OpenInNew, PlayIcon, SaveIcon, UploadIcon } from '@/pages/options/icons';
     import OptionsItem from './OptionsItem.svelte';
     import RadioGroup from './RadioGroup.svelte';
-    import { storageData } from '@/pages/options/store';
+    import { storageData } from '@options/store';
+    import ChangeUrlInput from './ChangeUrlInput.svelte';
 
     const themeValueList: Array<{ value: ExtensionOptions['theme']; id: string; label: string }> = [
         { value: 'light', id: 'light', label: getMsg('optionThemeLight') },
@@ -31,13 +31,47 @@
         void storage.saveOptions({ theme: newTheme });
     };
 
-    const playSound = () => {
-        if (!$storageData.options.notificationSoundId) return;
-        const file: string = notificationSoundFiles[$storageData.options.notificationSoundId];
-        if (!file) return;
-        const audio = new Audio();
-        audio.src = browser.runtime.getURL(file);
-        void audio.play();
+    let wasUploaded = false;
+    let audioErrMsg = '';
+
+    const playAudio = async (src: string) => {
+        try {
+            const audio = new Audio();
+            audio.src = src;
+            await audio.play();
+            return true;
+        } catch (error) {
+            audioErrMsg = error?.message;
+        }
+        return false;
+    };
+
+    const getSoundAndPlay = async () => {
+        const src = await getAudioSrc($storageData.options.notificationSoundId);
+        await playAudio(src);
+    };
+
+    async function saveFile(event: ProgressEvent<FileReader>) {
+        audioErrMsg = '';
+        const dataUrl = event.target?.result as string;
+        if (!dataUrl) return;
+        if (!(await playAudio(dataUrl))) return;
+
+        void storage.saveAudioFile(dataUrl).then(() => {
+            wasUploaded = true;
+            setTimeout(() => (wasUploaded = false), 2000);
+        });
+    }
+
+    const onFilesDrop = async (e: Event & { currentTarget: EventTarget & HTMLInputElement }) => {
+        const fl = e.currentTarget?.files as FileList;
+        if (!fl?.length) return;
+        const file = fl[0];
+        const reader = new FileReader();
+        reader.addEventListener('load', (ev) => {
+            void saveFile(ev);
+        });
+        reader.readAsDataURL(file);
     };
 </script>
 
@@ -112,10 +146,11 @@
 <OptionsItem title={getMsg('optionNotificationAudioId')} labelFor="soundSelect">
     <div slot="description">{getMsg('optionNotificationAudioIdDescription')}</div>
     <div slot="controls">
-        <div class="flex items-stretch">
+        <div class="flex items-stretch justify-end">
             <select
                 name="sound"
                 id="soundSelect"
+                class="w-max"
                 bind:value={$storageData.options.notificationSoundId}
                 on:change={() => storage.saveOptions({ notificationSoundId: $storageData.options.notificationSoundId })}
             >
@@ -123,29 +158,48 @@
                 {#each Object.keys(notificationSoundFiles) as soundFileId, idx}
                     <option value={soundFileId}>{`Sound ${idx + 1}`}</option>
                 {/each}
+                <option value="custom">Custom sound file</option>
             </select>
-            <button class="play-btn" on:click={playSound} title="play">
+            <button class="standard-button play-btn" on:click={getSoundAndPlay} title="play">
                 {@html PlayIcon}
             </button>
+        </div>
+        <div>
+            {#if $storageData.options.notificationSoundId === 'custom'}
+                <span class="text-left text-skin-error">{audioErrMsg}</span>
+                <form class="mt-2 flex flex-col">
+                    <label
+                        for="fileElem"
+                        class={`flex justify-center items-center w-full p-1 py-4 border-2 border-dashed border-skin-gray2 hover:border-skin-accent hover:text-skin-accent text-center`}
+                    >
+                        {#if wasUploaded}
+                            <span class="mr-2 h-6 w-6 text-skin-success">{@html SaveIcon}</span>
+                            <span>Saved</span>
+                        {:else}
+                            <span class="mr-2 h-6 w-6">{@html UploadIcon}</span>
+                            <span>Click here to upload a file</span>
+                        {/if}
+                    </label>
+
+                    <input
+                        class="hidden"
+                        type="file"
+                        id="fileElem"
+                        accept="audio/*"
+                        on:change={onFilesDrop}
+                        disabled={false}
+                    />
+                </form>
+            {/if}
         </div>
     </div>
 </OptionsItem>
 
-<OptionsItem title={getMsg('optionUseOldReddit')} labelFor="useOldReddit">
-    <div slot="description">{getMsg('optionUseOldRedditDescription')}</div>
-    <div slot="controls">
-        <input
-            id="useOldReddit"
-            type="checkbox"
-            bind:checked={$storageData.options.useOldReddit}
-            on:change={() => storage.saveOptions({ useOldReddit: $storageData.options.useOldReddit })}
-        />
-    </div>
-</OptionsItem>
+<ChangeUrlInput />
 
 <style lang="postcss">
     .play-btn {
-        @apply flex items-center bg-skin-input ml-1;
+        @apply ml-1 flex items-center bg-skin-input;
     }
 
     .play-btn :global(svg) {

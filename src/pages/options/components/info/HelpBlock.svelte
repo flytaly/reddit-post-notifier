@@ -1,10 +1,13 @@
 <script lang="ts">
     import { BellIcon } from '@/pages/options/icons';
     import { storageData } from '../../store';
-    import { sections } from '../../routes';
+    import { routes } from '../../routes';
+    import getMsg from '@/utils/get-message';
 
     let limit = 10;
     $: limit = $storageData.options.limit || 10;
+    const subredditHref = routes.settings.href + '#' + routes.watch.sections.subreddit.id;
+    const searchHref = routes.settings.href + '#' + routes.watch.sections['reddit-search'].id;
 </script>
 
 <div class="text-base">
@@ -25,7 +28,7 @@
                 If you want to monitor
                 <b>every</b>
                 post in a Subreddit/Multireddit go to the
-                <a href={'./index.html#' + sections.settings.subreddit.id}>Subreddits section</a>
+                <a href={subredditHref}>Subreddits section</a>
                 and add the Subreddit name to the list.</span
             >
             <details class="mt-2" open>
@@ -46,13 +49,15 @@
         <div class="ml-8">
             <div>
                 You can stay up to date with Reddit Search by adding a query in the "search query" field in the
-                <a href={'./index.html#' + sections.settings['reddit-search'].id}>Reddit Search</a>
+                <a href={searchHref}>Reddit Search</a>
                 section. Look at the
-                <a href="https://www.reddit.com/wiki/search#wiki_field_search" target="_blank">Reddit Search wiki</a>
+                <a href="https://www.reddit.com/wiki/search#wiki_field_search" target="_blank" rel="noreferrer">
+                    Reddit Search wiki
+                </a>
                 to learn supported keywords and
-                <a href="https://www.reddit.com/wiki/search#wiki_boolean_operators" target="_blank">
-                    boolean operators</a
-                >.
+                <a href="https://www.reddit.com/wiki/search#wiki_boolean_operators" target="_blank" rel="noreferrer">
+                    boolean operators
+                </a>.
             </div>
             <br />
             <div>
@@ -70,7 +75,7 @@
             </div>
             <div>
                 To receive notifications don't forget to select the checkbox with
-                <span class="icon inline-block w-4 h-4">
+                <span class="icon inline-block h-4 w-4">
                     {@html BellIcon}
                 </span>
                 icon.
@@ -79,36 +84,27 @@
     </details>
 
     <details class="mt-6">
-        <summary>Filters vs Reddit Search and delayed notifications</summary>
+        <summary>{getMsg('helpFiltersVsSearchTitle')}</summary>
         <div class="ml-6">
-            Reddit Search is a Reddit feature while post filter is an extension's tool. Reddit Search is more versatile
-            and generally recommended to use. Also, it's easier to miss some posts with filters because they are applied
-            only to a bunch of the latest posts. But one downside of Reddit Search is that it may not work with the most
-            recent posts that become searchable only after some time (1-15 minutes). So if you need faster notifications
-            use Filters instead of Reddit Search.
+            {@html getMsg('helpFiltersVsSearch')}
         </div>
     </details>
 
     <details class="mt-6">
-        <summary>Account authorization</summary>
+        <summary>{getMsg('helpAccountTitle')}</summary>
         <div class="ml-8">
-            <p>
-                You can connect Reddit accounts to check its private messages and use Reddit OAuth API. Reddit private
-                API has fewer restrictions so the extension will try to use it if possible. But if you don't want to
-                connect your account, then Reddit public API will be used.
-            </p>
-            <p>All authorization data is stored locally in your browser's storage and isn't shared with anyone.</p>
+            {@html getMsg('helpAccount')}
         </div>
     </details>
 </div>
 
 <style lang="postcss">
     summary {
-        @apply font-semibold text-base mb-2;
+        @apply mb-2 text-base font-semibold;
     }
 
     .query-example {
-        @apply mb-2 font-mono pl-2 border border-skin-base;
+        @apply mb-2 border border-skin-base pl-2 font-mono;
     }
 
     .icon :global(svg) {

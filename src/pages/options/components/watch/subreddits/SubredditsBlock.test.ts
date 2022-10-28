@@ -1,12 +1,11 @@
-/* eslint-disable @typescript-eslint/no-unsafe-return */
-/* eslint-disable @typescript-eslint/unbound-method */
+/* eslint-disable @typescript-eslint/no-unsafe-return,  @typescript-eslint/unbound-method */
 import { fireEvent, render, waitFor } from '@testing-library/svelte';
 import { cloneDeep } from 'lodash';
 import { mocked } from 'jest-mock';
 import storage from '@/storage/storage';
 import type { SubredditData, SubredditOpts } from '@/storage/storage-types';
 import getMsg from '@/utils/get-message';
-import SubredditsBlock from '../components/subreddits/SubredditsBlock.svelte';
+import SubredditsBlock from './SubredditsBlock.svelte';
 import { tick } from 'svelte';
 import { dataFields } from '@/storage/fields';
 
@@ -14,7 +13,6 @@ let idx = 0;
 jest.mock('@/storage/storage.ts');
 jest.mock('@/utils/get-message.ts');
 jest.mock('@/utils/index.ts', () => ({
-    // @ts-ignore
     ...jest.requireActual('@/utils/index.ts'),
     debounce: jest.fn((f: () => unknown) => f),
     generateId: jest.fn(() => `fakeId_${idx++}`),
@@ -48,37 +46,29 @@ describe('Subreddit settings', () => {
     });
 
     test('save subreddits and show error', async () => {
-        const { getByText, getAllByLabelText, getAllByTestId } = render(SubredditsBlock);
+        const { getByText, getAllByTestId } = render(SubredditsBlock);
         await tick();
-        const inputs = getAllByLabelText(getMsg('optionSubredditsInput_title')) as HTMLInputElement[];
+        const names = getAllByTestId('input-name');
         const notifyElems = getAllByTestId('notify') as HTMLLabelElement[];
         const isActiveElems = getAllByTestId('isActive') as HTMLLabelElement[];
 
-        const len = subList.length + 1;
-        expect(inputs).toHaveLength(len);
+        const len = subList.length;
+        expect(names).toHaveLength(len);
         expect(notifyElems).toHaveLength(len);
         expect(isActiveElems).toHaveLength(len);
 
         subList.forEach((s, idx) => {
-            expect(inputs[idx].value).toEqual(s.subreddit);
+            expect(names[idx]).toHaveTextContent(s.subreddit);
             expect(notifyElems[idx].querySelector('input')?.checked).toEqual(s.notify);
             expect(isActiveElems[idx].querySelector('input')?.checked).toEqual(!s.disabled);
         });
 
+        const warnings = getAllByTestId('warning-icon');
+        expect(warnings).toHaveLength(1);
+        warnings[0].click();
         await waitFor(() => {
             expect(getByText(/404 Not Found \(banned\)/)).toBeInTheDocument();
         });
-
-        const latest = inputs[subList.length];
-        expect(latest.value).toBe('');
-        const newSubreddit: SubredditOpts = {
-            id: 'fakeId_0',
-            subreddit: 'europe+pics',
-            disabled: false,
-        };
-        await fireEvent.input(latest, { target: { value: newSubreddit.subreddit } });
-
-        expect(storage.saveSubredditOpts).toHaveBeenCalledWith(expect.objectContaining(newSubreddit));
     });
 
     test('should call storage with other input states', async () => {
@@ -86,17 +76,12 @@ describe('Subreddit settings', () => {
         await tick();
 
         // NOTIFY
-        const notifyElems = getAllByLabelText(getMsg('optionSubredditsNotify_title'));
+        const notifyElems = getAllByLabelText(getMsg('notifyLabel'), { exact: false });
         await fireEvent.click(notifyElems[0]);
-        expect(storage.saveSubredditOpts).toHaveBeenCalledWith(
-            like({
-                ...subList[0],
-                notify: !subList[0].notify,
-            }),
-        );
+        expect(storage.saveSubredditOpts).toHaveBeenCalledWith(like({ ...subList[0], notify: !subList[0].notify }));
 
         // DISABLE
-        const isActiveElem = getAllByLabelText(getMsg('optionSubredditsDisable_title'));
+        const isActiveElem = getAllByLabelText(getMsg('optionWatchInputDisable'));
 
         mocked(storage.saveSubredditOpts).mockClear();
         await fireEvent.click(isActiveElem[1]);
@@ -109,37 +94,41 @@ describe('Subreddit settings', () => {
     });
 
     test('should add and remove subreddits', async () => {
-        const { getAllByLabelText, getByText } = render(SubredditsBlock);
+        const { getAllByLabelText, getByText, getAllByTestId } = render(SubredditsBlock);
         await tick();
 
-        const len = getAllByLabelText(getMsg('optionSubredditsInput_title')).length;
+        const len = getAllByTestId('input-name').length;
 
         const AddBtn = getByText(getMsg('optionSubredditsAdd'), { exact: false });
         await fireEvent.click(AddBtn);
         await waitFor(() => {
-            expect(getAllByLabelText(getMsg('optionSubredditsInput_title'))).toHaveLength(len + 1);
+            expect(getAllByTestId('input-name')).toHaveLength(len + 1);
         });
-        const DelBtn = getAllByLabelText(getMsg('optionSubredditsDelete'));
+        const DelBtn = getAllByLabelText(getMsg('optionWatchInputDelete'));
         await fireEvent.click(DelBtn[0]);
 
         expect(storage.removeSubreddits).toHaveBeenCalledWith([subList[0].id]);
     });
 
     test('should save only subreddit or multireddit', async () => {
-        const { getAllByLabelText, getByText } = render(SubredditsBlock);
-
+        const { getAllByTestId, getByText, getByLabelText } = render(SubredditsBlock);
         await tick();
+        const AddBtn = getByText(getMsg('optionSubredditsAdd'), { exact: false });
+        await fireEvent.click(AddBtn);
+        await tick();
+        const inputBlocks = getAllByTestId('input-name');
+        const lastInput = inputBlocks[inputBlocks.length - 1];
+        lastInput.click();
 
-        const inputs = getAllByLabelText(getMsg('optionSubredditsInput_title')) as HTMLInputElement[];
-
-        const input = inputs[subList.length];
-
-        for (const subreddit of ['!not', '12', 'aww+3']) {
-            await fireEvent.input(input, { target: { value: subreddit } });
-            await waitFor(() => {
-                expect(getByText(/Invalid subreddit name/)).toBeInTheDocument();
-            });
-            expect(storage.saveSubredditOpts).not.toHaveBeenCalledWith(expect.objectContaining({ subreddit }));
-        }
+        await waitFor(async () => {
+            const input = getByLabelText(getMsg('optionSubredditsInputLabel'));
+            for (const subreddit of ['!not', '12', 'aww+3']) {
+                await fireEvent.input(input, { target: { value: subreddit } });
+                await waitFor(() => {
+                    expect(getByText(/Invalid subreddit\/multireddit name/)).toBeInTheDocument();
+                });
+                expect(storage.saveSubredditOpts).not.toHaveBeenCalledWith(expect.objectContaining({ subreddit }));
+            }
+        });
     });
 });

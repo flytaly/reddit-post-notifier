@@ -248,7 +248,7 @@ export default class NotifierApp {
             usersList[i] = user;
 
             if (user.notify && newItemsLen) {
-                const link = getUserProfileUrl(user.username, user.watch, options.useOldReddit);
+                const link = getUserProfileUrl(user.username, user.watch, options);
                 notifyInfo.items.push({ len: newItemsLen, link, name: user.username });
             }
 
@@ -391,7 +391,7 @@ export default class NotifierApp {
             usersList,
         } = await storage.getAllData();
 
-        const { waitTimeout, limit = 10, notificationSoundId, useOldReddit } = options;
+        const { waitTimeout, limit = 10, notificationSoundId } = options;
 
         if (accounts) {
             await this.updateAllMail(accounts, options);
@@ -420,7 +420,7 @@ export default class NotifierApp {
                 listing: { limit: actualLimit },
             });
             if (subOpts.notify && newPosts?.length) {
-                const link = getSubredditUrl(subOpts.subreddit, useOldReddit);
+                const link = getSubredditUrl(subOpts.subreddit, options);
                 postNotif.items.push({ name: subOpts.subreddit, len: newPosts.length, link });
             }
             await wait(waitTimeout * 1000);
@@ -437,7 +437,7 @@ export default class NotifierApp {
                 postNotif.items.push({
                     name: query.name || query.query || '',
                     len: newMessages.length,
-                    link: getSearchQueryUrl(query.query || '', query.subreddit, useOldReddit),
+                    link: getSearchQueryUrl(query.query || '', query.subreddit, options),
                 });
             }
             await wait(waitTimeout * 1000);

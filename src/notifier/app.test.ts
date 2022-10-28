@@ -371,7 +371,7 @@ describe('update reddit search', () => {
 
         const ntf: PostNotification = {
             type: NId.post,
-            items: [{ len: 1, link: getSearchQueryUrl(q2.query || '', q2.subreddit, false), name: q2.name || '' }],
+            items: [{ len: 1, link: getSearchQueryUrl(q2.query || '', q2.subreddit, getOpts()), name: q2.name || '' }],
         };
         expect(mockNotify).toHaveBeenCalledWith(ntf, null);
     });
@@ -469,7 +469,7 @@ describe('update user', () => {
             expect(mockNotify).toHaveBeenCalledWith(expected, 'sound_02');
         });
         test('should notify (old reddit)', async () => {
-            mockStorageData({ usersList: cloneDeep(usersList), options: getOpts({ useOldReddit: true }) });
+            mockStorageData({ usersList: cloneDeep(usersList), options: getOpts({ redditUrlType: 'old' }) });
             await new NotifierApp().update();
             const expected: UserNotification = {
                 type: NId.user,

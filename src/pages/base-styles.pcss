@@ -5,61 +5,75 @@
 @layer components {
     .ios-checkbox {
         /* Checkbox input should be placed before this element with `peer hidden` classes */
-        @apply block relative h-6 w-11 rounded-2xl
-        transition-colors ease-in-out bg-gray-500
-        peer-checked:bg-skin-input-checked hover:brightness-125
+        @apply relative block h-6 w-11 rounded-2xl
+        bg-skin-gray2 transition-colors ease-in-out
+        before:absolute before:top-1/2 
 
-        before:absolute before:block before:h-5 before:w-5 before:bg-white
+        before:left-1 before:block before:h-5 before:w-5 before:-translate-y-1/2
         before:rounded-full
-        before:top-1/2 before:left-1  before:-translate-y-1/2  before:transition-all  before:ease-in-out
+        before:bg-white before:transition-all  before:ease-in-out  hover:brightness-125  peer-checked:bg-skin-input-checked
         peer-checked:before:translate-x-3/4
         peer-checked:before:border-skin-input-checked;
     }
 
+    .toggle-button {
+        @apply flex select-none items-center justify-center rounded-2xl
+            border-none bg-skin-gray2 py-[2px] px-2 text-sm text-gray-50 transition-colors
+            hover:bg-skin-gray2 hover:brightness-110;
+
+        &-on {
+            @apply bg-skin-input-checked hover:bg-skin-input-checked;
+        }
+    }
+
     .connected-block {
-        @apply ml-6 relative;
-    }
+        @apply relative ml-6;
 
-    .connected-block::before {
-        @apply absolute w-4 h-1/2 right-full rounded-bl-xl border-skin-gray2;
+        &::before {
+            @apply absolute right-full h-1/2 w-4 rounded-bl-xl border-skin-gray2;
 
-        content: '';
-    }
+            content: '';
+        }
 
-    .connected-block::after {
-        @apply absolute w-4 h-1/2 top-1/2 right-full rounded-tl-xl border-skin-gray2;
+        &::after {
+            @apply absolute top-1/2 right-full h-1/2 w-4 rounded-tl-xl border-skin-gray2;
 
-        content: '';
-    }
+            content: '';
+        }
 
-    .connected-block:first-child::after {
-        @apply border-l border-t;
-    }
+        &:first-child::after {
+            @apply border-l border-t;
+        }
 
-    .connected-block:last-child::before {
-        @apply border-l border-b;
-    }
+        &:last-child::before {
+            @apply border-l border-b;
+        }
 
-    .connected-block:not(:first-child):not(:last-child)::after {
-        @apply border-l border-t;
-    }
+        &:not(:first-child, :last-child)::after {
+            @apply border-l border-t;
+        }
 
-    .connected-block:not(:first-child):not(:last-child)::before {
-        @apply border-l;
-    }
+        &:not(:first-child, :last-child)::before {
+            @apply border-l;
+        }
 
-    .connected-block:first-child:last-child::after,
-    .connected-block:first-child:last-child::before {
-        @apply border-none;
+        &:first-child:last-child::after,
+        &:first-child:last-child::before {
+            @apply border-none;
+        }
     }
 
     .icon-button {
-        @apply flex items-center py-0 px-1 bg-transparent border-transparent hover:bg-transparent hover:scale-105 transition-transform;
+        @apply flex items-center border-transparent bg-transparent py-0 px-1 transition-transform hover:scale-105 hover:bg-transparent;
     }
 }
 
 :focus {
     @apply outline-none;
+}
+
+:focus:not(:focus-visible) {
+    outline: none;
 }
 
 :focus-visible {
@@ -73,8 +87,8 @@
     --color-accent: theme('colors.red.700');
     --color-accent2: theme('colors.sky.700');
     --color-outline: theme('colors.sky.500');
-    --color-gray: theme('colors.zinc.500');
-    --color-gray2: theme('colors.zinc.300');
+    --color-gray: theme('colors.slate.600');
+    --color-gray2: theme('colors.slate.500');
     --color-delimiter: theme('colors.zinc.300');
     --color-border: theme('colors.zinc.700');
     --color-input-bg: theme('colors.zinc.50');
@@ -90,7 +104,7 @@
     --color-link: #016ed8;
 
     /* shadows */
-    --shadow-sidebar: 0 0 3px 0 rgba(0, 0, 0, 0.5);
+    --shadow-input-expand: 0 0 3px 0 rgba(0, 0, 0, 0.6);
     --shadow-input-hover: 0 0 3px 3px var(--color-input-bg-hover);
 }
 
@@ -101,9 +115,9 @@
     --color-accent: theme('colors.rose.300');
     --color-accent2: theme('colors.sky.200');
     --color-outline: theme('colors.sky.300');
-    --color-gray: theme('colors.neutral.400');
-    --color-gray2: theme('colors.neutral.600');
-    --color-delimiter: theme('colors.neutral.500');
+    --color-gray: theme('colors.neutral.300');
+    --color-gray2: theme('colors.neutral.500');
+    --color-delimiter: theme('colors.neutral.600');
     --color-border: theme('colors.zinc.400');
     --color-input-bg: theme('colors.zinc.600');
     --color-input-bg-checked: theme('colors.blue.500');
@@ -118,7 +132,7 @@
     --color-link: #98c0ff;
 
     /* shadows */
-    --shadow-sidebar: 0 0 3px 0 rgba(255, 255, 255, 0.4);
+    --shadow-input-expand: 0 0 3px 0 rgba(255, 255, 255, 0.5);
     --shadow-input-hover: 0 0 3px 3px var(--color-input-bg-hover);
 }
 
@@ -140,12 +154,12 @@
     --color-btn: hsl(244, 33%, 40%);
     --color-btn-hover: hsl(265, 45%, 55%);
     --color-btn-active: hsl(265, 45%, 66%);
-    --color-error: theme('colors.red.500');
-    --color-error-bg: #6a1d1f;
+    --color-error: hsl(0, 50%, 65%);
+    --color-error-bg: hsl(0, 50%, 30%);
     --color-success: theme('colors.emerald.400');
     --color-link: #98c0ff;
 
     /* shadows */
-    --shadow-sidebar: 0 0 3px 0 rgba(255, 255, 255, 0.4);
+    --shadow-input-expand: 0 0 3px 0 rgba(255, 255, 255, 0.5);
     --shadow-input-hover: 0 0 3px 3px var(--color-input-bg-hover);
 }

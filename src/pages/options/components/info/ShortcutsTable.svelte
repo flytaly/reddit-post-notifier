@@ -51,11 +51,11 @@
 <style lang="postcss">
     /* Github markdown keys styles */
     .kbd {
-        @apply inline-block px-[5px] py-[2px]
-               text-xs font-mono leading-normal text-skin-text
+        @apply inline-block rounded-md border
+               border-skin-base bg-skin-input px-[5px] py-[2px]
                align-middle
-               bg-skin-input
-               border border-skin-base rounded-md;
+               font-mono
+               text-xs leading-normal text-skin-text;
 
         box-shadow: inset 0 -1px 0 var(--color-gray);
     }

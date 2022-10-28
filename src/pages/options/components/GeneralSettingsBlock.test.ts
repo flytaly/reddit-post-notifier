@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/unbound-method */
-import GeneralSettingsBlock from '../components/GeneralSettingsBlock.svelte';
+import GeneralSettingsBlock from './GeneralSettingsBlock.svelte';
 import { fireEvent, render, waitFor } from '@testing-library/svelte';
 import DEFAULT_OPTIONS from '@/options-default';
 import getMsg from '@/utils/get-message';
@@ -127,16 +127,31 @@ describe('General Options', () => {
         optionSaved({ notificationSoundId: null });
     });
 
-    test('use old reddit', async () => {
-        mockStorageData();
-        const { getByLabelText } = render(GeneralSettingsBlock);
-        await tick();
-        const checkbox = getByLabelText(getMsg('optionUseOldReddit'), { exact: false });
-        expect(checkbox).not.toBeChecked();
-        await fireEvent.click(checkbox);
-        expect(checkbox).toBeChecked();
-        optionSaved({ useOldReddit: true });
-        await fireEvent.click(checkbox);
-        optionSaved({ useOldReddit: false });
+    test('change reddit url', async () => {
+        mockStorageData({ redditUrlType: 'new' });
+        const { getByLabelText, getByTestId } = render(GeneralSettingsBlock);
+        const defaultPath = getByLabelText('default');
+        const form: HTMLFormElement | null = defaultPath.closest('form');
+        await waitFor(() => {
+            expect(form).toBeInTheDocument();
+            expect(form).toHaveFormValues({ redditUrlType: 'new' });
+        });
+        const check = (redditUrlType: ExtensionOptions['redditUrlType']) => {
+            expect(form).toHaveFormValues({ redditUrlType });
+            optionSaved({ redditUrlType });
+        };
+        await fireEvent.click(getByLabelText('old'));
+        check('old');
+        await fireEvent.click(getByLabelText('default'));
+        check('new');
+        await fireEvent.click(getByLabelText('custom'));
+        check('custom');
+
+        const inputElem = getByTestId('redditUrlInput');
+        expect(inputElem).toHaveValue(DEFAULT_OPTIONS.customRedditUrl);
+        const value = 'https://localhost:3000/';
+        await fireEvent.input(inputElem, { target: { value } });
+        await fireEvent.click(getByTestId('saveUrlBtn'));
+        optionSaved({ customRedditUrl: value });
     });
 });

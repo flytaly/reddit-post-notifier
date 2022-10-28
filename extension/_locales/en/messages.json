@@ -80,6 +80,9 @@
     "optionsNavMail": {
         "message": "Messages"
     },
+    "optionsNavWatch": {
+        "message": "Watch"
+    },
     "optionsNavMailFull": {
         "message": "Messages and Accounts"
     },
@@ -153,13 +156,13 @@
         "message": "Play sound on notification"
     },
     "optionNotificationAudioIdDescription": {
-        "message": "If you don't have sound on notifications, you can choose one from the list"
+        "message": "If you don't have sound on notifications, you can choose one from the list or upload an audio file into the browser storage."
     },
     "optionUseOldReddit": {
-        "message": "Use old reddit to open links"
+        "message": "Base address to open links"
     },
     "optionUseOldRedditDescription": {
-        "message": "Redirect links to old.reddit.com"
+        "message": "Redirect links to the old reddit (old.reddit.com) or a custom client like troddit."
     },
     "closeLabel": {
         "message": "Close"
@@ -183,7 +186,7 @@
         "message": "reauthorize"
     },
     "optionAccountsAddBtn": {
-        "message": "Add account"
+        "message": "Add an account"
     },
     "optionAccountsMailCheck": {
         "message": "Watch for Messages"
@@ -198,28 +201,55 @@
         "message": "update the account's information"
     },
     "optionAccountsFetchBtn": {
+        "message": "fetch messages"
+    },
+    "optionAccountsFetchBtnDesc": {
         "message": "fetch and display unread messages"
     },
+    "optionWatchInputNameColumn": {
+        "message": "Name"
+    },
+    "optionWatchInputActiveColumn": {
+        "message": "Enabled"
+    },
+    "optionWatchInputDisable": {
+        "message": "Disable or enable updates"
+    },
+    "optionWatchInputDelete": {
+        "message": "Delete the item"
+    },
+    "optionsWatchInputFetchDesc": {
+        "message": "fetch and show the latest post"
+    },
     "optionSubredditsDescription": {
-        "message": "Monitor every post in a subreddit. You can filter posts based on given rule. In general, it's recommended to use Reddit Search instead of filters."
+        "message": "Monitor every post in a subreddit. You can filter posts based on a given rule, but it's recommended to use Reddit Search instead of filters."
     },
     "optionSubredditsName": {
         "message": "Subreddit name"
     },
-    "optionSubredditsActive": {
-        "message": "Active"
+    "optionSubredditsInputLabel": {
+        "message": "Subreddit:"
     },
     "optionSubredditsInput_title": {
-        "message": "Enter subreddit (multireddit) name"
+        "message": "Enter subreddit (or multireddit) name without r/"
+    },
+    "optionSubredditsInput_placeholder": {
+        "message": "e.g.: Midjourney+StableDiffusion"
+    },
+    "optionSubredditsInputNameLabel": {
+        "message": "Display name:"
+    },
+    "optionSubredditsInputName_title": {
+        "message": "Optional display name (can be empty)"
+    },
+    "optionSubredditsInputName_placeholder": {
+        "message": "e.g.: AI Images"
     },
     "optionSubredditsNotify_title": {
         "message": "Show desktop notifications"
     },
     "optionSubredditsFilter_title": {
         "message": "Filter posts"
-    },
-    "optionSubredditsDisable_title": {
-        "message": "Disable/Enable subreddit updates"
     },
     "optionSubredditsFilter": {
         "message": "Filters"
@@ -248,23 +278,14 @@
     "addField": {
         "message": "add field"
     },
-    "optionSubredditsDelete": {
-        "message": "Delete the subreddit"
-    },
-    "optionsSubredditFetch_title": {
-        "message": "click to fetch and show the latest post from the subreddit"
-    },
     "optionsSubredditFetch": {
-        "message": "fetch and display the latest subreddit's posts"
+        "message": "fetch posts"
     },
     "optionSubredditsAdd": {
         "message": "Add new subreddit"
     },
     "optionSearchDescription": {
-        "message": "You can stay up to date with reddit search by adding a query in the \"search query\" field. Look at the <a href=\"https://www.reddit.com/wiki/search#wiki_field_search\" target=\"_blank\">reddit search wiki</a> to learn supported keywords and <a href=\"https://www.reddit.com/wiki/search#wiki_boolean_operators\" target=\"_blank\">boolean operators</a>."
-    },
-    "optionSearchLegend": {
-        "message": "Watch for specific posts"
+        "message": "Stay up to date with reddit search by adding a query in the \"search query\" field. Look at the <a href=\"https://www.reddit.com/wiki/search#wiki_field_search\" target=\"_blank\">reddit search wiki</a> to learn supported keywords and <a href=\"https://www.reddit.com/wiki/search#wiki_boolean_operators\" target=\"_blank\">boolean operators</a>."
     },
     "optionSearchName": {
         "message": "Name:",
@@ -311,11 +332,7 @@
         "description": "Option: show notifications of new posts in the search"
     },
     "optionSearchDelete": {
-        "message": "Delete the search",
-        "description": "Button: delete the search"
-    },
-    "optionSearchFetch": {
-        "message": "Fetch and display the latest posts"
+        "message": "Delete the search"
     },
     "optionsSearchAddNew": {
         "message": "Add new search"
@@ -334,5 +351,17 @@
     },
     "optionsFollowUserAdd": {
         "message": "Add user to follow"
+    },
+    "helpFiltersVsSearchTitle": {
+        "message": "Filters vs Reddit Search and delayed notifications"
+    },
+    "helpFiltersVsSearch": {
+        "message": "<p><i>Reddit Search</i> is a Reddit feature while <i>post filter</i> is an extension's tool. Reddit Search is more versatile and generally recommended to use. Also, it's easier to miss some posts with filters because they are applied only to a bunch of the latest posts.</p><p>But one downside of Reddit Search is that it may not work with the most recent posts that become searchable only after some time (1-15 minutes).</p><p>So if you need faster notifications use Filters instead of Reddit Search.</p>"
+    },
+    "helpAccountTitle": {
+        "message": "Account authorization"
+    },
+    "helpAccount": {
+        "message": "<p>You can connect Reddit accounts to check its private messages and use Reddit OAuth API. Reddit private API has fewer restrictions so the extension will try to use it if possible. But if you don't want to connect your account, then Reddit public API will be used.</p><p>All authorization data is stored locally in your browser's storage and isn't shared with anyone.</p>"
     }
 }

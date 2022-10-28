@@ -2,10 +2,12 @@
     import auth from '@/reddit-api/auth';
     import type { AuthUser, StorageFields } from '@/storage/storage-types';
     import getMsg from '@/utils/get-message';
-    import { isBlocked, storageData } from '../store';
+    import { isBlocked, storageData } from '@options/store';
+    import AddButton from '@options/components/common/AddButton.svelte';
+    import BlockDescription from '@options/components/common/BlockDescription.svelte';
+    import { HelpCircleIcon } from '@options/icons';
+    import { tooltip } from '@options/tooltip';
     import Account from './Account.svelte';
-    import AddButton from './common/AddButton.svelte';
-    import BlockDescription from './common/BlockDescription.svelte';
 
     let accounts: StorageFields['accounts'] = $storageData.accounts;
     let accList: AuthUser[] = [];
@@ -36,12 +38,17 @@
 
 <div class="text-sm">
     <BlockDescription>
-        <span>
-            {getMsg('optionAccountsDescription')}
+        <span class="flex items-center">
+            <span>{getMsg('optionAccountsDescription')}</span>
+            <span
+                class="ml-2 inline-flex h-4 w-4 text-skin-accent2"
+                use:tooltip={{ content: getMsg('helpAccount'), allowHTML: true }}
+            >
+                {@html HelpCircleIcon}
+            </span>
         </span>
-        <a href="#info">{getMsg('optionReadMore')}</a>
     </BlockDescription>
-    <div class="my-4">
+    <div class="my-2">
         {#if accList?.length}
             <ul>
                 {#each accList as acc (acc.id)}

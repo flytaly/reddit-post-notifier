@@ -3,6 +3,6 @@
     export let name: string;
 </script>
 
-<h2 class="text-xl font-bold border-b border-skin-delimiter text-skin-text mb-4" {id}>
+<h2 class="border-b border-dashed border-skin-delimiter text-base font-bold text-skin-text" {id}>
     {name}
 </h2>

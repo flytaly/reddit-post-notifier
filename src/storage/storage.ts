@@ -292,6 +292,15 @@ const storage = {
         return browser.storage.local.set({ subreddits: { ...prevData, [id]: updatedSubreddit } });
     },
 
+    async getAudioFile() {
+        const { audio } = await browser.storage.local.get({ audio: {} } as Partial<SF>);
+        return audio as SF['audio'];
+    },
+
+    async saveAudioFile(dataUrl: string) {
+        return browser.storage.local.set({ audio: { dataUrl } } as Partial<SF>);
+    },
+
     async saveNotificationsData(id: string, data: string[]) {
         const prev = await storage.getNotificationsData();
         // limit length of the array in the storage

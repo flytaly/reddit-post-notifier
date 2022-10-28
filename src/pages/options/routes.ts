@@ -1,38 +1,62 @@
-import getMsg from '../../utils/get-message';
+import getMsg from '@/utils/get-message';
 
-export type PageId = 'settings' | 'info' | 'import-export';
-
-export const sections = {
+export const routes = {
+    watch: {
+        id: 'watch',
+        href: './watch.html',
+        name: getMsg('optionsNavWatch'),
+        sections: {
+            mail: {
+                id: 'mail',
+                name: getMsg('optionsNavMail'),
+            },
+            subreddit: {
+                id: 'subreddit',
+                name: getMsg('optionsNavSubreddits'),
+            },
+            'reddit-search': {
+                id: 'reddit-search',
+                name: getMsg('optionsNavSearch'),
+            },
+            'follow-user': {
+                id: 'follow-user',
+                name: getMsg('optionsNavUsers'),
+            },
+        },
+    },
     settings: {
-        general: {
-            id: 'general',
-            name: getMsg('optionsNavGeneral'),
-        },
-        mail: {
-            id: 'mail',
-            name: getMsg('optionsNavMail'),
-        },
-        subreddit: {
-            id: 'subreddit',
-            name: getMsg('optionsNavSubreddits'),
-        },
-        'reddit-search': {
-            id: 'reddit-search',
-            name: getMsg('optionsNavSearch'),
-        },
-        'follow-user': {
-            id: 'follow-user',
-            name: getMsg('optionsNavUsers'),
-        },
+        id: 'settings',
+        href: './index.html',
+        name: getMsg('optionsNavSettings'),
+        sections: {},
+    },
+    'import-export': {
+        id: 'import-export',
+        href: './import-export.html',
+        name: getMsg('optionsNavImportExport'),
+        sections: {},
     },
     info: {
-        help: {
-            id: 'help',
-            name: getMsg('optionsNavHelp'),
-        },
-        shortcuts: {
-            id: 'shortcuts',
-            name: getMsg('optionsNavShortcuts'),
+        id: 'info',
+        href: './info.html',
+        name: getMsg('optionsNavInfo'),
+        sections: {
+            help: {
+                id: 'help',
+                name: getMsg('optionsNavHelp'),
+            },
+            shortcuts: {
+                id: 'shortcuts',
+                name: getMsg('optionsNavShortcuts'),
+            },
         },
     },
+    donate: {
+        id: 'donate',
+        href: './donate.html',
+        name: 'Donate',
+        sections: {},
+    },
 } as const;
+
+export type PageId = keyof typeof routes;

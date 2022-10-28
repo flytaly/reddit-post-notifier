@@ -1,63 +1,52 @@
 <script lang="ts">
-    import { LogoIcon, KoFiIcon } from '@/pages/options/icons';
-    import getMsg from '@/utils/get-message';
-    import type { PageId } from '../routes';
-    import { sections } from '../routes';
+    import { BackupIcon, HeartIcon, LogoIcon, WatchListIcon } from '@/pages/options/icons';
+    import type { PageId } from '@options/routes';
+    import { routes } from '@options/routes';
+    import { SettingsIcon, HelpCircleIcon } from '@options/icons';
+
     export let current: PageId;
+
+    const pageIcons: Record<PageId, string> = {
+        watch: WatchListIcon,
+        'import-export': BackupIcon,
+        settings: SettingsIcon,
+        info: HelpCircleIcon,
+        donate: HeartIcon,
+    };
 </script>
 
-<aside>
-    <a href="./index.html" class="self-center text-skin-text hover:text-skin-text">
+<aside class="sticky top-4 mt-4 flex flex-col text-sm">
+    <a href="./watch.html" class="self-center text-skin-text hover:text-skin-text">
         <div class="logo">
             {@html LogoIcon}
         </div>
     </a>
     <nav class="flex flex-col p-4 leading-8">
-        <a href="./index.html#settings" class:current={current === 'settings'}>
-            {getMsg('optionsNavSettings')}
-        </a>
-        {#each Object.values(sections.settings) as { id, name }}
-            <a href={`./index.html#${id}`} class="ml-4">{name}</a>
-        {/each}
-        <a href="./import-export.html" class:current={current === 'import-export'}>
-            {getMsg('optionsNavImportExport')}
-        </a>
-        <a href="./info.html" class:current={current === 'info'}>
-            {getMsg('optionsNavInfo')}
-        </a>
-        {#each Object.values(sections.info) as { id, name }}
-            <a href={`./info.html#${id}`} class="ml-4">{name}</a>
+        {#each Object.values(routes) as { id, href, name, sections }}
+            <a {href} class:current={current === id} class="flex items-center">
+                {#if pageIcons[id]}
+                    <span class="mr-1 h-5 w-5" class:heart={id === 'donate'}>
+                        {@html pageIcons[id]}
+                    </span>
+                {/if}
+                {name}
+            </a>
+            {#each Object.values(sections) as { id, name }}
+                <a href={`${href}#${id}`} class="ml-8">{name}</a>
+            {/each}
         {/each}
     </nav>
-    <div class="mx-2 text-xs">
-        <a
-            class="supportme gap-x-2 leading-normal justify-center text-center rounded-md text-skin-text hover:text-skin-accent group"
-            href="https://ko-fi.com/flytaly"
-            target="_blank"
-        >
-            <div class="w-5 flex items-center group-hover:animate-pulse p-0">
-                {@html KoFiIcon}
-            </div>
-            <div>Support me</div>
-            <div />
-            <div class="transition-opacity opacity-0 group-hover:opacity-100 group-focus:opacity-100">on Ko-Fi</div>
-        </a>
-    </div>
 </aside>
 
 <style lang="postcss">
-    .supportme {
-        display: grid;
-        grid-template-columns: min-content max-content;
-    }
-    aside {
-        @apply sticky flex flex-col top-4 pt-2 shadow-sidebar text-sm;
-    }
     a {
         @apply text-skin-text;
     }
+    .heart {
+        @apply text-rose-300;
+    }
     .logo {
-        @apply w-[4.5rem] mb-1 mx-auto translate-x-[2px];
+        @apply mx-auto mb-1 w-[4.5rem] translate-x-[2px];
     }
     .logo :global(.eye) {
         /* ? @apply doesn't work here for some reason */
@@ -67,6 +56,6 @@
         fill: var(--color-accent2);
     }
     .current {
-        @apply text-skin-accent font-bold;
+        @apply font-bold text-skin-accent;
     }
 </style>

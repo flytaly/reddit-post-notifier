@@ -9,8 +9,8 @@ function createStore() {
     // const { set, subscribe, update } = writable<SubredditOpts[]>([], () => {
     const { set, subscribe, update } = writable<SubredditOpts[]>([], () => {
         void storage.getSubredditList().then((list) => {
-            const empty = genEmpty();
-            set(list?.length ? [...list, empty] : [empty]);
+            /* const empty = genEmpty(); */
+            set(list?.length ? list : []);
         });
     });
 

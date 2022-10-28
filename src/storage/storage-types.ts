@@ -73,6 +73,7 @@ export type QueryOpts = {
 export type SubredditOpts = {
     id: string;
     subreddit: string;
+    name?: string;
     notify?: boolean;
     disabled?: boolean;
     filterOpts?: PostFilterOptions;
@@ -106,4 +107,5 @@ export type StorageFields = {
     subredditList: SubredditOpts[];
     subreddits: Record<string, SubredditData>;
     usersList?: FollowingUser[];
+    audio?: { dataUrl?: string };
 };

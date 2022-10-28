@@ -61,4 +61,4 @@ export async function startExtension() {
 
 if (!IS_TEST) void startExtension();
 
-if (IS_DEV) void browser.runtime.openOptionsPage();
+if (IS_DEV) void browser.tabs.create({ url: browser.runtime.getURL('dist/options/watch.html') });

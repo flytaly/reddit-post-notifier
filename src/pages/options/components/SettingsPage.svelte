@@ -1,64 +1,19 @@
 <script lang="ts">
-    import storage from '@/storage/storage';
     import getMsg from '@/utils/get-message';
-    import { onMount, tick } from 'svelte';
-    import { sections } from '../routes';
-    import { storageData } from '../store';
-    import AccountsBlock from './AccountsBlock.svelte';
-    import FollowUsersBlock from './FollowUsersBlock.svelte';
+    import { routes } from '@options/routes';
+    import { storageData } from '@options/store';
     import GeneralSettingsBlock from './GeneralSettingsBlock.svelte';
     import Heading from './Heading.svelte';
-    import SearchBlock from './search/SearchBlock.svelte';
-    import SubredditsBlock from './subreddits/SubredditsBlock.svelte';
-
-    const dataPromise = storage.getAllData();
-
-    onMount(() => {
-        // wait for children sections to mount and then scroll based on hash
-        void (async () => {
-            await dataPromise;
-            await tick();
-            const { hash } = document.location;
-            if (hash) {
-                document.body.querySelector(hash)?.scrollIntoView();
-            }
-        })();
-    });
-
-    const s = sections.settings;
 </script>
 
 <div class="w-full">
     {#if $storageData.isLoaded}
-        <h1 class="text-2xl uppercase font-bold tracking-widest text-skin-gray mb-4">
+        <h1 class="mb-4 text-2xl font-bold uppercase tracking-widest text-skin-gray">
             {getMsg('optionsNavSettings')}
         </h1>
-        <section>
-            <Heading id={s.general.id} name={s.general.name} />
+        <section class="mb-10">
+            <Heading id={routes.settings.id} name={routes.settings.name} />
             <GeneralSettingsBlock />
         </section>
-        <section>
-            <Heading id={s.mail.id} name={getMsg('optionsNavMailFull')} />
-            <AccountsBlock />
-        </section>
-        <section>
-            <Heading id={s.subreddit.id} name={s.subreddit.name} />
-            <SubredditsBlock />
-        </section>
-        <section>
-            <Heading id={s['reddit-search'].id} name={s['reddit-search'].name} />
-            <SearchBlock />
-        </section>
-        <section>
-            <Heading id={s['follow-user'].id} name={s['follow-user'].name} />
-            <FollowUsersBlock />
-        </section>
-        <div class="h-[80vh]" />
     {/if}
 </div>
-
-<style lang="postcss">
-    section {
-        @apply mb-10;
-    }
-</style>

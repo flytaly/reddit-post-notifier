@@ -3,7 +3,7 @@
     import type { RedditItem } from '@/reddit-api/reddit-types';
     import storage from '@/storage';
     import type { ExtensionOptions } from '@/types/extension-options';
-    import { redditOldUrl, redditUrl } from '@/utils';
+    import { constructUrl } from '@/utils';
     import getMsg from '@/utils/get-message';
     import { browser } from 'webextension-polyfill-ts';
     import { getItemTitle, idToUserIdx } from '../helpers';
@@ -16,10 +16,10 @@
     export let post: RedditItem;
 
     let options: ExtensionOptions = $storageData.options;
-    $: options = $storageData.options;
+    let href: string;
 
-    const baseUrl = options.useOldReddit ? redditOldUrl : redditUrl;
-    const href = `${baseUrl}${post.data.permalink}`;
+    $: options = $storageData.options;
+    $: href = constructUrl(post.data.permalink, options);
 
     const removePost = async (id: string) => {
         const itemId = group.id;
@@ -28,7 +28,8 @@
                 return storage.removePost({ id, searchId: itemId });
             case 'user': {
                 const userIndex = idToUserIdx(itemId);
-                return userIndex && storage.removeUserPost({ postId: id, userIndex });
+                if (userIndex == null) return;
+                return storage.removeUserPost({ postId: id, userIndex });
             }
             case 'subreddit': {
                 return storage.removePost({ id, subreddit: itemId });
@@ -51,17 +52,17 @@
     };
 </script>
 
-<div class="flex items-center w-full py-[0.125rem] pr-3" data-post-id={post.data.id}>
+<div class="flex w-full items-center py-[0.125rem] pr-3" data-post-id={post.data.id}>
     <CheckMarkButton clickHandler={() => removePost(post.data.id)} title={getMsg('watchListItemCheckMark_title')} />
     <a
-        class="text-skin-link flex-grow px-1 py-[0.125rem]"
+        class="flex-grow px-1 py-[0.125rem] text-skin-link"
         {href}
         data-keys-target="post-link"
         on:click|preventDefault|stopPropagation={onLinkClick}
         data-post-id={post.data.id}
     >
         {#if group.isMultireddit}
-            <span class="text-skin-text text-xs mr-1">{`r/${post.data.subreddit}`}</span>
+            <span class="mr-1 text-xs text-skin-text">{`r/${post.data.subreddit}`}</span>
         {/if}
         {getItemTitle(post)}</a
     >

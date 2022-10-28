@@ -1,6 +1,8 @@
 <script lang="ts">
     import { IS_CHROME } from '@/constants';
     import { browser } from 'webextension-polyfill-ts';
+    import { GithubIcon, HeartIcon, StarIcon } from '../../icons';
+    import { routes } from '../../routes';
 
     const { version } = browser.runtime.getManifest();
 
@@ -11,18 +13,30 @@
 
 <article class="flex items-center">
     <div>
-        <div class="text-lg">
+        <div>
             <b class="text-xl">Reddit Post Notifier </b>
-            <span class="text-base ml-1">{`v. ${version}`}</span>
+            <span class="ml-1 text-base">{`v. ${version}`}</span>
         </div>
-        <div class="text-sm">
-            <a href={addonHref} target="_blank">rating</a>
-            |
-            <a href="https://github.com/flytaly/reddit-post-notifier" target="_blank">github</a>
-            |
-            <a href="https://github.com/flytaly/reddit-post-notifier/issues" target="_blank">create an issue</a>
-            |
-            <a href="https://ko-fi.com/flytaly" target="_blank">ko-fi</a>
+        <div class="flex gap-1 text-sm">
+            <a href={addonHref} class="group inline-flex items-center" target="_blank" rel="noreferrer">
+                <span class="mr-1 h-4 w-4 text-skin-text group-hover:text-skin-accent">{@html StarIcon}</span>
+                <span>rating</span>
+            </a>
+            <span>|</span>
+            <a
+                href="https://github.com/flytaly/reddit-post-notifier"
+                target="_blank"
+                rel="noreferrer"
+                class="group inline-flex items-center"
+            >
+                <span class="mr-1 h-4 w-4 text-skin-text group-hover:text-skin-accent">{@html GithubIcon}</span>
+                <span>github</span>
+            </a>
+            <span>|</span>
+            <a href={routes.donate.href} class="group group inline-flex items-center">
+                <span class="mr-1 h-4 w-4 text-rose-200 group-hover:text-rose-500">{@html HeartIcon}</span>
+                <span>support development</span>
+            </a>
         </div>
     </div>
 </article>

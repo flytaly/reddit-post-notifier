@@ -1,5 +1,12 @@
 # Release Notes
 
+## v5.0.0 (2022-10-28)
+
+-   Added button to open all watched items at once
+-   Added option to change base Reddit URL
+-   Added option to use custom audio files for notification
+-   Updated settings page
+
 ## v4.2.1 (2022-07-22)
 
 -   Fix error handling during application updates

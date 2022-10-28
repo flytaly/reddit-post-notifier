@@ -1,7 +1,7 @@
 <script lang="ts">
     import type { RedditMessage } from '@/reddit-api/reddit-types';
     import getMsg from '@/utils/get-message';
-    import { XCircleIcon } from '../icons';
+    import { XCircleIcon } from '@options/icons';
 
     export let items: RedditMessage[] = [];
     export let title = '';
@@ -35,9 +35,9 @@
 
 <article>
     <header>
-        <div class="flex justify-between items-center my-1">
-            <a href="https://reddit.com/message/unread/" target="_blank">{title}</a>
-            <button class="p-0 mr-2 border-none bg-transparent h-4 w-4" on:click={onClose} title={getMsg('closeLabel')}>
+        <div class="my-1 flex items-center justify-between">
+            <a href="https://reddit.com/message/unread/" target="_blank" rel="noreferrer">{title}</a>
+            <button class="mr-2 h-4 w-4 border-none bg-transparent p-0" on:click={onClose} title={getMsg('closeLabel')}>
                 {@html XCircleIcon}
             </button>
         </div>
@@ -52,7 +52,7 @@
                 {/if}
                 <span>: </span>
             </div>
-            <div class="overflow-hidden whitespace-nowrap overflow-ellipsis break-all">
+            <div class="overflow-hidden overflow-ellipsis whitespace-nowrap break-all">
                 <span class="font-bold">{item.title}</span>
                 <span>: </span>
                 <span>{item.text}</span>
@@ -65,7 +65,7 @@
 
 <style lang="postcss">
     .user-items-grid {
-        @apply grid gap-x-2 gap-y-0 mt-2;
+        @apply mt-2 grid gap-x-2 gap-y-0;
 
         grid-template-columns: auto auto 1fr;
     }

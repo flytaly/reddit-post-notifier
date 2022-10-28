@@ -16,8 +16,13 @@ export type ExtensionOptions = {
     delListAfterOpening: boolean;
     hideEmptyGroups: boolean;
     notificationSoundId: null | SoundId;
-    /** open links in 'old.reddit.com' */
-    useOldReddit: boolean;
+    /** open links in 'old.reddit.com'*/
+    /* useOldReddit: boolean; */
+
+    /** which reddit address to use */
+    redditUrlType: 'new' | '' | 'old' | 'custom';
+    /** use custom reddit url like troddit */
+    customRedditUrl: string;
     /** seconds between updates of following user's posts (ignored if < updateInterval) */
     pollUserInterval: number;
 };
