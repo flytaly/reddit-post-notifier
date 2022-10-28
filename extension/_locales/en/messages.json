@@ -159,10 +159,10 @@
         "message": "If you don't have sound on notifications, you can choose one from the list or upload an audio file into the browser storage."
     },
     "optionUseOldReddit": {
-        "message": "Use old reddit to open links"
+        "message": "Base address to open links"
     },
     "optionUseOldRedditDescription": {
-        "message": "Redirect links to old.reddit.com"
+        "message": "Redirect links to the old reddit (old.reddit.com) or a custom client like troddit."
     },
     "closeLabel": {
         "message": "Close"
