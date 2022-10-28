@@ -30,7 +30,7 @@ const svgLoader: (options?: {
 
 const port = parseInt(process.env.PORT || '') || 3303;
 const r = (...args: string[]) => resolve(__dirname, ...args);
-
+const optPath = 'src/pages/options/';
 export default defineConfig(({ command }) => {
     return {
         root: r('src/pages'),
@@ -54,10 +54,11 @@ export default defineConfig(({ command }) => {
             rollupOptions: {
                 input: {
                     popup: r('src/pages/popup/index.html'),
-                    options: r('src/pages/options/index.html'),
-                    info: r('src/pages/options/info.html'),
-                    backup: r('src/pages/options/import-export.html'),
-                    donate: r('src/pages/options/donate.html'),
+                    options: r(optPath, 'index.html'),
+                    info: r(optPath, 'info.html'),
+                    backup: r(optPath, 'import-export.html'),
+                    donate: r(optPath, 'donate.html'),
+                    watch: r(optPath, 'watch.html'),
                 },
             },
         },
@@ -66,7 +67,7 @@ export default defineConfig(({ command }) => {
             alias: {
                 '@assets': r('src/assets'),
                 '@': r('src'),
-                '@options': r('src/pages/options/'),
+                '@options': r(optPath),
             },
         },
         plugins: [
