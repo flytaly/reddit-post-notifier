@@ -1,6 +1,6 @@
 <script lang="ts">
     import storage from '@/storage';
-    import { CopyIcon, CheckMarkIcon, JsonIcon } from '../../icons';
+    import { CopyIcon, CheckMarkIcon, JsonIcon } from '@options/lib/icons';
     import IosCheckbox from '../common/IosCheckbox.svelte';
     import Heading from '../Heading.svelte';
 

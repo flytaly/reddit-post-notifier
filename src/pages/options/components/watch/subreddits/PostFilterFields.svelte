@@ -1,7 +1,7 @@
 <script lang="ts">
     /* eslint-disable @typescript-eslint/no-unsafe-argument */
     import type { SearchableField, FilterRule } from '@/text-search/post-filter';
-    import { XCircleIcon, DeleteIcon } from '@/pages/options/icons';
+    import { XCircleIcon, DeleteIcon } from '@options/lib/icons';
     import { allFields } from '@/text-search/post-filter';
     import { debounce } from '@/utils';
     import { inputStatusStore } from './subreddits-store';

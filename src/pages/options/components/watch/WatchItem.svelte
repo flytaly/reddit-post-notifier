@@ -1,6 +1,6 @@
 <script lang="ts">
-    import * as icons from '@/pages/options/icons';
-    import { tooltip } from '@/pages/options/tooltip';
+    import * as icons from '@options/lib/icons';
+    import { tooltip } from '@options/lib/tooltip';
     import getMsg from '@/utils/get-message';
     import IosCheckbox from '@options/components/common/IosCheckbox.svelte';
 

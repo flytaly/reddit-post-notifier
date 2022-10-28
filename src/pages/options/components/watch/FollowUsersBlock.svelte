@@ -4,7 +4,7 @@
     import type { ExtensionOptions } from '@/types/extension-options';
     import getMsg from '@/utils/get-message';
     import DEFAULT_OPTIONS from '@/options-default';
-    import { storageData } from '@/pages/popup/store/store';
+    import { storageData } from '@options/lib/store';
     import AddButton from '@options/components/common/AddButton.svelte';
     import BlockDescription from '@options/components/common/BlockDescription.svelte';
     import FollowUserInput from './FollowUserInput.svelte';

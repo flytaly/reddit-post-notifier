@@ -1,5 +1,5 @@
 <script lang="ts">
-    import { LoadingIcon } from '../../icons';
+    import { LoadingIcon } from '@options/lib/icons';
     export let label = 'Loading';
     export let show = false;
 </script>

@@ -2,11 +2,11 @@
     import auth from '@/reddit-api/auth';
     import type { AuthUser, StorageFields } from '@/storage/storage-types';
     import getMsg from '@/utils/get-message';
-    import { isBlocked, storageData } from '@options/store';
+    import { isBlocked, storageData } from '@options/lib/store';
     import AddButton from '@options/components/common/AddButton.svelte';
     import BlockDescription from '@options/components/common/BlockDescription.svelte';
-    import { HelpCircleIcon } from '@options/icons';
-    import { tooltip } from '@options/tooltip';
+    import { HelpCircleIcon } from '@options/lib/icons';
+    import { tooltip } from '@options/lib/tooltip';
     import Account from './Account.svelte';
 
     let accounts: StorageFields['accounts'] = $storageData.accounts;

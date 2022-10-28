@@ -6,8 +6,8 @@
     import PostFilterFields from './PostFilterFields.svelte';
     import AddButton from '@options/components/common/AddButton.svelte';
     import getMsg from '@/utils/get-message';
-    import { HelpCircleIcon } from '@/pages/options/icons';
-    import { tooltip } from '@/pages/options/tooltip';
+    import { HelpCircleIcon } from '@options/lib/icons';
+    import { tooltip } from '@options/lib/tooltip';
 
     export let ruleList: FilterRule[] = [];
 

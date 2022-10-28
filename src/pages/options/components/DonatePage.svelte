@@ -1,5 +1,5 @@
 <script>
-    import { HeartIcon, QRCodeBTC, QRCodeDoge, QRCodeETH, QRCodeLTC, QRCodeXLM } from '@options/icons';
+    import { HeartIcon, QRCodeBTC, QRCodeDoge, QRCodeETH, QRCodeLTC, QRCodeXLM } from '@options/lib/icons';
     import DonateAddress from './DonateAddress.svelte';
 
     const addresses = [

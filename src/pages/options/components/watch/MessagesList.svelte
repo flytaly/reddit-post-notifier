@@ -1,7 +1,7 @@
 <script lang="ts">
     import type { RedditMessage } from '@/reddit-api/reddit-types';
     import getMsg from '@/utils/get-message';
-    import { XCircleIcon } from '@options/icons';
+    import { XCircleIcon } from '@options/lib/icons';
 
     export let items: RedditMessage[] = [];
     export let title = '';

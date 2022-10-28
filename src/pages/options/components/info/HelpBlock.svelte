@@ -1,7 +1,7 @@
 <script lang="ts">
-    import { BellIcon } from '@/pages/options/icons';
-    import { storageData } from '../../store';
-    import { routes } from '../../routes';
+    import { BellIcon } from '@options/lib/icons';
+    import { storageData } from '@options/lib/store';
+    import { routes } from '@options/lib/routes';
     import getMsg from '@/utils/get-message';
 
     let limit = 10;

@@ -3,9 +3,9 @@
     import type { QueryData, QueryOpts } from '@/storage/storage-types';
     import { debounce, testMultireddit } from '@/utils';
     import getMsg from '@/utils/get-message';
-    import { SaveIcon, WarningIcon } from '@/pages/options/icons';
-    import { isBlocked } from '@/pages/options/store';
-    import { formatError } from '@options/format-error';
+    import { SaveIcon, WarningIcon } from '@options/lib/icons';
+    import { isBlocked } from '@options/lib/store';
+    import { formatError } from '@options/lib/format-error';
     import RedditItemsList from '@options/components/RedditItemsList.svelte';
     import { searchStore } from './search-store';
     import TooltipIcon from '@options/components/TooltipIcon.svelte';

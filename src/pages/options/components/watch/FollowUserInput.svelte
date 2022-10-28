@@ -2,9 +2,9 @@
     import NotifierApp from '@/notifier/app';
     import type { FollowingUser } from '@/storage/storage-types';
     import getMsg from '@/utils/get-message';
-    import * as icons from '@options/icons';
-    import { RefreshIcon2 } from '@options/icons';
-    import { isBlocked } from '@options/store';
+    import * as icons from '@options/lib/icons';
+    import { RefreshIcon2 } from '@options/lib/icons';
+    import { isBlocked } from '@options/lib/store';
     import IosCheckbox from '@options/components/common/IosCheckbox.svelte';
     import NotifyToggle from '@options/components/common/NotifyToggle.svelte';
     import Spinner from '@options/components/common/Spinner.svelte';

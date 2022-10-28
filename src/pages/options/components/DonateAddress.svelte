@@ -1,5 +1,5 @@
 <script lang="ts">
-    import { CheckMarkIcon, CopyIcon, QRCode } from '../icons';
+    import { CheckMarkIcon, CopyIcon, QRCode } from '@options/lib/icons';
 
     export let address: string;
     export let name: string;

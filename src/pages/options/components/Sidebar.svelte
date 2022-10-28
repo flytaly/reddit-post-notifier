@@ -1,8 +1,7 @@
 <script lang="ts">
-    import { BackupIcon, HeartIcon, LogoIcon, WatchListIcon } from '@/pages/options/icons';
-    import type { PageId } from '@options/routes';
-    import { routes } from '@options/routes';
-    import { SettingsIcon, HelpCircleIcon } from '@options/icons';
+    import { BackupIcon, HeartIcon, LogoIcon, WatchListIcon, SettingsIcon, HelpCircleIcon } from '@options/lib/icons';
+    import type { PageId } from '@options/lib/routes';
+    import { routes } from '@options/lib/routes';
 
     export let current: PageId;
 

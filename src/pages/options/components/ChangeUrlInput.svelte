@@ -1,7 +1,7 @@
 <script lang="ts">
     import { getRedditBaseUrl } from '@/utils';
     import type { ExtensionOptions } from '@/types/extension-options';
-    import { storageData } from '@options/store';
+    import { storageData } from '@options/lib/store';
     import storage from '@/storage';
     import getMsg from '@/utils/get-message';
     import OptionsItem from './OptionsItem.svelte';

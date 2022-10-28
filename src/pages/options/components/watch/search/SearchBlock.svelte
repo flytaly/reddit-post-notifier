@@ -1,13 +1,13 @@
 <script lang="ts">
     import getMsg from '@/utils/get-message';
-    import { storageData } from '@/pages/options/store';
+    import { storageData } from '@options/lib/store';
     import { quadOut } from 'svelte/easing';
     import { fade } from 'svelte/transition';
     import SearchFieldset from './SearchFieldset.svelte';
     import { searchStore } from './search-store';
     import AddButton from '@options/components/common/AddButton.svelte';
     import BlockDescription from '@options/components/common/BlockDescription.svelte';
-    import { RefreshIcon2 } from '@/pages/options/icons';
+    import { RefreshIcon2 } from '@options/lib/icons';
 </script>
 
 <div>

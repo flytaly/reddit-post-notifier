@@ -1,5 +1,5 @@
 <script lang="ts">
-    import { routes } from '../../routes';
+    import { routes } from '@options/lib/routes';
     import Heading from '../Heading.svelte';
     import HelpBlock from './HelpBlock.svelte';
     import ShortcutsTable from './ShortcutsTable.svelte';

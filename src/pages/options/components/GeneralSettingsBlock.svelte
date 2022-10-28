@@ -5,10 +5,10 @@
     import type { ExtensionOptions } from '@/types/extension-options';
     import applyTheme from '@/utils/apply-theme';
     import getMsg from '@/utils/get-message';
-    import { OpenInNew, PlayIcon, SaveIcon, UploadIcon } from '@/pages/options/icons';
+    import { OpenInNew, PlayIcon, SaveIcon, UploadIcon } from '@options/lib/icons';
     import OptionsItem from './OptionsItem.svelte';
     import RadioGroup from './RadioGroup.svelte';
-    import { storageData } from '@options/store';
+    import { storageData } from '@options/lib/store';
     import ChangeUrlInput from './ChangeUrlInput.svelte';
 
     const themeValueList: Array<{ value: ExtensionOptions['theme']; id: string; label: string }> = [

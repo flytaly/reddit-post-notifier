@@ -1,8 +1,8 @@
 <script lang="ts">
     import getMsg from '@/utils/get-message';
     import type { InputChangeEv } from './events';
-    import { NotifyIcon, NotifyOffIcon } from '@options/icons';
-    import { tooltip } from '@options/tooltip';
+    import { NotifyIcon, NotifyOffIcon } from '@options/lib/icons';
+    import { tooltip } from '@options/lib/tooltip';
 
     export let checked: boolean = false;
     export let changeHander: ((e: InputChangeEv) => void) | undefined = undefined;

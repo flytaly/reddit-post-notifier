@@ -2,13 +2,13 @@
     import getMsg from '@/utils/get-message';
     import { flip } from 'svelte/animate';
     import { fade } from 'svelte/transition';
-    import { storageData } from '@/pages/popup/store/store';
+    import { storageData } from '@options/lib/store';
     import AddButton from '@options/components/common/AddButton.svelte';
     import BlockDescription from '@options/components/common/BlockDescription.svelte';
     import SubredditInput from './SubredditInput.svelte';
     import { subredditStore } from './subreddits-store';
-    import { HelpCircleIcon, RefreshIcon2 } from '@options/icons';
-    import { tooltip } from '@/pages/options/tooltip';
+    import { HelpCircleIcon, RefreshIcon2 } from '@options/lib/icons';
+    import { tooltip } from '@options/lib/tooltip';
 </script>
 
 <div>

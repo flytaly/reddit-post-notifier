@@ -1,6 +1,6 @@
 <script lang="ts">
     import type { InputChangeEv } from './events';
-    import { tooltip } from '@options/tooltip';
+    import { tooltip } from '@options/lib/tooltip';
 
     export let checked: boolean = false;
     export let changeHandler: ((e: InputChangeEv) => void) | undefined = undefined;

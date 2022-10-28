@@ -6,9 +6,9 @@
     import IosCheckbox from '@options/components/common/IosCheckbox.svelte';
     import NotifyToggle from '@options/components/common/NotifyToggle.svelte';
     import Spinner from '@options/components/common/Spinner.svelte';
-    import { AccountIcon, DeleteIcon, LoginIcon, RefreshIcon2 } from '@options/icons';
-    import { isBlocked } from '@options/store';
-    import { tooltip } from '@options/tooltip';
+    import { AccountIcon, DeleteIcon, LoginIcon, RefreshIcon2 } from '@options/lib/icons';
+    import { isBlocked } from '@options/lib/store';
+    import { tooltip } from '@options/lib/tooltip';
     import { onMount } from 'svelte';
     import MessagesList from './MessagesList.svelte';
 

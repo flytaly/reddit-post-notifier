@@ -2,7 +2,7 @@
     import { onMount } from 'svelte';
     import type { Content } from 'tippy.js';
     import tippy from 'tippy.js';
-    import { HelpCircleIcon } from '@/pages/options/icons';
+    import { HelpCircleIcon } from '@options/lib/icons';
 
     export let message: Content;
 

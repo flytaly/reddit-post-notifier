@@ -1,7 +1,7 @@
 <script lang="ts">
     import getMsg from '@/utils/get-message';
-    import { routes } from '@options/routes';
-    import { storageData } from '@options/store';
+    import { routes } from '@options/lib/routes';
+    import { storageData } from '@options/lib/store';
     import GeneralSettingsBlock from './GeneralSettingsBlock.svelte';
     import Heading from './Heading.svelte';
 </script>

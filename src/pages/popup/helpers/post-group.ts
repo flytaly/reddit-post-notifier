@@ -1,9 +1,9 @@
+import type { RedditItem, RedditMessage } from '@/reddit-api/reddit-types';
+import storage from '@/storage';
 import type { StorageFields } from '@/storage/storage-types';
 import { getInboxUrl, getSearchQueryUrl, getSubredditUrl, getUserProfileUrl } from '@/utils';
-import { formatError } from '@options/format-error';
+import { formatError } from '@options/lib/format-error';
 import { idToUserIdx } from './index';
-import type { RedditItem, RedditMessage } from '../../../reddit-api/reddit-types';
-import storage from '@/storage';
 
 export type PostGroupType = 'subreddit' | 'search' | 'user' | 'message';
 

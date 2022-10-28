@@ -2,8 +2,8 @@
     import storage from '@/storage/storage';
     import getMsg from '@/utils/get-message';
     import { onMount, tick } from 'svelte';
-    import { routes } from '@options/routes';
-    import { storageData } from '@options/store';
+    import { routes } from '@options/lib/routes';
+    import { storageData } from '@options/lib/store';
     import Heading from '@options/components/Heading.svelte';
     import FollowUsersBlock from './FollowUsersBlock.svelte';
     import SearchBlock from './search/SearchBlock.svelte';

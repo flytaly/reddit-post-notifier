@@ -7,11 +7,11 @@
     import Settings from '@options/components/SettingsPage.svelte';
     import Info from '@options/components/info/InfoPage.svelte';
     import getMsg from '@/utils/get-message';
-    import type { PageId } from '@options/routes';
+    import type { PageId } from '@options/lib/routes';
     import BackupPage from '@options/components/backup/Backup.svelte';
     import WatchPage from '@options/components/watch/WatchPage.svelte';
-    import { RefreshIcon } from '@options/icons';
-    import { isUpdating } from '@options/store';
+    import { RefreshIcon } from '@options/lib/icons';
+    import { isUpdating } from '@options/lib/store';
     import DonatePage from './DonatePage.svelte';
 
     export let pageId: PageId = 'settings';
