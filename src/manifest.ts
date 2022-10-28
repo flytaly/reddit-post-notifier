@@ -33,6 +33,7 @@ export async function getManifest(): Promise<Manifest.WebExtensionManifest> {
         'storage',
         'alarms',
         'notifications',
+        'unlimitedStorage',
         'https://*.reddit.com/*',
         'https://*.redd.it/*',
     ];
