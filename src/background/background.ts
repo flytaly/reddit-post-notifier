@@ -1,4 +1,4 @@
-import { browser, type Events } from 'webextension-polyfill-ts';
+import { browser } from 'webextension-polyfill-ts';
 import type { Runtime } from 'webextension-polyfill-ts';
 import { IS_DEV, IS_FIREFOX, IS_TEST } from '../constants';
 import DEFAULT_OPTIONS from '../options-default';
@@ -8,9 +8,7 @@ import type { PortMessage } from '../types/message';
 import { addNotificationClickListener } from '../notifier/notifications';
 import { scheduleNextUpdate, watchAlarms } from './timers';
 import { isUpdating, updateAndSchedule } from './update';
-import type { ExtensionOptions } from '@/types/extension-options';
 import { setPopup } from '@/utils/set-popup';
-import { functions } from 'lodash';
 
 if (IS_FIREFOX) {
     // Support notification-sound extension
