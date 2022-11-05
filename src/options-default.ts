@@ -13,6 +13,7 @@ const DEFAULT_OPTIONS: ExtensionOptions = {
     pollUserInterval: 10 * 60,
     redditUrlType: 'new',
     customRedditUrl: 'https://troddit.com/',
+    onBadgeClick: 'popup',
 };
 
 export default DEFAULT_OPTIONS;

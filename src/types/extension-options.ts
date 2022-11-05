@@ -25,4 +25,6 @@ export type ExtensionOptions = {
     customRedditUrl: string;
     /** seconds between updates of following user's posts (ignored if < updateInterval) */
     pollUserInterval: number;
+    /** seconds between updates of following user's posts (ignored if < updateInterval) */
+    onBadgeClick: 'openall' | 'popup';
 };

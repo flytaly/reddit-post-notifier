@@ -2,6 +2,7 @@
 
 import type { AuthError } from '@/reddit-api/errors';
 import scopes from '@/reddit-api/scopes';
+import { setPopup } from '@/utils/set-popup';
 import { browser } from 'webextension-polyfill-ts';
 import DEFAULT_OPTIONS from '../options-default';
 import type { TokenResponseBody } from '../reddit-api/auth';
@@ -511,7 +512,8 @@ const storage = {
 
     async countNumberOfUnreadItems(updateBadge = true) {
         let count = 0;
-        const { subredditList, queriesList, queries, subreddits, accounts, usersList } = await storage.getAllData();
+        const { subredditList, queriesList, queries, subreddits, accounts, usersList, options } =
+            await storage.getAllData();
 
         if (subreddits) {
             subredditList?.forEach((s) => {
@@ -533,7 +535,12 @@ const storage = {
             count += a.mail?.messages?.length || 0;
         });
 
-        if (updateBadge) void browser.browserAction.setBadgeText({ text: count ? String(count) : '' });
+        if (updateBadge) {
+            await browser.browserAction.setBadgeText({ text: count ? String(count) : '' });
+            if (options.onBadgeClick == 'openall') {
+                await setPopup(count > 0);
+            }
+        }
 
         return count;
     },
