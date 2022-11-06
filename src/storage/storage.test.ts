@@ -454,6 +454,7 @@ describe('Count unread', () => {
         queriesList: [generateQuery({ id: 'q1' }), generateQuery({ id: 'q2' }), generateQuery({ id: 'q3' })],
         queries: { q1: { posts: generatePosts(1) }, q2: { posts: [] }, q3: {} } as StorageFields['queries'],
         usersList: [{ username: 'u1', data: [{}, {}] }],
+        options: DEFAULT_OPTIONS,
     } as StorageFields;
     storageData.accounts = {
         id1: { id: 'id1', auth: {}, mail: { messages: Array.from({ length: 3 }) as unknown as RedditMessage[] } },

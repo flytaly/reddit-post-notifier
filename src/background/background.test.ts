@@ -23,6 +23,9 @@ describe('Start extension', () => {
         const opts: Partial<ExtensionOptions> = { updateInterval: 300 };
         (storage.getOptions as jest.Mock).mockImplementationOnce(async () => opts);
         mockBrowser.browserAction.setBadgeBackgroundColor.expect({ color: 'darkred' });
+        const base = 'extension://extensionid' 
+        mockBrowser.runtime.getURL.mock(url => `${base}/${url}`)
+        mockBrowser.browserAction.setPopup.expect({ popup: `${base}/dist/popup/index.html` });
         mockBrowser.storage.onChanged.addListener.spy(() => ({}));
         const msgCallbacks = new Map<PortMessageId, MessageListener>();
         mocked(onMessageMock).mockImplementation((id, cb) => msgCallbacks.set(id, cb));
