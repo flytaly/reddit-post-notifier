@@ -13,8 +13,10 @@
     import handleKeydownEvent from '../helpers/handle-keys';
     import SettingsIcon from '@/assets/settings.svg';
     import type { StorageFields } from '@/storage/storage-types';
-    import { extractPostGroups } from '../helpers/post-group';
-    import type { PostGroup } from '../helpers/post-group';
+    import { extractPostGroups } from '@/utils/post-group';
+    import type { PostGroup } from '@/utils/post-group';
+    import { sendToBg } from '@/port';
+    import type { OpenGroupsPayload } from '@/types/message';
 
     let groupsWithPosts: PostGroup[] = [];
     let groupsWithoutPosts: PostGroup[] = [];
@@ -30,6 +32,11 @@
     });
 
     $: ({ groupsWithPosts, groupsWithoutPosts } = extractPostGroups($storageData));
+
+    $: if (groupsWithPosts.length > 0 && $storageData.options.onBadgeClick === 'openall') {
+        sendToBg('OPEN_GROUPS', { groups: groupsWithPosts, remove: true } as OpenGroupsPayload);
+        window.close();
+    }
 
     const optionsHref = browser.runtime.getURL('options.html');
     const optionsClick = async (e: MouseEvent) => {

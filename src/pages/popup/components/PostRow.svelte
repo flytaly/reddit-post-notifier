@@ -6,8 +6,8 @@
     import { constructUrl } from '@/utils';
     import getMsg from '@/utils/get-message';
     import { browser } from 'webextension-polyfill-ts';
-    import { getItemTitle, idToUserIdx } from '../helpers';
-    import type { PostGroup } from '../helpers/post-group';
+    import { getItemTitle, idToUserIdx } from '@/utils';
+    import type { PostGroup } from '@/utils/post-group';
     import { storageData } from '../store/store';
     import CheckMarkButton from './CheckMarkButton.svelte';
     import SvgButton from './SvgButton.svelte';

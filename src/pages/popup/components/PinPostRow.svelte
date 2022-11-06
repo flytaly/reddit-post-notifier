@@ -2,9 +2,8 @@
     import { RedditObjectKind } from '@/reddit-api/reddit-types';
     import type { RedditItem, RedditMessage } from '@/reddit-api/reddit-types';
     import storage from '@/storage';
-    import { constructUrl } from '@/utils';
+    import { constructUrl, getItemTitle } from '@/utils';
     import PinRemove from '@assets/pin-remove.svg';
-    import { getItemTitle } from '../helpers';
     import { storageData } from '../store/store';
     import SvgButton from './SvgButton.svelte';
     import getMsg from '@/utils/get-message';

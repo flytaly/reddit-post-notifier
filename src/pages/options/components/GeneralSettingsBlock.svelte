@@ -10,7 +10,6 @@
     import RadioGroup from './RadioGroup.svelte';
     import { storageData } from '@options/lib/store';
     import ChangeUrlInput from './ChangeUrlInput.svelte';
-    import { setPopup } from '@/utils/set-popup';
 
     const themeValueList: Array<{ value: ExtensionOptions['theme']; id: string; label: string }> = [
         { value: 'light', id: 'light', label: getMsg('optionThemeLight') },
@@ -78,7 +77,6 @@
     const onBadgeClickChangeHandler = async () => {
         const value = $storageData.options.onBadgeClick || 'popup';
         await storage.saveOptions({ onBadgeClick: value });
-        await setPopup(value == 'openall');
     };
 </script>
 

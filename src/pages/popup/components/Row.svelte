@@ -1,6 +1,6 @@
 <script lang="ts">
     import type { RedditItem, RedditMessage } from '@/reddit-api/reddit-types';
-    import type { PostGroup } from '../helpers/post-group';
+    import type { PostGroup } from '@/utils/post-group';
     import MessageRow from './MessageRow.svelte';
     import PostRow from './PostRow.svelte';
 

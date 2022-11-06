@@ -3,6 +3,8 @@ import type redditScopes from '@/reddit-api/scopes';
 import type { StorageFields } from '@/storage/storage-types';
 import type { ExtensionOptions } from '@/types/extension-options';
 import type { RedditPost, RedditPostData, RedditPostExtended } from '../reddit-api/reddit-types';
+import { RedditObjectKind } from '@/reddit-api/reddit-types';
+import type { RedditItem } from '@/reddit-api/reddit-types';
 
 /* eslint-disable @typescript-eslint/explicit-module-boundary-types */
 export const mapObjToQueryStr = (params: Record<string, unknown>): string =>
@@ -138,3 +140,17 @@ export const getAccountByScope = (accounts: StorageFields['accounts'], scopeList
 
     return fit.length ? fit[0] : null;
 };
+
+export function getItemTitle(post: RedditItem) {
+    if (post.kind === RedditObjectKind.link) {
+        return post.data.title;
+    } else if (post.kind === RedditObjectKind.comment) {
+        return post.data.body?.length > 80 ? post.data.body.slice(0, 80) + '...' : post.data.body;
+    }
+}
+
+export function idToUserIdx(id: string): number | null {
+    const indexNum = parseInt(id.split('_')[1]);
+    if (!isNaN(indexNum)) return indexNum;
+    return null;
+}

@@ -3,8 +3,8 @@
     import Pin from '@/assets/pin.svg';
     import type { StorageFields } from '@/storage/storage-types';
     import getMsg from '@/utils/get-message';
-    import { getGroupItems, removePostsFromGroup } from '../helpers/post-group';
-    import type { PostGroup } from '../helpers/post-group';
+    import { getGroupItems, removePostsFromGroup } from '@/utils/post-group';
+    import type { PostGroup } from '@/utils/post-group';
     import type { SlideConfig } from '../helpers/transition';
     import { slideHorizontal } from '../helpers/transition';
     import { storageData } from '../store/store';

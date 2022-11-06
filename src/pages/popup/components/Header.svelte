@@ -10,7 +10,8 @@
     import SvgButton from './SvgButton.svelte';
     import { getInboxUrl } from '@/utils';
     import storage from '@/storage/storage';
-    import { removePostsFromGroup, type PostGroup } from '../helpers/post-group';
+    import type { PostGroup } from '@/utils/post-group';
+    import type { OpenGroupsPayload } from '@/types/message';
 
     export let groupsWithPosts: PostGroup[] = [];
 
@@ -34,13 +35,15 @@
         if (messagesCount) await storage.removeMessages();
     };
 
+    let disableOpenAll = false;
     const onOpenAll = async () => {
-        for (const group of groupsWithPosts) {
-            if ($storageData.options.delListAfterOpening) {
-                await removePostsFromGroup(group.id, group.type);
-            }
-            void browser.tabs.create({ url: group.href, active: false });
-        }
+        sendToBg('OPEN_GROUPS', {
+            groups: groupsWithPosts,
+            remove: $storageData.options.delListAfterOpening,
+        } as OpenGroupsPayload);
+        setTimeout(() => {
+            disableOpenAll = true;
+        }, 1000);
     };
 </script>
 
@@ -60,7 +63,7 @@
         on:click={onOpenAll}
         text="open all"
         title="Open all unread items"
-        disabled={groupsWithPosts.length == 0}
+        disabled={groupsWithPosts.length == 0 || disableOpenAll}
     >
         {@html OpenIcon}
     </SvgButton>

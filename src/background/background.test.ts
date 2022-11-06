@@ -23,9 +23,6 @@ describe('Start extension', () => {
         const opts: Partial<ExtensionOptions> = { updateInterval: 300 };
         (storage.getOptions as jest.Mock).mockImplementationOnce(async () => opts);
         mockBrowser.browserAction.setBadgeBackgroundColor.expect({ color: 'darkred' });
-        const base = 'extension://extensionid' 
-        mockBrowser.runtime.getURL.mock(url => `${base}/${url}`)
-        mockBrowser.browserAction.setPopup.expect({ popup: `${base}/dist/popup/index.html` });
         mockBrowser.storage.onChanged.addListener.spy(() => ({}));
         const msgCallbacks = new Map<PortMessageId, MessageListener>();
         mocked(onMessageMock).mockImplementation((id, cb) => msgCallbacks.set(id, cb));
@@ -52,9 +49,10 @@ describe('Start extension', () => {
 
         jest.clearAllMocks();
 
-        expect(msgCallbacks.size).toBe(2);
+        expect(msgCallbacks.size).toBe(3);
         expect(msgCallbacks.has('UPDATE_NOW')).toBeTruthy();
         expect(msgCallbacks.has('SCHEDULE_NEXT_UPDATE')).toBeTruthy();
+        expect(msgCallbacks.has('OPEN_GROUPS')).toBeTruthy();
 
         await msgCallbacks.get('UPDATE_NOW')?.();
         expect(updateAndSchedule).toHaveBeenCalledWith(true);

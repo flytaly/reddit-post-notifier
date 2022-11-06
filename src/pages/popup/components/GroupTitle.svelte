@@ -11,7 +11,7 @@
     import SvgButton from './SvgButton.svelte';
     import { browser } from 'webextension-polyfill-ts';
     import CheckMarkButton from './CheckMarkButton.svelte';
-    import type { PostGroup } from '../helpers/post-group';
+    import type { PostGroup } from '@/utils/post-group';
     import { storageData } from '../store/store';
 
     export let group: PostGroup;
