@@ -1,5 +1,9 @@
 # Release Notes
 
+## v5.1.0 (2022-11-06)
+
+-   Added option to customize badge click action
+
 ## v5.0.0 (2022-10-28)
 
 -   Added button to open all watched items at once
