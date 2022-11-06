@@ -213,7 +213,7 @@
             <div class="-mt-1">
                 <a
                     class="text-sm underline"
-                    href="https://www.reddit.com/wiki/search#wiki_field_search"
+                    href="https://www.reddit.com/wiki/search/#wiki_manual_filtering"
                     target="_blank"
                     rel="noreferrer"
                 >

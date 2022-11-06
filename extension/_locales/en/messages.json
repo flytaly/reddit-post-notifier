@@ -285,7 +285,7 @@
         "message": "Add new subreddit"
     },
     "optionSearchDescription": {
-        "message": "Stay up to date with reddit search by adding a query in the \"search query\" field. Look at the <a href=\"https://www.reddit.com/wiki/search#wiki_field_search\" target=\"_blank\">reddit search wiki</a> to learn supported keywords and <a href=\"https://www.reddit.com/wiki/search#wiki_boolean_operators\" target=\"_blank\">boolean operators</a>."
+        "message": "Stay up to date with reddit search by adding a query in the \"search query\" field. Look at the <a href=\"https://www.reddit.com/wiki/search/#wiki_manual_filtering\" target=\"_blank\">reddit search wiki</a> to learn supported keywords and <a href=\"https://www.reddit.com/wiki/search/#wiki_boolean_operators_and_grouping\" target=\"_blank\">boolean operators</a>."
     },
     "optionSearchName": {
         "message": "Name:",
@@ -296,7 +296,7 @@
         "description": "Attribute title of search input 'name' and its label"
     },
     "optionSearchName_placeholder": {
-        "message": "e.g.: dogs in r/aww",
+        "message": "e.g.: dogs & cats in r/aww",
         "description": "Attribute placeholder of search input 'name' and its label"
     },
     "optionSearchSubreddit": {
@@ -320,7 +320,7 @@
         "description": "Attribute title of search input 'query' and its label"
     },
     "optionSearchQuery_placeholder": {
-        "message": "e.g.: dog",
+        "message": "e.g.: dog OR cat",
         "description": "Attribute placeholder of search input 'query'"
     },
     "optionSearchWiki": {
