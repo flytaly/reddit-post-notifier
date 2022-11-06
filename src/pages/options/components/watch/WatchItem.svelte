@@ -43,7 +43,7 @@
 
         <!-- Fetch posts -->
         <button
-            class="flex items-center p-0 text-xs text-skin-text hover:text-skin-accent2 disabled:text-skin-gray"
+            class="flex items-center p-0 text-skin-text hover:text-skin-accent2 disabled:text-skin-gray"
             on:click={onFetch}
             use:tooltip={{ content: getMsg('optionsWatchInputFetchDesc') }}
             {disabled}

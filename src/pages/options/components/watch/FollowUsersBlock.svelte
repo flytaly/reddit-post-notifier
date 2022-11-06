@@ -87,7 +87,7 @@
         </div>
     </OptionsItem>
 
-    <div class="user-input-grid font-medium">
+    <div class="user-input-grid text-sm font-medium">
         <div>Username</div>
         <div class="text-center">
             <span>Comments</span>
