@@ -1,5 +1,9 @@
 # Release Notes
 
+## v5.1.1 (2022-12-31)
+
+-   Fix: made notifications respect display name
+
 ## v5.1.0 (2022-11-06)
 
 -   Added option to customize badge click action
