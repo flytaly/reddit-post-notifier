@@ -421,7 +421,7 @@ export default class NotifierApp {
             });
             if (subOpts.notify && newPosts?.length) {
                 const link = getSubredditUrl(subOpts.subreddit, options);
-                postNotif.items.push({ name: subOpts.subreddit, len: newPosts.length, link });
+                postNotif.items.push({ name: subOpts.name || subOpts.subreddit, len: newPosts.length, link });
             }
             await wait(waitTimeout * 1000);
         }

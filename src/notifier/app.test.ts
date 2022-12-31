@@ -274,8 +274,9 @@ describe('update subreddits', () => {
 
     test('should create notification', async () => {
         const subreddit = 'sub1';
+        const name = 'Display Name';
         mockStorageData({
-            subredditList: [{ id: 'id1', subreddit, notify: true }],
+            subredditList: [{ id: 'id1', subreddit, notify: true, name }],
             subreddits: { id1: { lastPostCreated: ts, posts: [] } },
             options: getOpts(),
         });
@@ -283,7 +284,7 @@ describe('update subreddits', () => {
 
         const n: PostNotification = {
             type: NId.post,
-            items: [{ len: newPosts.length, link: `https://reddit.com/r/${subreddit}/new`, name: subreddit }],
+            items: [{ len: newPosts.length, link: `https://reddit.com/r/${subreddit}/new`, name }],
         };
 
         expect(mockNotify).toHaveBeenCalledWith(n, null);
