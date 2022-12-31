@@ -1,4 +1,4 @@
-module.exports = {
+export default {
     transform: {
         '^.+\\.svelte$': ['svelte-jester', { preprocess: true }],
         '^.+\\.ts$': 'ts-jest',

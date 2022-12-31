@@ -1,6 +1,7 @@
 import { resolve } from 'path';
 import { bgCyan, black } from 'kolorist';
 import dotenv from 'dotenv';
+import { fileURLToPath } from 'node:url';
 
 // export const getTarget = () => {
 //     const result = process.argv.find((a) => a === '--chrome' || a === '--firefox') || '--chrome';
@@ -17,6 +18,7 @@ export const target = process.env.TARGET === 'firefox' ? 'firefox' : 'chrome';
 
 export const port = parseInt(process.env.PORT || '') || 3303;
 
+const __dirname = fileURLToPath(new URL('.', import.meta.url));
 export const r = (...args: string[]) => resolve(__dirname, '..', ...args);
 
 export function log(name: string, message: string) {

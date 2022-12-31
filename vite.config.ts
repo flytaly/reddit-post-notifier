@@ -2,7 +2,7 @@ import { svelte } from '@sveltejs/vite-plugin-svelte';
 import fs from 'fs';
 import { resolve } from 'path';
 import type { Plugin } from 'rollup';
-import { getExtractedSVG } from 'svg-inline-loader';
+import svgInlineLoader from 'svg-inline-loader';
 import { defineConfig } from 'vite';
 import { getEnvKeys } from './scripts/utils';
 
@@ -21,9 +21,21 @@ const svgLoader: (options?: {
         transform: function (code, id) {
             if (id.endsWith('.svg')) {
                 const extractedSvg = fs.readFileSync(id, 'utf8');
-                return `export default '${getExtractedSVG(extractedSvg, options) as string}'`;
+                return `export default '${svgInlineLoader.getExtractedSVG(extractedSvg, options) as string}'`;
             }
             return code;
+        },
+    };
+};
+
+const preventSVGEmit = () => {
+    return {
+        generateBundle(opts, bundle) {
+            for (const key in bundle) {
+                if (key.endsWith('.svg')) {
+                    delete bundle[key];
+                }
+            }
         },
     };
 };
@@ -31,6 +43,7 @@ const svgLoader: (options?: {
 const port = parseInt(process.env.PORT || '') || 3303;
 const r = (...args: string[]) => resolve(__dirname, ...args);
 const optPath = 'src/pages/options/';
+
 export default defineConfig(({ command }) => {
     return {
         root: r('src/pages'),
@@ -49,6 +62,7 @@ export default defineConfig(({ command }) => {
                 format: { beautify: true },
                 compress: { defaults: false, dead_code: true, unused: true },
             },
+            chunkSizeWarningLimit: 1000, // inline svgs can cause chunks size to be big, but it doesn't matter, cause it's local extension
             outDir: r('extension/dist'),
             emptyOutDir: false,
             rollupOptions: {
@@ -82,6 +96,7 @@ export default defineConfig(({ command }) => {
                     return html.replace(/"\/assets\//g, '"../assets/');
                 },
             },
+            preventSVGEmit(),
         ],
 
         optimizeDeps: {},
