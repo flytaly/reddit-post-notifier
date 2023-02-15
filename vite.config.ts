@@ -3,8 +3,8 @@ import fs from 'fs';
 import { resolve } from 'path';
 import type { Plugin } from 'rollup';
 import svgInlineLoader from 'svg-inline-loader';
-import { defineConfig } from 'vite';
-import { getEnvKeys } from './scripts/utils';
+import { defineConfig, type UserConfig, type UserConfigExport } from 'vite';
+import { getEnvKeys, isDev, r } from './scripts/utils';
 
 //TODO: remove this once https://github.com/vitejs/vite/pull/2909 gets merged
 const svgLoader: (options?: {
@@ -15,9 +15,9 @@ const svgLoader: (options?: {
     removeTags?: boolean;
     warnTagAttrs?: boolean;
     removingTagAttrs?: boolean;
-}) => Plugin = (options?: Record<string, unknown>) => {
+}) => Plugin = (options) => {
     return {
-        name: 'vite-svg-patch-plugin',
+        name: 'vite-plugin-svg-patch',
         transform: function (code, id) {
             if (id.endsWith('.svg')) {
                 const extractedSvg = fs.readFileSync(id, 'utf8');
@@ -28,8 +28,9 @@ const svgLoader: (options?: {
     };
 };
 
-const preventSVGEmit = () => {
+const preventSVGEmit = (): Plugin => {
     return {
+        name: 'vite-plugin-prevent-svg-emit',
         generateBundle(opts, bundle) {
             for (const key in bundle) {
                 if (key.endsWith('.svg')) {
@@ -41,12 +42,35 @@ const preventSVGEmit = () => {
 };
 
 const port = parseInt(process.env.PORT || '') || 3303;
-const r = (...args: string[]) => resolve(__dirname, ...args);
 const optPath = 'src/pages/options/';
+
+export const sharedConfig: UserConfigExport = {
+    root: r('src/pages'),
+    define: getEnvKeys(),
+    resolve: {
+        alias: {
+            '@assets': r('src/assets'),
+            '@': r('src'),
+            '@options': r(optPath),
+        },
+    },
+};
+
+export const sharedBuildConfig: UserConfig['build'] = {
+    minify: 'terser',
+    terserOptions: {
+        mangle: false,
+        format: { beautify: true },
+        compress: { defaults: false, dead_code: true, unused: true },
+    },
+    outDir: r('extension/dist/'),
+    emptyOutDir: false,
+    sourcemap: isDev ? 'inline' : false,
+};
 
 export default defineConfig(({ command }) => {
     return {
-        root: r('src/pages'),
+        ...sharedConfig,
         base: command === 'serve' ? `http://localhost:${port}/` : undefined,
         server: {
             port,
@@ -54,17 +78,9 @@ export default defineConfig(({ command }) => {
                 host: 'localhost',
             },
         },
-        // esbuild: { minify: false },
         build: {
-            minify: 'terser',
-            terserOptions: {
-                mangle: false,
-                format: { beautify: true },
-                compress: { defaults: false, dead_code: true, unused: true },
-            },
+            ...sharedBuildConfig,
             chunkSizeWarningLimit: 1000, // inline svgs can cause chunks size to be big, but it doesn't matter, cause it's local extension
-            outDir: r('extension/dist'),
-            emptyOutDir: false,
             rollupOptions: {
                 input: {
                     popup: r('src/pages/popup/index.html'),
@@ -74,14 +90,6 @@ export default defineConfig(({ command }) => {
                     donate: r(optPath, 'donate.html'),
                     watch: r(optPath, 'watch.html'),
                 },
-            },
-        },
-        define: getEnvKeys(),
-        resolve: {
-            alias: {
-                '@assets': r('src/assets'),
-                '@': r('src'),
-                '@options': r(optPath),
             },
         },
         plugins: [

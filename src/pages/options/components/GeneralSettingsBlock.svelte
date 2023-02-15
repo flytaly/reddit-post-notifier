@@ -175,7 +175,7 @@
                 <form class="mt-2 flex flex-col">
                     <label
                         for="fileElem"
-                        class={`flex justify-center items-center w-full p-1 py-4 border-2 border-dashed border-skin-gray2 hover:border-skin-accent hover:text-skin-accent text-center`}
+                        class={`flex w-full items-center justify-center border-2 border-dashed border-skin-gray2 p-1 py-4 text-center hover:border-skin-accent hover:text-skin-accent`}
                     >
                         {#if wasUploaded}
                             <span class="mr-2 h-6 w-6 text-skin-success">{@html SaveIcon}</span>

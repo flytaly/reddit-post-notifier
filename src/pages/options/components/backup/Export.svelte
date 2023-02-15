@@ -59,16 +59,16 @@
                     <div class="mr-auto">Loading</div>
                 {:then data}
                     <button
-                        class="flex items-center hover:text-skin-accent bg-transparent hover:bg-transparent py-0 px-1 border-none disabled:cursor-default"
+                        class="flex items-center border-none bg-transparent py-0 px-1 hover:bg-transparent hover:text-skin-accent disabled:cursor-default"
                         class:success={wasCopied}
                         on:click={() => setClipboard(data)}
                         disabled={wasCopied}
                     >
-                        <div class="h-5 w-5 mr-[0.125rem]">{@html wasCopied ? CheckMarkIcon : CopyIcon}</div>
+                        <div class="mr-[0.125rem] h-5 w-5">{@html wasCopied ? CheckMarkIcon : CopyIcon}</div>
                         {wasCopied ? 'copied' : 'copy'}
                     </button>
                     <button
-                        class="flex items-center hover:text-skin-accent bg-transparent hover:bg-transparent py-0 px-1 border-none disabled:cursor-default"
+                        class="flex items-center border-none bg-transparent py-0 px-1 hover:bg-transparent hover:text-skin-accent disabled:cursor-default"
                         on:click={() => downloadText(data, 'reddit-post-notifier_config.json', 'application/json')}
                     >
                         <div class="h-5 w-5">
@@ -82,7 +82,7 @@
                 class="h-56 w-full overflow-y-scroll whitespace-pre-wrap rounded-b-md border border-skin-base p-1 font-mono"
             >
                 {#await dataPromise}
-                    <div class="w-full h-60">Loading</div>
+                    <div class="h-60 w-full">Loading</div>
                 {:then data}
                     {data}
                 {/await}

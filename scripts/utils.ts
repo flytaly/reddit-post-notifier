@@ -1,4 +1,4 @@
-import { resolve } from 'path';
+import { resolve } from 'node:path';
 import { bgCyan, black } from 'kolorist';
 import dotenv from 'dotenv';
 import { fileURLToPath } from 'node:url';

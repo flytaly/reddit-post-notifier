@@ -25,7 +25,6 @@
     on:mouseleave
     role="button"
     use:tooltip={{ content: tooltipText }}
-    area-label={tooltipText}
     {...$$restProps}
 >
     <span class="hidden">{tooltipText}</span>
