@@ -9,7 +9,9 @@
 ![Mozilla Add-on](https://img.shields.io/amo/users/reddit-post-notifier)
 
 [ ![chrome.google.com/](https://i.imgur.com/unvdmLG.png)](https://chrome.google.com/webstore/detail/reddit-post-notifier/hoolgoecmeegpbidbbcefgkjegdejibd)
-[ ![addons.mozilla.org/](https://ffp4g1ylyit3jdyti1hqcvtb-wpengine.netdna-ssl.com/addons/files/2015/11/get-the-addon.png)](https://addons.mozilla.org/firefox/addon/reddit-post-notifier/)
+[ ![addons.mozilla.org/](https://user-images.githubusercontent.com/1577569/225926070-baa9ed48-841c-4ce7-bf70-557f848eed23.png)](https://addons.mozilla.org/firefox/addon/reddit-post-notifier/)
+
+
 
 A browser extension that watches and notifies about:
 
