@@ -103,7 +103,7 @@ export default class NotifierApp {
         const info = subData;
 
         // fetch subreddits with error at a slower pace
-        if (info.error && info.lastUpdate && Date.now() - info.lastUpdate < 1000 * 60 * 6) return null;
+        if (info.error && info.lastUpdate && Date.now() - info.lastUpdate < 1000 * 60 * 2) return null;
 
         let response: RedditPostResponse | RedditError;
         try {
