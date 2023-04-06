@@ -1,3 +1,4 @@
+/** @type {import('ts-jest').JestConfigWithTsJest} */
 export default {
     transform: {
         '^.+\\.svelte$': ['svelte-jester', { preprocess: true }],

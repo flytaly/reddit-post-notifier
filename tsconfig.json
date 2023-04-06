@@ -14,7 +14,8 @@
         "outDir": "./dist",
         "module": "ES2020",
         "strictNullChecks": true,
-        "plugins": [{ "name": "typescript-svelte-plugin" }]
+        "plugins": [{ "name": "typescript-svelte-plugin" }],
+        "verbatimModuleSyntax": false // fix error with TS5 in jest
     },
     "include": [
         "./vite.config.ts",
