@@ -85,7 +85,7 @@ export async function getManifest(): Promise<Manifest.WebExtensionManifest> {
         commands: {
             // eslint-disable-next-line @typescript-eslint/ban-ts-comment
             // @ts-ignore
-            _execute_browser_action: {
+            _execute_action: {
                 suggested_key: {
                     default: 'Alt+Shift+S',
                 },
