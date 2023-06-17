@@ -23,7 +23,7 @@ const setClasses = (theme: ExtensionOptions['theme']) => {
 
 const setIcons = (isDark: boolean) => {
     if (isDark) {
-        void browser.browserAction.setIcon({
+        void browser.action.setIcon({
             path: {
                 16: '../../images/icon-16-light.png',
                 32: '../../images/icon-32-light.png',
@@ -31,7 +31,7 @@ const setIcons = (isDark: boolean) => {
             },
         });
     } else {
-        void browser.browserAction.setIcon({
+        void browser.action.setIcon({
             path: {
                 16: '../../images/icon-16.png',
                 32: '../../images/icon-32.png',

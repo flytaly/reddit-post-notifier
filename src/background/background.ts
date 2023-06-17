@@ -37,7 +37,7 @@ async function onInstall() {
 export async function startExtension() {
     await onInstall();
 
-    void browser.browserAction.setBadgeBackgroundColor({ color: 'darkred' });
+    void browser.action.setBadgeBackgroundColor({ color: 'darkred' });
 
     // Storage
     await mergeOptions();

@@ -465,7 +465,7 @@ describe('Count unread', () => {
 
     test('should count unread items', async () => {
         jest.spyOn(storage, 'getAllData').mockImplementation(() => Promise.resolve(storageData));
-        mockBrowser.browserAction.setBadgeText.expect({ text: String(total) });
+        mockBrowser.action.setBadgeText.expect({ text: String(total) });
         await expect(storage.countNumberOfUnreadItems()).resolves.toBe(total);
         (storage.getAllData as any as jest.SpyInstance).mockRestore();
     });

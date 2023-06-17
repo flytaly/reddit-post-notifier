@@ -534,7 +534,7 @@ const storage = {
         });
 
         if (updateBadge) {
-            await browser.browserAction.setBadgeText({ text: count ? String(count) : '' });
+            await browser.action.setBadgeText({ text: count ? String(count) : '' });
         }
 
         return count;
