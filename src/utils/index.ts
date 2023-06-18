@@ -12,8 +12,6 @@ export const mapObjToQueryStr = (params: Record<string, unknown>): string =>
         .map((pair) => pair.join('='))
         .join('&');
 
-export const $: ParentNode['querySelector'] = document.querySelector.bind(document);
-
 export const subredditNameRegExp = /^[A-Za-z0-9]\w{2,20}$/;
 
 //** test all subreddits name in multireddit */
