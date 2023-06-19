@@ -30,6 +30,9 @@ async function onInstall() {
         if (info.reason === 'update' && parseInt(info.previousVersion || '1') < 4) {
             void storage.migrateToV4();
         }
+        if (IS_DEV) {
+            void browser.tabs.create({ url: browser.runtime.getURL('dist/options/watch.html') });
+        }
     };
     browser.runtime.onInstalled.addListener(listener);
 }
@@ -64,5 +67,3 @@ export async function startExtension() {
 }
 
 if (!IS_TEST) void startExtension();
-
-if (IS_DEV) void browser.tabs.create({ url: browser.runtime.getURL('dist/options/watch.html') });

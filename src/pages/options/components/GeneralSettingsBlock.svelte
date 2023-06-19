@@ -18,14 +18,6 @@
         { value: 'auto', id: 'auto', label: getMsg('optionThemeAuto') },
     ];
 
-    const onUpdateIntervalChange = async () => {
-        const { updateInterval } = $storageData.options;
-        if (updateInterval && updateInterval >= 2) {
-            await storage.saveOptions({ updateInterval });
-            sendToBg('SCHEDULE_NEXT_UPDATE');
-        }
-    };
-
     const onThemeChange = (newTheme: ExtensionOptions['theme']) => {
         void applyTheme(newTheme);
         void storage.saveOptions({ theme: newTheme });
@@ -33,6 +25,14 @@
 
     let wasUploaded = false;
     let audioErrMsg = '';
+    let intervalInMin = Math.max(1, $storageData.options.updateInterval / 60);
+
+    const onUpdateIntervalChange = async () => {
+        if (intervalInMin) {
+            await storage.saveOptions({ updateInterval: intervalInMin * 60 });
+            sendToBg('SCHEDULE_NEXT_UPDATE');
+        }
+    };
 
     const playAudio = async (src: string) => {
         try {
@@ -86,10 +86,10 @@
         <input
             id="updateIntervalInput"
             type="number"
-            min="2"
-            max="3600"
+            min="1"
+            max="300"
             size="8"
-            bind:value={$storageData.options.updateInterval}
+            bind:value={intervalInMin}
             on:input={onUpdateIntervalChange}
         />
     </div>

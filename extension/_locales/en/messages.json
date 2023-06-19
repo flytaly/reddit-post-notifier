@@ -108,11 +108,11 @@
         "message": "Shortcuts"
     },
     "optionUpdateInterval": {
-        "message": "Update interval (in seconds)",
+        "message": "Update interval (in minutes)",
         "description": "Name of option: update interval"
     },
     "optionUpdateIntervalDescription": {
-        "message": "Set the update interval at which the extension will check for new updates. To reduce power and internet traffic consumption it's recommended to set update interval at least 60 seconds.",
+        "message": "Set the update interval at which the extension will check for new updates.",
         "description": "Update interval description"
     },
     "optionsThemeDescription": {
