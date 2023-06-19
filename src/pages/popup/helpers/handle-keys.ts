@@ -20,6 +20,20 @@ const focusNextRowElement = (current: HTMLElement, reverse = false) => {
     rows[index].focus();
 };
 
+const focuseNextRowInGroup = (target: HTMLElement) => {
+    const li = target.closest('li');
+    if (!li) return;
+
+    let row: HTMLElement | null = null;
+    if (li.nextElementSibling) {
+        row = li.nextElementSibling.firstElementChild as HTMLElement;
+    } else if (li.previousElementSibling) {
+        row = li.previousElementSibling.firstElementChild as HTMLElement;
+    }
+
+    if (row && isPostRow(row)) row.focus();
+};
+
 const getGroupHeader = (elem: HTMLElement) => {
     const container = elem.closest('[data-keys-target="list-container"]');
     const header: HTMLElement | null = container?.querySelector('[data-keys-target="list-row"]') || null;
@@ -75,26 +89,18 @@ export default function handleKeydownEvent(e: KeyboardEvent & { target: HTMLElem
     // Mark selected post or subreddit as read
     if (code === 'Space') {
         if (!isRow(target)) return;
-        const next = target.nextElementSibling as HTMLElement;
-        const prev = target.previousElementSibling as HTMLElement;
         const button: HTMLElement | null = target.querySelector('[data-keys-target="check-mark"] button');
-        button?.click();
-        if (isPostRow(target)) {
-            if (next) next.focus();
-            else prev?.focus();
-        }
+        if (!button) return;
+        focuseNextRowInGroup(target);
+        button.click();
     }
 
     if (code === 'KeyP') {
         if (isPostRow(target)) {
-            const next = target.nextElementSibling as HTMLElement;
-            const prev = target.previousElementSibling as HTMLElement;
             const btn: HTMLElement | null = target.querySelector('[data-keys-target="pin-post"] button');
-            if (btn) {
-                btn.click();
-                if (next) next.focus();
-                else prev?.focus();
-            }
+            if (!btn) return;
+            focuseNextRowInGroup(target);
+            btn.click();
         }
     }
 }

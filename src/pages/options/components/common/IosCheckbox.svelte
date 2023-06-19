@@ -7,7 +7,7 @@
     export let tooltipText: string = '';
 
     /** Activate/toggle input on Enter and Space */
-    const labelBtnClick = (e: KeyboardEvent & { currentTarget: HTMLLabelElement }) => {
+    const btnClick = (e: KeyboardEvent & { currentTarget: HTMLElement }) => {
         if (e.key === 'Enter' || e.key == ' ') {
             e.stopPropagation();
             e.preventDefault();
@@ -16,9 +16,8 @@
     };
 </script>
 
-<label
-    class="flex max-w-max items-center space-x-1"
-    on:keydown={labelBtnClick}
+<div
+    on:keydown={btnClick}
     tabindex="0"
     on:focus
     on:mouseover
@@ -27,8 +26,10 @@
     use:tooltip={{ content: tooltipText }}
     {...$$restProps}
 >
-    <span class="hidden">{tooltipText}</span>
-    <input class="peer hidden" type="checkbox" bind:checked on:change={changeHandler} />
-    <div class="ios-checkbox shrink-0" />
-    <slot />
-</label>
+    <label class="flex max-w-max items-center space-x-1">
+        <span class="hidden">{tooltipText}</span>
+        <input class="peer hidden" type="checkbox" bind:checked on:change={changeHandler} />
+        <div class="ios-checkbox shrink-0" />
+        <slot />
+    </label>
+</div>

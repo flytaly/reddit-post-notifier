@@ -38,14 +38,12 @@
             <ul class="flex flex-grow flex-col" data-floatpreview-target="true">
                 {#each items as item (item.data.id)}
                     <li
-                        class="item"
-                        tabindex="0"
-                        role="button"
-                        data-keys-target="post-row"
-                        out:rowOutTransition|local={{ duration: 150, id: item.data.id }}
                         animate:flip={{ delay: 100, duration: 100 }}
+                        out:rowOutTransition|local={{ duration: 150, id: item.data.id }}
                     >
-                        <slot name="list-row" {item} />
+                        <div class="item" tabindex="0" role="button" data-keys-target="post-row">
+                            <slot name="list-row" {item} />
+                        </div>
                     </li>
                 {/each}
             </ul>
@@ -63,7 +61,7 @@
 
     .item {
         @apply my-px flex w-full items-center
-               border-t border-b border-skin-bg
+               border-b border-t border-skin-bg
                hover:border-skin-delimiter hover:bg-skin-item-hover
                focus:border-skin-delimiter focus:bg-skin-item-hover
                focus-visible:border-skin-outline focus-visible:outline-none;
