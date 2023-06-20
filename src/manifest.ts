@@ -1,6 +1,7 @@
 import type { Manifest } from 'webextension-polyfill-ts';
 import pkg from '../package.json';
-import { isDev, port, target } from '../scripts/utils';
+import { port, target } from '../scripts/utils';
+import { IS_CHROME, IS_DEV } from './constants';
 
 type ExtManifest = Manifest.WebExtensionManifest & { key?: string };
 
@@ -19,7 +20,7 @@ function browserSpecific() {
         };
     }
     if (target === 'firefox') {
-        manifest.applications = {
+        manifest.browser_specific_settings = {
             gecko: {
                 strict_min_version: '109.0',
                 id: 'reddit-post-notifier@flytaly',
@@ -54,7 +55,7 @@ export async function getManifest(): Promise<Manifest.WebExtensionManifest> {
             '128': 'images/icon-128_chrome.png',
         },
         permissions: ['identity', 'storage', 'alarms', 'notifications', 'unlimitedStorage'],
-        host_permissions: ['https://*.reddit.com/*', 'https://*.redd.it/*'],
+        host_permissions: ['https://*.reddit.com/*'],
         action: {
             default_title: '__MSG_extension_title__',
             default_popup: 'dist/popup/index.html',
@@ -97,10 +98,11 @@ export async function getManifest(): Promise<Manifest.WebExtensionManifest> {
         },
 
         content_security_policy: {
-            extension_pages: isDev
-                ? // this is required on dev for Vite script to load
-                  `script-src 'self' http://localhost:${port}; object-src 'self'`
-                : "script-src 'self'; object-src 'self'",
+            extension_pages:
+                IS_DEV && IS_CHROME
+                    ? // this is required on dev for Vite script to load
+                      `script-src 'self' http://localhost:${port}; object-src 'self'`
+                    : "script-src 'self'; object-src 'self'",
         },
     };
 }
