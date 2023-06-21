@@ -2,7 +2,7 @@ import type { ExtensionOptions } from './types/extension-options';
 
 const DEFAULT_OPTIONS: ExtensionOptions = {
     updateInterval: 60,
-    waitTimeout: 1.5,
+    waitTimeout: 3,
     limit: 10,
     theme: 'auto',
     expandWithItems: 5,

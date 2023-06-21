@@ -25,11 +25,12 @@
 
     let wasUploaded = false;
     let audioErrMsg = '';
-    let intervalInMin = Math.max(1, $storageData.options.updateInterval / 60);
+    let intervalInMin = 1;
+    $: intervalInMin = Math.max(1, $storageData.options.updateInterval / 60);
 
     const onUpdateIntervalChange = async () => {
         if (intervalInMin) {
-            await storage.saveOptions({ updateInterval: intervalInMin * 60 });
+            await storage.saveOptions({ updateInterval: Math.max(6, intervalInMin * 60) });
             sendToBg('SCHEDULE_NEXT_UPDATE');
         }
     };

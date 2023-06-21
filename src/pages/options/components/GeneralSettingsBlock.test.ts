@@ -1,16 +1,16 @@
 /* eslint-disable @typescript-eslint/unbound-method */
-import GeneralSettingsBlock from './GeneralSettingsBlock.svelte';
-import { fireEvent, render, waitFor } from '@testing-library/svelte';
 import DEFAULT_OPTIONS from '@/options-default';
-import getMsg from '@/utils/get-message';
-import storage from '@/storage/storage';
 import { sendToBg } from '@/port';
-import type { ExtensionOptions } from '@/types/extension-options';
-import applyTheme from '@/utils/apply-theme';
 import type { notificationSoundFiles } from '@/sounds';
 import { dataFields } from '@/storage/fields';
+import storage from '@/storage/storage';
+import type { ExtensionOptions } from '@/types/extension-options';
+import applyTheme from '@/utils/apply-theme';
+import getMsg from '@/utils/get-message';
+import { fireEvent, render, waitFor } from '@testing-library/svelte';
 import { mocked } from 'jest-mock';
 import { tick } from 'svelte';
+import GeneralSettingsBlock from './GeneralSettingsBlock.svelte';
 
 jest.mock('@/storage/storage.ts');
 jest.mock('@/utils/get-message.ts');
@@ -40,22 +40,22 @@ describe('General Options', () => {
 
     test('Update interval', async () => {
         const updateInterval = 120;
+
         mockStorageData({ updateInterval });
 
         const { getByLabelText } = render(GeneralSettingsBlock);
         const input = getByLabelText(getMsg('optionUpdateInterval'), { exact: false });
         expect(input).toBeInTheDocument();
         await waitFor(() => {
-            expect(input).toHaveValue(updateInterval);
+            expect(input).toHaveValue(updateInterval / 60);
         });
-        await fireEvent.input(input, { target: { value: 90 } });
-        optionSaved({ updateInterval: 90 });
+        await fireEvent.input(input, { target: { value: 3 } });
+        optionSaved({ updateInterval: 3 * 60 });
         expect(sendToBg).toHaveBeenCalledWith('SCHEDULE_NEXT_UPDATE');
         jest.clearAllMocks();
-        // less than 2 sec
-        await fireEvent.input(input, { target: { value: 1 } });
-        expect(storage.saveOptions).not.toBeCalled();
-        expect(sendToBg).not.toHaveBeenCalledWith('SCHEDULE_NEXT_UPDATE');
+        // not less than 6 sec
+        await fireEvent.input(input, { target: { value: 6 / 60 } });
+        optionSaved({ updateInterval: 6 });
     });
 
     test('Theme', async () => {
