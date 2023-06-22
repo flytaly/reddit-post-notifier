@@ -1,6 +1,5 @@
 <script lang="ts">
     import type { RedditMessage } from '@/reddit-api/reddit-types';
-    import storage from '@/storage';
     import type { ExtensionOptions } from '@/types/extension-options';
     import { getInboxUrl } from '@/utils';
     import getMsg from '@/utils/get-message';
@@ -19,7 +18,8 @@
     $: href = getInboxUrl(options);
 
     const removePost = async (messageId: string) => {
-        await storage.removeMessage({ accId: group.id, messageId });
+        console.log('remove ', messageId, ' from ', group);
+        /* await storage.removeMessage({ accId: group.id, messageId }); */
     };
 
     const onLinkClick = async () => {

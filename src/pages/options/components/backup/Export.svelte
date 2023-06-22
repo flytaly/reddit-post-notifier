@@ -1,7 +1,6 @@
 <script lang="ts">
     import storage from '@/storage';
     import { CopyIcon, CheckMarkIcon, JsonIcon } from '@options/lib/icons';
-    import IosCheckbox from '../common/IosCheckbox.svelte';
     import Heading from '../Heading.svelte';
 
     let wasCopied = false;
@@ -41,16 +40,6 @@
 
 <section class="mb-8">
     <Heading id="export" name={'Export config'} />
-    <div class="my-2 max-w-max">
-        <IosCheckbox bind:checked={withAccs} title="Include accounts data">
-            <span class="text-sm">Include accounts data</span>
-        </IosCheckbox>
-        {#if withAccs}
-            <div class="font-semibold text-skin-accent">
-                Caution! Don't share access and refresh tokens for your Reddit accounts!
-            </div>
-        {/if}
-    </div>
     <div>
         <div>
             <div class="flex justify-end space-x-4 rounded-t-md border border-b-0 border-skin-base bg-skin-bg2 p-1">

@@ -1,10 +1,4 @@
-import type {
-    RedditComment,
-    RedditError,
-    RedditMessage,
-    RedditPost,
-    RedditPostExtended,
-} from '../reddit-api/reddit-types';
+import type { RedditComment, RedditError, RedditPost, RedditPostExtended } from '../reddit-api/reddit-types';
 import type { SearchableField, FilterRule } from '../text-search/post-filter';
 import type { ExtensionOptions } from '../types/extension-options';
 
