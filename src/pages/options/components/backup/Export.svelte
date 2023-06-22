@@ -5,10 +5,9 @@
     import Heading from '../Heading.svelte';
 
     let wasCopied = false;
-    let withAccs = false;
     let dataPromise: Promise<string>;
 
-    $: dataPromise = storage.getExportData(withAccs).then((d) => JSON.stringify(d, null, 2));
+    $: dataPromise = storage.getExportData().then((d) => JSON.stringify(d, null, 2));
 
     function downloadText(text: string, filename = 'file.txt', type = 'text/plain') {
         const element = document.createElement('a');
@@ -59,7 +58,7 @@
                     <div class="mr-auto">Loading</div>
                 {:then data}
                     <button
-                        class="flex items-center border-none bg-transparent py-0 px-1 hover:bg-transparent hover:text-skin-accent disabled:cursor-default"
+                        class="flex items-center border-none bg-transparent px-1 py-0 hover:bg-transparent hover:text-skin-accent disabled:cursor-default"
                         class:success={wasCopied}
                         on:click={() => setClipboard(data)}
                         disabled={wasCopied}
@@ -68,7 +67,7 @@
                         {wasCopied ? 'copied' : 'copy'}
                     </button>
                     <button
-                        class="flex items-center border-none bg-transparent py-0 px-1 hover:bg-transparent hover:text-skin-accent disabled:cursor-default"
+                        class="flex items-center border-none bg-transparent px-1 py-0 hover:bg-transparent hover:text-skin-accent disabled:cursor-default"
                         on:click={() => downloadText(data, 'reddit-post-notifier_config.json', 'application/json')}
                     >
                         <div class="h-5 w-5">

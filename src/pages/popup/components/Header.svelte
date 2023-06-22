@@ -9,7 +9,6 @@
     import { isUpdating, storageData } from '../store/store';
     import SvgButton from './SvgButton.svelte';
     import { getInboxUrl } from '@/utils';
-    import storage from '@/storage/storage';
     import type { PostGroup } from '@/utils/post-group';
     import type { OpenGroupsPayload } from '@/types/message';
 
@@ -21,9 +20,9 @@
     $: loading = $isUpdating;
     $: {
         messagesCount = 0;
-        Object.values($storageData.accounts || {})?.forEach((a) => {
-            messagesCount = a.mail?.messages?.length || 0;
-        });
+        /* Object.values($storageData.accounts || {})?.forEach((a) => { */
+        /*     messagesCount = a.mail?.messages?.length || 0; */
+        /* }); */
     }
 
     const onOptionClick = async () => {
@@ -32,7 +31,7 @@
     };
 
     const onMailClick = async () => {
-        if (messagesCount) await storage.removeMessages();
+        /* if (messagesCount) await storage.removeMessages(); */
     };
 
     let disableOpenAll = false;

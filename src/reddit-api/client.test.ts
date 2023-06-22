@@ -1,10 +1,7 @@
-import { config } from '../constants';
-import RedditApiClient from './client';
-import auth from './auth';
 import fetchMock from 'jest-fetch-mock';
+import RedditApiClient from './client';
 import type { RedditError } from './reddit-types';
 
-jest.mock('./auth.ts');
 afterEach(() => jest.clearAllMocks());
 
 const jsonResponse = (result: unknown, status = 200) => {
@@ -15,44 +12,7 @@ const jsonResponse = (result: unknown, status = 200) => {
 describe('HTTP GET request', () => {
     const response = { data: 'data' };
     const endpoint = '/endpoint';
-    const accessToken = 'accessToken';
     const params = { p1: 'v1', p2: 'v2' };
-    beforeAll(() => {
-        auth.getAccessToken = jest.fn(async () => accessToken);
-    });
-
-    test('should set accessToken', () => {
-        const reddit = new RedditApiClient();
-        expect(reddit.accessToken).toBeUndefined();
-        reddit.setAccessToken(accessToken);
-        expect(reddit.accessToken).toBe(accessToken);
-    });
-
-    test('should return JSON response', async () => {
-        fetchMock.mockImplementationOnce((url, init) => {
-            expect(init).not.toBeUndefined();
-            expect(init?.method).toBe('GET');
-            expect(init?.headers?.['User-Agent']).toBe(config.userAgent);
-            expect(init?.headers?.['Authorization']).toBe(`bearer ${accessToken}`);
-            expect(url).toBe('https://oauth.reddit.com/endpoint?p1=v1&p2=v2&raw_json=1');
-            return jsonResponse(response);
-        });
-        const reddit = new RedditApiClient();
-        reddit.setAccessToken(accessToken);
-        const result = await reddit.GET(endpoint, params);
-        expect(result).toEqual(response);
-    });
-
-    test('should have correct oauth url without params', async () => {
-        fetchMock.mockImplementationOnce((url) => {
-            expect(url).toBe('https://oauth.reddit.com/endpoint?raw_json=1');
-            return jsonResponse(response);
-        });
-        const reddit = new RedditApiClient();
-        reddit.setAccessToken(accessToken);
-        const result = await reddit.GET(endpoint);
-        expect(result).toEqual(response);
-    });
 
     test('should have correct public api url', async () => {
         fetchMock.mockImplementationOnce((url) => {

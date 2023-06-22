@@ -1,7 +1,7 @@
 import type { RedditItem, RedditMessage } from '@/reddit-api/reddit-types';
 import storage from '@/storage';
 import type { StorageFields } from '@/storage/storage-types';
-import { getInboxUrl, getSearchQueryUrl, getSubredditUrl, getUserProfileUrl } from '@/utils';
+import { getSearchQueryUrl, getSubredditUrl, getUserProfileUrl } from '@/utils';
 import { formatError } from '@options/lib/format-error';
 import { idToUserIdx } from './index';
 
@@ -24,31 +24,6 @@ export type PostGroup = {
 export const extractPostGroups = (storageData: StorageFields) => {
     const groupsWithPosts: PostGroup[] = [];
     const groupsWithoutPosts: PostGroup[] = [];
-
-    const accList = Object.values(storageData.accounts || {});
-
-    accList.forEach((a) => {
-        let error = a.error || a.auth.error;
-        if (!a.auth.refreshToken) error = 'Refresh token is missing. Please reauthorize the account.';
-        const length = a.mail?.messages?.length || 0;
-        const lastPostCreated = a.mail?.lastPostCreated;
-        const group: PostGroup = {
-            type: 'message',
-            id: a.id,
-            href: getInboxUrl(storageData.options),
-            title: `${a.name || ''} inbox (${length})`,
-            lastPostCreated,
-            size: length,
-            notify: a.mailNotify ? 'on' : 'off',
-            error,
-            updatesDisabled: !a.checkMail,
-        };
-        if (length) {
-            groupsWithPosts.push(group);
-        } else if (!storageData.options.hideEmptyGroups) {
-            groupsWithoutPosts.push(group);
-        }
-    });
 
     storageData.subredditList.forEach((s) => {
         const subData = storageData.subreddits[s.id];
@@ -128,7 +103,7 @@ export const extractPostGroups = (storageData: StorageFields) => {
 };
 
 export const getGroupItems = (
-    data: Pick<StorageFields, 'subreddits' | 'queries' | 'usersList' | 'accounts'>,
+    data: Pick<StorageFields, 'subreddits' | 'queries' | 'usersList'>,
     id: string,
     type: PostGroupType,
 ): RedditItem[] | RedditMessage[] => {
@@ -142,9 +117,9 @@ export const getGroupItems = (
         const idx = idToUserIdx(id);
         if (idx !== null) return data.usersList?.[idx]?.data || [];
     }
-    if (type === 'message') {
-        return data.accounts?.[id]?.mail?.messages || [];
-    }
+    /* if (type === 'message') { */
+    /*     return data.accounts?.[id]?.mail?.messages || []; */
+    /* } */
     return [];
 };
 
@@ -156,5 +131,5 @@ export const removePostsFromGroup = async (id: string, type: PostGroupType) => {
         if (index == null) return;
         return storage.removePostsFrom({ followUserIndex: index });
     }
-    if (type === 'message') return storage.removeMessages(id);
+    /* if (type === 'message') return storage.removeMessages(id); */
 };

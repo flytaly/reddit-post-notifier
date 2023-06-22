@@ -1,6 +1,6 @@
 // https://www.reddit.com/dev/api/
 import { mapObjToQueryStr } from '../utils/index';
-import { config, DEV_SERVER, IS_DEV, USE_DEV_SERVER } from '../constants';
+import { DEV_SERVER, IS_DEV, USE_DEV_SERVER } from '../constants';
 import type {
     RedditAccount,
     RedditCommentResponse,
@@ -32,21 +32,22 @@ export default class RedditApiClient {
             this.publicOrigin = DEV_SERVER;
         }
     }
-
-    setAccessToken(accessToken?: string | null) {
-        this.accessToken = accessToken;
-    }
-
     async GET(endpoint: string, queryParams: Record<string, unknown> = {}) {
         const query = mapObjToQueryStr({ ...queryParams, raw_json: '1' });
         const init: RequestInit = { method: 'GET', headers: { ...this.headers } };
-        if (this.accessToken) {
+
+        /*
+         * ! disable accees token due to new reddit API rules
+         * if (this.accessToken) {
             if (!init.headers) init.headers = {};
             init.headers['User-Agent'] = config.userAgent;
             init.headers['Authorization'] = `bearer ${this.accessToken}`;
         }
         const origin = this.accessToken ? this.authOrigin : this.publicOrigin;
-        const actualEndpoint = this.accessToken ? endpoint : `${endpoint}.json`;
+        const actualEndpoint = this.accessToken ? endpoint : `${endpoint}.json`; */
+
+        const origin = this.publicOrigin;
+        const actualEndpoint = `${endpoint}.json`;
         const result = await fetch(encodeURI(`${origin}${actualEndpoint}?${query}`), init);
         return result.json();
     }

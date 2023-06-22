@@ -50,11 +50,7 @@
     const haveItems = (s: StorageFields) => {
         s = $storageData;
         return Boolean(
-            s.queriesList?.length ||
-                s.subredditList?.length ||
-                s.pinnedPostList?.length ||
-                s.usersList?.length ||
-                Object.keys(s.accounts || {}).length,
+            s.queriesList?.length || s.subredditList?.length || s.pinnedPostList?.length || s.usersList?.length,
         );
     };
 
