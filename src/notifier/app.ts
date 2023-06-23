@@ -12,12 +12,19 @@ import type {
 } from '../reddit-api/reddit-types';
 import { RedditObjectKind } from '../reddit-api/reddit-types';
 import storage from '../storage';
-import type { FollowingUser, QueryData, QueryOpts, SubredditData, SubredditOpts } from '../storage/storage-types';
+import type {
+    FollowingUser,
+    QueryData,
+    QueryOpts,
+    StorageFields,
+    SubredditData,
+    SubredditOpts,
+} from '../storage/storage-types';
 import { postFilter } from '../text-search/post-filter';
 import type { ExtensionOptions } from '../types/extension-options';
 import { filterPostDataProperties, getSearchQueryUrl, getSubredditUrl, getUserProfileUrl } from '../utils/index';
 import { wait } from '../utils/wait';
-import type { PostNotification, UserNotification } from './notifications';
+import type { MessageNotification, PostNotification, UserNotification } from './notifications';
 import notify, { NotificationId } from './notifications';
 
 const reddit = new RedditApiClient();
@@ -137,6 +144,36 @@ export default class NotifierApp {
         const newPosts: RedditPostExtended[] = extractNewItems(response, data) || [];
         await storage.saveQueryData(query.id, { posts: newPosts, error: null });
         return newPosts;
+    }
+
+    async updateUnreadMsg(mail: StorageFields['mail']) {
+        try {
+            const response = await this.reddit.messages.unread();
+
+            if (isErrorResponse(response)) {
+                throw new Error(response.message);
+            }
+
+            const newMessages = extractNewItems(response, mail || {});
+
+            await storage.saveMessageData({ unreadMessages: newMessages });
+            return newMessages;
+        } catch (error) {
+            const message = error.message || error;
+            console.error('Error during fetching unread messages ', message);
+            await storage.saveMessageData({ error: { message } });
+            return null;
+        }
+    }
+
+    async updateMail(mail: StorageFields['mail'], options: ExtensionOptions) {
+        const msgNotify: MessageNotification = { type: NotificationId.mail, items: [] };
+
+        const newMessages = await this.updateUnreadMsg(mail);
+        if (newMessages?.length && mail?.mailNotify) {
+            msgNotify.items.push({ len: newMessages.length });
+        }
+        if (msgNotify.items.length) notify(msgNotify, options.notificationSoundId);
     }
 
     /* async updateUnreadMsg(account: AuthUser): Promise<null | RedditMessage[]> { */
@@ -262,6 +299,7 @@ export default class NotifierApp {
             subreddits: subData,
             options,
             usersList,
+            mail,
         } = await storage.getAllData();
 
         const { waitTimeout, limit = 25, notificationSoundId } = options;
@@ -308,5 +346,7 @@ export default class NotifierApp {
             await wait(waitTimeout * 1000);
         }
         if (postNotif.items.length) notify(postNotif, notificationSoundId);
+
+        await this.updateMail(mail, options);
     }
 }

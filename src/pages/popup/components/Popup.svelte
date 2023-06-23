@@ -50,7 +50,11 @@
     const haveItems = (s: StorageFields) => {
         s = $storageData;
         return Boolean(
-            s.queriesList?.length || s.subredditList?.length || s.pinnedPostList?.length || s.usersList?.length,
+            s.queriesList?.length ||
+                s.subredditList?.length ||
+                s.pinnedPostList?.length ||
+                s.usersList?.length ||
+                s.mail?.messages?.length,
         );
     };
 
@@ -60,7 +64,6 @@
 
     async function checkPermissions() {
         const permissions = await browser.permissions.getAll();
-        console.log('check permissions', permissions);
         if (permissions.origins?.includes(redditOrigin)) {
             permissionsGranted = true;
             return;

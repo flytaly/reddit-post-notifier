@@ -32,6 +32,11 @@ function concatUnique<T>(arr1: Array<T>, arr2: Array<T>, getId: (item: T) => str
 }
 
 const storage = {
+    async getMail() {
+        const { mail } = await browser.storage.local.get({ mail: {} });
+        return mail as SF['mail'];
+    },
+
     async getOptions() {
         const { options } = await browser.storage.local.get({ options: DEFAULT_OPTIONS });
         return options as SF['options'];
@@ -116,6 +121,36 @@ const storage = {
             sData.usersList = concatUnique(sData.usersList || [], data.usersList, (i) => i.username);
         }
         await browser.storage.local.set(sData);
+    },
+
+    async saveMail(mail: SF['mail']) {
+        return browser.storage.local.set({ mail });
+    },
+
+    async saveMessageData({
+        unreadMessages,
+        error,
+    }: {
+        unreadMessages?: RedditMessage[] | null;
+        error?: { message?: string } | null;
+    }) {
+        const mail = (await storage.getMail()) || { messages: [] };
+        if (error) {
+            mail.error = `Couldn't fetch messages. ${error.message || ''}`;
+            return storage.saveMail(mail);
+        }
+        mail.error = null;
+        if (!mail.messages) mail.messages = [];
+        mail.lastUpdate = Date.now();
+        if (unreadMessages) {
+            const prevUnread = mail.messages || [];
+            const ids = new Set<string>();
+            mail.messages.forEach((m) => ids.add(m.data.id));
+            unreadMessages = unreadMessages.filter((m) => !ids.has(m.data.id));
+            mail.messages = [...unreadMessages, ...prevUnread];
+            if (unreadMessages[0]) mail.lastPostCreated = unreadMessages[0].data.created;
+        }
+        return storage.saveMail(mail);
     },
 
     async saveOptions(data: Partial<ExtensionOptions>) {
@@ -320,7 +355,7 @@ const storage = {
     },
 
     async removeAllPosts() {
-        const { queries, subreddits, usersList } = await storage.getAllData();
+        const { queries, subreddits, usersList, mail } = await storage.getAllData();
 
         Object.keys(subreddits).forEach((subr) => {
             subreddits[subr].posts = [];
@@ -331,8 +366,24 @@ const storage = {
         usersList?.forEach((u) => {
             u.data = [];
         });
+        if (mail) {
+            mail.messages = [];
+        }
 
-        await browser.storage.local.set({ subreddits, queries, usersList });
+        await browser.storage.local.set({ subreddits, queries, usersList, mail });
+    },
+
+    async removeMessages() {
+        const mail = (await storage.getMail()) || {};
+        mail.messages = [];
+        await browser.storage.local.set({ mail });
+    },
+
+    async removeMessage({ messageId }: { messageId: string }) {
+        const mail = await storage.getMail();
+        if (!mail) return;
+        mail.messages = (mail.messages || []).filter((m) => m.data.id !== messageId);
+        await browser.storage.local.set({ mail } as SF);
     },
 
     async removeSubreddits(ids = [] as string[]) {
@@ -374,7 +425,7 @@ const storage = {
 
     async countNumberOfUnreadItems(updateBadge = true) {
         let count = 0;
-        const { subredditList, queriesList, queries, subreddits, usersList } = await storage.getAllData();
+        const { subredditList, queriesList, queries, subreddits, usersList, mail } = await storage.getAllData();
 
         if (subreddits) {
             subredditList?.forEach((s) => {
@@ -392,9 +443,7 @@ const storage = {
             count += u.data?.length || 0;
         });
 
-        /* Object.values(accounts || {})?.forEach((a) => { */
-        /*     count += a.mail?.messages?.length || 0; */
-        /* }); */
+        count += mail?.messages?.length || 0;
 
         if (updateBadge) {
             await browser.action.setBadgeText({ text: count ? String(count) : '' });

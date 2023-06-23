@@ -22,7 +22,7 @@ export enum NotificationId {
 
 export type MessageNotification = {
     type: NotificationId.mail;
-    items: { len: number; username: string }[];
+    items: { len: number }[];
 };
 
 export type PostNotification = {
@@ -66,9 +66,8 @@ function notify(notif: Notification, soundId?: SoundId | null) {
     } as const;
 
     if (isMessage(notif)) {
-        const message = notif.items.map((i) => `${i.username || ''} (${i.len})`).join(', ');
-
-        const nOpts: NotificationOpts = { ...opts, title: 'Reddit: new mail', message };
+        const len = notif.items[0]?.len;
+        const nOpts: NotificationOpts = { ...opts, title: 'Reddit: new mail', message: `${len} unread mail` };
 
         void storage.getOptions().then((opts) => {
             const url = getInboxUrl(opts);

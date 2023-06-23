@@ -4,7 +4,7 @@
 import cloneDeep from 'lodash.clonedeep';
 import { mocked } from 'jest-mock';
 import DEFAULT_OPTIONS from '../options-default';
-import type { RedditPost } from '../reddit-api/reddit-types';
+import type { RedditMessage, RedditPost } from '../reddit-api/reddit-types';
 import { generatePost, generatePosts, generateQuery } from '../test-utils/content-generators';
 import { mockDate, restoreDate } from '../test-utils/mock-date';
 import type { ExtensionOptions } from '../types/extension-options';
@@ -351,9 +351,15 @@ describe('Count unread', () => {
         queries: { q1: { posts: generatePosts(1) }, q2: { posts: [] }, q3: {} } as StorageFields['queries'],
         usersList: [{ username: 'u1', data: [{}, {}] }],
         options: DEFAULT_OPTIONS,
+        mail: {
+            messages: [
+                { data: { id: 'm1', created: 1552338638 } },
+                { data: { id: 'm2', created: 1552338630 } },
+            ] as RedditMessage[],
+        },
     } as StorageFields;
 
-    const total = 3 + 1 + 2;
+    const total = 3 + 1 + 2 + 2;
 
     test('should count unread items', async () => {
         jest.spyOn(storage, 'getAllData').mockImplementation(() => Promise.resolve(storageData));

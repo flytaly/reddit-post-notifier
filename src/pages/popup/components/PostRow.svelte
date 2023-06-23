@@ -34,6 +34,9 @@
             case 'subreddit': {
                 return storage.removePost({ id, subreddit: itemId });
             }
+            case 'message': {
+                return storage.removeMessage({ messageId: itemId });
+            }
             default:
         }
     };

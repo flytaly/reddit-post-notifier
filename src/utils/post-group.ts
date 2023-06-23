@@ -1,7 +1,7 @@
 import type { RedditItem, RedditMessage } from '@/reddit-api/reddit-types';
 import storage from '@/storage';
 import type { StorageFields } from '@/storage/storage-types';
-import { getSearchQueryUrl, getSubredditUrl, getUserProfileUrl } from '@/utils';
+import { getInboxUrl, getSearchQueryUrl, getSubredditUrl, getUserProfileUrl } from '@/utils';
 import { formatError } from '@options/lib/format-error';
 import { idToUserIdx } from './index';
 
@@ -24,6 +24,22 @@ export type PostGroup = {
 export const extractPostGroups = (storageData: StorageFields) => {
     const groupsWithPosts: PostGroup[] = [];
     const groupsWithoutPosts: PostGroup[] = [];
+
+    const mail = storageData.mail || {};
+
+    if (mail.messages?.length) {
+        const mailGroup: PostGroup = {
+            type: 'message',
+            id: 'reddit-mail',
+            href: getInboxUrl(storageData.options),
+            title: `Reddit messages (${mail.messages.length})`,
+            lastPostCreated: mail.lastPostCreated,
+            size: mail.messages.length,
+            notify: mail.mailNotify ? 'on' : 'off',
+            error: mail.error,
+        };
+        groupsWithPosts.push(mailGroup);
+    }
 
     storageData.subredditList.forEach((s) => {
         const subData = storageData.subreddits[s.id];
@@ -103,7 +119,7 @@ export const extractPostGroups = (storageData: StorageFields) => {
 };
 
 export const getGroupItems = (
-    data: Pick<StorageFields, 'subreddits' | 'queries' | 'usersList'>,
+    data: Pick<StorageFields, 'subreddits' | 'queries' | 'usersList' | 'mail'>,
     id: string,
     type: PostGroupType,
 ): RedditItem[] | RedditMessage[] => {
@@ -117,9 +133,9 @@ export const getGroupItems = (
         const idx = idToUserIdx(id);
         if (idx !== null) return data.usersList?.[idx]?.data || [];
     }
-    /* if (type === 'message') { */
-    /*     return data.accounts?.[id]?.mail?.messages || []; */
-    /* } */
+    if (type === 'message') {
+        return data.mail?.messages || [];
+    }
     return [];
 };
 
@@ -131,5 +147,5 @@ export const removePostsFromGroup = async (id: string, type: PostGroupType) => {
         if (index == null) return;
         return storage.removePostsFrom({ followUserIndex: index });
     }
-    /* if (type === 'message') return storage.removeMessages(id); */
+    if (type === 'message') return storage.removeMessages();
 };

@@ -20,5 +20,5 @@
 {#if redditItem}
     <PostRow post={redditItem} {group} />
 {:else if redditMessage}
-    <MessageRow item={redditMessage} {group} />
+    <MessageRow item={redditMessage} />
 {/if}

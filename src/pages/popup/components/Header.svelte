@@ -11,6 +11,7 @@
     import { getInboxUrl } from '@/utils';
     import type { PostGroup } from '@/utils/post-group';
     import type { OpenGroupsPayload } from '@/types/message';
+    import storage from '@/storage';
 
     export let groupsWithPosts: PostGroup[] = [];
 
@@ -19,10 +20,7 @@
 
     $: loading = $isUpdating;
     $: {
-        messagesCount = 0;
-        /* Object.values($storageData.accounts || {})?.forEach((a) => { */
-        /*     messagesCount = a.mail?.messages?.length || 0; */
-        /* }); */
+        messagesCount = $storageData.mail?.messages?.length || 0;
     }
 
     const onOptionClick = async () => {
@@ -31,7 +29,7 @@
     };
 
     const onMailClick = async () => {
-        /* if (messagesCount) await storage.removeMessages(); */
+        if (messagesCount) await storage.removeMessages();
     };
 
     let disableOpenAll = false;

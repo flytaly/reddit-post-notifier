@@ -4,11 +4,10 @@
     import { getInboxUrl } from '@/utils';
     import getMsg from '@/utils/get-message';
     import { browser } from 'webextension-polyfill-ts';
-    import type { PostGroup } from '@/utils/post-group';
     import { storageData } from '../store/store';
     import CheckMarkButton from './CheckMarkButton.svelte';
+    import storage from '@/storage';
 
-    export let group: PostGroup;
     export let item: RedditMessage;
 
     let options: ExtensionOptions = $storageData.options;
@@ -18,8 +17,7 @@
     $: href = getInboxUrl(options);
 
     const removePost = async (messageId: string) => {
-        console.log('remove ', messageId, ' from ', group);
-        /* await storage.removeMessage({ accId: group.id, messageId }); */
+        await storage.removeMessage({ messageId });
     };
 
     const onLinkClick = async () => {
