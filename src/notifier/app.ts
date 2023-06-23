@@ -347,6 +347,8 @@ export default class NotifierApp {
         }
         if (postNotif.items.length) notify(postNotif, notificationSoundId);
 
-        await this.updateMail(mail, options);
+        if (mail?.checkMail) {
+            await this.updateMail(mail, options);
+        }
     }
 }

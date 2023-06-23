@@ -8,6 +8,7 @@
     import FollowUsersBlock from './FollowUsersBlock.svelte';
     import SearchBlock from './search/SearchBlock.svelte';
     import SubredditsBlock from './subreddits/SubredditsBlock.svelte';
+    import MailBlock from './MailBlock.svelte';
 
     const dataPromise = storage.getAllData();
 
@@ -31,6 +32,10 @@
         <h1 class="mb-2 text-xl font-bold uppercase tracking-widest text-skin-gray">
             {getMsg('optionsNavWatch')}
         </h1>
+        <section>
+            <Heading id={s.mail.id} name={s.mail.name} />
+            <MailBlock />
+        </section>
         <section>
             <Heading id={s.subreddit.id} name={s.subreddit.name} />
             <SubredditsBlock />

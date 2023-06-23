@@ -84,7 +84,7 @@
         "message": "Watch"
     },
     "optionsNavMailFull": {
-        "message": "Messages and Accounts"
+        "message": "Messages"
     },
     "optionsNavSubreddits": {
         "message": "Subreddits"
@@ -176,35 +176,17 @@
     "optionReadMore": {
         "message": "Read more on the help page."
     },
-    "optionAccountsDescription": {
-        "message": "Connect a Reddit account to check its unread private messages and use Reddit OAuth API (optionally)."
+    "optionMailDescription": {
+        "message": "Watch for unread private messages of the current logged-in user. Due to changes in Reddit API rules, multiple users are no longer supported."
     },
-    "optionAccountsNoAccs": {
-        "message": "No authorized accounts"
-    },
-    "optionAccountsReAuthBtn": {
-        "message": "reauthorize"
-    },
-    "optionAccountsAddBtn": {
-        "message": "Add an account"
-    },
-    "optionAccountsMailCheck": {
+    "optionMailCheck": {
         "message": "Watch for Messages"
     },
-    "optionAccountsMailCheck_title": {
+    "optionMailCheck_title": {
         "message": "Check unread private messages on reddit and display them in the popup"
     },
-    "optionAccountsMailNotify_title": {
+    "optionMailNotify_title": {
         "message": "Show notifications if there are new messages"
-    },
-    "optionAccountsUpdateAcc": {
-        "message": "update the account's information"
-    },
-    "optionAccountsFetchBtn": {
-        "message": "fetch messages"
-    },
-    "optionAccountsFetchBtnDesc": {
-        "message": "fetch and display unread messages"
     },
     "optionWatchInputNameColumn": {
         "message": "Name"
