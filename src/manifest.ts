@@ -13,7 +13,7 @@ const bgScript = './dist/background.js';
 function browserSpecific() {
     const manifest: Partial<ExtManifest> = {};
     if (target === 'chrome') {
-        manifest.minimum_chrome_version = '105';
+        manifest.minimum_chrome_version = '109';
         manifest.key = key;
         manifest.background = {
             service_worker: bgScript,
