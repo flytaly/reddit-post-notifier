@@ -1,6 +1,7 @@
 import storage from '@/storage';
 import { browser } from 'webextension-polyfill-ts';
 import { IS_CHROME } from './constants';
+import { setupOffscreenDocument } from './offscreen';
 
 export const notificationSoundFiles = {
     sound_00: '/audio/234524__foolboymedia__notification-up-1.webm',
@@ -40,32 +41,4 @@ export async function playAudio(audioId: SoundId) {
     const audio = new Audio();
     audio.src = src;
     return audio.play();
-}
-
-declare let self: ServiceWorkerGlobalScope;
-let creating: null | Promise<void> = null;
-
-async function setupOffscreenDocument(path: string) {
-    // Check all windows controlled by the service worker to see if one
-    // of them is the offscreen document with the given path
-    const offscreenUrl = chrome.runtime.getURL(path);
-    const matchedClients = await self.clients.matchAll();
-    for (const client of matchedClients) {
-        if (client.url === offscreenUrl) {
-            return;
-        }
-    }
-
-    // create offscreen document
-    if (creating) {
-        await creating;
-    } else {
-        creating = chrome.offscreen.createDocument({
-            url: path,
-            reasons: [chrome.offscreen.Reason.AUDIO_PLAYBACK],
-            justification: 'play notification sounds',
-        });
-        await creating;
-        creating = null;
-    }
 }
