@@ -54,7 +54,7 @@ export async function getManifest(): Promise<Manifest.WebExtensionManifest> {
             '96': 'images/icon-96.png',
             '128': 'images/icon-128_chrome.png',
         },
-        permissions: ['identity', 'storage', 'alarms', 'notifications', 'unlimitedStorage'],
+        permissions: ['identity', 'storage', 'alarms', 'notifications', 'unlimitedStorage', 'offscreen'],
         host_permissions: ['https://*.reddit.com/*'],
         action: {
             default_title: '__MSG_extension_title__',

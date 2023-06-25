@@ -9,7 +9,7 @@
         },
         "resolveJsonModule": true,
         "allowJs": false,
-        "lib": ["es2020", "dom", "DOM.Iterable"],
+        "lib": ["es2020", "dom", "DOM.Iterable", "webworker"],
         "target": "ES2019",
         "outDir": "./dist",
         "module": "ES2020",

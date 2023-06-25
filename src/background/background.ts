@@ -1,14 +1,14 @@
-import { browser } from 'webextension-polyfill-ts';
 import type { Runtime } from 'webextension-polyfill-ts';
+import { browser } from 'webextension-polyfill-ts';
 import { IS_DEV, IS_FIREFOX, IS_TEST } from '../constants';
+import { addNotificationClickListener } from '../notifier/notifications';
 import DEFAULT_OPTIONS from '../options-default';
 import { initializeBgListener, onMessage } from '../port';
 import storage from '../storage';
 import type { PortMessage } from '../types/message';
-import { addNotificationClickListener } from '../notifier/notifications';
+import { openGroups } from './open-groups';
 import { scheduleNextUpdate, watchAlarms } from './timers';
 import { isUpdating, updateAndSchedule } from './update';
-import { openGroups } from './open-groups';
 
 if (IS_FIREFOX) {
     // Support notification-sound extension
@@ -64,6 +64,10 @@ export async function startExtension() {
     onMessage('OPEN_GROUPS', openGroups);
 
     await updateAndSchedule();
+
+    /* if (IS_DEV) { */
+    /*     notify({ type: NotificationId.test, message: 'Background page loaded' }, 'sound_00'); */
+    /* } */
 }
 
 if (!IS_TEST) void startExtension();

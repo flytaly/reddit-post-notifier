@@ -1,16 +1,8 @@
 import { browser } from 'webextension-polyfill-ts';
 import type { Notifications } from 'webextension-polyfill-ts';
-import { getAudioSrc, type SoundId } from '../sounds';
+import { playAudio, type SoundId } from '../sounds';
 import storage from '../storage';
 import { getInboxUrl } from '../utils';
-
-async function playAudio(audioId: SoundId) {
-    const src = await getAudioSrc(audioId);
-    if (!src) return;
-    const audio = new Audio();
-    audio.src = src;
-    return audio.play();
-}
 
 type NotificationOpts = Notifications.CreateNotificationOptions;
 
@@ -18,7 +10,10 @@ export enum NotificationId {
     mail = 'mail',
     post = 'post',
     user = 'user',
+    test = 'test',
 }
+
+export type TestNotification = { type: NotificationId.test; message: string };
 
 export type MessageNotification = {
     type: NotificationId.mail;
@@ -35,7 +30,7 @@ export type UserNotification = {
     items: { len: number; link: string; name: string }[];
 };
 
-type Notification = MessageNotification | PostNotification | UserNotification;
+type Notification = MessageNotification | PostNotification | UserNotification | TestNotification;
 
 function isMessage(n: Notification): n is MessageNotification {
     return n.type === NotificationId.mail;
@@ -49,10 +44,12 @@ function isUser(n: Notification): n is UserNotification {
     return n.type === NotificationId.user;
 }
 
-function notify(notif: Notification, soundId?: SoundId | null) {
-    if (!notif.items.length) return;
+function isTest(n: Notification): n is TestNotification {
+    return n.type === NotificationId.test;
+}
 
-    async function createNotification(id: string, options: NotificationOpts, links: string[]) {
+function notify(notif: Notification, soundId?: SoundId | null) {
+    async function createNotification(id: string, options: NotificationOpts, links?: string[]) {
         await browser.notifications.create(id, options);
         if (soundId) {
             void playAudio(soundId);
@@ -64,6 +61,14 @@ function notify(notif: Notification, soundId?: SoundId | null) {
         type: 'basic',
         iconUrl: browser.runtime.getURL('/images/icon-96.png'),
     } as const;
+
+    if (isTest(notif)) {
+        const nOpts = { ...opts, title: 'Test title', message: notif.message };
+        void createNotification(`${NotificationId.test}__${Date.now()}`, nOpts);
+        return;
+    }
+
+    if (!notif.items.length) return;
 
     if (isMessage(notif)) {
         const len = notif.items[0]?.len;

@@ -1,5 +1,6 @@
 import storage from '@/storage';
 import { browser } from 'webextension-polyfill-ts';
+import { IS_CHROME } from './constants';
 
 export const notificationSoundFiles = {
     sound_00: '/audio/234524__foolboymedia__notification-up-1.webm',
@@ -21,3 +22,50 @@ export const getAudioSrc = async (soundId: SoundId | undefined | null): Promise<
     if (!file) return '';
     return browser.runtime.getURL(file);
 };
+
+export async function playAudio(audioId: SoundId) {
+    const src = await getAudioSrc(audioId);
+    if (!src) return;
+
+    if (IS_CHROME) {
+        await setupOffscreenDocument('/dist/offscreen/index.html');
+        await chrome.runtime.sendMessage({
+            type: 'PLAY_AUDIO',
+            target: 'offscreen',
+            data: src,
+        });
+        return;
+    }
+
+    const audio = new Audio();
+    audio.src = src;
+    return audio.play();
+}
+
+declare let self: ServiceWorkerGlobalScope;
+let creating: null | Promise<void> = null;
+
+async function setupOffscreenDocument(path: string) {
+    // Check all windows controlled by the service worker to see if one
+    // of them is the offscreen document with the given path
+    const offscreenUrl = chrome.runtime.getURL(path);
+    const matchedClients = await self.clients.matchAll();
+    for (const client of matchedClients) {
+        if (client.url === offscreenUrl) {
+            return;
+        }
+    }
+
+    // create offscreen document
+    if (creating) {
+        await creating;
+    } else {
+        creating = chrome.offscreen.createDocument({
+            url: path,
+            reasons: [chrome.offscreen.Reason.AUDIO_PLAYBACK],
+            justification: 'play notification sounds',
+        });
+        await creating;
+        creating = null;
+    }
+}
