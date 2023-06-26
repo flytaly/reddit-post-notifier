@@ -304,13 +304,22 @@ export default class NotifierApp {
 
         const { waitTimeout, limit = 25, notificationSoundId } = options;
 
+        let shouldThrottle = false;
+
+        async function throttle() {
+            if (!shouldThrottle) return;
+            await wait(waitTimeout * 1000);
+            shouldThrottle = false;
+        }
+
         if (usersList) {
             const updated = await this.updateUsersList(usersList, options, isForcedByUser);
-            if (updated) await wait(waitTimeout * 1000);
+            if (updated) shouldThrottle = true;
         }
 
         let postNotif: PostNotification = { type: NotificationId.post, items: [] };
         for (const subOpts of subredditList) {
+            await throttle();
             if (subOpts.disabled) continue;
 
             // increase limit if it's the first update with filters
@@ -326,7 +335,7 @@ export default class NotifierApp {
                 const link = getSubredditUrl(subOpts.subreddit, options);
                 postNotif.items.push({ name: subOpts.name || subOpts.subreddit, len: newPosts.length, link });
             }
-            await wait(waitTimeout * 1000);
+            shouldThrottle = true;
         }
         if (postNotif.items.length) notify(postNotif, notificationSoundId);
 
@@ -334,6 +343,8 @@ export default class NotifierApp {
 
         for (const query of queriesList) {
             if (query.disabled) continue;
+
+            await throttle();
 
             const newMessages = await this.updateQuery({ query, queryData: queryData[query.id], listing: { limit } });
             if (query.notify && newMessages?.length) {
@@ -343,7 +354,7 @@ export default class NotifierApp {
                     link: getSearchQueryUrl(query.query || '', query.subreddit, options),
                 });
             }
-            await wait(waitTimeout * 1000);
+            shouldThrottle = true;
         }
         if (postNotif.items.length) notify(postNotif, notificationSoundId);
 
