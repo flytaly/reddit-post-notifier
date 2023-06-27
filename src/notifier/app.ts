@@ -27,8 +27,6 @@ import { wait } from '../utils/wait';
 import type { MessageNotification, PostNotification, UserNotification } from './notifications';
 import notify, { NotificationId } from './notifications';
 
-const reddit = new RedditApiClient();
-
 interface ItemWithDate {
     data: { created: number };
 }
@@ -94,7 +92,7 @@ export default class NotifierApp {
 
         let response: RedditPostResponse | RedditError;
         try {
-            response = await reddit.getSubreddit(subreddit).new(listing);
+            response = await this.reddit.getSubreddit(subreddit).new(listing);
         } catch (error) {
             response = { message: error.message };
         }
@@ -126,8 +124,8 @@ export default class NotifierApp {
         let response: RedditError | RedditPostResponse;
         try {
             response = subreddit
-                ? await reddit.getSubreddit(subreddit).search({ ...listing, q, restrict_sr: 'on' })
-                : await reddit.search({ ...listing, q });
+                ? await this.reddit.getSubreddit(subreddit).search({ ...listing, q, restrict_sr: 'on' })
+                : await this.reddit.search({ ...listing, q });
         } catch (error) {
             response = { message: error.message };
         }
@@ -202,7 +200,7 @@ export default class NotifierApp {
 
     async updateFollowingUser(user: FollowingUser): Promise<{ user: FollowingUser; newItemsLen?: number }> {
         user = { ...user };
-        const fetchUser = reddit.user(user.username);
+        const fetchUser = this.reddit.user(user.username);
         let response: RedditError | RedditUserOverviewResponse;
         try {
             switch (user.watch) {
