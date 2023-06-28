@@ -5,7 +5,8 @@ export type PortMessageId =
     | 'SCHEDULE_NEXT_UPDATE'
     | 'UPDATING_START'
     | 'UPDATING_END'
-    | 'OPEN_GROUPS';
+    | 'OPEN_GROUPS'
+    | 'RATE_LIMITS';
 
 export type OpenGroupsPayload = { groups: PostGroup[]; remove: boolean };
 export type PortMessagePayload = unknown | null | OpenGroupsPayload;

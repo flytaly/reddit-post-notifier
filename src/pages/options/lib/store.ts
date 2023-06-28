@@ -1,6 +1,7 @@
 import { connectToBg, disconnectFromBg, onMessage } from '@/port';
 import nProgress from 'nprogress';
 import { writable, readable } from 'svelte/store';
+import { type RateLimits } from '@/reddit-api/client';
 
 export const isUpdating = readable(false, (set) => {
     connectToBg('options');
@@ -11,6 +12,16 @@ export const isUpdating = readable(false, (set) => {
     onMessage('UPDATING_END', () => {
         set(false);
         void nProgress.done();
+    });
+    return () => {
+        disconnectFromBg();
+    };
+});
+
+export const rateLimits = readable<RateLimits>({ used: null, reset: null, remaining: null }, (set) => {
+    connectToBg('options');
+    onMessage('RATE_LIMITS', (payload: RateLimits) => {
+        set(payload);
     });
     return () => {
         disconnectFromBg();

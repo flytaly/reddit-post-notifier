@@ -16,25 +16,54 @@ import type {
 
 type R<T> = Promise<T | RedditError>;
 
+const enum RateLimitHeaders {
+    'remaining' = 'x-ratelimit-remaining',
+    'reset' = 'x-ratelimit-reset',
+    'used' = 'x-ratelimit-used',
+}
+
+export type RateLimits = {
+    remaining?: number | null;
+    reset?: number | null;
+    used?: number | null;
+};
+
+function getRateLimits(response: Response): RateLimits {
+    const rateLimits = {
+        used: response.headers.get(RateLimitHeaders.used),
+        reset: response.headers.get(RateLimitHeaders.reset),
+        remaining: response.headers.get(RateLimitHeaders.remaining),
+    };
+
+    return {
+        used: rateLimits.used ? parseInt(rateLimits.used) : null,
+        reset: rateLimits.reset ? parseInt(rateLimits.reset) : null,
+        remaining: rateLimits.remaining ? parseInt(rateLimits.remaining) : null,
+    };
+}
+
 export default class RedditApiClient {
     authOrigin: string;
     publicOrigin: string;
     headers: HeadersInit;
     accessToken?: string | null;
+    onRateLimits?: (rl: RateLimits) => void;
 
-    constructor() {
+    constructor(onRateLimits?: (rl: RateLimits) => void) {
         this.authOrigin = 'https://oauth.reddit.com';
         this.publicOrigin = 'https://reddit.com';
         this.headers = { Accept: 'application/json' };
+        this.onRateLimits = onRateLimits;
 
         if (IS_DEV && USE_DEV_SERVER) {
             this.authOrigin = DEV_SERVER;
             this.publicOrigin = DEV_SERVER;
         }
     }
+
     async GET(endpoint: string, queryParams: Record<string, unknown> = {}) {
         const query = mapObjToQueryStr({ ...queryParams, raw_json: '1' });
-        const init: RequestInit = { method: 'GET', headers: { ...this.headers } };
+        const init: RequestInit = { method: 'GET', headers: { ...this.headers }, cache: 'reload' };
 
         /*
          * ! disable accees token due to new reddit API rules
@@ -49,6 +78,9 @@ export default class RedditApiClient {
         const origin = this.publicOrigin;
         const actualEndpoint = `${endpoint}.json`;
         const result = await fetch(encodeURI(`${origin}${actualEndpoint}?${query}`), init);
+
+        if (this.onRateLimits) this.onRateLimits(getRateLimits(result));
+
         return result.json();
     }
 

@@ -11,7 +11,7 @@
     import BackupPage from '@options/components/backup/Backup.svelte';
     import WatchPage from '@options/components/watch/WatchPage.svelte';
     import { RefreshIcon } from '@options/lib/icons';
-    import { isUpdating } from '@options/lib/store';
+    import { isUpdating, rateLimits } from '@options/lib/store';
     import DonatePage from './DonatePage.svelte';
 
     export let pageId: PageId = 'settings';
@@ -20,6 +20,8 @@
         void applyTheme();
         nProgress.configure({ showSpinner: false });
     });
+
+    $: console.log({ rateLimits: $rateLimits });
 
     let page: { cmp: typeof Settings; name: string } = { cmp: Settings, name: getMsg('optionsNavSettings') };
 
@@ -52,7 +54,7 @@
         <Sidebar current={pageId} />
     </div>
     <div class="w-full">
-        <div class="mt-4 mb-5 flex items-center justify-between">
+        <div class="mb-5 mt-4 flex items-center justify-between">
             <ShortInfo />
             {#if $isUpdating}
                 <div class="flex items-center rounded-md border border-skin-delimiter p-1">

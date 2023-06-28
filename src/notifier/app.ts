@@ -1,4 +1,5 @@
 /* eslint-disable no-await-in-loop */
+import { sendFromBg } from '@/port';
 import RedditApiClient from '../reddit-api/client';
 import type {
     RedditAccount,
@@ -76,7 +77,9 @@ function isErrorResponse(result: RedditError | RedditListingResponse<unknown> | 
 export default class NotifierApp {
     reddit: RedditApiClient;
     constructor() {
-        this.reddit = new RedditApiClient();
+        this.reddit = new RedditApiClient((rl) => {
+            sendFromBg('RATE_LIMITS', rl);
+        });
     }
 
     async updateSubreddit({

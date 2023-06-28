@@ -5,7 +5,11 @@ import type { RedditError } from './reddit-types';
 afterEach(() => jest.clearAllMocks());
 
 const jsonResponse = (result: unknown, status = 200) => {
-    const response = { status, json: () => new Promise((resolve) => resolve(result)) } as unknown as Response;
+    const response = {
+        status,
+        headers: new Headers(),
+        json: () => new Promise((resolve) => resolve(result)),
+    } as unknown as Response;
     return new Promise<Response>((resolve) => resolve(response));
 };
 
