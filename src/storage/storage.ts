@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/explicit-module-boundary-types */
 
-import { browser } from 'webextension-polyfill-ts';
+import { browser, type Storage } from 'webextension-polyfill-ts';
 import DEFAULT_OPTIONS from '../options-default';
 import type { RedditItem, RedditMessage, RedditPost, RedditPostExtended } from '../reddit-api/reddit-types';
 import type { ExtensionOptions } from '../types/extension-options';
@@ -16,6 +16,7 @@ import type {
     FollowingUser,
     StorageFields,
 } from './storage-types';
+import { RateLimits } from '@/reddit-api/client';
 
 /** Concat two arrays and remove duplications **/
 function concatUnique<T>(arr1: Array<T>, arr2: Array<T>, getId: (item: T) => string | number) {
@@ -511,6 +512,22 @@ const storage = {
             updated.subredditList = subredditList;
         }
         await browser.storage.local.set(updated);
+    },
+};
+
+export const session = {
+    async saveRateLimits(rateLimits: RateLimits) {
+        // https://github.com/mozilla/webextension-polyfill/issues/424
+        const session = (browser.storage as unknown as { session: Storage.LocalStorageArea }).session;
+        if (!session) return;
+        void session.set({ rateLimits: rateLimits });
+    },
+    async getRateLimits() {
+        const session = (browser.storage as unknown as { session: Storage.LocalStorageArea }).session;
+        const defaults = { remaining: null, reset: null, used: null } as RateLimits;
+        if (!session) return defaults;
+        const { rateLimits } = (await session.get({ rateLimits: defaults })) as { rateLimits: RateLimits };
+        return rateLimits;
     },
 };
 

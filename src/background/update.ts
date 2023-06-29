@@ -10,7 +10,9 @@ export async function updateAndSchedule(isForcedByUser = false) {
     sendFromBg('UPDATING_START');
 
     try {
-        const app = new NotifierApp();
+        const app = new NotifierApp((rl) => {
+            sendFromBg('RATE_LIMITS', rl);
+        });
         await app.update(isForcedByUser);
     } catch (e) {
         console.error(e);

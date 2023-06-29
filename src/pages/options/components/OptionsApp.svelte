@@ -11,7 +11,7 @@
     import BackupPage from '@options/components/backup/Backup.svelte';
     import WatchPage from '@options/components/watch/WatchPage.svelte';
     import { RefreshIcon } from '@options/lib/icons';
-    import { isUpdating, rateLimits } from '@options/lib/store';
+    import { isUpdating } from '@options/lib/store';
     import DonatePage from './DonatePage.svelte';
 
     export let pageId: PageId = 'settings';
@@ -20,8 +20,6 @@
         void applyTheme();
         nProgress.configure({ showSpinner: false });
     });
-
-    $: console.log({ rateLimits: $rateLimits });
 
     let page: { cmp: typeof Settings; name: string } = { cmp: Settings, name: getMsg('optionsNavSettings') };
 

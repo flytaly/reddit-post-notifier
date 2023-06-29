@@ -1,34 +1,76 @@
+import { IS_TEST } from '@/constants';
 import { connectToBg, disconnectFromBg, onMessage } from '@/port';
-import nProgress from 'nprogress';
-import { writable, readable } from 'svelte/store';
 import { type RateLimits } from '@/reddit-api/client';
+import { session } from '@/storage/storage';
+import nProgress from 'nprogress';
+import { derived, writable } from 'svelte/store';
 
-export const isUpdating = readable(false, (set) => {
-    connectToBg('options');
+function createMessageStore() {
+    const { subscribe, update, set } = writable(
+        {
+            isUpdating: false,
+            rateLimits: { used: null, reset: null, remaining: null } as RateLimits,
+        },
+        () => {
+            connectToBg('options');
+            return () => {
+                disconnectFromBg();
+            };
+        },
+    );
+
+    if (!IS_TEST) {
+        void session.getRateLimits().then((rateLimits) => {
+            if (Date.now() > (rateLimits.reset || 0)) return;
+            update((state) => ({ ...state, rateLimits: rateLimits }));
+        });
+    }
+
     onMessage('UPDATING_START', () => {
-        set(true);
+        update((state) => ({ ...state, isUpdating: true }));
         void nProgress.start();
     });
+
     onMessage('UPDATING_END', () => {
-        set(false);
+        update((state) => ({ ...state, isUpdating: false }));
         void nProgress.done();
     });
-    return () => {
-        disconnectFromBg();
-    };
-});
 
-export const rateLimits = readable<RateLimits>({ used: null, reset: null, remaining: null }, (set) => {
-    connectToBg('options');
     onMessage('RATE_LIMITS', (payload: RateLimits) => {
-        set(payload);
+        const rateLimits = { ...payload };
+        if (rateLimits.reset && !IS_TEST) {
+            rateLimits.reset = Date.now() + rateLimits.reset * 1000;
+            void session.saveRateLimits(rateLimits);
+        }
+        update((state) => ({ ...state, rateLimits }));
     });
+
+    return { subscribe, update, set };
+}
+
+const msgStore = createMessageStore();
+
+export const isUpdating = derived(msgStore, ($store, set) => {
+    set($store.isUpdating);
+});
+
+export const rateLimits = derived<typeof msgStore, RateLimits>(msgStore, ($store, set) => {
+    const wait = ($store.rateLimits.reset || 0) - Date.now();
+    const timeoutId =
+        wait > 0
+            ? setTimeout(() => {
+                  msgStore.update((state) => ({ ...state, rateLimits: { used: null, reset: null, remaining: null } }));
+              }, wait)
+            : undefined;
+
+    set({ ...$store.rateLimits });
+
     return () => {
-        disconnectFromBg();
+        clearTimeout(timeoutId);
     };
 });
 
-function createStore() {
+function createBlockStore() {
     const { subscribe, set } = writable(false);
 
     return {
@@ -44,4 +86,4 @@ function createStore() {
 
 export { storageData } from '@/pages/popup/store/store';
 // used for throttling requests from settings page
-export const isBlocked = createStore();
+export const isBlocked = createBlockStore();

@@ -2,6 +2,7 @@
     import { BackupIcon, HeartIcon, LogoIcon, WatchListIcon, SettingsIcon, HelpCircleIcon } from '@options/lib/icons';
     import type { PageId } from '@options/lib/routes';
     import { routes } from '@options/lib/routes';
+    import { rateLimits } from '@options/lib/store';
 
     export let current: PageId;
 
@@ -12,9 +13,14 @@
         info: HelpCircleIcon,
         donate: HeartIcon,
     };
+
+    function formatTime(ts: number) {
+        const d = new Date(ts);
+        return d.getHours().toString().padStart(2, '0') + ':' + d.getMinutes().toString().padStart(2, '0');
+    }
 </script>
 
-<aside class="sticky top-4 mt-4 flex flex-col text-sm">
+<aside class="sticky top-4 flex min-h-[calc(100vh-1rem)] flex-col pt-4 text-sm">
     <a href="./watch.html" class="self-center text-skin-text hover:text-skin-text">
         <div class="logo">
             {@html LogoIcon}
@@ -35,6 +41,25 @@
             {/each}
         {/each}
     </nav>
+    <div class="mt-auto w-full text-xs">
+        {#if $rateLimits}
+            <div class="my-4 grid w-max grid-cols-2 gap-x-4 gap-y-1">
+                <b class="col-span-2 border-b border-skin-delimiter font-bold">Rate Limits</b>
+                {#if $rateLimits.used}
+                    <div>used</div>
+                    <div>{$rateLimits.used}</div>
+                {/if}
+                {#if $rateLimits.remaining}
+                    <div>remaining</div>
+                    <div>{$rateLimits.remaining}</div>
+                {/if}
+                {#if $rateLimits.reset}
+                    <div>reset at</div>
+                    <div>{formatTime($rateLimits.reset)}</div>
+                {/if}
+            </div>
+        {/if}
+    </div>
 </aside>
 
 <style lang="postcss">

@@ -1,6 +1,5 @@
 /* eslint-disable no-await-in-loop */
-import { sendFromBg } from '@/port';
-import RedditApiClient from '../reddit-api/client';
+import RedditApiClient, { RateLimits } from '@/reddit-api/client';
 import type {
     RedditAccount,
     RedditError,
@@ -11,7 +10,7 @@ import type {
     RedditSubredditListing,
     RedditUserOverviewResponse,
 } from '../reddit-api/reddit-types';
-import { RedditObjectKind } from '../reddit-api/reddit-types';
+import { RedditObjectKind } from '@/reddit-api/reddit-types';
 import storage from '../storage';
 import type {
     FollowingUser,
@@ -21,10 +20,10 @@ import type {
     SubredditData,
     SubredditOpts,
 } from '../storage/storage-types';
-import { postFilter } from '../text-search/post-filter';
-import type { ExtensionOptions } from '../types/extension-options';
-import { filterPostDataProperties, getSearchQueryUrl, getSubredditUrl, getUserProfileUrl } from '../utils/index';
-import { wait } from '../utils/wait';
+import { postFilter } from '@/text-search/post-filter';
+import type { ExtensionOptions } from '@/types/extension-options';
+import { filterPostDataProperties, getSearchQueryUrl, getSubredditUrl, getUserProfileUrl } from '@/utils/index';
+import { wait } from '@/utils/wait';
 import type { MessageNotification, PostNotification, UserNotification } from './notifications';
 import notify, { NotificationId } from './notifications';
 
@@ -76,10 +75,9 @@ function isErrorResponse(result: RedditError | RedditListingResponse<unknown> | 
 
 export default class NotifierApp {
     reddit: RedditApiClient;
-    constructor() {
-        this.reddit = new RedditApiClient((rl) => {
-            sendFromBg('RATE_LIMITS', rl);
-        });
+
+    constructor(onRateLimits?: (rl: RateLimits) => void) {
+        this.reddit = new RedditApiClient(onRateLimits);
     }
 
     async updateSubreddit({
