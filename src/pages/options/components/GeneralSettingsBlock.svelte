@@ -25,8 +25,7 @@
 
     let wasUploaded = false;
     let audioErrMsg = '';
-    let intervalInMin = 1;
-    $: intervalInMin = Math.max(1, $storageData.options.updateInterval / 60);
+    let intervalInMin = Math.max(1, $storageData.options.updateInterval / 60) || 1;
 
     const onUpdateIntervalChange = async () => {
         if (intervalInMin) {
