@@ -48,6 +48,9 @@ export default class RedditApiClient {
     headers: HeadersInit;
     accessToken?: string | null;
     onRateLimits?: (rl: RateLimits) => void;
+    fetchOpts: RequestInit = {
+        cache: 'reload',
+    };
 
     constructor(onRateLimits?: (rl: RateLimits) => void) {
         this.authOrigin = 'https://oauth.reddit.com';
@@ -63,7 +66,7 @@ export default class RedditApiClient {
 
     async GET(endpoint: string, queryParams: Record<string, unknown> = {}) {
         const query = mapObjToQueryStr({ ...queryParams, raw_json: '1' });
-        const init: RequestInit = { method: 'GET', headers: { ...this.headers }, cache: 'reload' };
+        const init: RequestInit = { method: 'GET', headers: { ...this.headers }, ...this.fetchOpts };
 
         /*
          * ! disable accees token due to new reddit API rules

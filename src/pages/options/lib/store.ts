@@ -36,19 +36,22 @@ function createMessageStore() {
         void nProgress.done();
     });
 
-    onMessage('RATE_LIMITS', (payload: RateLimits) => {
-        const rateLimits = { ...payload };
+    function setRateLimits(rateLimits: RateLimits) {
         if (rateLimits.reset && !IS_TEST) {
             rateLimits.reset = Date.now() + rateLimits.reset * 1000;
             void session.saveRateLimits(rateLimits);
         }
         update((state) => ({ ...state, rateLimits }));
+    }
+
+    onMessage('RATE_LIMITS', (payload: RateLimits) => {
+        setRateLimits({ ...payload });
     });
 
-    return { subscribe, update, set };
+    return { subscribe, update, set, setRateLimits };
 }
 
-const msgStore = createMessageStore();
+export const msgStore = createMessageStore();
 
 export const isUpdating = derived(msgStore, ($store, set) => {
     set($store.isUpdating);

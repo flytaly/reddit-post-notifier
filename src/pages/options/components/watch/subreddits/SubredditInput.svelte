@@ -10,7 +10,7 @@
     import Spinner from '@options/components/common/Spinner.svelte';
     import RedditItemsList from '@options/components/RedditItemsList.svelte';
     import { formatError } from '@options/lib/format-error';
-    import { isBlocked } from '@options/lib/store';
+    import { isBlocked, msgStore } from '@options/lib/store';
     import TooltipIcon from '@options/components/TooltipIcon.svelte';
     import WatchItem from '../WatchItem.svelte';
     import PostFilterBlock from './PostFilterBlock.svelte';
@@ -45,6 +45,7 @@
         showPosts = false;
         isBlocked.block();
         const app = new NotifierApp();
+        app.reddit.fetchOpts = { cache: 'default' };
         try {
             await app.updateSubreddit({
                 subOpts,
