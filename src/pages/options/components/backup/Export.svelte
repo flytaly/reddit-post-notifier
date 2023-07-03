@@ -1,12 +1,14 @@
 <script lang="ts">
     import storage from '@/storage';
-    import { CopyIcon, CheckMarkIcon, JsonIcon } from '@options/lib/icons';
+    import IosCheckbox from '@options/components/common/IosCheckbox.svelte';
+    import { CheckMarkIcon, CopyIcon, JsonIcon } from '@options/lib/icons';
     import Heading from '../Heading.svelte';
 
     let wasCopied = false;
+    let withAccs = false;
     let dataPromise: Promise<string>;
 
-    $: dataPromise = storage.getExportData().then((d) => JSON.stringify(d, null, 2));
+    $: dataPromise = storage.getExportData(withAccs).then((d) => JSON.stringify(d, null, 2));
 
     function downloadText(text: string, filename = 'file.txt', type = 'text/plain') {
         const element = document.createElement('a');
@@ -40,6 +42,16 @@
 
 <section class="mb-8">
     <Heading id="export" name={'Export config'} />
+    <div class="my-2 max-w-max">
+        <IosCheckbox bind:checked={withAccs} title="Include accounts data">
+            <span class="text-sm">Include accounts data</span>
+        </IosCheckbox>
+        {#if withAccs}
+            <div class="font-semibold text-skin-accent">
+                Caution! Don't share access and refresh tokens for your Reddit accounts!
+            </div>
+        {/if}
+    </div>
     <div>
         <div>
             <div class="flex justify-end space-x-4 rounded-t-md border border-b-0 border-skin-base bg-skin-bg2 p-1">

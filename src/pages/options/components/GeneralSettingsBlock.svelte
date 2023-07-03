@@ -6,10 +6,11 @@
     import applyTheme from '@/utils/apply-theme';
     import getMsg from '@/utils/get-message';
     import { OpenInNew, PlayIcon, SaveIcon, UploadIcon } from '@options/lib/icons';
+    import { storageData } from '@options/lib/store';
+    import { derived } from 'svelte/store';
+    import ChangeUrlInput from './ChangeUrlInput.svelte';
     import OptionsItem from './OptionsItem.svelte';
     import RadioGroup from './RadioGroup.svelte';
-    import { storageData } from '@options/lib/store';
-    import ChangeUrlInput from './ChangeUrlInput.svelte';
 
     const themeValueList: Array<{ value: ExtensionOptions['theme']; id: string; label: string }> = [
         { value: 'light', id: 'light', label: getMsg('optionThemeLight') },
@@ -25,11 +26,13 @@
 
     let wasUploaded = false;
     let audioErrMsg = '';
-    let intervalInMin = Math.max(1, $storageData.options.updateInterval / 60) || 1;
+    const intervalInMin = derived(storageData, (storageData) => {
+        return Math.max(1, storageData.options.updateInterval / 60);
+    });
 
-    const onUpdateIntervalChange = async () => {
-        if (intervalInMin) {
-            await storage.saveOptions({ updateInterval: Math.max(6, intervalInMin * 60) });
+    const onUpdateIntervalChange = async (e) => {
+        if (e.currentTarget.value) {
+            await storage.saveOptions({ updateInterval: Math.max(6, e.currentTarget.value * 60) });
             sendToBg('SCHEDULE_NEXT_UPDATE');
         }
     };
@@ -89,7 +92,7 @@
             min="1"
             max="300"
             size="8"
-            bind:value={intervalInMin}
+            value={$intervalInMin}
             on:input={onUpdateIntervalChange}
         />
     </div>

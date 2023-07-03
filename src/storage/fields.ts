@@ -3,6 +3,7 @@ import type { StorageFields } from './storage-types';
 
 export const dataFields: StorageFields = {
     mail: {},
+    accounts: {},
     options: DEFAULT_OPTIONS,
     queries: {},
     queriesList: [],

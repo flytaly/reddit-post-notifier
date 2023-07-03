@@ -1,17 +1,17 @@
 <script lang="ts">
-    import nProgress from 'nprogress';
-    import { onMount } from 'svelte';
     import applyTheme from '@/utils/apply-theme';
-    import Sidebar from '@options/components/Sidebar.svelte';
-    import ShortInfo from '@options/components/info/ShortInfo.svelte';
-    import Settings from '@options/components/SettingsPage.svelte';
-    import Info from '@options/components/info/InfoPage.svelte';
     import getMsg from '@/utils/get-message';
-    import type { PageId } from '@options/lib/routes';
+    import Settings from '@options/components/SettingsPage.svelte';
+    import Sidebar from '@options/components/Sidebar.svelte';
     import BackupPage from '@options/components/backup/Backup.svelte';
+    import Info from '@options/components/info/InfoPage.svelte';
+    import ShortInfo from '@options/components/info/ShortInfo.svelte';
     import WatchPage from '@options/components/watch/WatchPage.svelte';
     import { RefreshIcon } from '@options/lib/icons';
+    import type { PageId } from '@options/lib/routes';
     import { isUpdating } from '@options/lib/store';
+    import nProgress from 'nprogress';
+    import { onMount } from 'svelte';
     import DonatePage from './DonatePage.svelte';
 
     export let pageId: PageId = 'settings';

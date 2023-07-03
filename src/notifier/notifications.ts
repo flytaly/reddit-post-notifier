@@ -1,5 +1,5 @@
-import { browser } from 'webextension-polyfill-ts';
 import type { Notifications } from 'webextension-polyfill-ts';
+import { browser } from 'webextension-polyfill-ts';
 import { playAudio, type SoundId } from '../sounds';
 import storage from '../storage';
 import { getInboxUrl } from '../utils';
@@ -17,7 +17,7 @@ export type TestNotification = { type: NotificationId.test; message: string };
 
 export type MessageNotification = {
     type: NotificationId.mail;
-    items: { len: number }[];
+    items: { len: number; username: string }[];
 };
 
 export type PostNotification = {
@@ -71,8 +71,14 @@ function notify(notif: Notification, soundId?: SoundId | null) {
     if (!notif.items.length) return;
 
     if (isMessage(notif)) {
-        const len = notif.items[0]?.len;
-        const nOpts: NotificationOpts = { ...opts, title: 'Reddit: new mail', message: `${len} unread mail` };
+        const message = notif.items
+            .map((i) => {
+                if (i.username) return `${i.username || ''} (${i.len})`;
+                return `${i.len} unread messages`;
+            })
+            .join(',\n');
+
+        const nOpts: NotificationOpts = { ...opts, title: 'Reddit: new mail', message };
 
         void storage.getOptions().then((opts) => {
             const url = getInboxUrl(opts);

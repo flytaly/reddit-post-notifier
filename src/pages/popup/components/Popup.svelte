@@ -54,7 +54,8 @@
                 s.subredditList?.length ||
                 s.pinnedPostList?.length ||
                 s.usersList?.length ||
-                s.mail?.messages?.length,
+                s.mail?.messages?.length ||
+                Object.keys(s.accounts || {}).length,
         );
     };
 

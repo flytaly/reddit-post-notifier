@@ -1,6 +1,6 @@
 // https://www.reddit.com/dev/api/
+import { DEV_SERVER, IS_DEV, USE_DEV_SERVER, config } from '@/constants';
 import { mapObjToQueryStr } from '../utils/index';
-import { DEV_SERVER, IS_DEV, USE_DEV_SERVER } from '../constants';
 import type {
     RedditAccount,
     RedditCommentResponse,
@@ -63,28 +63,26 @@ export default class RedditApiClient {
             this.publicOrigin = DEV_SERVER;
         }
     }
-
     async GET(endpoint: string, queryParams: Record<string, unknown> = {}) {
         const query = mapObjToQueryStr({ ...queryParams, raw_json: '1' });
         const init: RequestInit = { method: 'GET', headers: { ...this.headers }, ...this.fetchOpts };
 
-        /*
-         * ! disable accees token due to new reddit API rules
-         * if (this.accessToken) {
+        if (this.accessToken) {
             if (!init.headers) init.headers = {};
             init.headers['User-Agent'] = config.userAgent;
             init.headers['Authorization'] = `bearer ${this.accessToken}`;
         }
         const origin = this.accessToken ? this.authOrigin : this.publicOrigin;
-        const actualEndpoint = this.accessToken ? endpoint : `${endpoint}.json`; */
-
-        const origin = this.publicOrigin;
-        const actualEndpoint = `${endpoint}.json`;
+        const actualEndpoint = this.accessToken ? endpoint : `${endpoint}.json`;
         const result = await fetch(encodeURI(`${origin}${actualEndpoint}?${query}`), init);
 
         if (this.onRateLimits) this.onRateLimits(getRateLimits(result));
 
         return result.json();
+    }
+
+    setAccessToken(accessToken?: string | null) {
+        this.accessToken = accessToken;
     }
 
     getSubreddit(subreddit: string) {

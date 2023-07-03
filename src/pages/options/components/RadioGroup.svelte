@@ -19,7 +19,6 @@
                 group-first:rounded-l group-last:rounded-r
                 peer-checked:bg-skin-input-checked
                 peer-checked:text-white
-                peer-checked:hover:brightness-110
                 peer-focus-visible:border-skin-outline
                 peer-focus-visible:ring
                 peer-focus-visible:ring-skin-outline

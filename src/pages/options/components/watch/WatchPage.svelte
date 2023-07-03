@@ -9,6 +9,7 @@
     import SearchBlock from './search/SearchBlock.svelte';
     import SubredditsBlock from './subreddits/SubredditsBlock.svelte';
     import MailBlock from './MailBlock.svelte';
+    import AccountsBlock from './AccountsBlock.svelte';
 
     const dataPromise = storage.getAllData();
 
@@ -35,6 +36,7 @@
         <section>
             <Heading id={s.mail.id} name={s.mail.name} />
             <MailBlock />
+            <AccountsBlock />
         </section>
         <section>
             <Heading id={s.subreddit.id} name={s.subreddit.name} />

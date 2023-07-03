@@ -8,6 +8,35 @@ import type {
 import type { SearchableField, FilterRule } from '../text-search/post-filter';
 import type { ExtensionOptions } from '../types/extension-options';
 
+export type AuthUser = {
+    id: string;
+    checkMail?: boolean;
+    mailNotify?: boolean;
+
+    auth: {
+        accessToken?: string | null;
+        expiresIn?: number;
+        refreshToken?: string | null;
+        scope?: string;
+        error?: string | null;
+    };
+
+    // reddit data
+    name?: string;
+    redditId?: string;
+    img?: string;
+    totalKarma?: number;
+    inboxCount?: number;
+    hasMail?: boolean;
+    error?: string | null;
+
+    mail?: {
+        messages: RedditMessage[];
+        lastUpdate?: number;
+        lastPostCreated?: number;
+    };
+};
+
 export type PostFilterOptions = {
     enabled?: boolean;
     rules?: FilterRule[];
@@ -79,6 +108,7 @@ export type MailInfo = {
 export type StorageFields = {
     options: ExtensionOptions;
 
+    accounts?: Record<string, AuthUser>;
     notifications: { id: string; data: string[] }[];
     pinnedPostList: RedditPost[];
     queries: Record<string, QueryData>;

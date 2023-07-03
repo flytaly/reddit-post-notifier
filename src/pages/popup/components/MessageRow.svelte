@@ -1,13 +1,15 @@
 <script lang="ts">
     import type { RedditMessage } from '@/reddit-api/reddit-types';
+    import storage from '@/storage';
     import type { ExtensionOptions } from '@/types/extension-options';
     import { getInboxUrl } from '@/utils';
     import getMsg from '@/utils/get-message';
+    import { PostGroup } from '@/utils/post-group';
     import { browser } from 'webextension-polyfill-ts';
     import { storageData } from '../store/store';
     import CheckMarkButton from './CheckMarkButton.svelte';
-    import storage from '@/storage';
 
+    export let group: PostGroup;
     export let item: RedditMessage;
 
     let options: ExtensionOptions = $storageData.options;
@@ -17,7 +19,8 @@
     $: href = getInboxUrl(options);
 
     const removePost = async (messageId: string) => {
-        await storage.removeMessage({ messageId });
+        const accId = group.type === 'account-message' ? group.id : undefined;
+        await storage.removeMessage({ accId, messageId });
     };
 
     const onLinkClick = async () => {

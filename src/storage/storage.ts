@@ -1,22 +1,27 @@
 /* eslint-disable @typescript-eslint/explicit-module-boundary-types */
 
+import { RateLimits } from '@/reddit-api/client';
+import type { AuthError } from '@/reddit-api/errors';
+import scopes from '@/reddit-api/scopes';
 import { browser, type Storage } from 'webextension-polyfill-ts';
 import DEFAULT_OPTIONS from '../options-default';
+import type { TokenResponseBody } from '../reddit-api/auth';
 import type { RedditItem, RedditMessage, RedditPost, RedditPostExtended } from '../reddit-api/reddit-types';
 import type { ExtensionOptions } from '../types/extension-options';
 import { filterKeys, filterPostDataProperties, generateId } from '../utils';
 import { dataFields } from './fields';
 import type {
+    AuthUser,
+    FollowingUser,
+    MailInfo,
+    PostsToSaveData,
     QueryData,
     QueryOpts,
-    PostsToSaveData,
     StorageFields as SF,
+    StorageFields,
     SubredditData,
     SubredditOpts,
-    FollowingUser,
-    StorageFields,
 } from './storage-types';
-import { RateLimits } from '@/reddit-api/client';
 
 /** Concat two arrays and remove duplications **/
 function concatUnique<T>(arr1: Array<T>, arr2: Array<T>, getId: (item: T) => string | number) {
@@ -32,10 +37,26 @@ function concatUnique<T>(arr1: Array<T>, arr2: Array<T>, getId: (item: T) => str
     return result;
 }
 
+function filterUnreadMessages(unreadMessages: RedditMessage[] | null | undefined, mail: MailInfo): void {
+    if (!unreadMessages) return;
+    if (!mail.messages) mail.messages = [];
+    const prevUnread = mail.messages;
+    const ids = new Set<string>();
+    mail.messages.forEach((m) => ids.add(m.data.id));
+    unreadMessages = unreadMessages.filter((m) => !ids.has(m.data.id));
+    mail.messages = [...unreadMessages, ...prevUnread];
+    if (unreadMessages[0]) mail.lastPostCreated = unreadMessages[0].data.created;
+}
+
 const storage = {
     async getMail() {
         const { mail } = await browser.storage.local.get({ mail: {} });
         return mail as SF['mail'];
+    },
+
+    async getAccounts() {
+        const { accounts } = await browser.storage.local.get({ accounts: {} });
+        return accounts as Record<string, AuthUser>;
     },
 
     async getOptions() {
@@ -82,14 +103,21 @@ const storage = {
         return browser.storage.local.get(dataFields) as Promise<SF>;
     },
 
-    async getExportData() {
+    async getExportData(accounts = false) {
         const data = (await browser.storage.local.get({
+            ...(accounts ? { accounts: {} } : {}),
             options: DEFAULT_OPTIONS,
             queriesList: [],
             subredditList: [],
             usersList: [],
             pinnedPostList: [],
         } as Partial<SF>)) as Partial<SF>;
+
+        if (data.accounts) {
+            Object.values(data.accounts).forEach((acc) => {
+                acc.mail = { messages: [] };
+            });
+        }
 
         data.usersList?.forEach((u) => {
             u.data = [];
@@ -109,6 +137,12 @@ const storage = {
             );
             sData.options = { ...sData.options, ...data.options };
         }
+        if (data.accounts) {
+            Object.values(data.accounts).forEach((acc) => {
+                acc.mail = { messages: [], lastUpdate: 0 };
+            });
+            sData.accounts = { ...(sData.accounts || {}), ...data.accounts };
+        }
         if (data.subredditList && Array.isArray(data.subredditList)) {
             sData.subredditList = concatUnique(sData.subredditList, data.subredditList, (i) => i.id);
         }
@@ -122,6 +156,26 @@ const storage = {
             sData.usersList = concatUnique(sData.usersList || [], data.usersList, (i) => i.username);
         }
         await browser.storage.local.set(sData);
+    },
+
+    async saveAccounts(accounts: SF['accounts']) {
+        return browser.storage.local.set({ accounts } as SF);
+    },
+
+    async saveAuthData({ id, data }: { data?: TokenResponseBody; id: string }) {
+        const accounts = await storage.getAccounts();
+        if (!accounts[id]) accounts[id] = { id, auth: {}, checkMail: true, mailNotify: true, mail: { messages: [] } };
+        const auth = accounts[id].auth;
+        if (data) {
+            auth.accessToken = data.access_token;
+            auth.refreshToken = data.refresh_token;
+            auth.scope = data.scope || '';
+            auth.error = '';
+            const expiresInRelative = +data.expires_in || 0;
+            auth.expiresIn = expiresInRelative && new Date().getTime() + expiresInRelative * 1000;
+        }
+
+        return browser.storage.local.set({ accounts } as StorageFields);
     },
 
     async saveMail(mail: SF['mail']) {
@@ -141,17 +195,30 @@ const storage = {
             return storage.saveMail(mail);
         }
         mail.error = null;
-        if (!mail.messages) mail.messages = [];
         mail.lastUpdate = Date.now();
-        if (unreadMessages) {
-            const prevUnread = mail.messages || [];
-            const ids = new Set<string>();
-            mail.messages.forEach((m) => ids.add(m.data.id));
-            unreadMessages = unreadMessages.filter((m) => !ids.has(m.data.id));
-            mail.messages = [...unreadMessages, ...prevUnread];
-            if (unreadMessages[0]) mail.lastPostCreated = unreadMessages[0].data.created;
-        }
+        filterUnreadMessages(unreadMessages, mail);
         return storage.saveMail(mail);
+    },
+
+    async saveAccMessageData(
+        accId: string,
+        { unreadMessages, error }: { unreadMessages?: RedditMessage[] | null; error?: { message?: string } | null },
+    ) {
+        const accs = await storage.getAccounts();
+        if (!accs[accId]) accs[accId] = { id: accId, auth: {}, mail: { messages: [] } };
+        if (error) {
+            accs[accId].error = `Couldn't fetch messages. ${error.message || ''}`;
+            return storage.saveAccounts(accs);
+        }
+
+        accs[accId].error = null;
+        accs[accId].auth.error = null;
+        if (!accs[accId].mail) accs[accId].mail = { messages: [] };
+        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+        const mail = accs[accId].mail!;
+        mail.lastUpdate = Date.now();
+        filterUnreadMessages(unreadMessages, mail);
+        return storage.saveAccounts(accs);
     },
 
     async saveOptions(data: Partial<ExtensionOptions>) {
@@ -274,8 +341,36 @@ const storage = {
         return browser.storage.local.set({ notifications });
     },
 
+    async setAuthError(error: AuthError) {
+        const accs = await storage.getAccounts();
+        const { id } = error;
+        if (!accs[id]) return;
+
+        accs[id].auth.error = error.message;
+        if (error.invalidateToken) accs[id].auth.refreshToken = null;
+        return storage.saveAccounts(accs);
+    },
+
     async clearStorage() {
         return browser.storage.local.clear();
+    },
+
+    async removeAccount(ids: string[]) {
+        const accs = await storage.getAccounts();
+        const result: StorageFields['accounts'] = {};
+        Object.keys(accs).forEach((k) => {
+            if (ids.includes(accs[k]?.id)) return;
+            result[k] = accs[k];
+        });
+        return storage.saveAccounts(result);
+    },
+
+    async removeAccountMessage({ accId, messageId }: { accId: string; messageId: string }) {
+        const accounts = await storage.getAccounts();
+        const mail = accounts[accId]?.mail;
+        if (!mail) return;
+        mail.messages = (mail.messages || []).filter((m) => m.data.id !== messageId);
+        await browser.storage.local.set({ accounts } as SF);
     },
 
     async removeQueryData(queryId: string) {
@@ -291,7 +386,17 @@ const storage = {
         await browser.storage.local.set({ subreddits } as Pick<SF, 'subreddits'>);
     },
 
-    async removePost({ id, subreddit, searchId }: { id: string; subreddit?: string; searchId?: string }) {
+    async removePost({
+        id,
+        subreddit,
+        searchId,
+        accountId,
+    }: {
+        id: string;
+        subreddit?: string;
+        searchId?: string;
+        accountId?: string;
+    }) {
         if (subreddit) {
             const subreddits = await storage.getSubredditData();
 
@@ -304,6 +409,14 @@ const storage = {
             const queries = await storage.getQueriesData();
             queries[searchId].posts = queries[searchId].posts?.filter(({ data }) => data.id !== id);
             await browser.storage.local.set({ queries });
+        }
+
+        if (accountId) {
+            const accounts = await storage.getAccounts();
+            const mail = accounts[accountId]?.mail;
+            if (!mail) return;
+            mail.messages = mail.messages?.filter(({ data }) => data.id !== id);
+            await storage.saveAccounts(accounts);
         }
     },
 
@@ -356,7 +469,12 @@ const storage = {
     },
 
     async removeAllPosts() {
-        const { queries, subreddits, usersList, mail } = await storage.getAllData();
+        const { queries, subreddits, usersList, mail, accounts } = await storage.getAllData();
+
+        Object.values(accounts || {}).forEach((acc) => {
+            if (!acc.mail) acc.mail = { messages: [] };
+            else acc.mail.messages = [];
+        });
 
         Object.keys(subreddits).forEach((subr) => {
             subreddits[subr].posts = [];
@@ -370,8 +488,7 @@ const storage = {
         if (mail) {
             mail.messages = [];
         }
-
-        await browser.storage.local.set({ subreddits, queries, usersList, mail });
+        await browser.storage.local.set({ subreddits, queries, usersList, mail, accounts });
     },
 
     async removeMessages() {
@@ -380,7 +497,39 @@ const storage = {
         await browser.storage.local.set({ mail });
     },
 
-    async removeMessage({ messageId }: { messageId: string }) {
+    async removeAccountMessages(accId: string) {
+        const { accounts = {} }: Pick<SF, 'accounts'> = await browser.storage.local.get({ accounts: {} });
+        if (!accounts[accId]) return;
+        const m = accounts[accId]?.mail;
+        if (!m) return;
+        m.messages = [];
+        await browser.storage.local.set({ accounts } as SF);
+        return;
+    },
+
+    async removeAllMessages() {
+        const { mail = {}, accounts = {} }: Pick<SF, 'mail' | 'accounts'> = await browser.storage.local.get({
+            mail: {},
+            accounts: {},
+        });
+        Object.values(accounts).forEach((a) => {
+            if (!a.mail) a.mail = { messages: [] };
+            a.mail.messages = [];
+        });
+
+        mail.messages = [];
+        await browser.storage.local.set({ mail, accounts } as SF);
+    },
+
+    async removeMessage({ accId, messageId }: { accId?: string; messageId: string }) {
+        if (accId) {
+            const accounts = await storage.getAccounts();
+            const mail = accounts[accId]?.mail;
+            if (!mail) return;
+            mail.messages = (mail.messages || []).filter((m) => m.data.id !== messageId);
+            await browser.storage.local.set({ accounts } as SF);
+            return;
+        }
         const mail = await storage.getMail();
         if (!mail) return;
         mail.messages = (mail.messages || []).filter((m) => m.data.id !== messageId);
@@ -426,7 +575,8 @@ const storage = {
 
     async countNumberOfUnreadItems(updateBadge = true) {
         let count = 0;
-        const { subredditList, queriesList, queries, subreddits, usersList, mail } = await storage.getAllData();
+        const { subredditList, queriesList, queries, subreddits, accounts, usersList, mail } =
+            await storage.getAllData();
 
         if (subreddits) {
             subredditList?.forEach((s) => {
@@ -445,6 +595,9 @@ const storage = {
         });
 
         count += mail?.messages?.length || 0;
+        Object.values(accounts || {})?.forEach((a) => {
+            count += a.mail?.messages?.length || 0;
+        });
 
         if (updateBadge) {
             await browser.action.setBadgeText({ text: count ? String(count) : '' });
@@ -510,6 +663,25 @@ const storage = {
             });
             updated.subreddits = subreddits;
             updated.subredditList = subredditList;
+        }
+        const id = generateId();
+        if (data.refreshToken) {
+            updated.accounts = {
+                [id]: {
+                    id,
+                    auth: {
+                        refreshToken: data.refreshToken,
+                        scope: data.scope || `${scopes.read.id} ${scopes.privatemessages.id}`,
+                        accessToken: data.accessToken,
+                        expiresIn: data.expiresIn,
+                    },
+                    mail: {
+                        messages: data.messages?.messages || [],
+                    },
+                    mailNotify: data.options.messagesNotify,
+                    checkMail: data.options.messages,
+                },
+            };
         }
         await browser.storage.local.set(updated);
     },

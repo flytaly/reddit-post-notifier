@@ -5,7 +5,7 @@ import { getInboxUrl, getSearchQueryUrl, getSubredditUrl, getUserProfileUrl } fr
 import { formatError } from '@options/lib/format-error';
 import { idToUserIdx } from './index';
 
-export type PostGroupType = 'subreddit' | 'search' | 'user' | 'message';
+export type PostGroupType = 'subreddit' | 'search' | 'user' | 'message' | 'account-message';
 
 export type PostGroup = {
     type: PostGroupType;
@@ -40,6 +40,30 @@ export const extractPostGroups = (storageData: StorageFields) => {
         };
         groupsWithPosts.push(mailGroup);
     }
+    const accList = Object.values(storageData.accounts || {});
+
+    accList.forEach((a) => {
+        let error = a.error || a.auth.error;
+        if (!a.auth.refreshToken) error = 'Refresh token is missing. Please reauthorize the account.';
+        const length = a.mail?.messages?.length || 0;
+        const lastPostCreated = a.mail?.lastPostCreated;
+        const group: PostGroup = {
+            type: 'account-message',
+            id: a.id,
+            href: getInboxUrl(storageData.options),
+            title: `${a.name || ''} inbox (${length})`,
+            lastPostCreated,
+            size: length,
+            notify: a.mailNotify ? 'on' : 'off',
+            error,
+            updatesDisabled: !a.checkMail,
+        };
+        if (length) {
+            groupsWithPosts.push(group);
+        } else if (!storageData.options.hideEmptyGroups) {
+            groupsWithoutPosts.push(group);
+        }
+    });
 
     storageData.subredditList.forEach((s) => {
         const subData = storageData.subreddits[s.id];
@@ -119,7 +143,7 @@ export const extractPostGroups = (storageData: StorageFields) => {
 };
 
 export const getGroupItems = (
-    data: Pick<StorageFields, 'subreddits' | 'queries' | 'usersList' | 'mail'>,
+    data: Pick<StorageFields, 'subreddits' | 'queries' | 'usersList' | 'mail' | 'accounts'>,
     id: string,
     type: PostGroupType,
 ): RedditItem[] | RedditMessage[] => {
@@ -136,6 +160,9 @@ export const getGroupItems = (
     if (type === 'message') {
         return data.mail?.messages || [];
     }
+    if (type === 'account-message') {
+        return data.accounts?.[id]?.mail?.messages || [];
+    }
     return [];
 };
 
@@ -148,4 +175,5 @@ export const removePostsFromGroup = async (id: string, type: PostGroupType) => {
         return storage.removePostsFrom({ followUserIndex: index });
     }
     if (type === 'message') return storage.removeMessages();
+    if (type === 'account-message') return storage.removeAccountMessages(id);
 };

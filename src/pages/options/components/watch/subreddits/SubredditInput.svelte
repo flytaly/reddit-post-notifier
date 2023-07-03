@@ -1,17 +1,17 @@
 <script lang="ts">
     import NotifierApp from '@/notifier/app';
-    import * as icons from '@options/lib/icons';
-    import { tooltip } from '@options/lib/tooltip';
     import type { PostFilterOptions, SubredditData, SubredditOpts } from '@/storage/storage-types';
     import type { FilterRule, SearchableField } from '@/text-search/post-filter';
     import { debounce, testMultireddit } from '@/utils';
     import getMsg from '@/utils/get-message';
+    import RedditItemsList from '@options/components/RedditItemsList.svelte';
+    import TooltipIcon from '@options/components/TooltipIcon.svelte';
     import NotifyToggle from '@options/components/common/NotifyToggle.svelte';
     import Spinner from '@options/components/common/Spinner.svelte';
-    import RedditItemsList from '@options/components/RedditItemsList.svelte';
     import { formatError } from '@options/lib/format-error';
-    import { isBlocked, msgStore } from '@options/lib/store';
-    import TooltipIcon from '@options/components/TooltipIcon.svelte';
+    import * as icons from '@options/lib/icons';
+    import { isBlocked } from '@options/lib/store';
+    import { tooltip } from '@options/lib/tooltip';
     import WatchItem from '../WatchItem.svelte';
     import PostFilterBlock from './PostFilterBlock.svelte';
     import type { InputStatus } from './subreddits-store';

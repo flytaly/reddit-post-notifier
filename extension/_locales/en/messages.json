@@ -84,7 +84,7 @@
         "message": "Watch"
     },
     "optionsNavMailFull": {
-        "message": "Messages"
+        "message": "Messages and Accounts"
     },
     "optionsNavSubreddits": {
         "message": "Subreddits"
@@ -177,7 +177,7 @@
         "message": "Read more on the help page."
     },
     "optionMailDescription": {
-        "message": "Watch for unread private messages of the current logged-in user. Due to changes in Reddit API rules, multiple users are no longer supported."
+        "message": "Watch for unread private messages of the current logged-in user."
     },
     "optionMailCheck": {
         "message": "Watch for Messages"
@@ -187,6 +187,36 @@
     },
     "optionMailNotify_title": {
         "message": "Show notifications if there are new messages"
+    },
+    "optionAccountsDescription": {
+        "message": "Or connect a Reddit account to check its unread private messages."
+    },
+    "optionAccountsNoAccs": {
+        "message": "No authorized accounts"
+    },
+    "optionAccountsReAuthBtn": {
+        "message": "reauthorize"
+    },
+    "optionAccountsAddBtn": {
+        "message": "Add an account"
+    },
+    "optionAccountsMailCheck": {
+        "message": "Watch for Messages"
+    },
+    "optionAccountsMailCheck_title": {
+        "message": "Check unread private messages on reddit and display them in the popup"
+    },
+    "optionAccountsMailNotify_title": {
+        "message": "Show notifications if there are new messages"
+    },
+    "optionAccountsUpdateAcc": {
+        "message": "update the account's information"
+    },
+    "optionAccountsFetchBtn": {
+        "message": "fetch messages"
+    },
+    "optionAccountsFetchBtnDesc": {
+        "message": "fetch and display unread messages"
     },
     "optionWatchInputNameColumn": {
         "message": "Name"
@@ -344,6 +374,6 @@
         "message": "Account authorization"
     },
     "helpAccount": {
-        "message": "<p>You can connect Reddit accounts to check its private messages and use Reddit OAuth API. Reddit private API has fewer restrictions so the extension will try to use it if possible. But if you don't want to connect your account, then Reddit public API will be used.</p><p>All authorization data is stored locally in your browser's storage and isn't shared with anyone.</p>"
+        "message": "<p>You can connect Reddit accounts to check its private messages using Reddit API.</p><p>All authorization data is stored locally in your browser's storage and isn't shared with anyone.</p>"
     }
 }
