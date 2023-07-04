@@ -54,7 +54,7 @@ export default class RedditApiClient {
 
     constructor(onRateLimits?: (rl: RateLimits) => void) {
         this.authOrigin = 'https://oauth.reddit.com';
-        this.publicOrigin = 'https://reddit.com';
+        this.publicOrigin = 'https://www.reddit.com';
         this.headers = { Accept: 'application/json' };
         this.onRateLimits = onRateLimits;
 
