@@ -76,7 +76,7 @@ export default class RedditApiClient {
         const actualEndpoint = this.accessToken ? endpoint : `${endpoint}.json`;
         const result = await fetch(encodeURI(`${origin}${actualEndpoint}?${query}`), init);
 
-        if (this.onRateLimits) this.onRateLimits(getRateLimits(result));
+        if (this.onRateLimits && !this.accessToken) this.onRateLimits(getRateLimits(result));
 
         return result.json();
     }
