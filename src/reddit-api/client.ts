@@ -14,7 +14,7 @@ import type {
     RedditUserOverviewResponse,
 } from './reddit-types';
 
-type R<T> = Promise<T | RedditError>;
+type R<T> = Promise<T | RedditError | never>;
 
 const enum RateLimitHeaders {
     'remaining' = 'x-ratelimit-remaining',
@@ -78,7 +78,14 @@ export default class RedditApiClient {
 
         if (this.onRateLimits && !this.accessToken) this.onRateLimits(getRateLimits(result));
 
-        return result.json();
+        if (result.ok) return result.json();
+
+        try {
+            const errorResponse = await result.json();
+            return errorResponse as RedditError;
+        } catch (error) {
+            throw new Error(`status code: ${result.status}. ${result.statusText}`);
+        }
     }
 
     setAccessToken(accessToken?: string | null) {

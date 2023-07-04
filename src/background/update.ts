@@ -1,8 +1,8 @@
+import { isAuthError } from '@/reddit-api/errors';
+import NotifierApp from '../notifier/app';
 import { sendFromBg } from '../port';
 import storage from '../storage';
-import NotifierApp from '../notifier/app';
 import { scheduleNextUpdate } from './timers';
-import { isAuthError } from '@/reddit-api/errors';
 
 export let isUpdating = false;
 
@@ -13,7 +13,7 @@ export async function updateAndSchedule(isForcedByUser = false) {
 
     try {
         const app = new NotifierApp((rl) => {
-            sendFromBg('RATE_LIMITS', rl);
+            if (rl.reset) sendFromBg('RATE_LIMITS', rl);
         });
         await app.update(isForcedByUser);
         await scheduleNextUpdate();

@@ -344,7 +344,7 @@ export default class NotifierApp {
 
                 if (isErrorResponse(response)) {
                     console.error('Error during fetching account information', response);
-                    ac.error = `Couldn\t fetch account information: ${response.message || ''}`;
+                    ac.error = `Couldn't fetch account information: ${response.message || ''}`;
                     return ac;
                 }
                 if (response.data) {
