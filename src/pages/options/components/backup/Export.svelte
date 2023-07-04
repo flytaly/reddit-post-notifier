@@ -79,7 +79,7 @@
                 {/await}
             </div>
             <div
-                class="h-56 w-full overflow-y-scroll whitespace-pre-wrap rounded-b-md border border-skin-base p-1 font-mono"
+                class="h-56 w-full overflow-y-scroll whitespace-pre-wrap break-all rounded-b-md border border-skin-base p-1 font-mono"
             >
                 {#await dataPromise}
                     <div class="h-60 w-full">Loading</div>
