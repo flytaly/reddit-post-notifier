@@ -1,7 +1,7 @@
-import { config } from '../constants';
-import RedditApiClient from './client';
-import auth from './auth';
 import fetchMock from 'jest-fetch-mock';
+import { config } from '../constants';
+import auth from './auth';
+import RedditApiClient from './client';
 import type { RedditError } from './reddit-types';
 
 jest.mock('./auth.ts');
@@ -60,7 +60,7 @@ describe('HTTP GET request', () => {
 
     test('should have correct public api url', async () => {
         fetchMock.mockImplementationOnce((url) => {
-            expect(url).toBe('https://reddit.com/endpoint.json?raw_json=1');
+            expect(url).toBe('https://www.reddit.com/endpoint.json?raw_json=1');
             return jsonResponse(response);
         });
         const reddit = new RedditApiClient();
@@ -70,7 +70,7 @@ describe('HTTP GET request', () => {
 
     test('should have correct public api url with params', async () => {
         fetchMock.mockImplementationOnce((url) => {
-            expect(url).toBe('https://reddit.com/endpoint.json?p1=v1&p2=v2&raw_json=1');
+            expect(url).toBe('https://www.reddit.com/endpoint.json?p1=v1&p2=v2&raw_json=1');
             return jsonResponse(response);
         });
         const reddit = new RedditApiClient();
