@@ -290,6 +290,12 @@
     "addField": {
         "message": "add field"
     },
+    "rateLimits": {
+        "message": "Rate Limits"
+    },
+    "rateLimitsDescription": {
+        "message": "<p>This block shows the rate limits that Reddit uses. They are only visible if you left this page open during the update. You can force an update by clicking the \"update\" button in the pop-up window.</p><br><ul><li>- used: approximate number of requests used in this period</li><li>- remaining: approximate number of requests left to use </li><li>- reset: approximate end time of the period</li> "
+    },
     "optionsSubredditFetch": {
         "message": "fetch posts"
     },

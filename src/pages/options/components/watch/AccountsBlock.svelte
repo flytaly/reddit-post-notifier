@@ -55,8 +55,6 @@
                     <Account {accounts} {acc} {authorize} {isAuthorizing} />
                 {/each}
             </ul>
-        {:else}
-            <div class="font-medium">{getMsg('optionAccountsNoAccs')}</div>
         {/if}
     </div>
     <AddButton clickHandler={() => authorize()} {disabled}>{getMsg('optionAccountsAddBtn')}</AddButton>

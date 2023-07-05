@@ -1,5 +1,7 @@
 <script lang="ts">
-    import { BackupIcon, HeartIcon, LogoIcon, WatchListIcon, SettingsIcon, HelpCircleIcon } from '@options/lib/icons';
+    import { tooltip } from '@/pages/options/lib/tooltip';
+    import getMsg from '@/utils/get-message';
+    import { BackupIcon, HeartIcon, HelpCircleIcon, LogoIcon, SettingsIcon, WatchListIcon } from '@options/lib/icons';
     import type { PageId } from '@options/lib/routes';
     import { routes } from '@options/lib/routes';
     import { rateLimits } from '@options/lib/store';
@@ -44,7 +46,15 @@
     <div class="mt-auto w-full text-xs">
         {#if $rateLimits}
             <div class="my-4 grid w-max grid-cols-2 gap-x-4 gap-y-1">
-                <b class="col-span-2 border-b border-skin-delimiter font-bold">Rate Limits</b>
+                <span
+                    use:tooltip={{ content: getMsg('rateLimitsDescription'), allowHTML: true }}
+                    class="col-span-2 mt-4 flex items-center border-b border-skin-delimiter"
+                >
+                    <b class="font-bold">{getMsg('rateLimits')}</b>
+                    <span class="ml-2 inline-flex h-[0.85rem] w-[0.85rem] text-skin-text">
+                        {@html HelpCircleIcon}
+                    </span>
+                </span>
                 {#if $rateLimits.used}
                     <div>used</div>
                     <div>{$rateLimits.used}</div>
