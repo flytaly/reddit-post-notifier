@@ -11,6 +11,7 @@
     import ChangeUrlInput from './ChangeUrlInput.svelte';
     import OptionsItem from './OptionsItem.svelte';
     import RadioGroup from './RadioGroup.svelte';
+    import { IS_CHROME } from '@/constants';
 
     const themeValueList: Array<{ value: ExtensionOptions['theme']; id: string; label: string }> = [
         { value: 'light', id: 'theme_light', label: getMsg('optionThemeLight') },
@@ -111,7 +112,16 @@
 </script>
 
 <OptionsItem title={getMsg('optionUpdateInterval')} labelFor="updateIntervalInput">
-    <div slot="description">{getMsg('optionUpdateIntervalDescription')}</div>
+    <div slot="description">
+        <p>
+            {getMsg('optionUpdateIntervalDescription')}
+        </p>
+        {#if IS_CHROME}
+            <p>
+                {getMsg('optionUpdateIntervalDescriptionChrome')}
+            </p>
+        {/if}
+    </div>
     <div slot="controls">
         <RadioGroup onChange={intervalRadioInputHandler} valueList={intervalList} currentValue={intervalValue} />
         <div class="ml-auto mt-2 flex items-baseline justify-end gap-2">

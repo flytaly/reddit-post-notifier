@@ -112,7 +112,11 @@
         "description": "Name of option: update interval"
     },
     "optionUpdateIntervalDescription": {
-        "message": "Set the update interval at which the extension will check for new updates.",
+        "message": "Set the update interval at which the extension will check for new updates",
+        "description": "Update interval description"
+    },
+    "optionUpdateIntervalDescriptionChrome": {
+        "message": "Due to changes in the way extensions work after upgrading to \"Manifest V3\", refresh intervals of less than 60 seconds will be ignored in Chromium-based browsers.",
         "description": "Update interval description"
     },
     "optionsThemeDescription": {
