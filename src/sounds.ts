@@ -1,5 +1,5 @@
 import storage from '@/storage';
-import { browser } from 'webextension-polyfill-ts';
+import browser from 'webextension-polyfill';
 import { IS_CHROME } from './constants';
 import { setupOffscreenDocument } from './offscreen';
 

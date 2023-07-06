@@ -9,7 +9,7 @@
     import OpenIcon from '@assets/open-in-new.svg';
     import RefreshIcon from '@assets/refresh.svg';
     import SettingsIcon from '@assets/settings.svg';
-    import { browser } from 'webextension-polyfill-ts';
+    import browser from 'webextension-polyfill';
     import { isUpdating, storageData } from '../store/store';
     import SvgButton from './SvgButton.svelte';
 

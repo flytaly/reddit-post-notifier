@@ -1,4 +1,4 @@
-import { browser } from 'webextension-polyfill-ts';
+import browser from 'webextension-polyfill';
 import { IS_CHROME } from '@/constants';
 
 export function openLinksOnClick() {

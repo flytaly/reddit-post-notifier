@@ -5,7 +5,7 @@
     import type { ExtensionOptions } from '@/types/extension-options';
     import { constructUrl } from '@/utils';
     import getMsg from '@/utils/get-message';
-    import { browser } from 'webextension-polyfill-ts';
+    import browser from 'webextension-polyfill';
     import { getItemTitle, idToUserIdx } from '@/utils';
     import type { PostGroup } from '@/utils/post-group';
     import { storageData } from '../store/store';

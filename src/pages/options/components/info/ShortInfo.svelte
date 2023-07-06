@@ -1,6 +1,6 @@
 <script lang="ts">
     import { IS_CHROME } from '@/constants';
-    import { browser } from 'webextension-polyfill-ts';
+    import browser from 'webextension-polyfill';
     import { GithubIcon, HeartIcon, StarIcon } from '@options/lib/icons';
     import { routes } from '@options/lib/routes';
 

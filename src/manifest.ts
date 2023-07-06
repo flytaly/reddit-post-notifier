@@ -1,4 +1,4 @@
-import type { Manifest } from 'webextension-polyfill-ts';
+import type { Manifest } from 'webextension-polyfill';
 import pkg from '../package.json';
 import { port, target } from '../scripts/utils';
 import { IS_CHROME, IS_DEV } from './constants';
@@ -33,15 +33,15 @@ function browserSpecific() {
     return manifest;
 }
 
-const info: Partial<ExtManifest> = {
+const info = {
     default_locale: 'en',
     description: '__MSG_description__',
     name: '__MSG_name__',
     version: pkg.version,
     homepage_url: 'https://github.com/flytaly/reddit-post-notifier',
-};
+} as Pick<ExtManifest, 'default_locale' | 'description' | 'name' | 'version' | 'homepage_url'>;
 
-export async function getManifest(): Promise<Manifest.WebExtensionManifest> {
+export async function getManifest(): Promise<ExtManifest> {
     /* if (IS_DEV) { */
     /*     permissions.push(`${DEV_SERVER}/*`); */
     /* } */

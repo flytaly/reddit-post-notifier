@@ -1,6 +1,6 @@
 import type { OpenGroupsPayload } from '@/types/message';
 import { removePostsFromGroup } from '@/utils/post-group';
-import { browser } from 'webextension-polyfill-ts';
+import browser from 'webextension-polyfill';
 
 export async function openGroups({ groups, remove }: OpenGroupsPayload) {
     for (let i = 0; i < groups.length; i++) {

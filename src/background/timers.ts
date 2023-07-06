@@ -1,4 +1,4 @@
-import { browser } from 'webextension-polyfill-ts';
+import browser from 'webextension-polyfill';
 import { TARGET } from '../constants';
 import storage from '../storage';
 import { AlarmType } from '../types/alarms';

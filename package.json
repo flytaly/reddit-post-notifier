@@ -44,7 +44,7 @@
         "postcss-load-config": "^4.0.1",
         "tailwindcss": "^3.3.1",
         "tippy.js": "^6.3.7",
-        "webextension-polyfill-ts": "^0.26.0"
+        "webextension-polyfill": "^0.10.0"
     },
     "devDependencies": {
         "@babel/preset-env": "^7.21.4",
@@ -57,6 +57,7 @@
         "@types/lodash.clonedeep": "^4.5.7",
         "@types/node": "^18.15.11",
         "@types/nprogress": "^0.2.0",
+        "@types/webextension-polyfill": "^0.10.1",
         "@typescript-eslint/eslint-plugin": "^5.57.1",
         "@typescript-eslint/parser": "^5.57.1",
         "autoprefixer": "^10.4.14",

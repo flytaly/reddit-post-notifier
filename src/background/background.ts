@@ -1,5 +1,5 @@
-import type { Runtime } from 'webextension-polyfill-ts';
-import { browser } from 'webextension-polyfill-ts';
+import type { Runtime } from 'webextension-polyfill';
+import browser from 'webextension-polyfill';
 import { IS_DEV, IS_FIREFOX, IS_TEST } from '../constants';
 import { addNotificationClickListener } from '../notifier/notifications';
 import DEFAULT_OPTIONS from '../options-default';

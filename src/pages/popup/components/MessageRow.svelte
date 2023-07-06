@@ -5,7 +5,7 @@
     import { getInboxUrl } from '@/utils';
     import getMsg from '@/utils/get-message';
     import { PostGroup } from '@/utils/post-group';
-    import { browser } from 'webextension-polyfill-ts';
+    import browser from 'webextension-polyfill';
     import { storageData } from '../store/store';
     import CheckMarkButton from './CheckMarkButton.svelte';
 

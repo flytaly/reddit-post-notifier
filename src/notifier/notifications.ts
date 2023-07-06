@@ -1,5 +1,5 @@
-import type { Notifications } from 'webextension-polyfill-ts';
-import { browser } from 'webextension-polyfill-ts';
+import type { Notifications } from 'webextension-polyfill';
+import browser from 'webextension-polyfill';
 import { playAudio, type SoundId } from '../sounds';
 import storage from '../storage';
 import { getInboxUrl } from '../utils';

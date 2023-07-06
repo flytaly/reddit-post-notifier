@@ -9,7 +9,7 @@
     import UpdatesDisabledIcon from '@/assets/updates-disable.svg';
     import WarningIcon from '@/assets/warning.svg';
     import type { PostGroup } from '@/utils/post-group';
-    import { browser } from 'webextension-polyfill-ts';
+    import browser from 'webextension-polyfill';
     import { storageData } from '../store/store';
     import CheckMarkButton from './CheckMarkButton.svelte';
     import SvgButton from './SvgButton.svelte';

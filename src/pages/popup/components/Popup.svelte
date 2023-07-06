@@ -2,7 +2,7 @@
     /* eslint-disable @typescript-eslint/no-unsafe-argument */
     import nProgress from 'nprogress';
     import { onMount } from 'svelte';
-    import { browser } from 'webextension-polyfill-ts';
+    import browser from 'webextension-polyfill';
     import applyTheme from '@/utils/apply-theme';
     import getMsg from '@/utils/get-message';
     import { storageData } from '../store/store';

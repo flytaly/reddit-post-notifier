@@ -3,7 +3,7 @@
 import { RateLimits } from '@/reddit-api/client';
 import type { AuthError } from '@/reddit-api/errors';
 import scopes from '@/reddit-api/scopes';
-import { browser, type Storage } from 'webextension-polyfill-ts';
+import browser, { type Storage } from 'webextension-polyfill';
 import DEFAULT_OPTIONS from '../options-default';
 import type { TokenResponseBody } from '../reddit-api/auth';
 import type { RedditItem, RedditMessage, RedditPost, RedditPostExtended } from '../reddit-api/reddit-types';
