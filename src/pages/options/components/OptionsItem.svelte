@@ -24,7 +24,7 @@
 
 <style lang="postcss">
     article {
-        @apply mb-6 flex flex-row items-start overflow-hidden  p-1 text-sm font-normal;
+        @apply mb-6 mt-6 flex flex-row items-start overflow-hidden  p-1 text-sm font-normal;
     }
     .column {
         flex-direction: column;

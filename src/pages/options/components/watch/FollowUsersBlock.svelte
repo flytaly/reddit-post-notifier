@@ -52,7 +52,7 @@
         saveInputs();
     };
 
-    const themeValueList: Array<{ value: string; id: string; label: string }> = [
+    const intervalList: Array<{ value: string; id: string; label: string }> = [
         { value: String(60), id: '1m', label: '1m' },
         { value: String(5 * 60), id: '5m', label: '5m' },
         { value: String(10 * 60), id: '10m', label: '10m' },
@@ -77,7 +77,7 @@
             <div class="flex flex-col">
                 <RadioGroup
                     onChange={changeIntervalHandler}
-                    valueList={themeValueList}
+                    valueList={intervalList}
                     currentValue={String($storageData.options.pollUserInterval)}
                 />
                 <div class="mt-4">

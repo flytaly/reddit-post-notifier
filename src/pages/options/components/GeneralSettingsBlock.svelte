@@ -1,4 +1,5 @@
 <script lang="ts">
+    import DEFAULT_OPTIONS from '@/options-default';
     import { sendToBg } from '@/port';
     import { getAudioSrc, notificationSoundFiles } from '@/sounds';
     import storage from '@/storage';
@@ -7,16 +8,15 @@
     import getMsg from '@/utils/get-message';
     import { OpenInNew, PlayIcon, SaveIcon, UploadIcon } from '@options/lib/icons';
     import { storageData } from '@options/lib/store';
-    import { derived } from 'svelte/store';
     import ChangeUrlInput from './ChangeUrlInput.svelte';
     import OptionsItem from './OptionsItem.svelte';
     import RadioGroup from './RadioGroup.svelte';
 
     const themeValueList: Array<{ value: ExtensionOptions['theme']; id: string; label: string }> = [
-        { value: 'light', id: 'light', label: getMsg('optionThemeLight') },
-        { value: 'dark', id: 'dark', label: getMsg('optionThemeDark') },
-        { value: 'purple', id: 'purple', label: getMsg('optionThemePurple') },
-        { value: 'auto', id: 'auto', label: getMsg('optionThemeAuto') },
+        { value: 'light', id: 'theme_light', label: getMsg('optionThemeLight') },
+        { value: 'dark', id: 'theme_dark', label: getMsg('optionThemeDark') },
+        { value: 'purple', id: 'theme_purple', label: getMsg('optionThemePurple') },
+        { value: 'auto', id: 'theme_auto', label: getMsg('optionThemeAuto') },
     ];
 
     const onThemeChange = (newTheme: ExtensionOptions['theme']) => {
@@ -24,17 +24,44 @@
         void storage.saveOptions({ theme: newTheme });
     };
 
+    const intervalList: Array<{ value: string; id: string; label: string }> = [
+        { value: String(60), id: 'update_1m', label: '1m' },
+        { value: String(5 * 60), id: 'update_5m', label: '5m' },
+        { value: String(10 * 60), id: 'update_10m', label: '10m' },
+        { value: String(15 * 60), id: 'update_15m', label: '15m' },
+        { value: String(30 * 60), id: 'update_30m', label: '30m' },
+        { value: String(60 * 60), id: 'update_1h', label: '1h' },
+        { value: 'custom', id: 'update_custom', label: 'custom' },
+    ];
+
+    const isCustomInterval = () =>
+        intervalList.findIndex((i) => i.value === String($storageData.options.updateInterval)) === -1;
+
     let wasUploaded = false;
     let audioErrMsg = '';
-    const intervalInMin = derived(storageData, (storageData) => {
-        return Math.max(1, storageData.options.updateInterval / 60);
-    });
+    let intervalValue = 'custom';
+    let showCustomIntervalInput = isCustomInterval();
 
-    const onUpdateIntervalChange = async (e) => {
-        if (e.currentTarget.value) {
-            await storage.saveOptions({ updateInterval: Math.max(6, e.currentTarget.value * 60) });
-            sendToBg('SCHEDULE_NEXT_UPDATE');
+    $: intervalValue = isCustomInterval() ? 'custom' : String($storageData.options.updateInterval);
+
+    const updateInterval = async (value: number) => {
+        if (!value) return;
+        await storage.saveOptions({ updateInterval: Math.max(10, value) });
+        sendToBg('SCHEDULE_NEXT_UPDATE');
+    };
+
+    const intervalRadioInputHandler = async (value: string) => {
+        if (value === 'custom') {
+            showCustomIntervalInput = true;
+            return;
         }
+
+        await updateInterval(parseInt(value) || DEFAULT_OPTIONS.updateInterval);
+        showCustomIntervalInput = false;
+    };
+
+    const intervalCustomInputHandler = (e: Event & { currentTarget: HTMLInputElement }) => {
+        void updateInterval(parseInt(e.currentTarget.value));
     };
 
     const playAudio = async (src: string) => {
@@ -86,15 +113,19 @@
 <OptionsItem title={getMsg('optionUpdateInterval')} labelFor="updateIntervalInput">
     <div slot="description">{getMsg('optionUpdateIntervalDescription')}</div>
     <div slot="controls">
-        <input
-            id="updateIntervalInput"
-            type="number"
-            min="1"
-            max="300"
-            size="8"
-            value={$intervalInMin}
-            on:input={onUpdateIntervalChange}
-        />
+        <RadioGroup onChange={intervalRadioInputHandler} valueList={intervalList} currentValue={intervalValue} />
+        <div class="ml-auto mt-2 flex items-baseline justify-end gap-2">
+            <input
+                id="updateIntervalInput"
+                type="number"
+                min="10"
+                max="7200"
+                size="8"
+                bind:value={$storageData.options.updateInterval}
+                on:input={intervalCustomInputHandler}
+            />
+            <span>seconds</span>
+        </div>
     </div>
 </OptionsItem>
 

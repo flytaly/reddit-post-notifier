@@ -39,23 +39,25 @@ describe('General Options', () => {
     });
 
     test('Update interval', async () => {
-        const updateInterval = 120;
+        const updateInterval = 100;
 
         mockStorageData({ updateInterval });
 
         const { getByLabelText } = render(GeneralSettingsBlock);
+
         const input = getByLabelText(getMsg('optionUpdateInterval'), { exact: false });
         expect(input).toBeInTheDocument();
         await waitFor(() => {
-            expect(input).toHaveValue(updateInterval / 60);
+            expect(input).toHaveValue(updateInterval);
         });
-        await fireEvent.input(input, { target: { value: 3 } });
-        optionSaved({ updateInterval: 3 * 60 });
+        await fireEvent.input(input, { target: { value: 30 } });
+        optionSaved({ updateInterval: 30 });
         expect(sendToBg).toHaveBeenCalledWith('SCHEDULE_NEXT_UPDATE');
         jest.clearAllMocks();
-        // not less than 6 sec
-        await fireEvent.input(input, { target: { value: 6 / 60 } });
-        optionSaved({ updateInterval: 6 });
+
+        // not less than 10 sec
+        await fireEvent.input(input, { target: { value: 5 } });
+        optionSaved({ updateInterval: 10 });
     });
 
     test('Theme', async () => {
@@ -144,7 +146,7 @@ describe('General Options', () => {
         check('old');
         await fireEvent.click(getByLabelText('default'));
         check('new');
-        await fireEvent.click(getByLabelText('custom'));
+        await fireEvent.click(getByLabelText('custom URL'));
         check('custom');
 
         const inputElem = getByTestId('redditUrlInput');

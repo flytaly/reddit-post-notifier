@@ -18,7 +18,7 @@
     const redditTypesList: Array<{ value: ExtensionOptions['redditUrlType']; id: string; label: string }> = [
         { value: 'new', id: 'new', label: 'default' },
         { value: 'old', id: 'old', label: 'old' },
-        { value: 'custom', id: 'custom', label: 'custom' },
+        { value: 'custom', id: 'custom-url', label: 'custom URL' },
     ];
 
     const onRedditTypeChange = async (redditUrlType: ExtensionOptions['redditUrlType']) => {
