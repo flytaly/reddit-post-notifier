@@ -23,24 +23,25 @@ module.exports = {
     overrides: [
         {
             files: ['*.svelte'],
-            processor: 'svelte3/svelte3',
+            parser: 'svelte-eslint-parser',
+            parserOptions: {
+                parser: '@typescript-eslint/parser',
+            },
         },
     ],
-    settings: {
-        'svelte3/typescript': require('typescript'),
-        'svelte3/ignore-styles': () => true,
-    },
-    plugins: ['svelte3', '@typescript-eslint'],
-    ignorePatterns: ['node_modules', '/*.js', 'src/test-utils/jest'],
+    plugins: ['@typescript-eslint'],
+    ignorePatterns: ['node_modules', '/*.js'],
     rules: {
-        'prefer-const': 'warn',
+        '@typescript-eslint/ban-ts-comment': 'off',
         '@typescript-eslint/explicit-module-boundary-types': 'off',
         '@typescript-eslint/no-extra-semi': 'off',
+        '@typescript-eslint/no-inferrable-types': 'off',
         '@typescript-eslint/no-unsafe-assignment': 'off',
         '@typescript-eslint/no-unsafe-call': 'off',
         '@typescript-eslint/no-unsafe-member-access': 'off',
-        '@typescript-eslint/ban-ts-comment': 'off',
         '@typescript-eslint/require-await': 'off',
-        '@typescript-eslint/no-inferrable-types': 'off',
+        '@typescript-eslint/restrict-template-expressions': 'off',
+        'no-inner-declarations': 'off',
+        'prefer-const': 'warn',
     },
 };

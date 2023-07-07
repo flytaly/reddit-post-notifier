@@ -39,7 +39,7 @@
                 {name}
             </a>
             {#each Object.values(sections) as { id, name }}
-                <a href={`${href}#${id}`} class="ml-8">{name}</a>
+                <a href={`${href}#${String(id)}`} class="ml-8">{name}</a>
             {/each}
         {/each}
     </nav>

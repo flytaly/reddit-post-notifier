@@ -41,7 +41,6 @@
     let wasUploaded = false;
     let audioErrMsg = '';
     let intervalValue = 'custom';
-    let showCustomIntervalInput = isCustomInterval();
 
     $: intervalValue = isCustomInterval() ? 'custom' : String($storageData.options.updateInterval);
 
@@ -52,13 +51,9 @@
     };
 
     const intervalRadioInputHandler = async (value: string) => {
-        if (value === 'custom') {
-            showCustomIntervalInput = true;
-            return;
-        }
+        if (value === 'custom') return;
 
         await updateInterval(parseInt(value) || DEFAULT_OPTIONS.updateInterval);
-        showCustomIntervalInput = false;
     };
 
     const intervalCustomInputHandler = (e: Event & { currentTarget: HTMLInputElement }) => {
