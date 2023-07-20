@@ -1,6 +1,6 @@
 // https://www.reddit.com/dev/api/
+import { DEV_SERVER, IS_DEV, USE_DEV_SERVER, config } from '@/constants';
 import { mapObjToQueryStr } from '../utils/index';
-import { config, DEV_SERVER, IS_DEV, USE_DEV_SERVER } from '../constants';
 import type {
     RedditAccount,
     RedditCommentResponse,
@@ -14,32 +14,59 @@ import type {
     RedditUserOverviewResponse,
 } from './reddit-types';
 
-type R<T> = Promise<T | RedditError>;
+type R<T> = Promise<T | RedditError | never>;
+
+const enum RateLimitHeaders {
+    'remaining' = 'x-ratelimit-remaining',
+    'reset' = 'x-ratelimit-reset',
+    'used' = 'x-ratelimit-used',
+}
+
+export type RateLimits = {
+    remaining?: number | null;
+    reset?: number | null;
+    used?: number | null;
+};
+
+function getRateLimits(response: Response): RateLimits {
+    const rateLimits = {
+        used: response.headers.get(RateLimitHeaders.used),
+        reset: response.headers.get(RateLimitHeaders.reset),
+        remaining: response.headers.get(RateLimitHeaders.remaining),
+    };
+
+    return {
+        used: rateLimits.used ? parseInt(rateLimits.used) : null,
+        reset: rateLimits.reset ? parseInt(rateLimits.reset) : null,
+        remaining: rateLimits.remaining ? parseInt(rateLimits.remaining) : null,
+    };
+}
 
 export default class RedditApiClient {
     authOrigin: string;
     publicOrigin: string;
     headers: HeadersInit;
     accessToken?: string | null;
+    onRateLimits?: (rl: RateLimits) => void;
+    fetchOpts: RequestInit = {
+        cache: 'reload',
+    };
 
-    constructor() {
+    constructor(onRateLimits?: (rl: RateLimits) => void) {
         this.authOrigin = 'https://oauth.reddit.com';
-        this.publicOrigin = 'https://reddit.com';
+        this.publicOrigin = 'https://www.reddit.com';
         this.headers = { Accept: 'application/json' };
+        this.onRateLimits = onRateLimits;
 
         if (IS_DEV && USE_DEV_SERVER) {
             this.authOrigin = DEV_SERVER;
             this.publicOrigin = DEV_SERVER;
         }
     }
-
-    setAccessToken(accessToken?: string | null) {
-        this.accessToken = accessToken;
-    }
-
     async GET(endpoint: string, queryParams: Record<string, unknown> = {}) {
         const query = mapObjToQueryStr({ ...queryParams, raw_json: '1' });
-        const init: RequestInit = { method: 'GET', headers: { ...this.headers } };
+        const init: RequestInit = { method: 'GET', headers: { ...this.headers }, ...this.fetchOpts };
+
         if (this.accessToken) {
             if (!init.headers) init.headers = {};
             init.headers['User-Agent'] = config.userAgent;
@@ -48,7 +75,21 @@ export default class RedditApiClient {
         const origin = this.accessToken ? this.authOrigin : this.publicOrigin;
         const actualEndpoint = this.accessToken ? endpoint : `${endpoint}.json`;
         const result = await fetch(encodeURI(`${origin}${actualEndpoint}?${query}`), init);
-        return result.json();
+
+        if (this.onRateLimits && !this.accessToken) this.onRateLimits(getRateLimits(result));
+
+        if (result.ok) return result.json();
+
+        try {
+            const errorResponse = await result.json();
+            return errorResponse as RedditError;
+        } catch (error) {
+            throw new Error(`status code: ${result.status}. ${result.statusText}`);
+        }
+    }
+
+    setAccessToken(accessToken?: string | null) {
+        this.accessToken = accessToken;
     }
 
     getSubreddit(subreddit: string) {

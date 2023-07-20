@@ -1,17 +1,17 @@
 <script lang="ts">
-    import { browser } from 'webextension-polyfill-ts';
+    import { sendToBg } from '@/port';
+    import storage from '@/storage';
+    import type { OpenGroupsPayload } from '@/types/message';
+    import { getInboxUrl } from '@/utils';
+    import getMsg from '@/utils/get-message';
+    import type { PostGroup } from '@/utils/post-group';
+    import MailIcon from '@assets/mail.svg';
+    import OpenIcon from '@assets/open-in-new.svg';
     import RefreshIcon from '@assets/refresh.svg';
     import SettingsIcon from '@assets/settings.svg';
-    import OpenIcon from '@assets/open-in-new.svg';
-    import MailIcon from '@assets/mail.svg';
-    import { sendToBg } from '@/port';
-    import getMsg from '@/utils/get-message';
+    import browser from 'webextension-polyfill';
     import { isUpdating, storageData } from '../store/store';
     import SvgButton from './SvgButton.svelte';
-    import { getInboxUrl } from '@/utils';
-    import storage from '@/storage/storage';
-    import type { PostGroup } from '@/utils/post-group';
-    import type { OpenGroupsPayload } from '@/types/message';
 
     export let groupsWithPosts: PostGroup[] = [];
 
@@ -20,9 +20,9 @@
 
     $: loading = $isUpdating;
     $: {
-        messagesCount = 0;
+        messagesCount = $storageData.mail?.messages?.length || 0;
         Object.values($storageData.accounts || {})?.forEach((a) => {
-            messagesCount = a.mail?.messages?.length || 0;
+            messagesCount += a.mail?.messages?.length || 0;
         });
     }
 
@@ -32,7 +32,7 @@
     };
 
     const onMailClick = async () => {
-        if (messagesCount) await storage.removeMessages();
+        if (messagesCount) await storage.removeAllMessages();
     };
 
     let disableOpenAll = false;

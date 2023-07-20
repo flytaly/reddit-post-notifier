@@ -96,6 +96,15 @@ export type FollowingUser = {
     error?: RedditError | null;
 };
 
+export type MailInfo = {
+    error?: string | null;
+    messages?: RedditMessage[];
+    lastUpdate?: number;
+    lastPostCreated?: number;
+    mailNotify?: boolean;
+    checkMail?: boolean;
+};
+
 export type StorageFields = {
     options: ExtensionOptions;
 
@@ -108,4 +117,5 @@ export type StorageFields = {
     subreddits: Record<string, SubredditData>;
     usersList?: FollowingUser[];
     audio?: { dataUrl?: string };
+    mail?: MailInfo;
 };

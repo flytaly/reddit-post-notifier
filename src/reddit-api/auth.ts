@@ -1,5 +1,5 @@
 import type { AuthUser } from '@/storage/storage-types';
-import { browser } from 'webextension-polyfill-ts';
+import browser from 'webextension-polyfill';
 import { config, DEV_SERVER, USE_DEV_SERVER } from '../constants';
 import storage from '../storage';
 import { generateId, mapObjToQueryStr } from '../utils';

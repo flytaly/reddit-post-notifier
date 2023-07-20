@@ -1,18 +1,18 @@
 <script lang="ts">
-    import getMsg from '@/utils/get-message';
-    import OpenInNew from '@/assets/open-in-new.svg';
     import MailIcon from '@/assets/mail.svg';
+    import OpenInNew from '@/assets/open-in-new.svg';
+    import getMsg from '@/utils/get-message';
     // import SearchIcon from '@/assets/search.svg';
     import FilterOnIcon from '@/assets/filter-on.svg';
-    import WarningIcon from '@/assets/warning.svg';
-    import UpdatesDisabledIcon from '@/assets/updates-disable.svg';
-    import NotifyOnIcon from '@/assets/notify.svg';
     import NotifyOffIcon from '@/assets/notify-off.svg';
-    import SvgButton from './SvgButton.svelte';
-    import { browser } from 'webextension-polyfill-ts';
-    import CheckMarkButton from './CheckMarkButton.svelte';
+    import NotifyOnIcon from '@/assets/notify.svg';
+    import UpdatesDisabledIcon from '@/assets/updates-disable.svg';
+    import WarningIcon from '@/assets/warning.svg';
     import type { PostGroup } from '@/utils/post-group';
+    import browser from 'webextension-polyfill';
     import { storageData } from '../store/store';
+    import CheckMarkButton from './CheckMarkButton.svelte';
+    import SvgButton from './SvgButton.svelte';
 
     export let group: PostGroup;
     export let onCheck: (() => Promise<void>) | null = null;
@@ -34,7 +34,7 @@
         <CheckMarkButton clickHandler={onCheck} title={getMsg('watchListCheckMark_title')} />
     {/if}
     <div class="flex items-center space-x-1">
-        {#if group.type == 'message'}
+        {#if group.type == 'message' || group.type == 'account-message'}
             <div class="h-4 w-4 shrink-0 text-skin-gray" title={getMsg('watchListMailIcon')}>
                 {@html MailIcon}
             </div>

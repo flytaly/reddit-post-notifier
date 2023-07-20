@@ -1,6 +1,7 @@
 /* eslint-disable @typescript-eslint/unbound-method */
 import auth from '@/reddit-api/auth';
 import RedditApiClient from '@/reddit-api/client';
+import redditScopes from '@/reddit-api/scopes';
 import { postFilter } from '@/text-search/post-filter';
 import { mocked } from 'jest-mock';
 import { cloneDeep } from 'lodash';
@@ -22,9 +23,8 @@ import { mockDate, restoreDate } from '../test-utils/mock-date';
 import type { ExtensionOptions } from '../types/extension-options';
 import { getSearchQueryUrl } from '../utils';
 import NotifierApp from './app';
-import notify, { NotificationId as NId } from './notifications';
 import type { MessageNotification as MN, PostNotification, UserNotification } from './notifications';
-import redditScopes from '@/reddit-api/scopes';
+import notify, { NotificationId as NId } from './notifications';
 
 jest.mock('@/storage/storage.ts');
 jest.mock('@/reddit-api/client.ts');
@@ -59,8 +59,9 @@ describe('update accounts', () => {
             const refreshToken = `rt${id}`;
             accounts[id] = {
                 id,
+                error: null,
                 ...(u || {}),
-                auth: { refreshToken, scope: redditScopes.identity.id, ...(u.auth || {}) },
+                auth: { error: null, refreshToken, scope: redditScopes.identity.id, ...(u.auth || {}) },
             };
         });
         return accounts;
@@ -179,7 +180,7 @@ describe('update messages', () => {
         mockAccounts([{ mailNotify: false }]);
         const app = new NotifierApp();
         await app.update();
-        expect(mockStorage.saveMessageData).toHaveBeenCalledWith('1', { unreadMessages: newMessages });
+        expect(mockStorage.saveAccMessageData).toHaveBeenCalledWith('1', { unreadMessages: newMessages });
         expect(mockNotify).not.toHaveBeenCalled();
         expect(app.reddit.setAccessToken).toHaveBeenCalledWith('access_token');
     });
@@ -187,7 +188,7 @@ describe('update messages', () => {
     test('should update, save, and notify ', async () => {
         mockAccounts([{ mailNotify: true }], { options: getOpts({ notificationSoundId: 'sound_03' }) });
         await new NotifierApp().update();
-        expect(mockStorage.saveMessageData).toHaveBeenCalledWith('1', { unreadMessages: newMessages });
+        expect(mockStorage.saveAccMessageData).toHaveBeenCalledWith('1', { unreadMessages: newMessages });
         const ntf: MN = { type: NId.mail, items: [{ len: newMessages.length, username: 'u1' }] };
         expect(mockNotify).toHaveBeenCalledWith(ntf, 'sound_03');
     });
@@ -199,10 +200,10 @@ describe('update messages', () => {
             { auth: { scope: 'privatemessages' } },
         ]);
         await new NotifierApp().update();
-        expect(mockStorage.saveMessageData.mock.calls).toHaveLength(2);
-        expect(mockStorage.saveMessageData).not.toHaveBeenCalledWith('1', { unreadMessages: newMessages });
-        expect(mockStorage.saveMessageData).toHaveBeenCalledWith('2', { unreadMessages: newMessages });
-        expect(mockStorage.saveMessageData).toHaveBeenCalledWith('3', { unreadMessages: newMessages });
+        expect(mockStorage.saveAccMessageData.mock.calls).toHaveLength(2);
+        expect(mockStorage.saveAccMessageData).not.toHaveBeenCalledWith('1', { unreadMessages: newMessages });
+        expect(mockStorage.saveAccMessageData).toHaveBeenCalledWith('2', { unreadMessages: newMessages });
+        expect(mockStorage.saveAccMessageData).toHaveBeenCalledWith('3', { unreadMessages: newMessages });
         const calls = mocked(auth.getAccessToken).mock.calls;
         expect(calls).toHaveLength(2);
         expect(calls[0][0]).toMatchObject({ auth: { refreshToken: 'rt2' } });
@@ -240,21 +241,8 @@ describe('update subreddits', () => {
         mockNotify.mockClear();
     });
 
-    test('should set access token', async () => {
-        const accounts: Record<string, AuthUser> = {
-            ac1: { id: 'ac1', auth: { refreshToken: 'rT1', scope: 'identity read privatemessages history' } },
-        };
-        mockStorageData({ accounts, subredditList: [{ id: 'id1', subreddit: 's' }] });
-        const app = new NotifierApp();
-        await app.update();
-        expect(mocked(auth.getAccessToken)).toHaveBeenCalledWith(accounts.ac1);
-        expect(mocked(mockClient.setAccessToken)).toHaveBeenCalledWith('access_token');
-        expect(app.reddit.setAccessToken).toHaveBeenCalledWith('access_token');
-    });
-
     test('should fetch and save new posts', async () => {
         const limit = 20;
-        const accounts: Record<string, AuthUser> = { ac1: { id: 'ac1', auth: {} } };
         mockStorageData({
             subredditList: [
                 { id: 'id1', subreddit: 'sub1' },
@@ -262,7 +250,6 @@ describe('update subreddits', () => {
             ],
             subreddits: { id1: { lastPostCreated: ts, posts: posts.slice(2) } },
             options: getOpts({ limit }),
-            accounts,
         });
         await new NotifierApp().update();
 

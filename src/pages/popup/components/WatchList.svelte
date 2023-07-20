@@ -66,7 +66,7 @@
                 rowOutTransition={slideHorizontal}
             >
                 <div slot="header-row">
-                    <div class="flex w-full items-center p-1 pr-4 pb-2">
+                    <div class="flex w-full items-center p-1 pb-2 pr-4">
                         <div class="mr-1 h-4 w-4">{@html Pin}</div>
                         <span>{`Pinned posts (${data.pinnedPostList.length})`}</span>
                     </div>
@@ -98,7 +98,7 @@
         </div>
     {/each}
     {#if !groupsWithPosts.length}
-        <div class="my-4 mx-auto text-skin-gray">{getMsg('noPosts')}</div>
+        <div class="mx-auto my-4 text-skin-gray">{getMsg('noPosts')}</div>
     {/if}
 
     <!-- EMPTY GROUPS -->

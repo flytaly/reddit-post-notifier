@@ -10,7 +10,7 @@
     let redditItem: RedditItem;
     let redditMessage: RedditMessage;
 
-    $: if (group.type === 'message') {
+    $: if (group.type === 'message' || group.type === 'account-message') {
         redditMessage = item as RedditMessage;
     } else {
         redditItem = item as RedditItem;

@@ -2,10 +2,10 @@
     import auth from '@/reddit-api/auth';
     import type { AuthUser, StorageFields } from '@/storage/storage-types';
     import getMsg from '@/utils/get-message';
-    import { isBlocked, storageData } from '@options/lib/store';
     import AddButton from '@options/components/common/AddButton.svelte';
     import BlockDescription from '@options/components/common/BlockDescription.svelte';
     import { HelpCircleIcon } from '@options/lib/icons';
+    import { isBlocked, storageData } from '@options/lib/store';
     import { tooltip } from '@options/lib/tooltip';
     import Account from './Account.svelte';
 
@@ -38,7 +38,7 @@
 
 <div class="text-sm">
     <BlockDescription>
-        <span class="flex items-center">
+        <span class="mt-4 flex items-center">
             <span>{getMsg('optionAccountsDescription')}</span>
             <span
                 class="ml-2 inline-flex h-4 w-4 text-skin-accent2"
@@ -55,8 +55,6 @@
                     <Account {accounts} {acc} {authorize} {isAuthorizing} />
                 {/each}
             </ul>
-        {:else}
-            <div class="font-medium">{getMsg('optionAccountsNoAccs')}</div>
         {/if}
     </div>
     <AddButton clickHandler={() => authorize()} {disabled}>{getMsg('optionAccountsAddBtn')}</AddButton>

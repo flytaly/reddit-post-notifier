@@ -2,8 +2,8 @@ import type { ExtensionOptions } from './types/extension-options';
 
 const DEFAULT_OPTIONS: ExtensionOptions = {
     updateInterval: 60,
-    waitTimeout: 1.5,
-    limit: 10,
+    waitTimeout: 2,
+    limit: 25,
     theme: 'auto',
     expandWithItems: 5,
     delPostAfterBodyClick: false,

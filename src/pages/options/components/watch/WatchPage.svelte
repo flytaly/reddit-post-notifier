@@ -8,6 +8,7 @@
     import FollowUsersBlock from './FollowUsersBlock.svelte';
     import SearchBlock from './search/SearchBlock.svelte';
     import SubredditsBlock from './subreddits/SubredditsBlock.svelte';
+    import MailBlock from './MailBlock.svelte';
     import AccountsBlock from './AccountsBlock.svelte';
 
     const dataPromise = storage.getAllData();
@@ -34,6 +35,7 @@
         </h1>
         <section>
             <Heading id={s.mail.id} name={s.mail.name} />
+            <MailBlock />
             <AccountsBlock />
         </section>
         <section>

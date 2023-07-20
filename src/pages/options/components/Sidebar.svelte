@@ -1,7 +1,10 @@
 <script lang="ts">
-    import { BackupIcon, HeartIcon, LogoIcon, WatchListIcon, SettingsIcon, HelpCircleIcon } from '@options/lib/icons';
+    import { tooltip } from '@/pages/options/lib/tooltip';
+    import getMsg from '@/utils/get-message';
+    import { BackupIcon, HeartIcon, HelpCircleIcon, LogoIcon, SettingsIcon, WatchListIcon } from '@options/lib/icons';
     import type { PageId } from '@options/lib/routes';
     import { routes } from '@options/lib/routes';
+    import { rateLimits } from '@options/lib/store';
 
     export let current: PageId;
 
@@ -12,9 +15,14 @@
         info: HelpCircleIcon,
         donate: HeartIcon,
     };
+
+    function formatTime(ts: number) {
+        const d = new Date(ts);
+        return d.getHours().toString().padStart(2, '0') + ':' + d.getMinutes().toString().padStart(2, '0');
+    }
 </script>
 
-<aside class="sticky top-4 mt-4 flex flex-col text-sm">
+<aside class="sticky top-4 flex min-h-[calc(100vh-1rem)] flex-col pt-4 text-sm">
     <a href="./watch.html" class="self-center text-skin-text hover:text-skin-text">
         <div class="logo">
             {@html LogoIcon}
@@ -31,10 +39,37 @@
                 {name}
             </a>
             {#each Object.values(sections) as { id, name }}
-                <a href={`${href}#${id}`} class="ml-8">{name}</a>
+                <a href={`${href}#${String(id)}`} class="ml-8">{name}</a>
             {/each}
         {/each}
     </nav>
+    <div class="mt-auto w-full text-xs">
+        {#if $rateLimits}
+            <div class="my-4 grid w-max grid-cols-2 gap-x-4 gap-y-1">
+                <span
+                    use:tooltip={{ content: getMsg('rateLimitsDescription'), allowHTML: true }}
+                    class="col-span-2 mt-4 flex items-center border-b border-skin-delimiter"
+                >
+                    <b class="font-bold">{getMsg('rateLimits')}</b>
+                    <span class="ml-2 inline-flex h-[0.85rem] w-[0.85rem] text-skin-text">
+                        {@html HelpCircleIcon}
+                    </span>
+                </span>
+                {#if $rateLimits.used}
+                    <div>used</div>
+                    <div>{$rateLimits.used}</div>
+                {/if}
+                {#if $rateLimits.remaining}
+                    <div>remaining</div>
+                    <div>{$rateLimits.remaining}</div>
+                {/if}
+                {#if $rateLimits.reset}
+                    <div>reset at</div>
+                    <div>{formatTime($rateLimits.reset)}</div>
+                {/if}
+            </div>
+        {/if}
+    </div>
 </aside>
 
 <style lang="postcss">

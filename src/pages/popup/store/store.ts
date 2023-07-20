@@ -1,7 +1,7 @@
 import nProgress from 'nprogress';
 import { readable, writable } from 'svelte/store';
-import type { Storage } from 'webextension-polyfill-ts';
-import { browser } from 'webextension-polyfill-ts';
+import type { Storage } from 'webextension-polyfill';
+import browser from 'webextension-polyfill';
 
 import { connectToBg, disconnectFromBg, onMessage } from '@/port';
 import storage from '@/storage';

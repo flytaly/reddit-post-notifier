@@ -1,8 +1,8 @@
 <script lang="ts">
-    import { BellIcon } from '@options/lib/icons';
-    import { storageData } from '@options/lib/store';
-    import { routes } from '@options/lib/routes';
     import getMsg from '@/utils/get-message';
+    import { BellIcon } from '@options/lib/icons';
+    import { routes } from '@options/lib/routes';
+    import { storageData } from '@options/lib/store';
 
     let limit = 10;
     $: limit = $storageData.options.limit || 10;
@@ -87,13 +87,6 @@
         <summary>{getMsg('helpFiltersVsSearchTitle')}</summary>
         <div class="ml-6">
             {@html getMsg('helpFiltersVsSearch')}
-        </div>
-    </details>
-
-    <details class="mt-6">
-        <summary>{getMsg('helpAccountTitle')}</summary>
-        <div class="ml-8">
-            {@html getMsg('helpAccount')}
         </div>
     </details>
 </div>

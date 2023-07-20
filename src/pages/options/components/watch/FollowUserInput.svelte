@@ -73,6 +73,7 @@
         isLoading = true;
         isBlocked.block();
         const app = new NotifierApp();
+        app.reddit.fetchOpts = { cache: 'default' };
         try {
             const { user } = await app.updateFollowingUser({ ...userInfo, data: [], lastPostCreated: 0 });
             userInfo = user;
@@ -109,7 +110,7 @@
         on:change={saveUsername}
     />
     <button
-        class="min-w-[4rem] rounded-l-none rounded-r border-0 border-l py-0 px-2 text-xs"
+        class="min-w-[4rem] rounded-l-none rounded-r border-0 border-l px-2 py-0 text-xs"
         on:click={saveWatchTarget}
     >
         {saveBtnMessage}
@@ -140,7 +141,7 @@
     </button>
 </div>
 
-<div class="col-span-full mt-1 mb-3">
+<div class="col-span-full mb-3 mt-1">
     {#if userInfo.username?.length}
         <button
             class="flex items-center border-transparent bg-transparent p-0 text-xs text-skin-accent2 hover:bg-transparent"
@@ -152,7 +153,7 @@
             </div>
             <span>{getMsg('optionsFollowUserFetch')}</span>
         </button>
-        <div class="ml-2 mb-2">
+        <div class="mb-2 ml-2">
             <Spinner show={isLoading} />
             {#if showUserData && !errorMsg}
                 <RedditItemsList

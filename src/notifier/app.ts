@@ -1,6 +1,21 @@
 /* eslint-disable no-await-in-loop */
 import auth from '@/reddit-api/auth';
-import RedditApiClient from '../reddit-api/client';
+import RedditApiClient, { RateLimits } from '@/reddit-api/client';
+import { AuthError, isAuthError } from '@/reddit-api/errors';
+import { RedditObjectKind } from '@/reddit-api/reddit-types';
+import type { RedditScope } from '@/reddit-api/scopes';
+import { default as redditScopes, default as scopes } from '@/reddit-api/scopes';
+import storage from '@/storage';
+import { postFilter } from '@/text-search/post-filter';
+import type { ExtensionOptions } from '@/types/extension-options';
+import {
+    filterPostDataProperties,
+    getAccountByScope,
+    getSearchQueryUrl,
+    getSubredditUrl,
+    getUserProfileUrl,
+} from '@/utils/index';
+import { wait } from '@/utils/wait';
 import type {
     RedditAccount,
     RedditError,
@@ -12,10 +27,6 @@ import type {
     RedditSubredditListing,
     RedditUserOverviewResponse,
 } from '../reddit-api/reddit-types';
-import { RedditObjectKind } from '../reddit-api/reddit-types';
-import scopes from '../reddit-api/scopes';
-import type { RedditScope } from '../reddit-api/scopes';
-import storage from '../storage';
 import type {
     AuthUser,
     FollowingUser,
@@ -25,22 +36,8 @@ import type {
     SubredditData,
     SubredditOpts,
 } from '../storage/storage-types';
-import { postFilter } from '../text-search/post-filter';
-import type { ExtensionOptions } from '../types/extension-options';
-import {
-    filterPostDataProperties,
-    getAccountByScope,
-    getSearchQueryUrl,
-    getSubredditUrl,
-    getUserProfileUrl,
-} from '../utils/index';
-import { wait } from '../utils/wait';
 import type { MessageNotification, PostNotification, UserNotification } from './notifications';
 import notify, { NotificationId } from './notifications';
-import { AuthError, isAuthError } from '@/reddit-api/errors';
-import redditScopes from '../reddit-api/scopes';
-
-const reddit = new RedditApiClient();
 
 interface ItemWithDate {
     data: { created: number };
@@ -90,8 +87,9 @@ function isErrorResponse(result: RedditError | RedditListingResponse<unknown> | 
 
 export default class NotifierApp {
     reddit: RedditApiClient;
-    constructor() {
-        this.reddit = new RedditApiClient();
+
+    constructor(onRateLimits?: (rl: RateLimits) => void) {
+        this.reddit = new RedditApiClient(onRateLimits);
     }
 
     async updateSubreddit({
@@ -107,11 +105,8 @@ export default class NotifierApp {
 
         let response: RedditPostResponse | RedditError;
         try {
-            response = await reddit.getSubreddit(subreddit).new(listing);
+            response = await this.reddit.getSubreddit(subreddit).new(listing);
         } catch (error) {
-            if (isAuthError(error)) {
-                return this.onAuthError(error);
-            }
             response = { message: error.message };
         }
 
@@ -142,12 +137,9 @@ export default class NotifierApp {
         let response: RedditError | RedditPostResponse;
         try {
             response = subreddit
-                ? await reddit.getSubreddit(subreddit).search({ ...listing, q, restrict_sr: 'on' })
-                : await reddit.search({ ...listing, q });
+                ? await this.reddit.getSubreddit(subreddit).search({ ...listing, q, restrict_sr: 'on' })
+                : await this.reddit.search({ ...listing, q });
         } catch (error) {
-            if (isAuthError(error)) {
-                return this.onAuthError(error);
-            }
             response = { message: error.message };
         }
 
@@ -165,7 +157,28 @@ export default class NotifierApp {
         return newPosts;
     }
 
-    async updateUnreadMsg(account: AuthUser): Promise<null | RedditMessage[]> {
+    async updateUnreadMsg(mail: StorageFields['mail']) {
+        try {
+            this.clearAccessToken();
+            const response = await this.reddit.messages.unread();
+
+            if (isErrorResponse(response)) {
+                throw new Error(response.message);
+            }
+
+            const newMessages = extractNewItems(response, mail || {});
+
+            await storage.saveMessageData({ unreadMessages: newMessages });
+            return newMessages;
+        } catch (error) {
+            const message = error.message || error;
+            console.error('Error during fetching unread messages ', message);
+            await storage.saveMessageData({ error: { message } });
+            return null;
+        }
+    }
+
+    async updateUnreadAccountMsg(account: AuthUser): Promise<null | RedditMessage[]> {
         try {
             const token = await auth.getAccessToken(account);
             if (!token) return null;
@@ -179,22 +192,22 @@ export default class NotifierApp {
 
             const newMessages = extractNewItems(response, account.mail || {});
 
-            await storage.saveMessageData(account.id, { unreadMessages: newMessages });
+            await storage.saveAccMessageData(account.id, { unreadMessages: newMessages });
             return newMessages;
         } catch (error) {
             if (isAuthError(error)) {
                 return this.onAuthError(error);
             }
             const message = error.message || error;
-            console.error('Error during fetching unread messages ', message);
-            await storage.saveMessageData(account.id, { error: { message } });
+            console.error(`Error during fetching unread messages`, message);
+            await storage.saveAccMessageData(account.id, { error: { message } });
             return null;
         }
     }
 
     async updateFollowingUser(user: FollowingUser): Promise<{ user: FollowingUser; newItemsLen?: number }> {
         user = { ...user };
-        const fetchUser = reddit.user(user.username);
+        const fetchUser = this.reddit.user(user.username);
         let response: RedditError | RedditUserOverviewResponse;
         try {
             switch (user.watch) {
@@ -208,10 +221,6 @@ export default class NotifierApp {
                     response = await fetchUser.overview();
             }
         } catch (error) {
-            if (isAuthError(error)) {
-                await this.onAuthError(error);
-                return { user };
-            }
             response = { message: error.message };
         }
         if (isErrorResponse(response)) {
@@ -293,12 +302,23 @@ export default class NotifierApp {
         this.reddit.setAccessToken(null);
     }
 
-    async updateAllMail(accounts: StorageFields['accounts'], options: ExtensionOptions) {
+    /** Update reddit mail based on currently login user  */
+    async updateMail(mail: StorageFields['mail'], options: ExtensionOptions) {
+        const msgNotify: MessageNotification = { type: NotificationId.mail, items: [] };
+
+        const newMessages = await this.updateUnreadMsg(mail);
+        if (newMessages?.length && mail?.mailNotify) {
+            msgNotify.items.push({ len: newMessages.length, username: '' });
+        }
+        if (msgNotify.items.length) notify(msgNotify, options.notificationSoundId);
+    }
+
+    async updateAccountMail(accounts: StorageFields['accounts'], options: ExtensionOptions) {
         const msgNotify: MessageNotification = { type: NotificationId.mail, items: [] };
 
         for (const ac of Object.values(accounts || {})) {
             if (ac.auth.refreshToken && ac.checkMail && ac.auth.scope?.includes('privatemessages')) {
-                const newMessages = await this.updateUnreadMsg(ac);
+                const newMessages = await this.updateUnreadAccountMsg(ac);
                 if (newMessages?.length && ac.mailNotify) {
                     msgNotify.items.push({ username: ac.name || '', len: newMessages.length });
                 }
@@ -324,7 +344,7 @@ export default class NotifierApp {
 
                 if (isErrorResponse(response)) {
                     console.error('Error during fetching account information', response);
-                    ac.error = `Couldn\t fetch account information: ${response.message || ''}`;
+                    ac.error = `Couldn't fetch account information: ${response.message || ''}`;
                     return ac;
                 }
                 if (response.data) {
@@ -335,6 +355,8 @@ export default class NotifierApp {
                     ac.inboxCount = d.inbox_count;
                     ac.hasMail = d.has_mail;
                     ac.totalKarma = d.total_karma;
+                    ac.error = null;
+                    ac.auth.error = null;
                 }
             }
         } catch (error) {
@@ -389,25 +411,27 @@ export default class NotifierApp {
             accounts,
             options,
             usersList,
+            mail,
         } = await storage.getAllData();
 
         const { waitTimeout, limit = 10, notificationSoundId } = options;
 
-        if (accounts) {
-            await this.updateAllMail(accounts, options);
-        }
+        let shouldThrottle = false;
 
-        if (usersList?.length || subredditList?.length || queriesList?.length) {
-            await this.setAccessToken(accounts);
+        async function throttle() {
+            if (!shouldThrottle) return;
+            await wait(waitTimeout * 1000);
+            shouldThrottle = false;
         }
 
         if (usersList) {
             const updated = await this.updateUsersList(usersList, options, isForcedByUser);
-            if (updated) await wait(waitTimeout * 1000);
+            if (updated) shouldThrottle = true;
         }
 
         let postNotif: PostNotification = { type: NotificationId.post, items: [] };
         for (const subOpts of subredditList) {
+            await throttle();
             if (subOpts.disabled) continue;
 
             // increase limit if it's the first update with filters
@@ -423,7 +447,7 @@ export default class NotifierApp {
                 const link = getSubredditUrl(subOpts.subreddit, options);
                 postNotif.items.push({ name: subOpts.name || subOpts.subreddit, len: newPosts.length, link });
             }
-            await wait(waitTimeout * 1000);
+            shouldThrottle = true;
         }
         if (postNotif.items.length) notify(postNotif, notificationSoundId);
 
@@ -431,6 +455,8 @@ export default class NotifierApp {
 
         for (const query of queriesList) {
             if (query.disabled) continue;
+
+            await throttle();
 
             const newMessages = await this.updateQuery({ query, queryData: queryData[query.id], listing: { limit } });
             if (query.notify && newMessages?.length) {
@@ -440,8 +466,16 @@ export default class NotifierApp {
                     link: getSearchQueryUrl(query.query || '', query.subreddit, options),
                 });
             }
-            await wait(waitTimeout * 1000);
+            shouldThrottle = true;
         }
         if (postNotif.items.length) notify(postNotif, notificationSoundId);
+
+        if (accounts) {
+            await this.updateAccountMail(accounts, options);
+        }
+
+        if (mail?.checkMail) {
+            await this.updateMail(mail, options);
+        }
     }
 }

@@ -87,6 +87,7 @@
         isBlocked.block();
         try {
             const app = new NotifierApp();
+            app.reddit.fetchOpts = { cache: 'default' };
             await app.updateQuery({
                 query: queryObject,
                 queryData: { ...queryData, lastPostCreated: 0, posts: [], error: null },
@@ -116,7 +117,7 @@
             <Spinner show={isLoading} />
 
             {#if showPosts}
-                <div class="border border-skin-delimiter p-1 ">
+                <div class="border border-skin-delimiter p-1">
                     <RedditItemsList
                         title={`The latest posts in the search.`}
                         items={queryData.posts || []}

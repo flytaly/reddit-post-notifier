@@ -1,6 +1,5 @@
 import { svelte } from '@sveltejs/vite-plugin-svelte';
 import fs from 'fs';
-import { resolve } from 'path';
 import type { Plugin } from 'rollup';
 import svgInlineLoader from 'svg-inline-loader';
 import { defineConfig, type UserConfig, type UserConfigExport } from 'vite';
@@ -84,6 +83,7 @@ export default defineConfig(({ command }) => {
             rollupOptions: {
                 input: {
                     popup: r('src/pages/popup/index.html'),
+                    offscreen: r('src/pages/offscreen/index.html'),
                     options: r(optPath, 'index.html'),
                     info: r(optPath, 'info.html'),
                     backup: r(optPath, 'import-export.html'),

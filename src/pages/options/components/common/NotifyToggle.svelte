@@ -8,7 +8,7 @@
     export let changeHander: ((e: InputChangeEv) => void) | undefined = undefined;
     export let tooltipText: string = '';
 
-    const labelBtnClick = (e: KeyboardEvent & { currentTarget: HTMLLabelElement }) => {
+    const btnClick = (e: KeyboardEvent & { currentTarget: HTMLElement }) => {
         if (e.key === 'Enter' || e.key == ' ') {
             e.stopPropagation();
             e.preventDefault();
@@ -17,22 +17,24 @@
     };
 </script>
 
-<label
+<div
     class="toggle-button"
     class:toggle-button-on={checked}
-    on:keydown={labelBtnClick}
+    on:keydown={btnClick}
     tabindex="0"
     role="button"
     use:tooltip={{ content: tooltipText }}
     {...$$restProps}
 >
-    <input class="peer hidden" type="checkbox" aria-label={tooltipText} bind:checked on:change={changeHander} />
-    <div class="flex">
-        {#if checked}
-            <div class="h-5 w-5">{@html NotifyIcon}</div>
-        {:else}
-            <div class="h-5 w-5">{@html NotifyOffIcon}</div>
-        {/if}
-        <span class="ml-[2px]">{getMsg('notifyLabel')}</span>
-    </div>
-</label>
+    <label class="flex max-w-max items-center space-x-1">
+        <input class="peer hidden" type="checkbox" aria-label={tooltipText} bind:checked on:change={changeHander} />
+        <div class="flex">
+            {#if checked}
+                <div class="h-5 w-5">{@html NotifyIcon}</div>
+            {:else}
+                <div class="h-5 w-5">{@html NotifyOffIcon}</div>
+            {/if}
+            <span class="ml-[2px]">{getMsg('notifyLabel')}</span>
+        </div>
+    </label>
+</div>

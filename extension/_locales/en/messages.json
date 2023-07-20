@@ -108,11 +108,15 @@
         "message": "Shortcuts"
     },
     "optionUpdateInterval": {
-        "message": "Update interval (in seconds)",
+        "message": "Update interval (in minutes)",
         "description": "Name of option: update interval"
     },
     "optionUpdateIntervalDescription": {
-        "message": "Set the update interval at which the extension will check for new updates. To reduce power and internet traffic consumption it's recommended to set update interval at least 60 seconds.",
+        "message": "Set the update interval at which the extension will check for new updates",
+        "description": "Update interval description"
+    },
+    "optionUpdateIntervalDescriptionChrome": {
+        "message": "Due to changes in the way extensions work after upgrading to \"Manifest V3\", refresh intervals of less than 60 seconds will be ignored in Chromium-based browsers.",
         "description": "Update interval description"
     },
     "optionsThemeDescription": {
@@ -176,8 +180,20 @@
     "optionReadMore": {
         "message": "Read more on the help page."
     },
+    "optionMailDescription": {
+        "message": "Watch for unread private messages of the current logged-in user."
+    },
+    "optionMailCheck": {
+        "message": "Watch for Messages"
+    },
+    "optionMailCheck_title": {
+        "message": "Check unread private messages on reddit and display them in the popup"
+    },
+    "optionMailNotify_title": {
+        "message": "Show notifications if there are new messages"
+    },
     "optionAccountsDescription": {
-        "message": "Connect a Reddit account to check its unread private messages and use Reddit OAuth API (optionally)."
+        "message": "Or connect a Reddit account to check its unread private messages."
     },
     "optionAccountsNoAccs": {
         "message": "No authorized accounts"
@@ -278,6 +294,12 @@
     "addField": {
         "message": "add field"
     },
+    "rateLimits": {
+        "message": "Rate Limits"
+    },
+    "rateLimitsDescription": {
+        "message": "<p>This block shows the rate limits that Reddit uses. They are only visible if you left this page open during the update. You can force an update by clicking the \"update\" button in the pop-up window.</p><br><ul><li>- used: approximate number of requests used in this period</li><li>- remaining: approximate number of requests left to use </li><li>- reset: approximate end time of the period</li> "
+    },
     "optionsSubredditFetch": {
         "message": "fetch posts"
     },
@@ -362,6 +384,6 @@
         "message": "Account authorization"
     },
     "helpAccount": {
-        "message": "<p>You can connect Reddit accounts to check its private messages and use Reddit OAuth API. Reddit private API has fewer restrictions so the extension will try to use it if possible. But if you don't want to connect your account, then Reddit public API will be used.</p><p>All authorization data is stored locally in your browser's storage and isn't shared with anyone.</p>"
+        "message": "<p>You can connect Reddit accounts to check its private messages using Reddit API.</p><p>All authorization data is stored locally in your browser's storage and isn't shared with anyone.</p>"
     }
 }

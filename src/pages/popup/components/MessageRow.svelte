@@ -4,8 +4,8 @@
     import type { ExtensionOptions } from '@/types/extension-options';
     import { getInboxUrl } from '@/utils';
     import getMsg from '@/utils/get-message';
-    import { browser } from 'webextension-polyfill-ts';
-    import type { PostGroup } from '@/utils/post-group';
+    import { PostGroup } from '@/utils/post-group';
+    import browser from 'webextension-polyfill';
     import { storageData } from '../store/store';
     import CheckMarkButton from './CheckMarkButton.svelte';
 
@@ -19,7 +19,8 @@
     $: href = getInboxUrl(options);
 
     const removePost = async (messageId: string) => {
-        await storage.removeMessage({ accId: group.id, messageId });
+        const accId = group.type === 'account-message' ? group.id : undefined;
+        await storage.removeMessage({ accId, messageId });
     };
 
     const onLinkClick = async () => {

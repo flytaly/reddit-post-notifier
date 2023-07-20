@@ -9,7 +9,7 @@ const process = () => {
     // Fixes the '_Sample.default is not a constructor' error when importing in Jest.
     const esInterop = 'Object.defineProperty(exports, "__esModule", { value: true });';
 
-    const code = compiled.js.code + esInterop;
+    const code = `${compiled.js.code}${esInterop}`;
     return { code };
 };
 

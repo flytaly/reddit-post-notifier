@@ -1,4 +1,4 @@
-import { browser } from 'webextension-polyfill-ts';
+import browser from 'webextension-polyfill';
 import type messages from '../../extension/_locales/en/messages.json';
 
 type LocaleMessage = keyof typeof messages;

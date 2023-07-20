@@ -1,14 +1,14 @@
-import { browser } from 'webextension-polyfill-ts';
-import type { Runtime } from 'webextension-polyfill-ts';
+import type { Runtime } from 'webextension-polyfill';
+import browser from 'webextension-polyfill';
 import { IS_DEV, IS_FIREFOX, IS_TEST } from '../constants';
+import { addNotificationClickListener } from '../notifier/notifications';
 import DEFAULT_OPTIONS from '../options-default';
 import { initializeBgListener, onMessage } from '../port';
 import storage from '../storage';
 import type { PortMessage } from '../types/message';
-import { addNotificationClickListener } from '../notifier/notifications';
+import { openGroups } from './open-groups';
 import { scheduleNextUpdate, watchAlarms } from './timers';
 import { isUpdating, updateAndSchedule } from './update';
-import { openGroups } from './open-groups';
 
 if (IS_FIREFOX) {
     // Support notification-sound extension
@@ -30,6 +30,9 @@ async function onInstall() {
         if (info.reason === 'update' && parseInt(info.previousVersion || '1') < 4) {
             void storage.migrateToV4();
         }
+        if (IS_DEV) {
+            void browser.tabs.create({ url: browser.runtime.getURL('dist/options/watch.html') });
+        }
     };
     browser.runtime.onInstalled.addListener(listener);
 }
@@ -37,7 +40,7 @@ async function onInstall() {
 export async function startExtension() {
     await onInstall();
 
-    void browser.browserAction.setBadgeBackgroundColor({ color: 'darkred' });
+    void browser.action.setBadgeBackgroundColor({ color: 'darkred' });
 
     // Storage
     await mergeOptions();
@@ -61,8 +64,10 @@ export async function startExtension() {
     onMessage('OPEN_GROUPS', openGroups);
 
     await updateAndSchedule();
+
+    /* if (IS_DEV) { */
+    /*     notify({ type: NotificationId.test, message: 'Background page loaded' }, 'sound_00'); */
+    /* } */
 }
 
 if (!IS_TEST) void startExtension();
-
-if (IS_DEV) void browser.tabs.create({ url: browser.runtime.getURL('dist/options/watch.html') });

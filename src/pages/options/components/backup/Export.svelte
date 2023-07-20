@@ -1,7 +1,7 @@
 <script lang="ts">
     import storage from '@/storage';
-    import { CopyIcon, CheckMarkIcon, JsonIcon } from '@options/lib/icons';
-    import IosCheckbox from '../common/IosCheckbox.svelte';
+    import IosCheckbox from '@options/components/common/IosCheckbox.svelte';
+    import { CheckMarkIcon, CopyIcon, JsonIcon } from '@options/lib/icons';
     import Heading from '../Heading.svelte';
 
     let wasCopied = false;
@@ -59,7 +59,7 @@
                     <div class="mr-auto">Loading</div>
                 {:then data}
                     <button
-                        class="flex items-center border-none bg-transparent py-0 px-1 hover:bg-transparent hover:text-skin-accent disabled:cursor-default"
+                        class="flex items-center border-none bg-transparent px-1 py-0 hover:bg-transparent hover:text-skin-accent disabled:cursor-default"
                         class:success={wasCopied}
                         on:click={() => setClipboard(data)}
                         disabled={wasCopied}
@@ -68,7 +68,7 @@
                         {wasCopied ? 'copied' : 'copy'}
                     </button>
                     <button
-                        class="flex items-center border-none bg-transparent py-0 px-1 hover:bg-transparent hover:text-skin-accent disabled:cursor-default"
+                        class="flex items-center border-none bg-transparent px-1 py-0 hover:bg-transparent hover:text-skin-accent disabled:cursor-default"
                         on:click={() => downloadText(data, 'reddit-post-notifier_config.json', 'application/json')}
                     >
                         <div class="h-5 w-5">
@@ -79,7 +79,7 @@
                 {/await}
             </div>
             <div
-                class="h-56 w-full overflow-y-scroll whitespace-pre-wrap rounded-b-md border border-skin-base p-1 font-mono"
+                class="h-56 w-full overflow-y-scroll whitespace-pre-wrap break-all rounded-b-md border border-skin-base p-1 font-mono"
             >
                 {#await dataPromise}
                     <div class="h-60 w-full">Loading</div>

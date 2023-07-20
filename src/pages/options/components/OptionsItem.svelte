@@ -24,13 +24,13 @@
 
 <style lang="postcss">
     article {
-        @apply mb-6 flex flex-row items-start overflow-hidden  p-1 text-sm font-normal;
+        @apply mb-6 mt-6 flex flex-col items-start overflow-hidden p-1 text-sm font-normal sm:flex-row;
     }
     .column {
         flex-direction: column;
     }
     .description {
-        @apply mb-2 flex-grow pr-4 leading-6 text-skin-gray;
+        @apply mb-2 min-w-[18rem] flex-grow pr-4 leading-6 text-skin-gray;
     }
     :not(.column) .description :global([slot='description']) {
         max-width: 90%;

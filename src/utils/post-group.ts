@@ -5,7 +5,7 @@ import { getInboxUrl, getSearchQueryUrl, getSubredditUrl, getUserProfileUrl } fr
 import { formatError } from '@options/lib/format-error';
 import { idToUserIdx } from './index';
 
-export type PostGroupType = 'subreddit' | 'search' | 'user' | 'message';
+export type PostGroupType = 'subreddit' | 'search' | 'user' | 'message' | 'account-message';
 
 export type PostGroup = {
     type: PostGroupType;
@@ -25,6 +25,21 @@ export const extractPostGroups = (storageData: StorageFields) => {
     const groupsWithPosts: PostGroup[] = [];
     const groupsWithoutPosts: PostGroup[] = [];
 
+    const mail = storageData.mail || {};
+
+    if (mail.messages?.length) {
+        const mailGroup: PostGroup = {
+            type: 'message',
+            id: 'reddit-mail',
+            href: getInboxUrl(storageData.options),
+            title: `Reddit messages (${mail.messages.length})`,
+            lastPostCreated: mail.lastPostCreated,
+            size: mail.messages.length,
+            notify: mail.mailNotify ? 'on' : 'off',
+            error: mail.error,
+        };
+        groupsWithPosts.push(mailGroup);
+    }
     const accList = Object.values(storageData.accounts || {});
 
     accList.forEach((a) => {
@@ -33,7 +48,7 @@ export const extractPostGroups = (storageData: StorageFields) => {
         const length = a.mail?.messages?.length || 0;
         const lastPostCreated = a.mail?.lastPostCreated;
         const group: PostGroup = {
-            type: 'message',
+            type: 'account-message',
             id: a.id,
             href: getInboxUrl(storageData.options),
             title: `${a.name || ''} inbox (${length})`,
@@ -128,7 +143,7 @@ export const extractPostGroups = (storageData: StorageFields) => {
 };
 
 export const getGroupItems = (
-    data: Pick<StorageFields, 'subreddits' | 'queries' | 'usersList' | 'accounts'>,
+    data: Pick<StorageFields, 'subreddits' | 'queries' | 'usersList' | 'mail' | 'accounts'>,
     id: string,
     type: PostGroupType,
 ): RedditItem[] | RedditMessage[] => {
@@ -143,6 +158,9 @@ export const getGroupItems = (
         if (idx !== null) return data.usersList?.[idx]?.data || [];
     }
     if (type === 'message') {
+        return data.mail?.messages || [];
+    }
+    if (type === 'account-message') {
         return data.accounts?.[id]?.mail?.messages || [];
     }
     return [];
@@ -156,5 +174,6 @@ export const removePostsFromGroup = async (id: string, type: PostGroupType) => {
         if (index == null) return;
         return storage.removePostsFrom({ followUserIndex: index });
     }
-    if (type === 'message') return storage.removeMessages(id);
+    if (type === 'message') return storage.removeMessages();
+    if (type === 'account-message') return storage.removeAccountMessages(id);
 };

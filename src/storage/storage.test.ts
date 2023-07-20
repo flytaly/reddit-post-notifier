@@ -1,8 +1,9 @@
 /* eslint-disable @typescript-eslint/no-non-null-assertion */
 /* eslint-disable @typescript-eslint/no-explicit-any */
 /* eslint-disable @typescript-eslint/unbound-method */
-import cloneDeep from 'lodash.clonedeep';
+import type { TokenResponseBody } from '@/reddit-api/auth';
 import { mocked } from 'jest-mock';
+import cloneDeep from 'lodash.clonedeep';
 import DEFAULT_OPTIONS from '../options-default';
 import type { RedditMessage, RedditMessageData, RedditPost } from '../reddit-api/reddit-types';
 import { generatePost, generatePosts, generateQuery } from '../test-utils/content-generators';
@@ -11,7 +12,6 @@ import type { ExtensionOptions } from '../types/extension-options';
 import { generateId } from '../utils/index';
 import storage from './index';
 import type { AuthUser, QueryData, QueryOpts, StorageFields, SubredditData, SubredditOpts } from './storage-types';
-import type { TokenResponseBody } from '@/reddit-api/auth';
 
 jest.mock(
     '../utils/index.ts',
@@ -99,7 +99,9 @@ describe('Authorization and messages', () => {
         expected.a1.error = null;
         expected.a1.auth.error = null;
         mockSet.expect({ accounts: expected });
-        await storage.saveMessageData(fakeData.a1.id, { unreadMessages: cloneDeep(newMsgs) as any as RedditMessage[] });
+        await storage.saveAccMessageData(fakeData.a1.id, {
+            unreadMessages: cloneDeep(newMsgs) as any as RedditMessage[],
+        });
         restoreDate();
     });
 
@@ -109,16 +111,16 @@ describe('Authorization and messages', () => {
         expected.a2.mail!.messages = oldMsgs as RedditMessage[];
         mockGet.expect({ accounts: {} }).andResolve({ accounts: cloneDeep(fakeData) });
         mockSet.expect({ accounts: expected });
-        await storage.removeMessages(fakeData.a1.id);
+        await storage.removeAccountMessages(fakeData.a1.id);
     });
 
     test('should remove all messages from all accounts', async () => {
         const expected = cloneDeep(fakeData);
         expected.a1.mail!.messages = [];
         expected.a2.mail!.messages = [];
-        mockGet.expect({ accounts: {} }).andResolve({ accounts: cloneDeep(fakeData) });
-        mockSet.expect({ accounts: expected });
-        await storage.removeMessages();
+        mockGet.expect({ accounts: {}, mail: {} }).andResolve({ accounts: cloneDeep(fakeData), mail: {} });
+        mockSet.expect({ accounts: expected, mail: { messages: [] } });
+        await storage.removeAllMessages();
     });
 
     test('should remove message', async () => {
@@ -455,17 +457,23 @@ describe('Count unread', () => {
         queries: { q1: { posts: generatePosts(1) }, q2: { posts: [] }, q3: {} } as StorageFields['queries'],
         usersList: [{ username: 'u1', data: [{}, {}] }],
         options: DEFAULT_OPTIONS,
+        mail: {
+            messages: [
+                { data: { id: 'm1', created: 1552338638 } },
+                { data: { id: 'm2', created: 1552338630 } },
+            ] as RedditMessage[],
+        },
     } as StorageFields;
     storageData.accounts = {
         id1: { id: 'id1', auth: {}, mail: { messages: Array.from({ length: 3 }) as unknown as RedditMessage[] } },
         id2: { id: 'id2', auth: {}, mail: { messages: Array.from({ length: 2 }) as unknown as RedditMessage[] } },
     };
 
-    const total = 3 + 1 + 2 + 3 + 2;
+    const total = 3 + 1 + 2 + 2 + 3 + 2;
 
     test('should count unread items', async () => {
         jest.spyOn(storage, 'getAllData').mockImplementation(() => Promise.resolve(storageData));
-        mockBrowser.browserAction.setBadgeText.expect({ text: String(total) });
+        mockBrowser.action.setBadgeText.expect({ text: String(total) });
         await expect(storage.countNumberOfUnreadItems()).resolves.toBe(total);
         (storage.getAllData as any as jest.SpyInstance).mockRestore();
     });
