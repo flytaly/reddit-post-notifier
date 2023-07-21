@@ -23,19 +23,25 @@ A browser extension that watches and notifies about:
 
 ## Usage for developers
 
-Build and watch for changes in the code and style files, then run corresponding browser with `web-ext`
+Intall depencencies with `npm install`.
+
+Then, to build and watch changes to the code and style files, and run the corresponding browser using `web-ext`
 
     npm run dev:ff
     npm run dev:chrome
 
-Build and zip the extension as a package in /web-ext-artifacts folder
+To build the extension in the "extension" folder.
 
-    npm run buildzip:ff
-    npm run buildzip:chrome
+    npm run build:ff
+    npm run build:chrome
+
+To archive the contents of the "extension" folder as a package in the /web-ext-artifacts folder
+
+    npm run zip    
 
 ### Authorization
 
-This extension uses [OAuth2](https://github.com/reddit-archive/reddit/wiki/OAuth2) authentication to get athorization and refresh tokens. These tokens will be used to check reddit private mail. To generate credentials [create new reddit app](https://www.reddit.com/prefs/apps/), and add id of the app in `.env` file (see .env.example).
+This extension uses [OAuth2](https://github.com/reddit-archive/reddit/wiki/OAuth2) authentication to get athorization and refresh tokens. These tokens will be used to check reddit private mail. To generate credentials [create new reddit app](https://www.reddit.com/prefs/apps/), and add id of the app in `.env` file (see .env.example). 
 
 ### External libraries and frameworks
 
