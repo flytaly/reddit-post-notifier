@@ -15,7 +15,6 @@ import type {
     FollowingUser,
     MailInfo,
     PostsToSaveData,
-    QueryData,
     QueryOpts,
     StorageFields as SF,
     StorageFields,
@@ -288,7 +287,7 @@ const storage = {
 
     /** Update given subreddit or reddit search data object with new posts or error */
     updateWatchDataObject(
-        prevData: SubredditData | QueryData,
+        prevData: SubredditData,
         { posts: newPosts = [], error = null, limit = 50, lastPostCreated }: PostsToSaveData = {},
     ): SubredditData {
         const result = { ...prevData };

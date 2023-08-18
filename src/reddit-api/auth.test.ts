@@ -109,6 +109,7 @@ describe('Token Refreshing', () => {
             expect(parsedUrl.origin).toBe('https://www.reddit.com');
             expect(parsedUrl.pathname).toBe('/api/v1/access_token');
             testAuthFetchOptions(options!);
+            // eslint-disable-next-line @typescript-eslint/no-base-to-string
             const body = queryStrToObj(options!.body!.toString());
             expect(body.grant_type).toBe('refresh_token');
             expect(body.refresh_token).toBe(refreshToken);

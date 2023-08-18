@@ -14,7 +14,7 @@ import type {
     RedditUserOverviewResponse,
 } from './reddit-types';
 
-type R<T> = Promise<T | RedditError | never>;
+type R<T> = Promise<T | RedditError>;
 
 const enum RateLimitHeaders {
     'remaining' = 'x-ratelimit-remaining',

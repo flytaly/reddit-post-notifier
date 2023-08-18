@@ -56,7 +56,7 @@ describe('Document search', () => {
 
         /** @param input - [field, query] */
         const s = (input: [string, string][], result: TextId[]) => {
-            const search = input.map(([field, query]) => ({ field, query } as DocSearch));
+            const search = input.map(([field, query]) => ({ field, query }) as DocSearch);
             expect(doc.search(search)).toEqual(result);
         };
 

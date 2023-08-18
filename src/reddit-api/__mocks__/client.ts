@@ -27,7 +27,7 @@ const mockMe = jest.fn(
         ({
             kind: 't2',
             data: {},
-        } as RedditAccount),
+        }) as RedditAccount,
 );
 
 const mock = jest.fn().mockImplementation(() => {

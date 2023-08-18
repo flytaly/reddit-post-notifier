@@ -1,5 +1,5 @@
-import browser from 'webextension-polyfill';
 import type { Runtime } from 'webextension-polyfill';
+import browser from 'webextension-polyfill';
 import type { PortMessage, PortMessageId, PortMessagePayload } from './types/message';
 
 export type MessageListener = (payload?: PortMessagePayload) => Promise<void> | void;

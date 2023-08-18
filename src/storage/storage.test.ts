@@ -19,7 +19,7 @@ jest.mock(
         ({
             ...jest.requireActual('../utils/index.ts'),
             generateId: jest.fn(),
-        } as object),
+        }) as object,
 );
 
 const generateIdMock = mocked(generateId);

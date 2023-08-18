@@ -1,5 +1,5 @@
 import { quadOut } from 'svelte/easing';
-import type { EasingFunction, TransitionConfig } from 'svelte/types/runtime/transition';
+import { EasingFunction, TransitionConfig } from 'svelte/transition';
 
 function clamp(n: number, min: number, max: number) {
     return Math.min(Math.max(n, min), max);
