@@ -1,5 +1,14 @@
 # Release Notes
 
+## v6.0.0 (2023-08-21)
+
+-   Port extension to Manifest V3
+-   Limit minimum update interval to 60 seconds in Chrome and 10 seconds in Firefox
+-   Show Reddit rate limits
+-   Always use Reddit public API endpoints to fetch data
+-   Add possibility to check private messages of the current logged-in user without authorization
+-   Fix the width of the toolbar popup in latest versions of Chrome
+
 ## v5.1.1 (2022-12-31)
 
 -   Fix: made notifications respect display name
