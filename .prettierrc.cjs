@@ -9,4 +9,9 @@ module.exports = {
     tabWidth: 4,
     trailingComma: 'all',
     useTabs: false,
+    overrides: [{ files: '*.svelte', options: { parser: 'svelte' } }],
+    plugins: [
+        'prettier-plugin-svelte',
+        'prettier-plugin-tailwindcss', // tailwindcss plugin must be placed at the end
+    ],
 };

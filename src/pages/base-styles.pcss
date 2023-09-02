@@ -7,18 +7,19 @@
         /* Checkbox input should be placed before this element with `peer hidden` classes */
         @apply relative block h-6 w-11 rounded-2xl
         bg-skin-gray2 transition-colors ease-in-out
-        before:absolute before:top-1/2 
 
-        before:left-1 before:block before:h-5 before:w-5 before:-translate-y-1/2
+        before:absolute before:left-1 before:top-1/2
+        before:block before:h-5 before:w-5 before:-translate-y-1/2
         before:rounded-full
         before:bg-white before:transition-all  before:ease-in-out  hover:brightness-125  peer-checked:bg-skin-input-checked
+
         peer-checked:before:translate-x-3/4
         peer-checked:before:border-skin-input-checked;
     }
 
     .toggle-button {
         @apply flex select-none items-center justify-center rounded-2xl
-            border-none bg-skin-gray2 py-[2px] px-2 text-sm text-gray-50 transition-colors
+            border-none bg-skin-gray2 px-2 py-[2px] text-sm text-gray-50 transition-colors
             hover:bg-skin-gray2 hover:brightness-110;
 
         &-on {
@@ -36,7 +37,7 @@
         }
 
         &::after {
-            @apply absolute top-1/2 right-full h-1/2 w-4 rounded-tl-xl border-skin-gray2;
+            @apply absolute right-full top-1/2 h-1/2 w-4 rounded-tl-xl border-skin-gray2;
 
             content: '';
         }
@@ -46,7 +47,7 @@
         }
 
         &:last-child::before {
-            @apply border-l border-b;
+            @apply border-b border-l;
         }
 
         &:not(:first-child, :last-child)::after {
@@ -64,7 +65,7 @@
     }
 
     .icon-button {
-        @apply flex items-center border-transparent bg-transparent py-0 px-1 transition-transform hover:scale-105 hover:bg-transparent;
+        @apply flex items-center border-transparent bg-transparent px-1 py-0 transition-transform hover:scale-105 hover:bg-transparent;
     }
 }
 
