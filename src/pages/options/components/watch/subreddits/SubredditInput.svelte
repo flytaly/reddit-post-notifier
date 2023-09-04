@@ -168,7 +168,7 @@
     <div slot="toggles" class="flex gap-3">
         <NotifyToggle
             bind:checked={subOpts.notify}
-            changeHander={() => saveInputs()}
+            changeHandler={() => saveInputs()}
             tooltipText={getMsg('optionSubredditsNotify_title')}
             data-testid="notify"
         />

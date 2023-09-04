@@ -134,7 +134,7 @@
     <div slot="toggles" class="flex gap-3">
         <NotifyToggle
             bind:checked={queryObject.notify}
-            changeHander={() => saveInputs()}
+            changeHandler={() => saveInputs()}
             tooltipText={getMsg('optionSearchNotify')}
             data-testid="notify"
         />

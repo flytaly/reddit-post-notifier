@@ -11,8 +11,6 @@
 [ ![chrome.google.com/](https://i.imgur.com/unvdmLG.png)](https://chrome.google.com/webstore/detail/reddit-post-notifier/hoolgoecmeegpbidbbcefgkjegdejibd)
 [ ![addons.mozilla.org/](https://user-images.githubusercontent.com/1577569/225926070-baa9ed48-841c-4ce7-bf70-557f848eed23.png)](https://addons.mozilla.org/firefox/addon/reddit-post-notifier/)
 
-
-
 A browser extension that watches and notifies about:
 
 -   **new posts** in subreddits and Reddit searches,
@@ -23,7 +21,7 @@ A browser extension that watches and notifies about:
 
 ## Usage for developers
 
-Intall depencencies with `npm install`.
+Install dependencies with `npm install`.
 
 Then, to build and watch changes to the code and style files, and run the corresponding browser using `web-ext`
 
@@ -37,11 +35,11 @@ To build the extension in the "extension" folder.
 
 To archive the contents of the "extension" folder as a package in the /web-ext-artifacts folder
 
-    npm run zip    
+    npm run zip
 
 ### Authorization
 
-This extension uses [OAuth2](https://github.com/reddit-archive/reddit/wiki/OAuth2) authentication to get athorization and refresh tokens. These tokens will be used to check reddit private mail. To generate credentials [create new reddit app](https://www.reddit.com/prefs/apps/), and add id of the app in `.env` file (see .env.example). 
+This extension uses [OAuth2](https://github.com/reddit-archive/reddit/wiki/OAuth2) authentication to get authorization and refresh tokens. These tokens will be used to check reddit private mail. To generate credentials [create new reddit app](https://www.reddit.com/prefs/apps/), and add id of the app in `.env` file (see .env.example).
 
 ### External libraries and frameworks
 

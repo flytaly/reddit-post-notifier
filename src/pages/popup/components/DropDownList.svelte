@@ -22,7 +22,7 @@
         <slot name="header-row" />
         <span class="ml-auto mr-3">
             <SvgButton on:click={toggle}>
-                <div class={`transfrom duration-200 ease-out ${isExpanded ? 'rotate-180' : ''}`}>
+                <div class={`transform duration-200 ease-out ${isExpanded ? 'rotate-180' : ''}`}>
                     {@html ArrowUp}
                 </div>
             </SvgButton>

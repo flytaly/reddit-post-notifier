@@ -127,7 +127,7 @@
 
 <NotifyToggle
     bind:checked={userInfo.notify}
-    changeHander={commitChanges}
+    changeHandler={commitChanges}
     title="Show notification on new user activities"
 />
 

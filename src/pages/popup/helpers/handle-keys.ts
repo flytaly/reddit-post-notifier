@@ -20,7 +20,7 @@ const focusNextRowElement = (current: HTMLElement, reverse = false) => {
     rows[index].focus();
 };
 
-const focuseNextRowInGroup = (target: HTMLElement) => {
+const focusNextRowInGroup = (target: HTMLElement) => {
     const li = target.closest('li');
     if (!li) return;
 
@@ -91,7 +91,7 @@ export default function handleKeydownEvent(e: KeyboardEvent & { target: HTMLElem
         if (!isRow(target)) return;
         const button: HTMLElement | null = target.querySelector('[data-keys-target="check-mark"] button');
         if (!button) return;
-        focuseNextRowInGroup(target);
+        focusNextRowInGroup(target);
         button.click();
     }
 
@@ -99,7 +99,7 @@ export default function handleKeydownEvent(e: KeyboardEvent & { target: HTMLElem
         if (isPostRow(target)) {
             const btn: HTMLElement | null = target.querySelector('[data-keys-target="pin-post"] button');
             if (!btn) return;
-            focuseNextRowInGroup(target);
+            focusNextRowInGroup(target);
             btn.click();
         }
     }

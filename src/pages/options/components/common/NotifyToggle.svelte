@@ -5,7 +5,7 @@
     import { tooltip } from '@options/lib/tooltip';
 
     export let checked: boolean = false;
-    export let changeHander: ((e: InputChangeEv) => void) | undefined = undefined;
+    export let changeHandler: ((e: InputChangeEv) => void) | undefined = undefined;
     export let tooltipText: string = '';
 
     const btnClick = (e: KeyboardEvent & { currentTarget: HTMLElement }) => {
@@ -27,7 +27,7 @@
     {...$$restProps}
 >
     <label class="flex max-w-max items-center space-x-1">
-        <input class="peer hidden" type="checkbox" aria-label={tooltipText} bind:checked on:change={changeHander} />
+        <input class="peer hidden" type="checkbox" aria-label={tooltipText} bind:checked on:change={changeHandler} />
         <div class="flex">
             {#if checked}
                 <div class="h-5 w-5">{@html NotifyIcon}</div>

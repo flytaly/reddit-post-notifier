@@ -137,7 +137,7 @@
     <div class="ml-4 flex">
         <NotifyToggle
             checked={acc.mailNotify}
-            changeHander={notifyMailCommit}
+            changeHandler={notifyMailCommit}
             tooltipText={getMsg('optionAccountsMailNotify_title')}
         />
     </div>

@@ -43,7 +43,7 @@
         <div class="w-min">
             <NotifyToggle
                 bind:checked={mailData.mailNotify}
-                changeHander={notifyHandler}
+                changeHandler={notifyHandler}
                 tooltipText={getMsg('optionMailNotify_title')}
             />
         </div>
