@@ -31,6 +31,7 @@ describe('Start extension', () => {
             listener({ reason: 'update', previousVersion: '3.2', temporary: false });
         });
 
+        mockBrowser.runtime.onStartup.addListener.mock(() => {});
         await startExtension();
 
         expect(storage.getOptions).toHaveBeenCalled();

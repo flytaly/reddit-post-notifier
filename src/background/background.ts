@@ -37,8 +37,13 @@ async function onInstall() {
     browser.runtime.onInstalled.addListener(listener);
 }
 
+let started = false;
+
 export async function startExtension() {
+    if (started) return;
+
     await onInstall();
+    browser.runtime.onStartup.addListener(() => void startExtension());
 
     void browser.action.setBadgeBackgroundColor({ color: 'darkred' });
 
@@ -68,6 +73,8 @@ export async function startExtension() {
     /* if (IS_DEV) { */
     /*     notify({ type: NotificationId.test, message: 'Background page loaded' }, 'sound_00'); */
     /* } */
+
+    started = true;
 }
 
 if (!IS_TEST) void startExtension();
