@@ -3,7 +3,7 @@ import { readable, writable } from 'svelte/store';
 import type { Storage } from 'webextension-polyfill';
 import browser from 'webextension-polyfill';
 
-import { connectToBg, disconnectFromBg, onMessage } from '@/port';
+import { listenForMessages, onMessage } from '@/messaging';
 import storage from '@/storage';
 import { dataFields } from '@/storage/fields';
 import type { StorageFields } from '@/storage/storage-types';
@@ -15,7 +15,7 @@ const defaultState = {
 };
 
 export const isUpdating = readable(false, (set) => {
-    connectToBg('popup');
+    listenForMessages('popup');
     onMessage('UPDATING_START', () => {
         set(true);
         void nProgress.start();
@@ -24,9 +24,6 @@ export const isUpdating = readable(false, (set) => {
         set(false);
         void nProgress.done();
     });
-    return () => {
-        disconnectFromBg();
-    };
 });
 
 export const storageData = writable(defaultState, () => {

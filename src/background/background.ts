@@ -1,11 +1,10 @@
 import type { Runtime } from 'webextension-polyfill';
 import browser from 'webextension-polyfill';
 import { IS_DEV, IS_FIREFOX, IS_TEST } from '../constants';
+import { listenForMessages, onMessage, sendMessage } from '../messaging';
 import { addNotificationClickListener } from '../notifier/notifications';
 import DEFAULT_OPTIONS from '../options-default';
-import { initializeBgListener, onMessage } from '../port';
 import storage from '../storage';
-import type { PortMessage } from '../types/message';
 import { openGroups } from './open-groups';
 import { scheduleNextUpdate, watchAlarms } from './timers';
 import { isUpdating, updateAndSchedule } from './update';
@@ -59,14 +58,11 @@ export async function startExtension() {
     // Register alarms
     watchAlarms();
 
-    // Register port
-    initializeBgListener((p) => {
-        if (isUpdating) p.postMessage({ id: 'UPDATING_START' } as PortMessage);
-    });
-
+    listenForMessages('background');
     onMessage('UPDATE_NOW', () => updateAndSchedule(true));
     onMessage('SCHEDULE_NEXT_UPDATE', () => scheduleNextUpdate());
     onMessage('OPEN_GROUPS', openGroups);
+    if (isUpdating) void sendMessage('UPDATING_START');
 
     await updateAndSchedule();
 

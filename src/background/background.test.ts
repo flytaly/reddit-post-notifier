@@ -1,18 +1,18 @@
 /* eslint-disable @typescript-eslint/unbound-method */
+import { addNotificationClickListener } from '@/notifier/notifications';
 import { mocked } from 'jest-mock';
+import type { MessageListener } from '../messaging';
+import { listenForMessages, onMessage } from '../messaging';
 import DEFAULT_OPTIONS from '../options-default';
-import { initializeBgListener, onMessage } from '../port';
-import type { MessageListener } from '../port';
 import storage from '../storage';
 import type { ExtensionOptions } from '../types/extension-options';
 import type { PortMessageId } from '../types/message';
 import { startExtension } from './background';
-import { addNotificationClickListener } from '@/notifier/notifications';
 import { scheduleNextUpdate, watchAlarms } from './timers';
 import { updateAndSchedule } from './update';
 
 jest.mock('../storage/storage.ts');
-jest.mock('../port.ts');
+jest.mock('../messaging.ts');
 jest.mock('@/notifier/notifications');
 jest.mock('./timers.ts');
 jest.mock('./update.ts');
@@ -43,7 +43,7 @@ describe('Start extension', () => {
 
         expect(addNotificationClickListener).toHaveBeenCalled();
         expect(storage.countNumberOfUnreadItems).toHaveBeenCalled();
-        expect(initializeBgListener).toHaveBeenCalled();
+        expect(listenForMessages).toHaveBeenCalled();
         expect(watchAlarms).toHaveBeenCalled();
         expect(updateAndSchedule).toHaveBeenCalled();
         expect(mocked(updateAndSchedule).mock.calls.flat(1)).toHaveLength(0);

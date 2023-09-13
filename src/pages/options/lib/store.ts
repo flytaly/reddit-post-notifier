@@ -1,5 +1,5 @@
 import { IS_TEST } from '@/constants';
-import { connectToBg, disconnectFromBg, onMessage } from '@/port';
+import { listenForMessages, onMessage } from '@/messaging';
 import { type RateLimits } from '@/reddit-api/client';
 import { session } from '@/storage/storage';
 import nProgress from 'nprogress';
@@ -12,10 +12,7 @@ function createMessageStore() {
             rateLimits: { used: null, reset: null, remaining: null } as RateLimits,
         },
         () => {
-            connectToBg('options');
-            return () => {
-                disconnectFromBg();
-            };
+            listenForMessages('options');
         },
     );
 

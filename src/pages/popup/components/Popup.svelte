@@ -15,7 +15,7 @@
     import type { StorageFields } from '@/storage/storage-types';
     import { extractPostGroups } from '@/utils/post-group';
     import type { PostGroup } from '@/utils/post-group';
-    import { sendToBg } from '@/port';
+    import { sendMessage } from '@/messaging';
     import type { OpenGroupsPayload } from '@/types/message';
     import { WarningIcon } from '@options/lib/icons';
 
@@ -35,8 +35,8 @@
     $: ({ groupsWithPosts, groupsWithoutPosts } = extractPostGroups($storageData));
 
     $: if (groupsWithPosts.length > 0 && $storageData.options.onBadgeClick === 'openall') {
-        sendToBg('OPEN_GROUPS', { groups: groupsWithPosts, remove: true } as OpenGroupsPayload);
-        window.close();
+        const payload: OpenGroupsPayload = { groups: groupsWithPosts, remove: true };
+        void sendMessage('OPEN_GROUPS', payload).then(() => window.close());
     }
 
     const optionsHref = browser.runtime.getURL('options.html');

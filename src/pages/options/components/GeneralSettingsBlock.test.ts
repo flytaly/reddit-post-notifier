@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/unbound-method */
 import DEFAULT_OPTIONS from '@/options-default';
-import { sendToBg } from '@/port';
+import { sendMessage } from '@/messaging';
 import type { notificationSoundFiles } from '@/sounds';
 import { dataFields } from '@/storage/fields';
 import storage from '@/storage/storage';
@@ -15,7 +15,7 @@ import GeneralSettingsBlock from './GeneralSettingsBlock.svelte';
 jest.mock('@/storage/storage.ts');
 jest.mock('@/utils/get-message.ts');
 jest.mock('@/utils/apply-theme.ts');
-jest.mock('@/port');
+jest.mock('@/messaging');
 
 const mockedStorage = mocked(storage);
 const mockStorageData = (opts?: Partial<ExtensionOptions>) => {
@@ -52,7 +52,7 @@ describe('General Options', () => {
         });
         await fireEvent.input(input, { target: { value: 30 } });
         optionSaved({ updateInterval: 30 });
-        expect(sendToBg).toHaveBeenCalledWith('SCHEDULE_NEXT_UPDATE');
+        expect(sendMessage).toHaveBeenCalledWith('SCHEDULE_NEXT_UPDATE');
         jest.clearAllMocks();
 
         // not less than 10 sec

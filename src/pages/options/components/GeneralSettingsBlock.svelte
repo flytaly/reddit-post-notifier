@@ -1,6 +1,6 @@
 <script lang="ts">
     import DEFAULT_OPTIONS from '@/options-default';
-    import { sendToBg } from '@/port';
+    import { sendMessage } from '@/messaging';
     import { getAudioSrc, notificationSoundFiles } from '@/sounds';
     import storage from '@/storage';
     import type { ExtensionOptions } from '@/types/extension-options';
@@ -47,7 +47,7 @@
     const updateInterval = async (value: number) => {
         if (!value) return;
         await storage.saveOptions({ updateInterval: Math.max(10, value) });
-        sendToBg('SCHEDULE_NEXT_UPDATE');
+        await sendMessage('SCHEDULE_NEXT_UPDATE');
     };
 
     const intervalRadioInputHandler = async (value: string) => {

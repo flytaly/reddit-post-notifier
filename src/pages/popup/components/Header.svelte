@@ -1,5 +1,5 @@
 <script lang="ts">
-    import { sendToBg } from '@/port';
+    import { sendMessage } from '@/messaging';
     import storage from '@/storage';
     import type { OpenGroupsPayload } from '@/types/message';
     import { getInboxUrl } from '@/utils';
@@ -37,20 +37,25 @@
 
     let disableOpenAll = false;
     const onOpenAll = async () => {
-        sendToBg('OPEN_GROUPS', {
+        const payload: OpenGroupsPayload = {
             groups: groupsWithPosts,
             remove: $storageData.options.delListAfterOpening,
-        } as OpenGroupsPayload);
+        };
+        void sendMessage('OPEN_GROUPS', payload);
         setTimeout(() => {
             disableOpenAll = true;
         }, 1000);
+    };
+
+    const updateNow = async () => {
+        await sendMessage('UPDATE_NOW');
     };
 </script>
 
 <header class="flex min-h-[1.2rem] items-center justify-between space-x-3 border-b border-skin-delimiter p-1">
     <SvgButton
         disabled={loading}
-        on:click={() => sendToBg('UPDATE_NOW')}
+        on:click={updateNow}
         title={getMsg('headerUpdateBtn_title')}
         text={loading ? 'updating' : 'update'}
     >
