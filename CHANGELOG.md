@@ -1,5 +1,10 @@
 # Release Notes
 
+## v6.0.1 (2023-09-16)
+
+-   Fix message passing to idle background worker by using one-time requests
+-   Launch background worker script on startup
+
 ## v6.0.0 (2023-08-21)
 
 -   Port extension to Manifest V3
