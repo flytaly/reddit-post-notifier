@@ -6,9 +6,20 @@ type Context = 'popup' | 'options' | 'background';
 
 const messageListeners = new Map<PortMessageId, MessageListener>();
 
-export function sendMessage(id: PortMessageId, payload?: PortMessagePayload) {
-    const message: PortMessage = { id, payload };
-    return chrome.runtime.sendMessage(message);
+export async function sendMessage(id: PortMessageId, payload?: PortMessagePayload) {
+    try {
+        const message: PortMessage = { id, payload };
+        const response = await chrome.runtime.sendMessage(message);
+        // eslint-disable-next-line @typescript-eslint/no-unsafe-return
+        return response;
+    } catch (error) {
+        const msg = (error as Error).message;
+        if (msg == 'Could not establish connection. Receiving end does not exist.') {
+            console.warn(msg);
+            return;
+        }
+        console.error(error, msg);
+    }
 }
 
 let listener: Parameters<typeof browser.runtime.onMessage.addListener>[0];
