@@ -114,6 +114,8 @@ export const filterPostDataProperties = (post: RedditPostExtended): RedditPost =
         'subreddit',
         'title',
         'url',
+        'is_gallery',
+        'media_metadata',
     ];
 
     const data = filterKeys(filterList, post.data) as RedditPostData;

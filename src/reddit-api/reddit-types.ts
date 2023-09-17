@@ -4,6 +4,26 @@ export type ImageSource = {
     url: string;
 };
 
+export type LiteralUnion<LiteralType, BaseType> = LiteralType | (BaseType & Record<never, never>);
+
+export type MediaMedataPreview = {
+    /** width */
+    x: number;
+    /** height */
+    y: number;
+    /** url */
+    u: string;
+};
+
+export type MediaMetadata = {
+    status: LiteralUnion<'valid', string>;
+    id: string;
+    e: LiteralUnion<'Image' | 'RedditVideo' | 'AnimatedImage', string>;
+    /** image/gif, image/png .... */
+    m?: string;
+    p?: MediaMedataPreview[];
+};
+
 export type RedditPostData = {
     author: string;
     created_utc: number;
@@ -24,6 +44,8 @@ export type RedditPostData = {
     subreddit: string;
     title: string;
     url: string;
+    is_gallery?: boolean;
+    media_metadata?: Record<string, MediaMetadata>;
 };
 
 export type RedditCommentData = {

@@ -1,6 +1,6 @@
 <script lang="ts">
     import { onMount } from 'svelte';
-    import type { RedditItem, RedditMessage } from '@/reddit-api/reddit-types';
+    import type { RedditItem, RedditMessage, RedditPost } from '@/reddit-api/reddit-types';
     import { RedditObjectKind } from '@/reddit-api/reddit-types';
 
     export let posts: RedditItem[] | RedditMessage[];
@@ -19,6 +19,45 @@
         }
     }
 
+    const MAX_WIDTH = 300;
+    const MAX_HEIGHT = 200;
+
+    function getImageList(post: RedditPost): { url: string; width: number; height: number }[] | undefined {
+        if (post.data.is_gallery && post.data.media_metadata) {
+            const media = Object.values(post.data.media_metadata);
+            const withPreview = media.find((m) => m.p?.length);
+            if (withPreview) {
+                return withPreview.p?.map((p) => {
+                    return { url: p.u, width: p.x, height: p.y };
+                });
+            }
+        }
+        const image = post?.data?.preview?.images[0];
+        return image?.resolutions?.map((p) => {
+            return { url: p.url, width: p.width || 0, height: p.height || 0 };
+        });
+    }
+
+    function selectFittingImage(imageList: ReturnType<typeof getImageList>) {
+        if (!imageList?.length) return;
+        let result = imageList.find((i) => {
+            return i.width > MAX_WIDTH && i.height > MAX_HEIGHT;
+        });
+        result = result || imageList[0];
+        result.width = Math.max(result.width, MAX_WIDTH);
+        result.height = Math.max(result.height, MAX_HEIGHT);
+
+        const aspectRatio = result.width / result.height;
+        if (aspectRatio > 1) {
+            result.width = Math.min(MAX_WIDTH, result.width);
+            result.height = result.width / aspectRatio;
+            return result;
+        }
+        result.height = Math.min(MAX_HEIGHT, result.height);
+        result.width = result.height * aspectRatio;
+        return result;
+    }
+
     function setData(post: RedditItem | RedditMessage) {
         imageInfo = null;
         const sliceText = (str: string, max = 400) => (str.length > max ? `${str.slice(0, max)}...` : str);
@@ -28,20 +67,17 @@
                     postText = sliceText(post.data.selftext);
                     return;
                 }
-                const image = post?.data?.preview?.images[0];
-                if (image?.resolutions?.length) {
-                    const { url, width = 300, height = 200 } = image.resolutions[1] || image.resolutions[0];
-                    if (url) {
-                        imageInfo = { url, width, height, loaded: false };
-                        const imgElem = new Image();
-                        imgElem.onload = () => {
-                            if (imageInfo?.url === url) {
-                                imageInfo.loaded = true;
-                            }
-                        };
-                        imgElem.src = url;
-                    }
-                }
+                const imgList = getImageList(post);
+                const image = selectFittingImage(imgList);
+                if (!image) return;
+                imageInfo = { ...image, loaded: false };
+                const imgElem = new Image();
+                imgElem.onload = () => {
+                    if (imageInfo?.url !== image.url) return;
+                    imageInfo.loaded = true;
+                };
+                imgElem.src = image.url;
+
                 postText = !imageInfo ? post.data.url : null;
                 return;
             }
@@ -111,26 +147,26 @@
     class={`preview ${!imageInfo && !postText ? 'hidden' : 'block'}`}
     bind:this={previewElement}
     class:hide={!imageInfo && !postText}
+    style={`max-width: ${MAX_WIDTH}px; max-height: ${MAX_HEIGHT}px`}
 >
     {#if imageInfo}
-        {#if imageInfo.loaded}
-            <img
-                src={imageInfo.url}
-                width={imageInfo.width}
-                height={imageInfo.height}
-                alt="preview"
-                class="block min-w-min"
-            />
-        {:else}
-            <div style={`width: ${Number(imageInfo.width)}px; height: ${Number(imageInfo.height)}px`} />
-        {/if}
+        <div style={`width: ${Number(imageInfo.width)}px; height: ${Number(imageInfo.height)}px`}>
+            {#if imageInfo.loaded}
+                <img
+                    src={imageInfo.url}
+                    width={imageInfo.width}
+                    height={imageInfo.height}
+                    alt="preview"
+                    class="block min-h-full min-w-full"
+                />
+            {/if}
+        </div>
     {:else}<span>{postText}</span>{/if}
 </div>
 
 <style lang="postcss">
     .preview {
-        @apply absolute z-50 max-h-[13rem] max-w-[18rem]
-                overflow-hidden break-words border
+        @apply absolute z-50 overflow-hidden break-words border
                 border-skin-base
                 bg-skin-bg p-1
                 text-xs;
