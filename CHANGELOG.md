@@ -1,5 +1,10 @@
 # Release Notes
 
+## v6.1.0 (2023-09-18)
+
+-   Save and restore extension icon in Chrome
+-   Show preview of gallery posts
+
 ## v6.0.1 (2023-09-16)
 
 -   Fix message passing to idle background worker by using one-time requests
