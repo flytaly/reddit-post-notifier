@@ -10,7 +10,7 @@ const themeToClassMap = {
     purple: 'purple-theme',
 } as const;
 
-const setClasses = (theme: ExtensionOptions['theme']) => {
+function setClasses(theme: ExtensionOptions['theme']) {
     const add = themeToClassMap[theme] as string | undefined;
 
     const remove: string[] = Object.keys(themeToClassMap)
@@ -19,29 +19,24 @@ const setClasses = (theme: ExtensionOptions['theme']) => {
 
     document.body.classList.remove(...remove);
     if (add) document.body.classList.add(add);
-};
+}
 
-const setIcons = (isDark: boolean) => {
-    if (isDark) {
-        void browser.action.setIcon({
-            path: {
-                16: '../../images/icon-16-light.png',
-                32: '../../images/icon-32-light.png',
-                64: '../../images/icon-64-light.png',
-            },
-        });
-    } else {
-        void browser.action.setIcon({
-            path: {
-                16: '../../images/icon-16.png',
-                32: '../../images/icon-32.png',
-                64: '../../images/icon-64.png',
-            },
-        });
-    }
-};
+export async function setIcons({ isDark }: { isDark: boolean }) {
+    const iconPaths = isDark
+        ? {
+              16: '../../images/icon-16-light.png',
+              32: '../../images/icon-32-light.png',
+              64: '../../images/icon-64-light.png',
+          }
+        : {
+              16: '../../images/icon-16.png',
+              32: '../../images/icon-32.png',
+              64: '../../images/icon-64.png',
+          };
+    return browser.action.setIcon({ path: iconPaths });
+}
 
-const toggleTheme = (theme: ExtensionOptions['theme'], mql: MediaQueryList | MediaQueryListEvent) => {
+function toggleTheme(theme: ExtensionOptions['theme'], mql: MediaQueryList | MediaQueryListEvent) {
     let isDark = false;
     switch (theme) {
         case 'light':
@@ -57,8 +52,12 @@ const toggleTheme = (theme: ExtensionOptions['theme'], mql: MediaQueryList | Med
             theme = isDark ? 'dark' : 'light';
     }
     setClasses(theme);
-    if (IS_CHROME) setIcons(isDark);
-};
+
+    if (IS_CHROME) {
+        void setIcons({ isDark });
+        void storage.saveOptions({ iconTheme: isDark ? 'dark' : 'light' });
+    }
+}
 
 async function applyTheme(theme?: ExtensionOptions['theme']) {
     if (!theme) {

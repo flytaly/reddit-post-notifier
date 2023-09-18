@@ -1,18 +1,18 @@
 /* eslint-disable @typescript-eslint/unbound-method */
-import { addNotificationClickListener } from '@/notifier/notifications';
 import { mocked } from 'jest-mock';
-import type { MessageListener } from '../messaging';
-import { listenForMessages, onMessage } from '../messaging';
-import DEFAULT_OPTIONS from '../options-default';
-import storage from '../storage';
-import type { ExtensionOptions } from '../types/extension-options';
-import type { PortMessageId } from '../types/message';
+
+import { listenForMessages, onMessage, type MessageListener } from '@/messaging';
+import { addNotificationClickListener } from '@/notifier/notifications';
+import DEFAULT_OPTIONS from '@/options-default';
+import storage from '@/storage';
+import type { ExtensionOptions } from '@/types/extension-options';
+import type { PortMessageId } from '@/types/message';
 import { startExtension } from './background';
 import { scheduleNextUpdate, watchAlarms } from './timers';
 import { updateAndSchedule } from './update';
 
-jest.mock('../storage/storage.ts');
-jest.mock('../messaging.ts');
+jest.mock('@/storage/storage.ts');
+jest.mock('@/messaging.ts');
 jest.mock('@/notifier/notifications');
 jest.mock('./timers.ts');
 jest.mock('./update.ts');
@@ -20,9 +20,16 @@ jest.mock('./update.ts');
 describe('Start extension', () => {
     const onMessageMock = mocked(onMessage);
     test('should initialize extension', async () => {
-        const opts: Partial<ExtensionOptions> = { updateInterval: 300 };
-        (storage.getOptions as jest.Mock).mockImplementationOnce(async () => opts);
+        const opts: Partial<ExtensionOptions> = { updateInterval: 300, iconTheme: 'dark' };
+        (storage.getOptions as jest.Mock).mockImplementation(async () => opts);
         mockBrowser.action.setBadgeBackgroundColor.expect({ color: 'darkred' });
+        mockBrowser.action.setIcon.expect({
+            path: {
+                16: '../../images/icon-16-light.png',
+                32: '../../images/icon-32-light.png',
+                64: '../../images/icon-64-light.png',
+            },
+        });
         mockBrowser.storage.onChanged.addListener.spy(() => ({}));
         const msgCallbacks = new Map<PortMessageId, MessageListener>();
         mocked(onMessageMock).mockImplementation((id, cb) => msgCallbacks.set(id, cb));

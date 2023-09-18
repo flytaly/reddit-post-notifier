@@ -8,6 +8,7 @@ export type ExtensionOptions = {
     /** limit the number of post in response */
     limit: number;
     theme: 'auto' | 'dark' | 'light' | 'purple';
+    iconTheme?: 'dark' | 'light';
     /**  expand groups in popup that have at least 'x' number of posts */
     expandWithItems: number;
     /** delete the post after clicking on it */

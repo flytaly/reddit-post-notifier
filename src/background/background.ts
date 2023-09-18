@@ -1,10 +1,12 @@
 import type { Runtime } from 'webextension-polyfill';
 import browser from 'webextension-polyfill';
-import { IS_DEV, IS_FIREFOX, IS_TEST } from '../constants';
-import { listenForMessages, onMessage, sendMessage } from '../messaging';
-import { addNotificationClickListener } from '../notifier/notifications';
-import DEFAULT_OPTIONS from '../options-default';
-import storage from '../storage';
+
+import { IS_CHROME, IS_DEV, IS_FIREFOX, IS_TEST } from '@/constants';
+import { listenForMessages, onMessage, sendMessage } from '@/messaging';
+import { addNotificationClickListener } from '@/notifier/notifications';
+import DEFAULT_OPTIONS from '@/options-default';
+import storage from '@/storage';
+import { setIcons } from '@/utils/apply-theme';
 import { openGroups } from './open-groups';
 import { scheduleNextUpdate, watchAlarms } from './timers';
 import { isUpdating, updateAndSchedule } from './update';
@@ -29,11 +31,27 @@ async function onInstall() {
         if (info.reason === 'update' && parseInt(info.previousVersion || '1') < 4) {
             void storage.migrateToV4();
         }
+
+        void mergeOptions();
+
         if (IS_DEV) {
             void browser.tabs.create({ url: browser.runtime.getURL('dist/options/watch.html') });
         }
     };
     browser.runtime.onInstalled.addListener(listener);
+}
+
+async function restoreIcon() {
+    /** Can't use `matchMedia` here, so restore icon from the storage  */
+    const { iconTheme } = await storage.getOptions();
+    if (!iconTheme) return;
+    await setIcons({ isDark: iconTheme === 'dark' });
+}
+
+async function setTheme() {
+    await browser.action.setBadgeBackgroundColor({ color: 'darkred' });
+
+    if (IS_CHROME) await restoreIcon();
 }
 
 let started = false;
@@ -44,10 +62,7 @@ export async function startExtension() {
     await onInstall();
     browser.runtime.onStartup.addListener(() => void startExtension());
 
-    void browser.action.setBadgeBackgroundColor({ color: 'darkred' });
-
-    // Storage
-    await mergeOptions();
+    void setTheme();
 
     browser.storage.onChanged.addListener(() => void storage.countNumberOfUnreadItems());
     void storage.countNumberOfUnreadItems();
