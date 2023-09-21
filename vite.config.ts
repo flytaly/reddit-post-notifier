@@ -43,7 +43,7 @@ const preventSVGEmit = (): Plugin => {
 const port = parseInt(process.env.PORT || '') || 3303;
 const optPath = 'src/pages/options/';
 
-export const sharedConfig: UserConfigExport = {
+export const sharedConfig: Partial<UserConfig> = {
     root: r('src/pages'),
     define: getEnvKeys(),
     resolve: {

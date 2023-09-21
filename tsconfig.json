@@ -7,6 +7,7 @@
             "@/*": ["./*"],
             "@options/*": ["./pages/options/*"]
         },
+        "types": ["vitest/globals"],
         "resolveJsonModule": true,
         "allowJs": false,
         "lib": ["es2020", "dom", "DOM.Iterable", "webworker"],
@@ -21,8 +22,8 @@
         "./vite.config.ts",
         "src/**/*",
         "src/types/*",
-        "src/test-utils/setupTest.ts",
-        "scripts/**/*" //
+        "scripts/**/*", //
+        "src/test-utils/setup-tests.ts"
     ],
     "exclude": ["node_modules/*", "dist/*"]
 }
