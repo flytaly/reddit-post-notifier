@@ -1,14 +1,17 @@
 /* eslint-disable @typescript-eslint/restrict-template-expressions */
 /* eslint-disable @typescript-eslint/no-non-null-assertion, @typescript-eslint/unbound-method */
+import { config } from '@/constants';
+import storage from '@/storage';
 import type { AuthUser } from '@/storage/storage-types';
-import fetchMock from 'jest-fetch-mock';
-import { config } from '../constants';
-import storage from '../storage';
+import { describe, expect, test, vi, beforeAll, afterEach, afterAll } from 'vitest';
 import auth from './auth';
 import { AuthError } from './errors';
 import scopes from './scopes';
+import browser from 'webextension-polyfill';
 
-jest.mock('../storage/index.ts');
+vi.mock('@/storage/index.ts');
+
+const fetchMock = vi.spyOn(global, 'fetch');
 
 const testAuthFetchOptions = (options: RequestInit) => {
     expect(options.method).toBe('POST');
@@ -55,7 +58,7 @@ const jsonResponse = (result: unknown, status = 200) => {
 describe('Token Retrieval', () => {
     const id = 'fake_id';
     function mockAuthFlow() {
-        mockBrowser.identity.launchWebAuthFlow.mock(async ({ interactive, url }) => {
+        vi.mocked(browser.identity.launchWebAuthFlow).mockImplementation(async ({ interactive, url }) => {
             expect(interactive).toBeTruthy();
             testUrl(url);
             return `${config.redirectUri}?code=${fakeCode}&state=${auth.authState}`;
@@ -88,11 +91,11 @@ describe('Token Retrieval', () => {
         const error = 'access_denied';
         let redirectUri = `${config.redirectUri}?error=${error}&state=${auth.authState}`;
 
-        mockBrowser.identity.launchWebAuthFlow.mock(async () => redirectUri);
+        vi.mocked(browser.identity.launchWebAuthFlow).mockImplementation(async () => redirectUri);
         await expect(auth.login(id)).rejects.toThrowError(new AuthError(error, id));
 
         redirectUri = `${config.redirectUri}?state=${auth.authState}`;
-        mockBrowser.identity.launchWebAuthFlow.mock(async () => redirectUri);
+        vi.mocked(browser.identity.launchWebAuthFlow).mockImplementation(async () => redirectUri);
         await expect(auth.login(id)).rejects.toThrowError(new AuthError("Couldn't get auth code", id));
     });
 });
@@ -128,7 +131,7 @@ describe('Token Refreshing', () => {
 });
 
 describe('Get Access Token', () => {
-    let renewAccessToken: ReturnType<typeof jest.spyOn>;
+    let renewAccessToken: ReturnType<typeof vi.spyOn>;
     const renewedToken = 'renewedToken';
     const authData = {
         accessToken: 'oldAccessToken',
@@ -136,11 +139,11 @@ describe('Get Access Token', () => {
     };
 
     beforeAll(() => {
-        renewAccessToken = jest.spyOn(auth, 'renewAccessToken').mockImplementation(async () => renewedToken);
+        renewAccessToken = vi.spyOn(auth, 'renewAccessToken').mockImplementation(async () => renewedToken);
     });
 
     afterEach(() => {
-        jest.clearAllMocks();
+        vi.clearAllMocks();
     });
 
     afterAll(() => {

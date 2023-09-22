@@ -1,11 +1,14 @@
-import fetchMock from 'jest-fetch-mock';
-import { config } from '../constants';
-import auth from './auth';
+/* eslint-disable @typescript-eslint/unbound-method */
+import { config } from '@/constants';
+import { afterEach, describe, expect, test, vi, beforeAll } from 'vitest';
 import RedditApiClient from './client';
 import type { RedditError } from './reddit-types';
 
-jest.mock('./auth.ts');
-afterEach(() => jest.clearAllMocks());
+const fetchMock = vi.spyOn(global, 'fetch');
+
+afterEach(() => {
+    vi.clearAllMocks();
+});
 
 const jsonResponse = (result: unknown, status = 200) => {
     const response = {
@@ -21,9 +24,6 @@ describe('HTTP GET request', () => {
     const endpoint = '/endpoint';
     const accessToken = 'accessToken';
     const params = { p1: 'v1', p2: 'v2' };
-    beforeAll(() => {
-        auth.getAccessToken = jest.fn(async () => accessToken);
-    });
 
     test('should set accessToken', () => {
         const reddit = new RedditApiClient();
@@ -95,49 +95,44 @@ describe('HTTP GET request', () => {
 
 describe('API', () => {
     const response = { data: 'data' };
-    let GET: ReturnType<typeof jest.spyOn>;
     let reddit: RedditApiClient;
 
     beforeAll(() => {
         reddit = new RedditApiClient();
-        GET = jest.spyOn(reddit, 'GET').mockImplementation(async () => response);
-    });
-
-    afterAll(() => {
-        GET.mockRestore();
+        vi.spyOn(reddit, 'GET').mockImplementation(async () => response);
     });
 
     test('should request api: r/subreddit/new ', async () => {
         const result = await reddit.getSubreddit('test').new();
-        expect(GET).toBeCalledWith('/r/test/new', undefined);
+        expect(reddit.GET).toBeCalledWith('/r/test/new', undefined);
         expect(result).toEqual(response);
     });
 
     test('should request api "r/subreddit/new" with parameters', async () => {
         const listing = { limit: 100 };
         const result = await reddit.getSubreddit('test').new(listing);
-        expect(GET).toBeCalledWith('/r/test/new', listing);
+        expect(reddit.GET).toBeCalledWith('/r/test/new', listing);
         expect(result).toEqual(response);
     });
 
     test('should request api "r/subreddit/search', async () => {
         const listing = { limit: 10, q: 'query' };
         const result = await reddit.getSubreddit('test').search(listing);
-        expect(GET).toBeCalledWith('/r/test/search', { sort: 'new', ...listing });
+        expect(reddit.GET).toBeCalledWith('/r/test/search', { sort: 'new', ...listing });
         expect(result).toEqual(response);
     });
 
     test('should request api "/search"', async () => {
         const listing = { limit: 10, q: 'query' };
         const result = await reddit.search(listing);
-        expect(GET).toBeCalledWith('/search', { sort: 'new', ...listing });
+        expect(reddit.GET).toBeCalledWith('/search', { sort: 'new', ...listing });
         expect(result).toEqual(response);
     });
 
     test('should request api "/message/unread"', async () => {
         const listing = { limit: 25 };
         const result = await reddit.messages.unread(listing);
-        expect(GET).toBeCalledWith('/message/unread', { ...listing });
+        expect(reddit.GET).toBeCalledWith('/message/unread', { ...listing });
         expect(result).toEqual(response);
     });
 });
