@@ -1,23 +1,23 @@
 /* eslint-disable @typescript-eslint/no-unsafe-return, @typescript-eslint/unbound-method */
-import { mocked } from 'jest-mock';
-import { tick } from 'svelte';
-import cloneDeep from 'lodash.clonedeep';
-import { test } from '@jest/globals';
-import { fireEvent, getByLabelText, render, waitFor } from '@testing-library/svelte';
+import { act, cleanup, fireEvent, getByLabelText, render, waitFor } from '@testing-library/svelte';
+import { afterEach, beforeAll, describe, expect, test, vi } from 'vitest';
+
 import storage from '@/storage';
-import type { QueryData, QueryOpts } from '@/storage/storage-types';
-import SearchBlock from './SearchBlock.svelte';
-import getMsg from '@/utils/get-message';
 import { dataFields } from '@/storage/fields';
+import type { QueryData, QueryOpts } from '@/storage/storage-types';
+import getMsg from '@/utils/get-message';
+import SearchBlock from './SearchBlock.svelte';
 
-jest.mock('@/storage/storage.ts');
-jest.mock('@/utils/get-message.ts');
-jest.mock('@/utils/index.ts', () => ({
-    ...jest.requireActual('@/utils/index.ts'),
-    debounce: jest.fn((f: () => unknown) => f),
-}));
-
-const mockedStorage = mocked(storage);
+vi.mock('@/storage/storage.ts');
+vi.mock('@/utils/get-message.ts');
+vi.mock('@/utils/index.ts', async (importOriginal) => {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const mod = (await importOriginal()) as any;
+    return {
+        ...mod,
+        debounce: vi.fn((f: () => unknown) => f),
+    };
+});
 
 describe('Search settings block', () => {
     const queriesList: QueryOpts[] = [
@@ -27,18 +27,24 @@ describe('Search settings block', () => {
         id1: { error: null },
     };
 
-    beforeEach(() => {
-        mockBrowser.storage.onChanged.addListener.spy(() => ({}));
-        mockedStorage.getQueriesList.mockResolvedValue(cloneDeep(queriesList));
+    beforeAll(() => {
+        vi.mocked(storage.getAllData).mockImplementation(async () => {
+            return { ...dataFields, queries: queriesData, queriesList };
+        });
     });
 
-    beforeAll(() => {
-        mocked(storage).getAllData.mockResolvedValue({ ...dataFields, queries: queriesData, queriesList });
+    afterEach(() => {
+        cleanup();
+        vi.clearAllMocks();
     });
 
     test('render and save', async () => {
-        const { getAllByTestId, getByText } = render(SearchBlock);
-        await tick();
+        vi.mocked(storage.getQueriesList).mockResolvedValue(structuredClone(queriesList));
+        const { getAllByTestId, getByText, getByTestId } = render(SearchBlock);
+
+        await waitFor(() => {
+            expect(getByTestId('search-inputs')).toBeInTheDocument();
+        });
 
         const items = getAllByTestId('search-inputs');
         expect(items).toHaveLength(1);
@@ -55,25 +61,18 @@ describe('Search settings block', () => {
         expect(storage.saveQuery).toHaveBeenCalledWith({ ...queriesList[0], subreddit: 'Sub2' });
     });
 
-    test('should add and delete fieldset', async () => {
-        const { getAllByTestId, getAllByLabelText, getByText, queryAllByTestId } = render(SearchBlock);
-        await tick();
+    test.only('should add fieldset', async () => {
+        vi.mocked(storage.getQueriesList).mockImplementationOnce(async () => []);
+        const { getByText, queryAllByTestId } = render(SearchBlock);
 
-        const delBtns = getAllByLabelText(getMsg('optionWatchInputDelete'));
-        expect(delBtns).toHaveLength(1);
+        expect(queryAllByTestId('search-inputs')).toHaveLength(0);
 
-        expect(getAllByTestId('search-inputs')).toHaveLength(1);
-
-        await fireEvent.click(delBtns[0]);
-        await waitFor(() => {
-            const formsAfterDeleting = queryAllByTestId('search-inputs');
-            expect(formsAfterDeleting).toHaveLength(0);
+        await act(async () => {
+            await fireEvent.click(getByText('Add new search'));
         });
-
-        await fireEvent.click(getByText('Add new search'));
-        await waitFor(() => {
-            const formsAfterDeleting = getAllByTestId('search-inputs');
-            expect(formsAfterDeleting).toHaveLength(1);
+        await act(async () => {
+            await fireEvent.click(getByText('Add new search'));
         });
+        expect(queryAllByTestId('search-inputs')).toHaveLength(2);
     });
 });

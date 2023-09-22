@@ -1,24 +1,28 @@
 /* eslint-disable @typescript-eslint/no-unsafe-return,  @typescript-eslint/unbound-method */
-import { fireEvent, render, waitFor } from '@testing-library/svelte';
+
+import { act, cleanup, fireEvent, render, waitFor } from '@testing-library/svelte';
+import { tick } from 'svelte';
+import { afterEach, beforeAll, describe, expect, test, vi } from 'vitest';
+
 import { cloneDeep } from 'lodash';
-import { mocked } from 'jest-mock';
 import storage from '@/storage/storage';
 import type { SubredditData, SubredditOpts } from '@/storage/storage-types';
 import getMsg from '@/utils/get-message';
 import SubredditsBlock from './SubredditsBlock.svelte';
-import { tick } from 'svelte';
 import { dataFields } from '@/storage/fields';
 
 let idx = 0;
-jest.mock('@/storage/storage.ts');
-jest.mock('@/utils/get-message.ts');
-jest.mock('@/utils/index.ts', () => ({
-    ...jest.requireActual('@/utils/index.ts'),
-    debounce: jest.fn((f: () => unknown) => f),
-    generateId: jest.fn(() => `fakeId_${idx++}`),
-}));
-
-const getSubMock = mocked(storage.getSubredditList);
+vi.mock('@/storage/storage.ts');
+vi.mock('@/utils/get-message.ts');
+vi.mock('@/utils/index.ts', async (importOriginal) => {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const mod = (await importOriginal()) as any;
+    return {
+        ...mod,
+        generateId: vi.fn(() => `fakeId_${idx++}`),
+        debounce: vi.fn((f: () => unknown) => f),
+    };
+});
 
 const like = expect.objectContaining;
 
@@ -32,22 +36,53 @@ describe('Subreddit settings', () => {
         errorId: { error: { error: 404, message: 'Not Found', reason: 'banned' } },
     };
 
-    beforeEach(() => {
-        mockBrowser.storage.onChanged.addListener.spy(() => ({}));
-    });
-
     beforeAll(() => {
-        mocked(storage).getAllData.mockResolvedValue({
+        vi.mocked(storage.getAllData).mockResolvedValue({
             ...dataFields,
             subredditList: cloneDeep(subList),
             subreddits: cloneDeep(subData),
         });
-        getSubMock.mockImplementation(async () => cloneDeep(subList));
+        vi.mocked(storage.getSubredditList).mockImplementation(async () => cloneDeep(subList));
+    });
+
+    afterEach(() => {
+        cleanup();
+        vi.clearAllMocks();
+    });
+
+    test('should save only subreddit or multireddit', async () => {
+        const { getAllByTestId, getByText, getByLabelText } = render(SubredditsBlock);
+        await tick();
+
+        const AddBtn = getByText(getMsg('optionSubredditsAdd'), { exact: false });
+        await act(async () => {
+            await fireEvent.click(AddBtn);
+        });
+
+        const inputBlocks = getAllByTestId('input-name');
+        const lastInput = inputBlocks[inputBlocks.length - 1];
+        lastInput.click();
+
+        await waitFor(async () => {
+            const input = getByLabelText(getMsg('optionSubredditsInputLabel'));
+            for (const subreddit of ['!not', '12', 'aww+3']) {
+                await fireEvent.input(input, { target: { value: subreddit } });
+                await waitFor(() => {
+                    expect(getByText(/Invalid subreddit\/multireddit name/)).toBeInTheDocument();
+                });
+                expect(storage.saveSubredditOpts).not.toHaveBeenCalledWith(expect.objectContaining({ subreddit }));
+            }
+        });
     });
 
     test('save subreddits and show error', async () => {
         const { getByText, getAllByTestId } = render(SubredditsBlock);
         await tick();
+
+        await waitFor(() => {
+            getAllByTestId('input-name');
+        });
+
         const names = getAllByTestId('input-name');
         const notifyElems = getAllByTestId('notify') as HTMLLabelElement[];
         const isActiveElems = getAllByTestId('isActive') as HTMLLabelElement[];
@@ -83,7 +118,7 @@ describe('Subreddit settings', () => {
         // DISABLE
         const isActiveElem = getAllByLabelText(getMsg('optionWatchInputDisable'));
 
-        mocked(storage.saveSubredditOpts).mockClear();
+        vi.mocked(storage.saveSubredditOpts).mockClear();
         await fireEvent.click(isActiveElem[1]);
         expect(storage.saveSubredditOpts).toHaveBeenCalledWith(
             like({
@@ -108,27 +143,5 @@ describe('Subreddit settings', () => {
         await fireEvent.click(DelBtn[0]);
 
         expect(storage.removeSubreddits).toHaveBeenCalledWith([subList[0].id]);
-    });
-
-    test('should save only subreddit or multireddit', async () => {
-        const { getAllByTestId, getByText, getByLabelText } = render(SubredditsBlock);
-        await tick();
-        const AddBtn = getByText(getMsg('optionSubredditsAdd'), { exact: false });
-        await fireEvent.click(AddBtn);
-        await tick();
-        const inputBlocks = getAllByTestId('input-name');
-        const lastInput = inputBlocks[inputBlocks.length - 1];
-        lastInput.click();
-
-        await waitFor(async () => {
-            const input = getByLabelText(getMsg('optionSubredditsInputLabel'));
-            for (const subreddit of ['!not', '12', 'aww+3']) {
-                await fireEvent.input(input, { target: { value: subreddit } });
-                await waitFor(() => {
-                    expect(getByText(/Invalid subreddit\/multireddit name/)).toBeInTheDocument();
-                });
-                expect(storage.saveSubredditOpts).not.toHaveBeenCalledWith(expect.objectContaining({ subreddit }));
-            }
-        });
     });
 });
