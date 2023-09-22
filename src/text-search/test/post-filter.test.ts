@@ -1,3 +1,5 @@
+import { describe, expect, test } from 'vitest';
+
 import type { TextId } from '../index';
 import type { FilterRule, SearchableField, SearchableRedditPost } from '../post-filter';
 import { postFilter } from '../post-filter';
