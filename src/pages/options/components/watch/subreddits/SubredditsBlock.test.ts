@@ -4,7 +4,6 @@ import { act, cleanup, fireEvent, render, waitFor } from '@testing-library/svelt
 import { tick } from 'svelte';
 import { afterEach, beforeAll, describe, expect, test, vi } from 'vitest';
 
-import { cloneDeep } from 'lodash';
 import storage from '@/storage/storage';
 import type { SubredditData, SubredditOpts } from '@/storage/storage-types';
 import getMsg from '@/utils/get-message';
@@ -39,10 +38,10 @@ describe('Subreddit settings', () => {
     beforeAll(() => {
         vi.mocked(storage.getAllData).mockResolvedValue({
             ...dataFields,
-            subredditList: cloneDeep(subList),
-            subreddits: cloneDeep(subData),
+            subredditList: structuredClone(subList),
+            subreddits: structuredClone(subData),
         });
-        vi.mocked(storage.getSubredditList).mockImplementation(async () => cloneDeep(subList));
+        vi.mocked(storage.getSubredditList).mockImplementation(async () => structuredClone(subList));
     });
 
     afterEach(() => {
