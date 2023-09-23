@@ -122,7 +122,7 @@ describe('General Options', async () => {
         const { getByLabelText } = render(GeneralSettingsBlock);
         await tick();
         const select = getByLabelText(getMsg('optionNotificationAudioId'), { exact: false });
-        expect(select).toHaveValue('null');
+        expect(select).toHaveValue('');
         const id = 'sound_01' as keyof typeof notificationSoundFiles;
         await fireEvent.change(select, { target: { value: id } });
         optionSaved({ notificationSoundId: id });
