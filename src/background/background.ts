@@ -1,4 +1,3 @@
-import type { Runtime } from 'webextension-polyfill';
 import browser from 'webextension-polyfill';
 
 import { IS_CHROME, IS_DEV, IS_FIREFOX, IS_TEST } from '@/constants';
