@@ -28,7 +28,7 @@ export function log(name: string, message: string) {
 
 export const getEnvKeys = () => {
     const envRaw = dotenv.config().parsed || {};
-    envRaw.NODE_ENV = isDev ? 'development' : 'production';
+    envRaw.NODE_ENV = process.env.NODE_ENV || 'production';
     envRaw.TARGET = target;
     envRaw.USE_DEV_SERVER = process.env.USE_DEV_SERVER || '';
     return Object.keys(envRaw).reduce(

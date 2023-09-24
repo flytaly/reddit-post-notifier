@@ -1,3 +1,5 @@
+import { describe, expect, test } from 'vitest';
+
 import { Index } from '../index';
 
 describe('Search Index', () => {

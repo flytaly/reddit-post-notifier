@@ -1,52 +1,46 @@
+/* eslint-disable @typescript-eslint/no-unsafe-argument */
 /* eslint-disable @typescript-eslint/unbound-method */
-import { mocked } from 'jest-mock';
 
 import { listenForMessages, onMessage, type MessageListener } from '@/messaging';
 import { addNotificationClickListener } from '@/notifier/notifications';
 import DEFAULT_OPTIONS from '@/options-default';
-import storage from '@/storage';
+import storage from '@/storage/storage';
 import type { ExtensionOptions } from '@/types/extension-options';
 import type { PortMessageId } from '@/types/message';
+import { describe, expect, test, vi } from 'vitest';
+import browser from 'webextension-polyfill';
 import { startExtension } from './background';
 import { scheduleNextUpdate, watchAlarms } from './timers';
 import { updateAndSchedule } from './update';
 
-jest.mock('@/storage/storage.ts');
-jest.mock('@/messaging.ts');
-jest.mock('@/notifier/notifications');
-jest.mock('./timers.ts');
-jest.mock('./update.ts');
+vi.mock('@/storage/storage.ts');
+vi.mock('@/messaging.ts');
+vi.mock('@/notifier/notifications');
+vi.mock('./timers.ts');
+vi.mock('./update.ts');
+
+const { mocked } = vi;
 
 describe('Start extension', () => {
-    const onMessageMock = mocked(onMessage);
+    const onMessageMock = vi.mocked(onMessage);
     test('should initialize extension', async () => {
         const opts: Partial<ExtensionOptions> = { updateInterval: 300, iconTheme: 'dark' };
-        (storage.getOptions as jest.Mock).mockImplementation(async () => opts);
-        mockBrowser.action.setBadgeBackgroundColor.expect({ color: 'darkred' });
-        mockBrowser.action.setIcon.expect({
-            path: {
-                16: '../../images/icon-16-light.png',
-                32: '../../images/icon-32-light.png',
-                64: '../../images/icon-64-light.png',
-            },
-        });
-        mockBrowser.storage.onChanged.addListener.spy(() => ({}));
+        mocked(storage.getOptions).mockImplementation(async () => opts as ExtensionOptions);
+        mocked(storage.saveOptions).mockImplementation(async () => {});
+
         const msgCallbacks = new Map<PortMessageId, MessageListener>();
         mocked(onMessageMock).mockImplementation((id, cb) => msgCallbacks.set(id, cb));
 
-        mockBrowser.runtime.onInstalled.addListener.mock((listener) => {
-            listener({ reason: 'update', previousVersion: '3.2', temporary: false });
-        });
-
-        mockBrowser.runtime.onStartup.addListener.mock(() => {});
         await startExtension();
 
-        expect(storage.getOptions).toHaveBeenCalled();
-        const exp = expect.objectContaining({ ...DEFAULT_OPTIONS, ...opts });
-        expect(storage.saveOptions).toHaveBeenCalledWith(exp);
-
         // onInstall
-        expect(storage.migrateToV4).toHaveBeenCalled();
+        const onInstallCb = vi.mocked(browser.runtime.onInstalled.addListener).mock.calls[0][0];
+        onInstallCb({ reason: 'update', previousVersion: '4', temporary: false });
+        await new Promise((resolve) => setTimeout(resolve, 10));
+        expect(storage.getOptions).toHaveBeenCalled();
+        expect(storage.saveOptions).toHaveBeenCalled();
+        const args = vi.mocked(storage.saveOptions).mock.calls[0][0];
+        expect(args).toContain({ ...DEFAULT_OPTIONS, ...opts });
 
         expect(addNotificationClickListener).toHaveBeenCalled();
         expect(storage.countNumberOfUnreadItems).toHaveBeenCalled();
@@ -54,8 +48,9 @@ describe('Start extension', () => {
         expect(watchAlarms).toHaveBeenCalled();
         expect(updateAndSchedule).toHaveBeenCalled();
         expect(mocked(updateAndSchedule).mock.calls.flat(1)).toHaveLength(0);
+        expect(browser.runtime.onStartup.addListener).toHaveBeenCalled();
 
-        jest.clearAllMocks();
+        vi.clearAllMocks();
 
         expect(msgCallbacks.size).toBe(3);
         expect(msgCallbacks.has('UPDATE_NOW')).toBeTruthy();

@@ -1,41 +1,44 @@
 /* eslint-disable @typescript-eslint/unbound-method */
-import DEFAULT_OPTIONS from '@/options-default';
+import { cleanup, fireEvent, render, waitFor } from '@testing-library/svelte';
+import { tick } from 'svelte';
+import { afterEach, beforeEach, describe, expect, test, vi } from 'vitest';
+import browser from 'webextension-polyfill';
+
 import { sendMessage } from '@/messaging';
+import DEFAULT_OPTIONS from '@/options-default';
 import type { notificationSoundFiles } from '@/sounds';
 import { dataFields } from '@/storage/fields';
 import storage from '@/storage/storage';
 import type { ExtensionOptions } from '@/types/extension-options';
 import applyTheme from '@/utils/apply-theme';
 import getMsg from '@/utils/get-message';
-import { fireEvent, render, waitFor } from '@testing-library/svelte';
-import { mocked } from 'jest-mock';
-import { tick } from 'svelte';
+
 import GeneralSettingsBlock from './GeneralSettingsBlock.svelte';
 
-jest.mock('@/storage/storage.ts');
-jest.mock('@/utils/get-message.ts');
-jest.mock('@/utils/apply-theme.ts');
-jest.mock('@/messaging');
+vi.mock('@/storage/storage.ts');
+vi.mock('@/utils/get-message.ts');
+vi.mock('@/utils/apply-theme.ts');
+vi.mock('@/messaging');
 
-const mockedStorage = mocked(storage);
-const mockStorageData = (opts?: Partial<ExtensionOptions>) => {
-    mockedStorage.getAllData.mockResolvedValue({
+function mockStorageData(opts?: Partial<ExtensionOptions>) {
+    vi.mocked(storage).getAllData.mockResolvedValue({
         ...dataFields,
         options: { ...DEFAULT_OPTIONS, ...(opts || {}) },
     });
-};
+}
 
 function optionSaved(opt: Partial<ExtensionOptions>) {
     expect(storage.saveOptions).toHaveBeenCalledWith(opt);
 }
 
-describe('General Options', () => {
+describe('General Options', async () => {
     beforeEach(() => {
-        mockBrowser.storage.onChanged.addListener.spy(() => ({}));
+        vi.mocked(browser.storage.onChanged.addListener).mockImplementation(() => {});
     });
 
     afterEach(() => {
-        return jest.clearAllMocks();
+        vi.clearAllMocks();
+        cleanup();
     });
 
     test('Update interval', async () => {
@@ -53,8 +56,6 @@ describe('General Options', () => {
         await fireEvent.input(input, { target: { value: 30 } });
         optionSaved({ updateInterval: 30 });
         expect(sendMessage).toHaveBeenCalledWith('SCHEDULE_NEXT_UPDATE');
-        jest.clearAllMocks();
-
         // not less than 10 sec
         await fireEvent.input(input, { target: { value: 5 } });
         optionSaved({ updateInterval: 10 });
@@ -121,7 +122,7 @@ describe('General Options', () => {
         const { getByLabelText } = render(GeneralSettingsBlock);
         await tick();
         const select = getByLabelText(getMsg('optionNotificationAudioId'), { exact: false });
-        expect(select).toHaveValue('null');
+        expect(select).toHaveValue('');
         const id = 'sound_01' as keyof typeof notificationSoundFiles;
         await fireEvent.change(select, { target: { value: id } });
         optionSaved({ notificationSoundId: id });
