@@ -76,10 +76,14 @@ export const getUserProfileUrl = (
     return constructUrl(endpoint, opts);
 };
 
-export const debounce = (func: (...args: unknown[]) => unknown, waitMs: number) => {
+export function debounce<F extends (...args: Parameters<F>) => unknown>(
+    func: F,
+    waitMs: number,
+): (...args: Parameters<F>) => void {
     let waiting = false;
     let tmId: ReturnType<typeof setTimeout>;
-    return (...args: unknown[]) => {
+
+    return (...args: Parameters<F>) => {
         if (waiting) clearTimeout(tmId);
         waiting = true;
         tmId = setTimeout(() => {
@@ -87,14 +91,17 @@ export const debounce = (func: (...args: unknown[]) => unknown, waitMs: number) 
             waiting = false;
         }, waitMs);
     };
-};
+}
 
 // Filter out keys from object
 export function filterKeys<T>(allowedKeys: string[], obj: Record<string, T> = {}): Record<string, T> {
-    return allowedKeys.reduce((acc, key) => {
-        acc[key] = obj[key];
-        return acc;
-    }, {});
+    return allowedKeys.reduce(
+        (acc, key) => {
+            acc[key] = obj[key];
+            return acc;
+        },
+        {} as typeof obj,
+    );
 }
 
 /** Filter out not needed properties in the Reddit post */

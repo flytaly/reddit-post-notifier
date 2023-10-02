@@ -32,14 +32,16 @@ export const storageData = writable(defaultState, () => {
         storageData.update((prev) => ({ ...prev, ...data, isLoaded: true }));
     });
 
-    const listener = (changes: { [s in keyof StorageFields]: Storage.StorageChange }) => {
+    const listener = (changes: Record<string, Storage.StorageChange>) => {
         const obj: Partial<StorageFields> = {};
-        Object.keys(changes).map((changeKey: keyof StorageFields) => {
-            // @ts-ignore
-            obj[changeKey] = changes[changeKey]?.newValue;
-        });
+        (Object.keys(changes) as Array<keyof StorageFields>) //
+            .map((changeKey) => {
+                // @ts-ignore
+                obj[changeKey] = changes[changeKey]?.newValue;
+            });
         storageData.update((prev) => ({ ...prev, ...obj }));
     };
+
     browser.storage.onChanged.addListener(listener);
 
     return () => {

@@ -3,7 +3,7 @@
 
 import { vi } from 'vitest';
 
-function deepMock(obj = {} as any) {
+function deepMock(obj = {} as any): any {
     return new Proxy(obj, {
         get(target, path, receiver) {
             // eslint-disable-next-line @typescript-eslint/no-unsafe-argument

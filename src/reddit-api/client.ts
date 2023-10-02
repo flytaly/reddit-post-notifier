@@ -69,8 +69,9 @@ export default class RedditApiClient {
 
         if (this.accessToken) {
             if (!init.headers) init.headers = {};
-            init.headers['User-Agent'] = config.userAgent;
-            init.headers['Authorization'] = `bearer ${this.accessToken}`;
+            const headers = init.headers as Record<string, string | undefined>;
+            headers['User-Agent'] = config.userAgent;
+            headers['Authorization'] = `bearer ${this.accessToken}`;
         }
         const origin = this.accessToken ? this.authOrigin : this.publicOrigin;
         const actualEndpoint = this.accessToken ? endpoint : `${endpoint}.json`;

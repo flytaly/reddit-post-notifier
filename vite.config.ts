@@ -1,8 +1,10 @@
 import { svelte } from '@sveltejs/vite-plugin-svelte';
 import fs from 'fs';
 import type { Plugin } from 'rollup';
+import { defineConfig, type UserConfig } from 'vite';
+// @ts-ignore
 import svgInlineLoader from 'svg-inline-loader';
-import { defineConfig, type UserConfig, type UserConfigExport } from 'vite';
+
 import { getEnvKeys, isDev, r } from './scripts/utils';
 
 //TODO: remove this once https://github.com/vitejs/vite/pull/2909 gets merged

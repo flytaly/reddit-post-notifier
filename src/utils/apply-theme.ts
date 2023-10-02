@@ -1,24 +1,24 @@
 import browser from 'webextension-polyfill';
-import { IS_CHROME } from '../constants';
-import storage from '../storage';
-import type { ExtensionOptions } from '../types/extension-options';
+
+import { IS_CHROME } from '@/constants';
+import storage from '@/storage';
+import type { ExtensionOptions } from '@/types/extension-options';
 
 let listenerAdded = false;
 
-const themeToClassMap = {
+const themeToClassMap: Partial<Record<ExtensionOptions['theme'], string>> = {
     dark: 'dark-theme',
     purple: 'purple-theme',
-} as const;
+};
 
 function setClasses(theme: ExtensionOptions['theme']) {
-    const add = themeToClassMap[theme] as string | undefined;
-
-    const remove: string[] = Object.keys(themeToClassMap)
+    const toRemove = (Object.keys(themeToClassMap) as Array<keyof typeof themeToClassMap>)
         .filter((t) => t !== theme)
-        .map((t) => themeToClassMap[t as 'dark' | 'purple']);
+        .map((t) => themeToClassMap[t] as string);
+    document.body.classList.remove(...toRemove);
 
-    document.body.classList.remove(...remove);
-    if (add) document.body.classList.add(add);
+    const toAdd = themeToClassMap[theme];
+    if (toAdd) document.body.classList.add(toAdd);
 }
 
 export async function setIcons({ isDark }: { isDark: boolean }) {

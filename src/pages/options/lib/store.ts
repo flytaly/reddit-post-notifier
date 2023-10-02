@@ -41,8 +41,8 @@ function createMessageStore() {
         update((state) => ({ ...state, rateLimits }));
     }
 
-    onMessage('RATE_LIMITS', (payload: RateLimits) => {
-        setRateLimits({ ...payload });
+    onMessage('RATE_LIMITS', (payload) => {
+        setRateLimits({ ...(payload as RateLimits) });
     });
 
     return { subscribe, update, set, setRateLimits };

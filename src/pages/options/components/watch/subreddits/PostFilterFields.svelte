@@ -15,7 +15,7 @@
     const debounced = debounce(commitChanges, 700);
     const debouncedHandler = () => {
         $inputStatusStore[subId] = { typing: true };
-        debounced(filterRule);
+        debounced();
     };
 
     let usedFields: SearchableField[] = [];
@@ -53,7 +53,7 @@
     };
 </script>
 
-<fieldset class="rounded border border-skin-delimiter p-3 text-sm  shadow-md">
+<fieldset class="rounded border border-skin-delimiter p-3 text-sm shadow-md">
     <legend class="font-mono text-xs">Filter rule {index + 1 || ''}</legend>
     <div class="field-grid">
         {#each filterRule as searchRule, idx}
@@ -70,14 +70,14 @@
             <div class="mx-2">{matchType(searchRule.field)}</div>
             <input class="w-full rounded" type="text" bind:value={searchRule.query} on:input={debouncedHandler} />
             <button
-                class="border-none bg-transparent py-0 px-1 text-skin-gray hover:bg-transparent hover:text-skin-accent hover:shadow-none"
+                class="border-none bg-transparent px-1 py-0 text-skin-gray hover:bg-transparent hover:text-skin-accent hover:shadow-none"
                 on:click={() => removeField(searchRule.field)}
             >
                 <div class="w-4">{@html XCircleIcon}</div>
             </button>
             <div class="pl-3">
                 {#if idx < filterRule.length - 1}
-                    <div class="rounded py-px px-1 text-center font-mono text-skin-gray ring-1 ring-skin-delimiter">
+                    <div class="rounded px-1 py-px text-center font-mono text-skin-gray ring-1 ring-skin-delimiter">
                         AND
                     </div>
                 {/if}
@@ -87,7 +87,7 @@
     <div class="mt-3 flex justify-between">
         <button
             on:click={addField}
-            class="standard-button rounded border-transparent bg-transparent py-0 px-1 hover:border-skin-accent2"
+            class="standard-button rounded border-transparent bg-transparent px-1 py-0 hover:border-skin-accent2"
         >
             + add field
         </button>
@@ -104,7 +104,7 @@
 
 <style lang="postcss">
     .field-grid {
-        @apply grid content-center items-center gap-y-3 gap-x-2;
+        @apply grid content-center items-center gap-x-2 gap-y-3;
 
         grid-template-columns: max-content max-content 1fr auto auto;
     }

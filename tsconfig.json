@@ -7,7 +7,7 @@
             "@/*": ["./*"],
             "@options/*": ["./pages/options/*"]
         },
-        "types": ["vitest/globals"],
+        "types": ["vitest/globals", "chrome"],
         "resolveJsonModule": true,
         "allowJs": false,
         "lib": ["es2020", "dom", "DOM.Iterable", "webworker"],

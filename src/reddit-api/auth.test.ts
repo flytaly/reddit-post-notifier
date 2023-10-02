@@ -3,7 +3,7 @@
 import { config } from '@/constants';
 import storage from '@/storage';
 import type { AuthUser } from '@/storage/storage-types';
-import { describe, expect, test, vi, beforeAll, afterEach, afterAll } from 'vitest';
+import { describe, expect, test, vi, beforeAll, afterEach, afterAll, SpyInstance } from 'vitest';
 import auth from './auth';
 import { AuthError } from './errors';
 import scopes from './scopes';
@@ -16,6 +16,7 @@ const fetchMock = vi.spyOn(global, 'fetch');
 const testAuthFetchOptions = (options: RequestInit) => {
     expect(options.method).toBe('POST');
     expect(options.headers).toHaveProperty('Authorization');
+    // @ts-ignore
     const [type, credentials] = options.headers?.['Authorization'].split(' ') as [string, string];
     expect(type).toBe('Basic');
     expect(Buffer.from(credentials, 'base64').toString()).toBe(`${config.clientId!}:${config.clientSecret!}`);
@@ -131,7 +132,8 @@ describe('Token Refreshing', () => {
 });
 
 describe('Get Access Token', () => {
-    let renewAccessToken: ReturnType<typeof vi.spyOn>;
+    type RA = typeof auth.renewAccessToken;
+    let renewAccessToken: SpyInstance<Parameters<RA>, ReturnType<RA>>;
     const renewedToken = 'renewedToken';
     const authData = {
         accessToken: 'oldAccessToken',

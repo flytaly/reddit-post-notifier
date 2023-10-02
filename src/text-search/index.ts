@@ -34,7 +34,7 @@ export class Index {
         const tokens = this.getTokens(str);
         if (!tokens.length) return;
 
-        const duplicates = {};
+        const duplicates = {} as Record<string, number>;
         let token = '';
         for (let i = 0; i < tokens.length; i++) {
             token = this.stemmer ? this.stemmer(tokens[i]) : tokens[i];

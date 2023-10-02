@@ -82,6 +82,7 @@ interface UpdateQueryProps {
 }
 
 function isErrorResponse(result: RedditError | RedditListingResponse<unknown> | RedditAccount): result is RedditError {
+    // @ts-ignore
     return result['data'] === undefined;
 }
 
@@ -107,7 +108,7 @@ export default class NotifierApp {
         try {
             response = await this.reddit.getSubreddit(subreddit).new(listing);
         } catch (error) {
-            response = { message: error.message };
+            response = { message: (error as Error).message };
         }
 
         if (isErrorResponse(response)) {
@@ -140,7 +141,7 @@ export default class NotifierApp {
                 ? await this.reddit.getSubreddit(subreddit).search({ ...listing, q, restrict_sr: 'on' })
                 : await this.reddit.search({ ...listing, q });
         } catch (error) {
-            response = { message: error.message };
+            response = { message: (error as Error).message };
         }
 
         if (isErrorResponse(response)) {
@@ -171,7 +172,7 @@ export default class NotifierApp {
             await storage.saveMessageData({ unreadMessages: newMessages });
             return newMessages;
         } catch (error) {
-            const message = error.message || error;
+            const message = (error as Error).message || (error as string);
             console.error('Error during fetching unread messages ', message);
             await storage.saveMessageData({ error: { message } });
             return null;
@@ -198,7 +199,7 @@ export default class NotifierApp {
             if (isAuthError(error)) {
                 return this.onAuthError(error);
             }
-            const message = error.message || error;
+            const message = (error as Error).message || (error as string);
             console.error(`Error during fetching unread messages`, message);
             await storage.saveAccMessageData(account.id, { error: { message } });
             return null;
@@ -221,7 +222,7 @@ export default class NotifierApp {
                     response = await fetchUser.overview();
             }
         } catch (error) {
-            response = { message: error.message };
+            response = { message: (error as Error).message };
         }
         if (isErrorResponse(response)) {
             console.error(`Error during fetching ${user.username}'s activities`, response);
@@ -364,7 +365,7 @@ export default class NotifierApp {
                 ac.auth.error = error.message;
                 return ac;
             }
-            ac.error = error?.message;
+            ac.error = (error as Error)?.message;
         }
 
         return ac;

@@ -105,11 +105,11 @@
 
     onMount(() => {
         let prevId: string | null;
-        const mousemove = (e: MouseEvent) =>
+        const mousemove = (e: Event) =>
             window.requestAnimationFrame(() => {
-                positionPreview(e);
+                positionPreview(e as MouseEvent);
             });
-        const mouseover = (e: MouseEvent) => {
+        const mouseover = (e: Event) => {
             const { postId } = (e.target as HTMLElement).dataset;
             if (postId && postId !== prevId) {
                 // array union bug: https://github.com/microsoft/TypeScript/issues/44373
@@ -120,7 +120,7 @@
                 setData(post);
                 prevId = postId;
                 window.requestAnimationFrame(() => {
-                    positionPreview(e);
+                    positionPreview(e as MouseEvent);
                 });
             }
         };

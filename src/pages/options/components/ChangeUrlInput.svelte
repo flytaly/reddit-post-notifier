@@ -21,7 +21,8 @@
         { value: 'custom', id: 'custom-url', label: 'custom URL' },
     ];
 
-    const onRedditTypeChange = async (redditUrlType: ExtensionOptions['redditUrlType']) => {
+    const onRedditTypeChange = async (value: string) => {
+        const redditUrlType = value as ExtensionOptions['redditUrlType'];
         setUrl(redditUrlType);
         await storage.saveOptions({ redditUrlType });
     };

@@ -9,6 +9,7 @@ import { setIcons } from '@/utils/apply-theme';
 import { openGroups } from './open-groups';
 import { scheduleNextUpdate, watchAlarms } from './timers';
 import { isUpdating, updateAndSchedule } from './update';
+import { OpenGroupsPayload } from '@/types/message';
 
 if (IS_FIREFOX) {
     // Support notification-sound extension
@@ -71,7 +72,7 @@ export async function startExtension() {
     listenForMessages('background');
     onMessage('UPDATE_NOW', () => updateAndSchedule(true));
     onMessage('SCHEDULE_NEXT_UPDATE', () => scheduleNextUpdate());
-    onMessage('OPEN_GROUPS', openGroups);
+    onMessage('OPEN_GROUPS', (payload) => openGroups(payload as OpenGroupsPayload));
     if (isUpdating) void sendMessage('UPDATING_START');
 
     await updateAndSchedule();

@@ -30,7 +30,7 @@
             onSuccess?.();
         } catch (e) {
             console.error(e);
-            authError = e.message;
+            authError = (e as Error).message;
         }
         isAuthorizing = false;
     };

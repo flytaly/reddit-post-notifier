@@ -135,8 +135,9 @@ const auth = {
         let body: TokenResponseBody | TokenResponseError;
         try {
             body = (await response.json()) as TokenResponseBody | TokenResponseError;
-        } catch (error) {
-            body = { error: error.status, message: error.message };
+        } catch (e) {
+            const error = e as { status: number; message: string };
+            body = { error: '' + error.status, message: error.message };
         }
 
         if (isErrorTokenResponse(body)) {

@@ -2,7 +2,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 /* eslint-disable @typescript-eslint/unbound-method */
 import browser from 'webextension-polyfill';
-import { afterAll, afterEach, beforeAll, beforeEach, describe, expect, test, vi } from 'vitest';
+import { SpyInstance, afterAll, afterEach, beforeAll, beforeEach, describe, expect, test, vi } from 'vitest';
 
 import DEFAULT_OPTIONS from '@/options-default';
 import type { TokenResponseBody } from '@/reddit-api/auth';
@@ -14,7 +14,7 @@ import type { ExtensionOptions } from '@/types/extension-options';
 import storage from './index';
 import type { QueryData, QueryOpts, StorageFields, SubredditData, SubredditOpts } from './storage-types';
 
-const mockGet = vi.spyOn(storage, 'getLocal');
+const mockGet = vi.spyOn(storage, 'getLocal') as SpyInstance<[keys?: StorageFields], Promise<Record<string, any>>>;
 const mockSet = vi.spyOn(storage, 'setLocal');
 
 afterEach(() => {
@@ -320,7 +320,7 @@ describe('subreddits', () => {
 
     test('should remove all posts in all subreddits', async () => {
         const inputSubs = structuredClone(subreddits);
-        const expectedSubs = {};
+        const expectedSubs = {} as Record<string, SubredditData>;
         subOpts.forEach(({ id }) => (expectedSubs[id] = { posts: [] }));
         mockGet.mockImplementation(async () => {
             return {
@@ -448,7 +448,7 @@ describe('search queries', () => {
                 accounts: {},
             } as Partial<StorageFields>),
         );
-        const expectedQueries = {};
+        const expectedQueries = {} as Record<string, QueryData>;
         queriesList.forEach((q) => (expectedQueries[q.id] = { posts: [] }));
         vi.spyOn(storage, 'getSubredditData').mockImplementationOnce(() => Promise.resolve({}));
         await storage.removeAllPosts();

@@ -12,7 +12,8 @@
     let wasImported: boolean = false;
 
     onMount(() => {
-        fileInput.addEventListener('change', (e: Event & { currentTarget: HTMLInputElement }) => {
+        fileInput.addEventListener('change', (e: Event) => {
+            if (!(e.currentTarget instanceof HTMLInputElement)) return;
             const { files } = e.currentTarget;
             if (!files?.length) return;
             const file = files[0];
@@ -35,7 +36,7 @@
             await storage.importData(parsed);
             wasImported = true;
         } catch (error) {
-            errMessage = error.message;
+            errMessage = (error as Error).message;
         }
         importing = false;
     }
@@ -48,7 +49,7 @@
     >
         <span class="text-sm">Paste configuration below or import from a file</span>
         <label
-            class="flex items-center border-none bg-transparent py-0 px-1 hover:bg-transparent hover:text-skin-accent disabled:cursor-default"
+            class="flex items-center border-none bg-transparent px-1 py-0 hover:bg-transparent hover:text-skin-accent disabled:cursor-default"
             for="import-file"
         >
             <input type="file" accept="application/json" id="import-file" bind:this={fileInput} />

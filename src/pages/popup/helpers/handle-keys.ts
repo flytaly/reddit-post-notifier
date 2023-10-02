@@ -47,8 +47,9 @@ const isHeaderRow = (elem: HTMLElement) => elem.dataset.keysTarget === 'list-row
 /**
  * @param {KeyboardEvent} e
  */
-export default function handleKeydownEvent(e: KeyboardEvent & { target: HTMLElement }) {
-    const { target, key, code } = e;
+export default function handleKeydownEvent(e: KeyboardEvent) {
+    const { key, code } = e;
+    const target = e.target as HTMLElement;
 
     // Prevent scrolling by arrow key and other potential default behavior
     if ([' ', 'ArrowRight', 'ArrowLeft', 'ArrowUp', 'ArrowDown', 'Backspace'].includes(key)) e.preventDefault();

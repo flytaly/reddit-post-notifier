@@ -20,7 +20,8 @@
         { value: 'auto', id: 'theme_auto', label: getMsg('optionThemeAuto') },
     ];
 
-    const onThemeChange = (newTheme: ExtensionOptions['theme']) => {
+    const onThemeChange = (value: string) => {
+        const newTheme = value as ExtensionOptions['theme'];
         void applyTheme(newTheme);
         void storage.saveOptions({ theme: newTheme });
     };
@@ -67,7 +68,7 @@
             await audio.play();
             return true;
         } catch (error) {
-            audioErrMsg = error?.message;
+            audioErrMsg = (error as Error)?.message;
         }
         return false;
     };

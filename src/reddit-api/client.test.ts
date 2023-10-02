@@ -36,8 +36,9 @@ describe('HTTP GET request', () => {
         fetchMock.mockImplementationOnce((url, init) => {
             expect(init).not.toBeUndefined();
             expect(init?.method).toBe('GET');
-            expect(init?.headers?.['User-Agent']).toBe(config.userAgent);
-            expect(init?.headers?.['Authorization']).toBe(`bearer ${accessToken}`);
+            const headers = (init?.headers as Record<string, string | undefined>) || {};
+            expect(headers['User-Agent']).toBe(config.userAgent);
+            expect(headers['Authorization']).toBe(`bearer ${accessToken}`);
             expect(url).toBe('https://oauth.reddit.com/endpoint?p1=v1&p2=v2&raw_json=1');
             return jsonResponse(response);
         });
