@@ -1,8 +1,11 @@
+import { IS_CHROME } from './constants';
+
 declare let self: ServiceWorkerGlobalScope;
 let creating: null | Promise<void> = null;
 
 /** https://developer.chrome.com/docs/extensions/reference/offscreen/#example*/
 export async function setupOffscreenDocument(path: string) {
+    if (!IS_CHROME) return;
     // Check all windows controlled by the service worker to see if one
     // of them is the offscreen document with the given path
     const offscreenUrl = chrome.runtime.getURL(path);

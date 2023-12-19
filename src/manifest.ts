@@ -10,6 +10,8 @@ const key =
 
 const bgScript = './dist/background.js';
 
+const permissions = ['identity', 'storage', 'alarms', 'notifications', 'unlimitedStorage'];
+
 function browserSpecific() {
     const manifest: Partial<ExtManifest> = {};
     if (target === 'chrome') {
@@ -18,6 +20,7 @@ function browserSpecific() {
         manifest.background = {
             service_worker: bgScript,
         };
+        manifest.permissions = [...permissions, 'offscreen'];
     }
     if (target === 'firefox') {
         manifest.browser_specific_settings = {
@@ -29,6 +32,7 @@ function browserSpecific() {
         manifest.background = {
             scripts: [bgScript],
         };
+        manifest.permissions = permissions;
     }
     return manifest;
 }
@@ -54,7 +58,6 @@ export async function getManifest(): Promise<ExtManifest> {
             '96': 'images/icon-96.png',
             '128': 'images/icon-128_chrome.png',
         },
-        permissions: ['identity', 'storage', 'alarms', 'notifications', 'unlimitedStorage', 'offscreen'],
         host_permissions: ['https://*.reddit.com/*'],
         action: {
             default_title: '__MSG_extension_title__',
