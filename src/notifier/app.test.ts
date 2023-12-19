@@ -105,9 +105,9 @@ describe('update accounts', async () => {
 
         const u = users.map((us) => us.data);
         const saved = savedAccount.mock.calls[0][0];
-        expect(saved?.['0']).toContain({ id: '0', name: u[0].name, img: u[0].icon_img, redditId: u[0].id });
-        expect(saved?.['1']).toContain({ id: '1', name: u[1].name, img: u[1].icon_img, redditId: u[1].id });
-        expect(saved?.['2']).toContain(accs[2]);
+        expect(saved?.['0']).toMatchObject({ id: '0', name: u[0].name, img: u[0].icon_img, redditId: u[0].id });
+        expect(saved?.['1']).toMatchObject({ id: '1', name: u[1].name, img: u[1].icon_img, redditId: u[1].id });
+        expect(saved?.['2']).toMatchObject(accs[2]);
     });
 
     test('should update only one account', async () => {
@@ -122,9 +122,9 @@ describe('update accounts', async () => {
         expect(mockClient.me).toHaveBeenCalledTimes(1);
 
         const calls = mockStorage.saveAccounts.mock.calls[0][0];
-        expect(calls?.['a0']).toContain(accs['a0']);
-        expect(calls?.['a1']).toContain({ id: 'a1', name: 'name_0', redditId: 'redditId_0' });
-        expect(calls?.['a2']).toContain(accs['a2']);
+        expect(calls?.['a0']).toMatchObject(accs['a0']);
+        expect(calls?.['a1']).toMatchObject({ id: 'a1', name: 'name_0', redditId: 'redditId_0' });
+        expect(calls?.['a2']).toMatchObject(accs['a2']);
     });
 
     test('should remove duplicates', async () => {

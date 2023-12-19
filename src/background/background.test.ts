@@ -40,7 +40,7 @@ describe('Start extension', () => {
         expect(storage.getOptions).toHaveBeenCalled();
         expect(storage.saveOptions).toHaveBeenCalled();
         const args = vi.mocked(storage.saveOptions).mock.calls[0][0];
-        expect(args).toContain({ ...DEFAULT_OPTIONS, ...opts });
+        expect(args).toMatchObject({ ...DEFAULT_OPTIONS, ...opts });
 
         expect(addNotificationClickListener).toHaveBeenCalled();
         expect(storage.countNumberOfUnreadItems).toHaveBeenCalled();
