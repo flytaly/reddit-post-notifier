@@ -1,5 +1,5 @@
 <script lang="ts">
-    import Pin from '@/assets/pin-outline.svg';
+    import Pin from '@/assets/pin-outline.svg?raw';
     import type { RedditItem } from '@/reddit-api/reddit-types';
     import storage from '@/storage';
     import type { ExtensionOptions } from '@/types/extension-options';

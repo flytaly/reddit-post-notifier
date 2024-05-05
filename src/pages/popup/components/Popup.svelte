@@ -11,7 +11,7 @@
     import Footer from './Footer.svelte';
     import { openLinksOnClick } from '../helpers/open-links';
     import handleKeydownEvent from '../helpers/handle-keys';
-    import SettingsIcon from '@/assets/settings.svg';
+    import SettingsIcon from '@/assets/settings.svg?raw';
     import type { StorageFields } from '@/storage/storage-types';
     import { extractPostGroups } from '@/utils/post-group';
     import type { PostGroup } from '@/utils/post-group';

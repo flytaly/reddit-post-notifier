@@ -1,46 +1,7 @@
 import { svelte } from '@sveltejs/vite-plugin-svelte';
-import fs from 'fs';
-import type { Plugin } from 'rollup';
 import { defineConfig, type UserConfig } from 'vite';
-// @ts-ignore
-import svgInlineLoader from 'svg-inline-loader';
 
 import { getEnvKeys, isDev, r } from './scripts/utils';
-
-//TODO: remove this once https://github.com/vitejs/vite/pull/2909 gets merged
-const svgLoader: (options?: {
-    classPrefix?: string;
-    idPrefix?: string;
-    removeSVGTagAttrs?: boolean;
-    warnTags?: boolean;
-    removeTags?: boolean;
-    warnTagAttrs?: boolean;
-    removingTagAttrs?: boolean;
-}) => Plugin = (options) => {
-    return {
-        name: 'vite-plugin-svg-patch',
-        transform: function (code, id) {
-            if (id.endsWith('.svg')) {
-                const extractedSvg = fs.readFileSync(id, 'utf8');
-                return `export default '${svgInlineLoader.getExtractedSVG(extractedSvg, options) as string}'`;
-            }
-            return code;
-        },
-    };
-};
-
-const preventSVGEmit = (): Plugin => {
-    return {
-        name: 'vite-plugin-prevent-svg-emit',
-        generateBundle(opts, bundle) {
-            for (const key in bundle) {
-                if (key.endsWith('.svg')) {
-                    delete bundle[key];
-                }
-            }
-        },
-    };
-};
 
 const port = parseInt(process.env.PORT || '') || 3303;
 const optPath = 'src/pages/options/';
@@ -96,7 +57,6 @@ export default defineConfig(({ command }) => {
         },
         plugins: [
             svelte({ configFile: r('svelte.config.js') }),
-            svgLoader(),
             // rewrite assets to use relative path
             {
                 name: 'assets-rewrite',
@@ -106,7 +66,6 @@ export default defineConfig(({ command }) => {
                     return html.replace(/"\/assets\//g, '"../assets/');
                 },
             },
-            preventSVGEmit(),
         ],
 
         optimizeDeps: {},

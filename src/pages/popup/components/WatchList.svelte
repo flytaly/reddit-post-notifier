@@ -1,6 +1,6 @@
 <script lang="ts">
     /* eslint-disable @typescript-eslint/no-unsafe-argument */
-    import Pin from '@/assets/pin.svg';
+    import Pin from '@/assets/pin.svg?raw';
     import type { StorageFields } from '@/storage/storage-types';
     import getMsg from '@/utils/get-message';
     import { getGroupItems, removePostsFromGroup } from '@/utils/post-group';

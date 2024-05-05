@@ -1,6 +1,6 @@
 <script lang="ts">
     import type { RedditItem, RedditMessage } from '@/reddit-api/reddit-types';
-    import ArrowUp from '@assets/arrowhead-up.svg';
+    import ArrowUp from '@assets/arrowhead-up.svg?raw';
     import { flip } from 'svelte/animate';
     import { quadOut } from 'svelte/easing';
     import { slide } from 'svelte/transition';

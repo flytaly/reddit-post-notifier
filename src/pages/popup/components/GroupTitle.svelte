@@ -1,13 +1,13 @@
 <script lang="ts">
-    import MailIcon from '@/assets/mail.svg';
-    import OpenInNew from '@/assets/open-in-new.svg';
+    import MailIcon from '@/assets/mail.svg?raw';
+    import OpenInNew from '@/assets/open-in-new.svg?raw';
     import getMsg from '@/utils/get-message';
-    // import SearchIcon from '@/assets/search.svg';
-    import FilterOnIcon from '@/assets/filter-on.svg';
-    import NotifyOffIcon from '@/assets/notify-off.svg';
-    import NotifyOnIcon from '@/assets/notify.svg';
-    import UpdatesDisabledIcon from '@/assets/updates-disable.svg';
-    import WarningIcon from '@/assets/warning.svg';
+    // import SearchIcon from '@/assets/search.svg?raw';
+    import FilterOnIcon from '@/assets/filter-on.svg?raw';
+    import NotifyOffIcon from '@/assets/notify-off.svg?raw';
+    import NotifyOnIcon from '@/assets/notify.svg?raw';
+    import UpdatesDisabledIcon from '@/assets/updates-disable.svg?raw';
+    import WarningIcon from '@/assets/warning.svg?raw';
     import type { PostGroup } from '@/utils/post-group';
     import browser from 'webextension-polyfill';
     import { storageData } from '../store/store';

@@ -1,6 +1,6 @@
 <script lang="ts">
     import SvgButton from './SvgButton.svelte';
-    import CheckMark from '@assets/check-mark.svg';
+    import CheckMark from '@assets/check-mark.svg?raw';
 
     export let clickHandler: ((e: MouseEvent) => void) | undefined = undefined;
     export let title = '';

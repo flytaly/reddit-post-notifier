@@ -5,10 +5,10 @@
     import { getInboxUrl } from '@/utils';
     import getMsg from '@/utils/get-message';
     import type { PostGroup } from '@/utils/post-group';
-    import MailIcon from '@assets/mail.svg';
-    import OpenIcon from '@assets/open-in-new.svg';
-    import RefreshIcon from '@assets/refresh.svg';
-    import SettingsIcon from '@assets/settings.svg';
+    import MailIcon from '@assets/mail.svg?raw';
+    import OpenIcon from '@assets/open-in-new.svg?raw';
+    import RefreshIcon from '@assets/refresh.svg?raw';
+    import SettingsIcon from '@assets/settings.svg?raw';
     import browser from 'webextension-polyfill';
     import { isUpdating, storageData } from '../store/store';
     import SvgButton from './SvgButton.svelte';
