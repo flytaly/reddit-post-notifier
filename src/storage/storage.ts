@@ -1,11 +1,7 @@
-/* eslint-disable @typescript-eslint/explicit-module-boundary-types */
-
-import { RateLimits } from '@/reddit-api/client';
-import type { AuthError } from '@/reddit-api/errors';
 import browser, { type Storage } from 'webextension-polyfill';
 import DEFAULT_OPTIONS from '../options-default';
 import type { TokenResponseBody } from '../reddit-api/auth';
-import type { RedditItem, RedditMessage, RedditPost, RedditPostExtended } from '../reddit-api/reddit-types';
+import type { RedditItem, RedditMessage } from '../reddit-api/reddit-types';
 import type { ExtensionOptions } from '../types/extension-options';
 import { filterKeys, filterPostDataProperties } from '../utils';
 import { dataFields } from './fields';
@@ -20,15 +16,20 @@ import type {
     SubredditData,
     SubredditOpts,
 } from './storage-types';
+import type { AuthError } from '@/reddit-api/errors';
+import type { RateLimits } from '@/reddit-api/client';
 
-/** Concat two arrays and remove duplications **/
+/** Concat two arrays and remove duplications */
 function concatUnique<T>(arr1: Array<T>, arr2: Array<T>, getId: (item: T) => string | number) {
     const result: Array<T> = [];
-    if (!arr1) arr1 = [];
-    if (!arr2) arr2 = [];
+    if (!arr1)
+        arr1 = [];
+    if (!arr2)
+        arr2 = [];
     const ids = new Set<unknown>();
     [...arr1, ...arr2].forEach((item) => {
-        if (ids.has(getId(item))) return;
+        if (ids.has(getId(item)))
+            return;
         ids.add(getId(item));
         result.push(item);
     });
@@ -36,22 +37,25 @@ function concatUnique<T>(arr1: Array<T>, arr2: Array<T>, getId: (item: T) => str
 }
 
 function filterUnreadMessages(unreadMessages: RedditMessage[] | null | undefined, mail: MailInfo): void {
-    if (!unreadMessages) return;
-    if (!mail.messages) mail.messages = [];
+    if (!unreadMessages)
+        return;
+    if (!mail.messages)
+        mail.messages = [];
     const prevUnread = mail.messages;
     const ids = new Set<string>();
-    mail.messages.forEach((m) => ids.add(m.data.id));
-    unreadMessages = unreadMessages.filter((m) => !ids.has(m.data.id));
+    mail.messages.forEach(m => ids.add(m.data.id));
+    unreadMessages = unreadMessages.filter(m => !ids.has(m.data.id));
     mail.messages = [...unreadMessages, ...prevUnread];
-    if (unreadMessages[0]) mail.lastPostCreated = unreadMessages[0].data.created;
+    if (unreadMessages[0])
+        mail.lastPostCreated = unreadMessages[0].data.created;
 }
 
 const storage = {
-    setLocal(items: Record<string, unknown>) {
+    setLocal(items: Record<string, any>) {
         return browser.storage.local.set(items);
     },
 
-    getLocal(keys?: null | string | string[] | Record<string, unknown>) {
+    getLocal(keys?: null | string | string[] | Record<string, any>) {
         return browser.storage.local.get(keys);
     },
 
@@ -139,7 +143,7 @@ const storage = {
             data.options.waitTimeout = DEFAULT_OPTIONS.waitTimeout;
             data.options.updateInterval = Math.max(
                 2,
-                parseInt(data.options.updateInterval as unknown as string) || DEFAULT_OPTIONS.updateInterval,
+                Number.parseInt(data.options.updateInterval as unknown as string) || DEFAULT_OPTIONS.updateInterval,
             );
             sData.options = { ...sData.options, ...data.options };
         }
@@ -149,18 +153,18 @@ const storage = {
             });
             sData.accounts = { ...(sData.accounts || {}), ...data.accounts };
         }
-        if (data.subredditList && Array.isArray(data.subredditList)) {
-            sData.subredditList = concatUnique(sData.subredditList, data.subredditList, (i) => i.id);
-        }
-        if (data.queriesList && Array.isArray(data.queriesList)) {
-            sData.queriesList = concatUnique(sData.queriesList, data.queriesList, (i) => i.id);
-        }
-        if (data.pinnedPostList && Array.isArray(data.pinnedPostList)) {
-            sData.pinnedPostList = concatUnique(sData.pinnedPostList, data.pinnedPostList, (i) => i.data.id);
-        }
-        if (data.usersList && Array.isArray(data.usersList)) {
-            sData.usersList = concatUnique(sData.usersList || [], data.usersList, (i) => i.username);
-        }
+        if (data.subredditList && Array.isArray(data.subredditList))
+            sData.subredditList = concatUnique(sData.subredditList, data.subredditList, i => i.id);
+
+        if (data.queriesList && Array.isArray(data.queriesList))
+            sData.queriesList = concatUnique(sData.queriesList, data.queriesList, i => i.id);
+
+        if (data.pinnedPostList && Array.isArray(data.pinnedPostList))
+            sData.pinnedPostList = concatUnique(sData.pinnedPostList, data.pinnedPostList, i => i.data.id);
+
+        if (data.usersList && Array.isArray(data.usersList))
+            sData.usersList = concatUnique(sData.usersList || [], data.usersList, i => i.username);
+
         await storage.setLocal(sData);
     },
 
@@ -170,7 +174,8 @@ const storage = {
 
     async saveAuthData({ id, data }: { data?: TokenResponseBody; id: string }) {
         const accounts = await storage.getAccounts();
-        if (!accounts[id]) accounts[id] = { id, auth: {}, checkMail: true, mailNotify: true, mail: { messages: [] } };
+        if (!accounts[id])
+            accounts[id] = { id, auth: {}, checkMail: true, mailNotify: true, mail: { messages: [] } };
         const auth = accounts[id].auth;
         if (data) {
             auth.accessToken = data.access_token;
@@ -211,7 +216,8 @@ const storage = {
         { unreadMessages, error }: { unreadMessages?: RedditMessage[] | null; error?: { message?: string } | null },
     ) {
         const accs = await storage.getAccounts();
-        if (!accs[accId]) accs[accId] = { id: accId, auth: {}, mail: { messages: [] } };
+        if (!accs[accId])
+            accs[accId] = { id: accId, auth: {}, mail: { messages: [] } };
         if (error) {
             accs[accId].error = `Couldn't fetch messages. ${error.message || ''}`;
             return storage.saveAccounts(accs);
@@ -219,8 +225,9 @@ const storage = {
 
         accs[accId].error = null;
         accs[accId].auth.error = null;
-        if (!accs[accId].mail) accs[accId].mail = { messages: [] };
-        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+        if (!accs[accId].mail)
+            accs[accId].mail = { messages: [] };
+
         const mail = accs[accId].mail!;
         mail.lastUpdate = Date.now();
         filterUnreadMessages(unreadMessages, mail);
@@ -234,16 +241,16 @@ const storage = {
 
     async savePinnedPost(post: RedditItem) {
         const prev = await storage.getPinnedPostList();
-        if (prev.findIndex((p) => p.data.id === post.data.id) !== -1) {
+        if (prev.findIndex(p => p.data.id === post.data.id) !== -1)
             return;
-        }
+
         return storage.setLocal({
             pinnedPostList: [post, ...prev],
         });
     },
 
     async saveSubredditList(subredditList: SubredditOpts[]) {
-        await storage.prune({ subIdList: subredditList.map((s) => s.id) });
+        await storage.prune({ subIdList: subredditList.map(s => s.id) });
         return storage.setLocal({ subredditList });
     },
 
@@ -251,15 +258,17 @@ const storage = {
         const sOpts = await storage.getSubredditList();
         let wasUpdated = false;
         const updatedList = sOpts.map((current) => {
-            if (current.id !== subOpts.id) return current;
+            if (current.id !== subOpts.id)
+                return current;
             // Clear if subreddit name changes
-            if (subOpts.subreddit !== current.subreddit) {
+            if (subOpts.subreddit !== current.subreddit)
                 storage.removeSubredditData(current.id).catch(console.error);
-            }
+
             wasUpdated = true;
             return subOpts;
         });
-        if (!wasUpdated) updatedList.push(subOpts);
+        if (!wasUpdated)
+            updatedList.push(subOpts);
         return storage.setLocal({ subredditList: updatedList } as Pick<SF, 'subredditList'>);
     },
 
@@ -272,19 +281,21 @@ const storage = {
 
         const queriesUpdated = queriesList.map((q: QueryOpts) => {
             const { id, subreddit: prevSubreddit, query: prevQuery } = q;
-            if (id !== query.id) return q;
+            if (id !== query.id)
+                return q;
 
-            if (prevQuery !== query.query || prevSubreddit !== query.subreddit) {
+            if (prevQuery !== query.query || prevSubreddit !== query.subreddit)
                 updateStatus.shouldClear = true;
-            }
+
             updateStatus.wasUpdated = true;
             return query;
         });
 
-        if (!updateStatus.wasUpdated) queriesUpdated.push(query);
-        if (updateStatus.shouldClear) {
+        if (!updateStatus.wasUpdated)
+            queriesUpdated.push(query);
+        if (updateStatus.shouldClear)
             await storage.removeQueryData(query.id);
-        }
+
         return storage.setLocal({ queriesList: queriesUpdated });
     },
 
@@ -300,10 +311,10 @@ const storage = {
         const result = { ...prevData };
         if (newPosts && newPosts.length) {
             const savedPosts = prevData.posts || [];
-            const ids = new Set(savedPosts.map((p) => p.data.id));
+            const ids = new Set(savedPosts.map(p => p.data.id));
             const postFiltered = newPosts
-                .map((p: RedditPost | RedditPostExtended) => filterPostDataProperties(p))
-                .filter((p) => !ids.has(p.data.id));
+                .map(p => filterPostDataProperties(p))
+                .filter(p => !ids.has(p.data.id));
             result.posts = [...postFiltered, ...savedPosts].slice(0, limit);
             if (postFiltered[0]) {
                 result.lastPost = postFiltered[0].data.name;
@@ -350,10 +361,12 @@ const storage = {
     async setAuthError(error: AuthError) {
         const accs = await storage.getAccounts();
         const { id } = error;
-        if (!accs[id]) return;
+        if (!accs[id])
+            return;
 
         accs[id].auth.error = error.message;
-        if (error.invalidateToken) accs[id].auth.refreshToken = null;
+        if (error.invalidateToken)
+            accs[id].auth.refreshToken = null;
         return storage.saveAccounts(accs);
     },
 
@@ -365,7 +378,8 @@ const storage = {
         const accs = await storage.getAccounts();
         const result: StorageFields['accounts'] = {};
         Object.keys(accs).forEach((k) => {
-            if (ids.includes(accs[k]?.id)) return;
+            if (ids.includes(accs[k]?.id))
+                return;
             result[k] = accs[k];
         });
         return storage.saveAccounts(result);
@@ -374,8 +388,9 @@ const storage = {
     async removeAccountMessage({ accId, messageId }: { accId: string; messageId: string }) {
         const accounts = await storage.getAccounts();
         const mail = accounts[accId]?.mail;
-        if (!mail) return;
-        mail.messages = (mail.messages || []).filter((m) => m.data.id !== messageId);
+        if (!mail)
+            return;
+        mail.messages = (mail.messages || []).filter(m => m.data.id !== messageId);
         await storage.setLocal({ accounts } as SF);
     },
 
@@ -420,7 +435,8 @@ const storage = {
         if (accountId) {
             const accounts = await storage.getAccounts();
             const mail = accounts[accountId]?.mail;
-            if (!mail) return;
+            if (!mail)
+                return;
             mail.messages = mail.messages?.filter(({ data }) => data.id !== id);
             await storage.saveAccounts(accounts);
         }
@@ -429,7 +445,7 @@ const storage = {
     async removeUserPost({ userIndex, postId }: { userIndex: number; postId: string }) {
         const usersList = await storage.getUsersList();
         if (usersList[userIndex]?.data) {
-            usersList[userIndex].data = usersList[userIndex].data?.filter((item) => item.data.id !== postId);
+            usersList[userIndex].data = usersList[userIndex].data?.filter(item => item.data.id !== postId);
             await storage.saveUsersList(usersList);
         }
     },
@@ -437,7 +453,7 @@ const storage = {
     async removePinPost(id: string) {
         const pinnedPostList = await storage.getPinnedPostList();
         return storage.setLocal({
-            pinnedPostList: pinnedPostList.filter((p) => p.data.id !== id),
+            pinnedPostList: pinnedPostList.filter(p => p.data.id !== id),
         });
     },
 
@@ -456,20 +472,22 @@ const storage = {
         if (subredditId) {
             const subreddits = await storage.getSubredditData();
             subreddits[subredditId].posts = [];
-            if (clearTS) subreddits[subredditId].lastPostCreated = null;
+            if (clearTS)
+                subreddits[subredditId].lastPostCreated = null;
             await storage.setLocal({ subreddits });
         }
         if (searchId) {
             const queries = await storage.getQueriesData();
             queries[searchId].posts = [];
-            if (clearTS) queries[searchId].lastPostCreated = null;
+            if (clearTS)
+                queries[searchId].lastPostCreated = null;
             await storage.setLocal({ queries });
         }
         if (followUserIndex !== undefined) {
             const usersList = await storage.getUsersList();
-            usersList;
             usersList[followUserIndex].data = [];
-            if (clearTS) usersList[followUserIndex].lastPostCreated = null;
+            if (clearTS)
+                usersList[followUserIndex].lastPostCreated = null;
             await storage.saveUsersList(usersList);
         }
     },
@@ -478,7 +496,8 @@ const storage = {
         const { queries, subreddits, usersList, mail, accounts } = await storage.getAllData();
 
         Object.values(accounts || {}).forEach((acc) => {
-            if (!acc.mail) acc.mail = { messages: [] };
+            if (!acc.mail)
+                acc.mail = { messages: [] };
             else acc.mail.messages = [];
         });
 
@@ -491,9 +510,9 @@ const storage = {
         usersList?.forEach((u) => {
             u.data = [];
         });
-        if (mail) {
+        if (mail)
             mail.messages = [];
-        }
+
         await storage.setLocal({ subreddits, queries, usersList, mail, accounts });
     },
 
@@ -505,12 +524,13 @@ const storage = {
 
     async removeAccountMessages(accId: string) {
         const { accounts = {} }: Pick<SF, 'accounts'> = await storage.getLocal({ accounts: {} });
-        if (!accounts[accId]) return;
+        if (!accounts[accId])
+            return;
         const m = accounts[accId]?.mail;
-        if (!m) return;
+        if (!m)
+            return;
         m.messages = [];
         await storage.setLocal({ accounts } as SF);
-        return;
     },
 
     async removeAllMessages() {
@@ -519,7 +539,8 @@ const storage = {
             accounts: {},
         });
         Object.values(accounts).forEach((a) => {
-            if (!a.mail) a.mail = { messages: [] };
+            if (!a.mail)
+                a.mail = { messages: [] };
             a.mail.messages = [];
         });
 
@@ -531,34 +552,36 @@ const storage = {
         if (accId) {
             const accounts = await storage.getAccounts();
             const mail = accounts[accId]?.mail;
-            if (!mail) return;
-            mail.messages = (mail.messages || []).filter((m) => m.data.id !== messageId);
+            if (!mail)
+                return;
+            mail.messages = (mail.messages || []).filter(m => m.data.id !== messageId);
             await storage.setLocal({ accounts } as SF);
             return;
         }
         const mail = await storage.getMail();
-        if (!mail) return;
-        mail.messages = (mail.messages || []).filter((m) => m.data.id !== messageId);
+        if (!mail)
+            return;
+        mail.messages = (mail.messages || []).filter(m => m.data.id !== messageId);
         await storage.setLocal({ mail } as SF);
     },
 
     async removeSubreddits(ids = [] as string[]) {
         const subredditList = await storage.getSubredditList();
-        const updated = subredditList.filter((q) => !ids.includes(q.id));
-        await storage.prune({ subIdList: updated.map((s) => s.id) });
+        const updated = subredditList.filter(q => !ids.includes(q.id));
+        await storage.prune({ subIdList: updated.map(s => s.id) });
         return storage.setLocal({ subredditList: updated } as Pick<SF, 'subredditList'>);
     },
 
     async removeQueries(ids = [] as string[]) {
         const queriesList = await storage.getQueriesList();
-        const queriesUpdated = queriesList.filter((q) => !ids.includes(q.id));
-        await storage.prune({ queriesIdList: queriesUpdated.map((q) => q.id) });
+        const queriesUpdated = queriesList.filter(q => !ids.includes(q.id));
+        await storage.prune({ queriesIdList: queriesUpdated.map(q => q.id) });
         return storage.setLocal({ queriesList: queriesUpdated });
     },
 
     async removeNotificationData(id: string) {
         const prev = await storage.getNotificationsData();
-        const notifications = prev.filter((n) => n.id !== id);
+        const notifications = prev.filter(n => n.id !== id);
         return storage.setLocal({ notifications });
     },
 
@@ -566,23 +589,21 @@ const storage = {
     async prune({ subIdList, queriesIdList }: { subIdList?: string[]; queriesIdList?: string[] }) {
         if (subIdList) {
             const subs = await storage.getSubredditData();
-            if (subs) {
+            if (subs)
                 return storage.setLocal({ subreddits: filterKeys(subIdList, subs) });
-            }
         }
 
         if (queriesIdList) {
             const queries = await storage.getQueriesData();
-            if (queries) {
+            if (queries)
                 return storage.setLocal({ queries: filterKeys(queriesIdList, queries) });
-            }
         }
     },
 
     async countNumberOfUnreadItems(updateBadge = true) {
         let count = 0;
-        const { subredditList, queriesList, queries, subreddits, accounts, usersList, mail } =
-            await storage.getAllData();
+        const { subredditList, queriesList, queries, subreddits, accounts, usersList, mail }
+            = await storage.getAllData();
 
         if (subreddits) {
             subredditList?.forEach((s) => {
@@ -605,9 +626,8 @@ const storage = {
             count += a.mail?.messages?.length || 0;
         });
 
-        if (updateBadge) {
+        if (updateBadge)
             await browser.action.setBadgeText({ text: count ? String(count) : '' });
-        }
 
         return count;
     },
@@ -617,13 +637,15 @@ export const session = {
     async saveRateLimits(rateLimits: RateLimits) {
         // https://github.com/mozilla/webextension-polyfill/issues/424
         const session = (browser.storage as unknown as { session: Storage.LocalStorageArea }).session;
-        if (!session) return;
-        void session.set({ rateLimits: rateLimits });
+        if (!session)
+            return;
+        void session.set({ rateLimits });
     },
     async getRateLimits() {
         const session = (browser.storage as unknown as { session: Storage.LocalStorageArea }).session;
         const defaults = { remaining: null, reset: null, used: null } as RateLimits;
-        if (!session) return defaults;
+        if (!session)
+            return defaults;
         const { rateLimits } = (await session.get({ rateLimits: defaults })) as { rateLimits: RateLimits };
         return rateLimits;
     },

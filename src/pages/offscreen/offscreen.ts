@@ -1,13 +1,12 @@
-type Message = {
+interface Message {
     type: string;
     data: string;
     target: string;
-};
+}
 
 async function handleMessages(message: Message) {
-    if (message.target !== 'offscreen') {
+    if (message.target !== 'offscreen')
         return false;
-    }
 
     switch (message.type) {
         case 'PLAY_AUDIO':

@@ -1,3 +1,4 @@
+/* eslint-disable no-console */
 import browser from 'webextension-polyfill';
 import type { PortMessage, PortMessageId, PortMessagePayload } from './types/message';
 
@@ -10,11 +11,11 @@ export async function sendMessage(id: PortMessageId, payload?: PortMessagePayloa
     try {
         const message: PortMessage = { id, payload };
         const response = await chrome.runtime.sendMessage(message);
-        // eslint-disable-next-line @typescript-eslint/no-unsafe-return
         return response;
-    } catch (error) {
+    }
+    catch (error) {
         const msg = (error as Error).message;
-        if (msg == 'Could not establish connection. Receiving end does not exist.') {
+        if (msg === 'Could not establish connection. Receiving end does not exist.') {
             console.warn(msg);
             return;
         }
@@ -25,9 +26,9 @@ export async function sendMessage(id: PortMessageId, payload?: PortMessagePayloa
 let listener: Parameters<typeof browser.runtime.onMessage.addListener>[0];
 
 export function listenForMessages(context: Context) {
-    if (listener && browser.runtime.onMessage.hasListener(listener)) {
+    if (listener && browser.runtime.onMessage.hasListener(listener))
         browser.runtime.onMessage.removeListener(listener);
-    }
+
     listener = function (request /* , sender, sendResponse */) {
         const message = request as PortMessage;
         console.info(`${context} received message`, message);

@@ -1,20 +1,20 @@
 {
     "extends": "@tsconfig/svelte/tsconfig.json",
     "compilerOptions": {
+        "target": "ES2019",
+        "lib": ["es2020", "dom", "DOM.Iterable", "webworker"],
         "baseUrl": "./src",
+        "module": "ES2020",
         "paths": {
             "@assets/*": ["./assets/*"],
             "@/*": ["./*"],
             "@options/*": ["./pages/options/*"]
         },
-        "types": ["vitest/globals", "chrome"],
         "resolveJsonModule": true,
+        "types": ["vitest/globals", "chrome"],
         "allowJs": false,
-        "lib": ["es2020", "dom", "DOM.Iterable", "webworker"],
-        "target": "ES2019",
-        "outDir": "./dist",
-        "module": "ES2020",
         "strictNullChecks": true,
+        "outDir": "./dist",
         "plugins": [{ "name": "typescript-svelte-plugin" }],
         "verbatimModuleSyntax": false // fix error with TS5 in jest
     },

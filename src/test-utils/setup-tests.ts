@@ -1,5 +1,4 @@
-/* eslint-disable @typescript-eslint/no-unsafe-return */
-/* eslint-disable @typescript-eslint/no-explicit-any */
+import process from 'node:process';
 
 import { vi } from 'vitest';
 import 'vitest-dom/extend-expect';

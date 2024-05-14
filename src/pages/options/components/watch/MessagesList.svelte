@@ -1,11 +1,11 @@
-<script lang="ts">
+<script lang='ts'>
+    import { XCircleIcon } from '@options/lib/icons';
     import type { RedditMessage } from '@/reddit-api/reddit-types';
     import getMsg from '@/utils/get-message';
-    import { XCircleIcon } from '@options/lib/icons';
 
     export let items: RedditMessage[] = [];
     export let title = '';
-    export let onClose: (() => void) | undefined = undefined;
+    export let onClose: (() => void) | undefined;
     export let limit = 5;
 
     type DisplayedMessage = {
@@ -35,25 +35,25 @@
 
 <article>
     <header>
-        <div class="my-1 flex items-center justify-between">
-            <a href="https://reddit.com/message/unread/" target="_blank" rel="noreferrer">{title}</a>
-            <button class="mr-2 h-4 w-4 border-none bg-transparent p-0" on:click={onClose} title={getMsg('closeLabel')}>
+        <div class='my-1 flex items-center justify-between'>
+            <a href='https://reddit.com/message/unread/' target='_blank' rel='noreferrer'>{title}</a>
+            <button class='mr-2 h-4 w-4 border-none bg-transparent p-0' on:click={onClose} title={getMsg('closeLabel')}>
                 {@html XCircleIcon}
             </button>
         </div>
     </header>
-    <div class="user-items-grid text-xs">
+    <div class='user-items-grid text-xs'>
         {#each displayItems as item}
             <span title={item.fullDate}>{item.date}</span>
             <div>
-                <b class="font-bold">{item.author}</b>
+                <b class='font-bold'>{item.author}</b>
                 {#if item.subreddit}
                     <span>(r/{item.subreddit})</span>
                 {/if}
                 <span>: </span>
             </div>
-            <div class="overflow-hidden overflow-ellipsis whitespace-nowrap break-all">
-                <span class="font-bold">{item.title}</span>
+            <div class='overflow-hidden overflow-ellipsis whitespace-nowrap break-all'>
+                <span class='font-bold'>{item.title}</span>
                 <span>: </span>
                 <span>{item.text}</span>
             </div>
@@ -63,7 +63,7 @@
     </div>
 </article>
 
-<style lang="postcss">
+<style lang='postcss'>
     .user-items-grid {
         @apply mt-2 grid gap-x-2 gap-y-0;
 

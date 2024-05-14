@@ -1,4 +1,4 @@
-<script lang="ts">
+<script lang='ts'>
     import { onMount } from 'svelte';
     import type { Content } from 'tippy.js';
     import tippy from 'tippy.js';
@@ -15,7 +15,7 @@
     });
 </script>
 
-<div bind:this={ref} class="h-4 text-skin-accent2">
+<div bind:this={ref} class='h-4 text-skin-accent2'>
     {@html HelpCircleIcon}
 </div>
 

@@ -1,7 +1,7 @@
+import { writable } from 'svelte/store';
 import storage from '@/storage';
 import type { SubredditOpts } from '@/storage/storage-types';
 import { generateId } from '@/utils';
-import { writable } from 'svelte/store';
 
 const genEmpty = (): SubredditOpts => ({ id: generateId(), subreddit: '' });
 
@@ -15,23 +15,22 @@ function createStore() {
     });
 
     async function saveOptions(subOpts: SubredditOpts, clearData?: boolean) {
-        update((prev) => prev.map((opts) => (opts.id === subOpts.id ? subOpts : opts)));
+        update(prev => prev.map(opts => (opts.id === subOpts.id ? subOpts : opts)));
         await storage.saveSubredditOpts(subOpts);
-        if (clearData) {
+        if (clearData)
             await storage.removePostsFrom({ subredditId: subOpts.id, clearTS: true });
-        }
     }
 
     async function deleteSubreddit(id: string) {
         await storage.removeSubreddits([id]);
-        update((prev) => prev.filter((s) => s.id !== id));
+        update(prev => prev.filter(s => s.id !== id));
     }
 
     return {
         set,
         subscribe,
         update,
-        addSubreddit: () => update((prev) => [...prev, genEmpty()]),
+        addSubreddit: () => update(prev => [...prev, genEmpty()]),
         saveOptions,
         deleteSubreddit,
     };
@@ -39,5 +38,5 @@ function createStore() {
 
 export const subredditStore = createStore();
 
-export type InputStatus = { typing?: boolean | null; error?: string | null; saved?: boolean | null };
+export interface InputStatus { typing?: boolean | null; error?: string | null; saved?: boolean | null }
 export const inputStatusStore = writable<Record<string | number, InputStatus>>({});

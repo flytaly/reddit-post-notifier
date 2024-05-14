@@ -1,6 +1,4 @@
-<script lang="ts">
-    import applyTheme from '@/utils/apply-theme';
-    import getMsg from '@/utils/get-message';
+<script lang='ts'>
     import Settings from '@options/components/SettingsPage.svelte';
     import Sidebar from '@options/components/Sidebar.svelte';
     import BackupPage from '@options/components/backup/Backup.svelte';
@@ -13,6 +11,8 @@
     import nProgress from 'nprogress';
     import { onMount } from 'svelte';
     import DonatePage from './DonatePage.svelte';
+    import getMsg from '@/utils/get-message';
+    import applyTheme from '@/utils/apply-theme';
 
     export let pageId: PageId = 'settings';
 
@@ -46,27 +46,27 @@
 </svelte:head>
 
 <div
-    class="mx-auto grid max-w-[100rem] grid-cols-[max-content,1fr] justify-center gap-x-4 p-3 pt-0 xl:grid-cols-[max-content,1fr,min-content]"
+    class='mx-auto grid max-w-[100rem] grid-cols-[max-content,1fr] justify-center gap-x-4 p-3 pt-0 xl:grid-cols-[max-content,1fr,min-content]'
 >
     <div>
         <Sidebar current={pageId} />
     </div>
-    <div class="w-full">
-        <div class="mb-5 mt-4 flex items-center justify-between">
+    <div class='w-full'>
+        <div class='mb-5 mt-4 flex items-center justify-between'>
             <ShortInfo />
             {#if $isUpdating}
-                <div class="flex items-center rounded-md border border-skin-delimiter p-1">
-                    <div class="mr-1 h-4 w-4" class:animate-spin={$isUpdating}>{@html RefreshIcon}</div>
+                <div class='flex items-center rounded-md border border-skin-delimiter p-1'>
+                    <div class='mr-1 h-4 w-4' class:animate-spin={$isUpdating}>{@html RefreshIcon}</div>
                     <div>Updating</div>
                 </div>
             {/if}
         </div>
         <svelte:component this={page.cmp} />
     </div>
-    <div class="hidden w-52 xl:block" />
+    <div class='hidden w-52 xl:block' />
 </div>
 
-<style global lang="postcss">
+<style global lang='postcss'>
     @import './OptionsApp.pcss';
     @import '@/../node_modules/nprogress/nprogress.css';
 </style>

@@ -1,9 +1,9 @@
-import { IS_TEST } from '@/constants';
-import { listenForMessages, onMessage } from '@/messaging';
-import { type RateLimits } from '@/reddit-api/client';
-import { session } from '@/storage/storage';
 import nProgress from 'nprogress';
 import { derived, writable } from 'svelte/store';
+import { IS_TEST } from '@/constants';
+import { listenForMessages, onMessage } from '@/messaging';
+import type { RateLimits } from '@/reddit-api/client';
+import { session } from '@/storage/storage';
 
 function createMessageStore() {
     const { subscribe, update, set } = writable(
@@ -18,18 +18,19 @@ function createMessageStore() {
 
     if (!IS_TEST) {
         void session.getRateLimits().then((rateLimits) => {
-            if (Date.now() > (rateLimits.reset || 0)) return;
-            update((state) => ({ ...state, rateLimits: rateLimits }));
+            if (Date.now() > (rateLimits.reset || 0))
+                return;
+            update(state => ({ ...state, rateLimits }));
         });
     }
 
     onMessage('UPDATING_START', () => {
-        update((state) => ({ ...state, isUpdating: true }));
+        update(state => ({ ...state, isUpdating: true }));
         void nProgress.start();
     });
 
     onMessage('UPDATING_END', () => {
-        update((state) => ({ ...state, isUpdating: false }));
+        update(state => ({ ...state, isUpdating: false }));
         void nProgress.done();
     });
 
@@ -38,7 +39,7 @@ function createMessageStore() {
             rateLimits.reset = Date.now() + rateLimits.reset * 1000;
             void session.saveRateLimits(rateLimits);
         }
-        update((state) => ({ ...state, rateLimits }));
+        update(state => ({ ...state, rateLimits }));
     }
 
     onMessage('RATE_LIMITS', (payload) => {
@@ -56,11 +57,11 @@ export const isUpdating = derived(msgStore, ($store, set) => {
 
 export const rateLimits = derived<typeof msgStore, RateLimits>(msgStore, ($store, set) => {
     const wait = ($store.rateLimits.reset || 0) - Date.now();
-    const timeoutId =
-        wait > 0
+    const timeoutId
+        = wait > 0
             ? setTimeout(() => {
-                  msgStore.update((state) => ({ ...state, rateLimits: { used: null, reset: null, remaining: null } }));
-              }, wait)
+                msgStore.update(state => ({ ...state, rateLimits: { used: null, reset: null, remaining: null } }));
+            }, wait)
             : undefined;
 
     set({ ...$store.rateLimits });

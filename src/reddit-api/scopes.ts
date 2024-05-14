@@ -133,7 +133,7 @@ const redditScopes = {
         name: 'Make changes to your subreddit moderator and contributor status',
     },
     history: {
-        description: "Access my voting history and comments or submissions I've saved or hidden.",
+        description: 'Access my voting history and comments or submissions I\'ve saved or hidden.',
         id: 'history',
         name: 'History',
     },

@@ -14,7 +14,7 @@ export const fixtures: SearchableRedditPostData[] = [
         id: 2,
         title: 'Papillon dog',
         selftext:
-            "The Papillon (French pronunciation: ​[papijɔ̃], French for 'butterfly[-eared]'), also called the Continental Toy Spaniel, is a breed of dog, of the spaniel type.",
+            'The Papillon (French pronunciation: ​[papijɔ̃], French for \'butterfly[-eared]\'), also called the Continental Toy Spaniel, is a breed of dog, of the spaniel type.',
         link_flair_text: 'dogs',
     },
     {

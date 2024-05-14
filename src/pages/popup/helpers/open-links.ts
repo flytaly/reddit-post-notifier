@@ -6,9 +6,8 @@ export function openLinksOnClick() {
         // chrome doesn't open links by default
         window.addEventListener('click', (e) => {
             const aElem = (e.target as HTMLElement).closest('a'); // target could be svg
-            if (aElem && aElem.href) {
+            if (aElem && aElem.href)
                 void browser.tabs.create({ url: aElem.href, active: true });
-            }
         });
     }
 }

@@ -1,8 +1,8 @@
-<script lang="ts">
+<script lang='ts'>
     import * as icons from '@options/lib/icons';
     import { tooltip } from '@options/lib/tooltip';
-    import getMsg from '@/utils/get-message';
     import IosCheckbox from '@options/components/common/IosCheckbox.svelte';
+    import getMsg from '@/utils/get-message';
 
     export let isActive = false;
     export let name = '';
@@ -18,23 +18,23 @@
     };
 </script>
 
-<div class="rounded-md hover:ring-1 hover:ring-skin-delimiter" class:expanded={showEditBlock} {...$$restProps}>
+<div class='rounded-md hover:ring-1 hover:ring-skin-delimiter' class:expanded={showEditBlock} {...$$restProps}>
     <div
-        class="watch-item-grid rounded-md border border-dashed border-transparent bg-skin-bg"
+        class='watch-item-grid rounded-md border border-dashed border-transparent bg-skin-bg'
         class:delimiter={showEditBlock}
     >
         <!-- Input name -->
         <button
-            class="flex h-full border-none p-0 px-2 text-left text-sm"
+            class='flex h-full border-none p-0 px-2 text-left text-sm'
             on:click={toggleEditBlock}
-            data-testid="input-name"
+            data-testid='input-name'
         >
-            <div class="w-full overflow-hidden text-ellipsis whitespace-nowrap" class:font-bold={name}>
+            <div class='w-full overflow-hidden text-ellipsis whitespace-nowrap' class:font-bold={name}>
                 {name}
             </div>
             {#if errorMessage}
-                <div class="flex justify-center" use:tooltip={{ content: errorMessage }} data-testid="warning-icon">
-                    <div class="h-5 w-5 text-skin-error">
+                <div class='flex justify-center' use:tooltip={{ content: errorMessage }} data-testid='warning-icon'>
+                    <div class='h-5 w-5 text-skin-error'>
                         {@html icons.WarningIcon}
                     </div>
                 </div>
@@ -43,12 +43,12 @@
 
         <!-- Fetch posts -->
         <button
-            class="flex items-center p-0 text-skin-text hover:text-skin-accent2 disabled:text-skin-gray"
+            class='flex items-center p-0 text-skin-text hover:text-skin-accent2 disabled:text-skin-gray'
             on:click={onFetch}
             use:tooltip={{ content: getMsg('optionsWatchInputFetchDesc') }}
             {disabled}
         >
-            <div class="mr-1 h-5 w-5 text-skin-accent2">
+            <div class='mr-1 h-5 w-5 text-skin-accent2'>
                 {@html icons.RefreshIcon2}
             </div>
             <span>{getMsg('optionsSubredditFetch')}</span>
@@ -58,17 +58,17 @@
             tooltipText={getMsg('optionWatchInputDisable')}
             bind:checked={isActive}
             changeHandler={onActiveToggle}
-            data-testid="isActive"
+            data-testid='isActive'
         />
 
-        <slot name="toggles" />
+        <slot name='toggles' />
 
         <!-- Toggle editor -->
         <button
-            class="flex items-center justify-start border-transparent bg-transparent px-2 py-0"
+            class='flex items-center justify-start border-transparent bg-transparent px-2 py-0'
             on:click={toggleEditBlock}
         >
-            <span class="h-5 w-5">
+            <span class='h-5 w-5'>
                 {@html icons.EditIcon}
             </span>
             <span>Edit</span>
@@ -76,29 +76,29 @@
 
         <!-- Delete -->
         <button
-            class="icon-button text-skin-accent"
+            class='icon-button text-skin-accent'
             aria-label={getMsg('optionWatchInputDelete')}
             use:tooltip={{ content: getMsg('optionWatchInputDelete') }}
             on:click={onDelete}
         >
-            <div class="h-5 w-5">{@html icons.DeleteIcon}</div>
+            <div class='h-5 w-5'>{@html icons.DeleteIcon}</div>
         </button>
 
         <!-- Post list row -->
-        <div class="col-span-full">
-            <slot name="posts-block" />
+        <div class='col-span-full'>
+            <slot name='posts-block' />
         </div>
     </div>
 
     <!-- Editor -->
     {#if showEditBlock}
-        <div class="col-span-full m-2 pb-2">
+        <div class='col-span-full m-2 pb-2'>
             <slot />
         </div>
     {/if}
 </div>
 
-<style lang="postcss">
+<style lang='postcss'>
     .expanded {
         @apply bg-skin-bg2 shadow-input-expand;
     }

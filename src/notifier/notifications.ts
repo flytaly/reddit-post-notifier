@@ -1,6 +1,6 @@
 import type { Notifications } from 'webextension-polyfill';
 import browser from 'webextension-polyfill';
-import { playAudio, type SoundId } from '../sounds';
+import { type SoundId, playAudio } from '../sounds';
 import storage from '../storage';
 import { getInboxUrl } from '../utils';
 
@@ -13,22 +13,22 @@ export enum NotificationId {
     test = 'test',
 }
 
-export type TestNotification = { type: NotificationId.test; message: string };
+export interface TestNotification { type: NotificationId.test; message: string }
 
-export type MessageNotification = {
+export interface MessageNotification {
     type: NotificationId.mail;
     items: { len: number; username: string }[];
-};
+}
 
-export type PostNotification = {
+export interface PostNotification {
     type: NotificationId.post;
     items: { len: number; link: string; name: string }[];
-};
+}
 
-export type UserNotification = {
+export interface UserNotification {
     type: NotificationId.user;
     items: { len: number; link: string; name: string }[];
-};
+}
 
 type Notification = MessageNotification | PostNotification | UserNotification | TestNotification;
 
@@ -51,10 +51,11 @@ function isTest(n: Notification): n is TestNotification {
 function notify(notif: Notification, soundId?: SoundId | null) {
     async function createNotification(id: string, options: NotificationOpts, links?: string[]) {
         await browser.notifications.create(id, options);
-        if (soundId) {
+        if (soundId)
             void playAudio(soundId);
-        }
-        if (links) void storage.saveNotificationsData(id, links);
+
+        if (links)
+            void storage.saveNotificationsData(id, links);
     }
 
     const opts = {
@@ -68,12 +69,14 @@ function notify(notif: Notification, soundId?: SoundId | null) {
         return;
     }
 
-    if (!notif.items.length) return;
+    if (!notif.items.length)
+        return;
 
     if (isMessage(notif)) {
         const message = notif.items
             .map((i) => {
-                if (i.username) return `${i.username || ''} (${i.len})`;
+                if (i.username)
+                    return `${i.username || ''} (${i.len})`;
                 return `${i.len} unread messages`;
             })
             .join(',\n');
@@ -93,7 +96,7 @@ function notify(notif: Notification, soundId?: SoundId | null) {
             message: `New posts in: ${notif.items.map(({ name, len }) => `${name} (${len})`).join(', ')}`,
         };
 
-        const links = notif.items.filter((item) => item.link).map((item) => item.link);
+        const links = notif.items.filter(item => item.link).map(item => item.link);
         void createNotification(`${NotificationId.post}__${Date.now()}`, nOpts, [...links]);
     }
 
@@ -103,12 +106,12 @@ function notify(notif: Notification, soundId?: SoundId | null) {
             title: 'Reddit: new users activities',
             message: notif.items.map(({ len, name }) => `${name} (${len})`).join(', '),
         };
-        const links = notif.items.filter((item) => item.link).map((item) => item.link);
+        const links = notif.items.filter(item => item.link).map(item => item.link);
         void createNotification(`${NotificationId.post}__${Date.now()}`, nOpts, links);
     }
 }
 
-export const addNotificationClickListener = () => {
+export function addNotificationClickListener() {
     const clickHandler = async (notifyId: string) => {
         const notifyArr = await storage.getNotificationsData();
         if (notifyArr && notifyArr.length) {
@@ -123,7 +126,7 @@ export const addNotificationClickListener = () => {
         }
     };
 
-    browser.notifications.onClicked.addListener((notifyId) => void clickHandler(notifyId));
-};
+    browser.notifications.onClicked.addListener(notifyId => void clickHandler(notifyId));
+}
 
 export default notify;

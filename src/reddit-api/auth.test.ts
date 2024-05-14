@@ -1,32 +1,32 @@
-/* eslint-disable @typescript-eslint/restrict-template-expressions */
-/* eslint-disable @typescript-eslint/no-non-null-assertion, @typescript-eslint/unbound-method */
-import { config } from '@/constants';
-import storage from '@/storage';
-import type { AuthUser } from '@/storage/storage-types';
-import { describe, expect, test, vi, beforeAll, afterEach, afterAll, SpyInstance } from 'vitest';
+import { Buffer } from 'node:buffer';
+import type { MockInstance } from 'vitest';
+import { afterAll, afterEach, beforeAll, describe, expect, it, vi } from 'vitest';
+import browser from 'webextension-polyfill';
 import auth from './auth';
 import { AuthError } from './errors';
 import scopes from './scopes';
-import browser from 'webextension-polyfill';
+import type { AuthUser } from '@/storage/storage-types';
+import storage from '@/storage';
+import { config } from '@/constants';
 
 vi.mock('@/storage/index.ts');
 
-const fetchMock = vi.spyOn(global, 'fetch');
+const fetchMock = vi.spyOn(globalThis, 'fetch');
 
-const testAuthFetchOptions = (options: RequestInit) => {
+function testAuthFetchOptions(options: RequestInit) {
     expect(options.method).toBe('POST');
     expect(options.headers).toHaveProperty('Authorization');
-    // @ts-ignore
-    const [type, credentials] = options.headers?.['Authorization'].split(' ') as [string, string];
+    const [type, credentials] = (options.headers as Record<string, string>)?.Authorization.split(' ') as [string, string];
     expect(type).toBe('Basic');
     expect(Buffer.from(credentials, 'base64').toString()).toBe(`${config.clientId!}:${config.clientSecret!}`);
-};
+}
 
-const queryStrToObj = (query: string): Record<string, string> =>
-    query.split('&').reduce((acc, pair) => {
+function queryStrToObj(query: string): Record<string, string> {
+    return query.split('&').reduce((acc, pair) => {
         const [name, value] = pair.split('=');
         return { ...acc, [name]: value };
     }, {});
+}
 
 function testUrl(url: string) {
     const parse = new URL(url);
@@ -51,12 +51,12 @@ const authSuccessBody = {
     scope: 'scope',
 };
 
-const jsonResponse = (result: unknown, status = 200) => {
-    const response = { status, json: () => new Promise((resolve) => resolve(result)) } as unknown as Response;
-    return new Promise<Response>((resolve) => resolve(response));
-};
+function jsonResponse(result: unknown, status = 200) {
+    const response = { status, json: () => new Promise(resolve => resolve(result)) } as unknown as Response;
+    return new Promise<Response>(resolve => resolve(response));
+}
 
-describe('Token Retrieval', () => {
+describe('token Retrieval', () => {
     const id = 'fake_id';
     function mockAuthFlow() {
         vi.mocked(browser.identity.launchWebAuthFlow).mockImplementation(async ({ interactive, url }) => {
@@ -65,7 +65,7 @@ describe('Token Retrieval', () => {
             return `${config.redirectUri}?code=${fakeCode}&state=${auth.authState}`;
         });
     }
-    test('should retrieve tokens and save them to the storage', async () => {
+    it('should retrieve tokens and save them to the storage', async () => {
         mockAuthFlow();
         fetchMock.mockImplementationOnce((url, options) => {
             expect(url).toBe('https://www.reddit.com/api/v1/access_token');
@@ -79,7 +79,7 @@ describe('Token Retrieval', () => {
         expect(storage.saveAuthData).toHaveBeenCalledWith({ data: authSuccessBody, id });
     });
 
-    test('should throw AuthError when retrieving tokens', async () => {
+    it('should throw AuthError when retrieving tokens', async () => {
         mockAuthFlow();
         fetchMock.mockImplementationOnce(() => jsonResponse({ error: 'invalid_grant' }));
         await expect(auth.login(id)).rejects.toThrowError(AuthError);
@@ -88,7 +88,7 @@ describe('Token Retrieval', () => {
         await expect(auth.login(id)).rejects.toThrowError(AuthError);
     });
 
-    test('should throw AuthError when retrieving code', async () => {
+    it('should throw AuthError when retrieving code', async () => {
         const error = 'access_denied';
         let redirectUri = `${config.redirectUri}?error=${error}&state=${auth.authState}`;
 
@@ -97,15 +97,15 @@ describe('Token Retrieval', () => {
 
         redirectUri = `${config.redirectUri}?state=${auth.authState}`;
         vi.mocked(browser.identity.launchWebAuthFlow).mockImplementation(async () => redirectUri);
-        await expect(auth.login(id)).rejects.toThrowError(new AuthError("Couldn't get auth code", id));
+        await expect(auth.login(id)).rejects.toThrowError(new AuthError('Couldn\'t get auth code', id));
     });
 });
 
-describe('Token Refreshing', () => {
+describe('token Refreshing', () => {
     const id = 'fake_id';
     const refreshToken = 'refreshToken';
 
-    test('should refresh token and save', async () => {
+    it('should refresh token and save', async () => {
         const refreshSuccessBody = { access_token: 'newToken' };
 
         fetchMock.mockImplementationOnce((url, options) => {
@@ -113,7 +113,6 @@ describe('Token Refreshing', () => {
             expect(parsedUrl.origin).toBe('https://www.reddit.com');
             expect(parsedUrl.pathname).toBe('/api/v1/access_token');
             testAuthFetchOptions(options!);
-            // eslint-disable-next-line @typescript-eslint/no-base-to-string
             const body = queryStrToObj(options!.body!.toString());
             expect(body.grant_type).toBe('refresh_token');
             expect(body.refresh_token).toBe(refreshToken);
@@ -125,15 +124,15 @@ describe('Token Refreshing', () => {
         expect(token).toBe(refreshSuccessBody.access_token);
     });
 
-    test('should throw AuthError if error happens during refreshing', async () => {
+    it('should throw AuthError if error happens during refreshing', async () => {
         fetchMock.mockImplementationOnce(() => jsonResponse({}, 400));
         await expect(() => auth.renewAccessToken('', id)).rejects.toThrowError(AuthError);
     });
 });
 
-describe('Get Access Token', () => {
+describe('get Access Token', () => {
     type RA = typeof auth.renewAccessToken;
-    let renewAccessToken: SpyInstance<Parameters<RA>, ReturnType<RA>>;
+    let renewAccessToken: MockInstance<Parameters<RA>, ReturnType<RA>>;
     const renewedToken = 'renewedToken';
     const authData = {
         accessToken: 'oldAccessToken',
@@ -152,21 +151,21 @@ describe('Get Access Token', () => {
         renewAccessToken.mockRestore();
     });
 
-    test('should return old access token', async () => {
+    it('should return old access token', async () => {
         const user: AuthUser = { id: 'id1', auth: { ...authData, expiresIn: new Date().getTime() + 1000 * 3600 } };
         const token = await auth.getAccessToken(user);
         expect(auth.renewAccessToken).not.toHaveBeenCalled();
         expect(token).toBe(authData.accessToken);
     });
 
-    test('should return renewed accessToken', async () => {
+    it('should return renewed accessToken', async () => {
         const user: AuthUser = { id: 'id1', auth: { ...authData, expiresIn: new Date().getTime() } };
         const token = await auth.getAccessToken(user);
         expect(auth.renewAccessToken).toHaveBeenCalledWith(authData.refreshToken, 'id1');
         expect(token).toBe(renewedToken);
     });
 
-    test('should return renewed accessToken if there is no token in the storage', async () => {
+    it('should return renewed accessToken if there is no token in the storage', async () => {
         const refreshToken = '___refreshToken___';
         const user: AuthUser = { id: 'id1', auth: { refreshToken, expiresIn: new Date().getTime() + 1000 * 3600 } };
         const token = await auth.getAccessToken(user);

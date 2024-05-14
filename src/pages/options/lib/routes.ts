@@ -1,16 +1,16 @@
 import getMsg from '@/utils/get-message';
 
 export const routes = {
-    watch: {
+    'watch': {
         id: 'watch',
         href: './watch.html',
         name: getMsg('optionsNavWatch'),
         sections: {
-            mail: {
+            'mail': {
                 id: 'mail',
                 name: getMsg('optionsNavMail'),
             },
-            subreddit: {
+            'subreddit': {
                 id: 'subreddit',
                 name: getMsg('optionsNavSubreddits'),
             },
@@ -24,7 +24,7 @@ export const routes = {
             },
         },
     },
-    settings: {
+    'settings': {
         id: 'settings',
         href: './index.html',
         name: getMsg('optionsNavSettings'),
@@ -36,7 +36,7 @@ export const routes = {
         name: getMsg('optionsNavImportExport'),
         sections: {},
     },
-    info: {
+    'info': {
         id: 'info',
         href: './info.html',
         name: getMsg('optionsNavInfo'),
@@ -51,7 +51,7 @@ export const routes = {
             },
         },
     },
-    donate: {
+    'donate': {
         id: 'donate',
         href: './donate.html',
         name: 'Donate',

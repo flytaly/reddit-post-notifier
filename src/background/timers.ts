@@ -4,13 +4,14 @@ import storage from '../storage';
 import { AlarmType } from '../types/alarms';
 import { updateAndSchedule } from './update';
 
-export const watchAlarms = () => {
+export function watchAlarms() {
     browser.alarms.onAlarm.addListener(({ name }) => {
-        if (name === AlarmType.ALARM_UPDATE) void updateAndSchedule();
+        if (name === AlarmType.ALARM_UPDATE)
+            void updateAndSchedule();
     });
-};
+}
 
-export const scheduleNextUpdate = async () => {
+export async function scheduleNextUpdate() {
     const { updateInterval } = await storage.getOptions();
 
     // in Chrome it's impossible to set alarms with delay less than 1 minute
@@ -18,4 +19,4 @@ export const scheduleNextUpdate = async () => {
     const delayInMinutes = Math.max(updateInterval, minInterval);
 
     browser.alarms.create(AlarmType.ALARM_UPDATE, { delayInMinutes: delayInMinutes / 60 });
-};
+}

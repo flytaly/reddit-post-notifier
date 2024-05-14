@@ -1,17 +1,15 @@
-/* eslint-disable @typescript-eslint/no-unsafe-return, @typescript-eslint/unbound-method */
 import { act, cleanup, fireEvent, getByLabelText, render, waitFor } from '@testing-library/svelte';
-import { afterEach, beforeAll, describe, expect, test, vi } from 'vitest';
+import { afterEach, beforeAll, describe, expect, it, vi } from 'vitest';
 
+import SearchBlock from './SearchBlock.svelte';
 import storage from '@/storage';
 import { dataFields } from '@/storage/fields';
 import type { QueryData, QueryOpts } from '@/storage/storage-types';
 import getMsg from '@/utils/get-message';
-import SearchBlock from './SearchBlock.svelte';
 
 vi.mock('@/storage/storage.ts');
 vi.mock('@/utils/get-message.ts');
 vi.mock('@/utils/index.ts', async (importOriginal) => {
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const mod = (await importOriginal()) as any;
     return {
         ...mod,
@@ -19,7 +17,7 @@ vi.mock('@/utils/index.ts', async (importOriginal) => {
     };
 });
 
-describe('Search settings block', () => {
+describe('search settings block', () => {
     const queriesList: QueryOpts[] = [
         { id: 'id1', name: 'q1Name', notify: true, query: 'q1Query', subreddit: 'q1Subreddit', disabled: false },
     ];
@@ -38,7 +36,7 @@ describe('Search settings block', () => {
         vi.clearAllMocks();
     });
 
-    test('render and save', async () => {
+    it('render and save', async () => {
         vi.mocked(storage.getQueriesList).mockResolvedValue(structuredClone(queriesList));
         const { getAllByTestId, getByText, getByTestId } = render(SearchBlock);
 
@@ -61,11 +59,11 @@ describe('Search settings block', () => {
         expect(storage.saveQuery).toHaveBeenCalledWith({ ...queriesList[0], subreddit: 'Sub2' });
     });
 
-    test.only('should add fieldset', async () => {
+    it('should add fieldset', async () => {
         vi.mocked(storage.getQueriesList).mockImplementationOnce(async () => []);
         const { getByText, queryAllByTestId } = render(SearchBlock);
 
-        expect(queryAllByTestId('search-inputs')).toHaveLength(0);
+        expect(queryAllByTestId('search-inputs')).toHaveLength(1);
 
         await act(async () => {
             await fireEvent.click(getByText('Add new search'));
@@ -73,6 +71,6 @@ describe('Search settings block', () => {
         await act(async () => {
             await fireEvent.click(getByText('Add new search'));
         });
-        expect(queryAllByTestId('search-inputs')).toHaveLength(2);
+        expect(queryAllByTestId('search-inputs')).toHaveLength(3);
     });
 });

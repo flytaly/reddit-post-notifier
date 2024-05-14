@@ -13,26 +13,27 @@ const themeToClassMap: Partial<Record<ExtensionOptions['theme'], string>> = {
 
 function setClasses(theme: ExtensionOptions['theme']) {
     const toRemove = (Object.keys(themeToClassMap) as Array<keyof typeof themeToClassMap>)
-        .filter((t) => t !== theme)
-        .map((t) => themeToClassMap[t] as string);
+        .filter(t => t !== theme)
+        .map(t => themeToClassMap[t] as string);
     document.body.classList.remove(...toRemove);
 
     const toAdd = themeToClassMap[theme];
-    if (toAdd) document.body.classList.add(toAdd);
+    if (toAdd)
+        document.body.classList.add(toAdd);
 }
 
 export async function setIcons({ isDark }: { isDark: boolean }) {
     const iconPaths = isDark
         ? {
-              16: '../../images/icon-16-light.png',
-              32: '../../images/icon-32-light.png',
-              64: '../../images/icon-64-light.png',
-          }
+                16: '../../images/icon-16-light.png',
+                32: '../../images/icon-32-light.png',
+                64: '../../images/icon-64-light.png',
+            }
         : {
-              16: '../../images/icon-16.png',
-              32: '../../images/icon-32.png',
-              64: '../../images/icon-64.png',
-          };
+                16: '../../images/icon-16.png',
+                32: '../../images/icon-32.png',
+                64: '../../images/icon-64.png',
+            };
     return browser.action.setIcon({ path: iconPaths });
 }
 
@@ -48,7 +49,7 @@ function toggleTheme(theme: ExtensionOptions['theme'], mql: MediaQueryList | Med
             break;
         default:
             isDark = mql.matches;
-            // eslint-disable-next-line no-param-reassign
+
             theme = isDark ? 'dark' : 'light';
     }
     setClasses(theme);
@@ -68,7 +69,7 @@ async function applyTheme(theme?: ExtensionOptions['theme']) {
     const mql = window.matchMedia(preferDarkQuery);
     toggleTheme(theme, mql);
     if (!listenerAdded) {
-        mql.addEventListener('change', (e) => void storage.getOptions().then((opts) => toggleTheme(opts.theme, e)));
+        mql.addEventListener('change', e => void storage.getOptions().then(opts => toggleTheme(opts.theme, e)));
         listenerAdded = true;
     }
 }

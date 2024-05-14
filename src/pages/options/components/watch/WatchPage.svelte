@@ -1,6 +1,4 @@
-<script lang="ts">
-    import storage from '@/storage/storage';
-    import getMsg from '@/utils/get-message';
+<script lang='ts'>
     import { onMount, tick } from 'svelte';
     import { routes } from '@options/lib/routes';
     import { storageData } from '@options/lib/store';
@@ -10,6 +8,8 @@
     import SubredditsBlock from './subreddits/SubredditsBlock.svelte';
     import MailBlock from './MailBlock.svelte';
     import AccountsBlock from './AccountsBlock.svelte';
+    import getMsg from '@/utils/get-message';
+    import storage from '@/storage/storage';
 
     const dataPromise = storage.getAllData();
 
@@ -19,18 +19,17 @@
             await dataPromise;
             await tick();
             const { hash } = document.location;
-            if (hash) {
+            if (hash)
                 document.body.querySelector(hash)?.scrollIntoView();
-            }
         })();
     });
 
     const s = routes.watch.sections;
 </script>
 
-<div class="w-full">
+<div class='w-full'>
     {#if $storageData.isLoaded}
-        <h1 class="mb-2 text-xl font-bold uppercase tracking-widest text-skin-gray">
+        <h1 class='mb-2 text-xl font-bold uppercase tracking-widest text-skin-gray'>
             {getMsg('optionsNavWatch')}
         </h1>
         <section>
@@ -50,11 +49,11 @@
             <Heading id={s['follow-user'].id} name={s['follow-user'].name} />
             <FollowUsersBlock />
         </section>
-        <div class="h-[80vh]" />
+        <div class='h-[80vh]' />
     {/if}
 </div>
 
-<style lang="postcss">
+<style lang='postcss'>
     section {
         @apply mb-8;
     }

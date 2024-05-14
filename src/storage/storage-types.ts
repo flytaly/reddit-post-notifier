@@ -5,10 +5,10 @@ import type {
     RedditPost,
     RedditPostExtended,
 } from '../reddit-api/reddit-types';
-import type { SearchableField, FilterRule } from '../text-search/post-filter';
+import type { FilterRule, SearchableField } from '../text-search/post-filter';
 import type { ExtensionOptions } from '../types/extension-options';
 
-export type AuthUser = {
+export interface AuthUser {
     id: string;
     checkMail?: boolean;
     mailNotify?: boolean;
@@ -35,30 +35,30 @@ export type AuthUser = {
         lastUpdate?: number;
         lastPostCreated?: number;
     };
-};
+}
 
-export type PostFilterOptions = {
+export interface PostFilterOptions {
     enabled?: boolean;
     rules?: FilterRule[];
     fields?: SearchableField[];
-};
+}
 
-export type SubredditData = {
+export interface SubredditData {
     error?: RedditError | null;
     /**  the newest post's id */
     lastPost?: string;
     lastPostCreated?: number | null;
     lastUpdate?: number;
     posts?: RedditPost[];
-};
+}
 
 export type QueryData = SubredditData;
 
-/** Reddit Search query*/
-export type QueryOpts = {
+/** Reddit Search query */
+export interface QueryOpts {
     /** Query's id */
     id: string;
-    /** Reddit Search query*/
+    /** Reddit Search query */
     query?: string;
     /** Optional name of the query */
     name?: string;
@@ -68,25 +68,25 @@ export type QueryOpts = {
     notify?: boolean;
     /** Skip updates */
     disabled?: boolean;
-};
+}
 
-export type SubredditOpts = {
+export interface SubredditOpts {
     id: string;
     subreddit: string;
     name?: string;
     notify?: boolean;
     disabled?: boolean;
     filterOpts?: PostFilterOptions;
-};
+}
 
-export type PostsToSaveData = {
+export interface PostsToSaveData {
     posts?: RedditPost[] | RedditPostExtended[];
     error?: RedditError | null;
     limit?: number;
     lastPostCreated?: number | null;
-};
+}
 
-export type FollowingUser = {
+export interface FollowingUser {
     username: string;
     data?: (RedditPost | RedditComment)[];
     watch?: 'overview' | 'comments' | 'submitted';
@@ -94,18 +94,18 @@ export type FollowingUser = {
     lastPostCreated?: number | null;
     lastUpdate?: number | null;
     error?: RedditError | null;
-};
+}
 
-export type MailInfo = {
+export interface MailInfo {
     error?: string | null;
     messages?: RedditMessage[];
     lastUpdate?: number;
     lastPostCreated?: number;
     mailNotify?: boolean;
     checkMail?: boolean;
-};
+}
 
-export type StorageFields = {
+export interface StorageFields {
     options: ExtensionOptions;
 
     accounts?: Record<string, AuthUser>;
@@ -118,4 +118,4 @@ export type StorageFields = {
     usersList?: FollowingUser[];
     audio?: { dataUrl?: string };
     mail?: MailInfo;
-};
+}

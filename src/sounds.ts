@@ -1,7 +1,7 @@
-import storage from '@/storage';
 import browser from 'webextension-polyfill';
 import { IS_CHROME } from './constants';
 import { setupOffscreenDocument } from './offscreen';
+import storage from '@/storage';
 
 export const notificationSoundFiles = {
     sound_00: '/audio/234524__foolboymedia__notification-up-1.webm',
@@ -13,20 +13,23 @@ export const notificationSoundFiles = {
 
 export type SoundId = keyof typeof notificationSoundFiles | 'custom';
 
-export const getAudioSrc = async (soundId: SoundId | undefined | null): Promise<string> => {
-    if (!soundId) return '';
+export async function getAudioSrc(soundId: SoundId | undefined | null): Promise<string> {
+    if (!soundId)
+        return '';
     if (soundId === 'custom') {
         const file = await storage.getAudioFile();
         return file?.dataUrl || '';
     }
     const file: string = notificationSoundFiles[soundId];
-    if (!file) return '';
+    if (!file)
+        return '';
     return browser.runtime.getURL(file);
-};
+}
 
 export async function playAudio(audioId: SoundId) {
     const src = await getAudioSrc(audioId);
-    if (!src) return;
+    if (!src)
+        return;
 
     if (IS_CHROME) {
         await setupOffscreenDocument('/dist/offscreen/index.html');

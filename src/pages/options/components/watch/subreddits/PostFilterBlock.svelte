@@ -1,13 +1,13 @@
-<script lang="ts">
-    import type { PostFilterOptions } from '@/storage/storage-types';
-    import type { FilterRule } from '@/text-search/post-filter';
+<script lang='ts'>
     import { quadOut } from 'svelte/easing';
     import { slide } from 'svelte/transition';
-    import PostFilterFields from './PostFilterFields.svelte';
     import AddButton from '@options/components/common/AddButton.svelte';
-    import getMsg from '@/utils/get-message';
     import { HelpCircleIcon } from '@options/lib/icons';
     import { tooltip } from '@options/lib/tooltip';
+    import PostFilterFields from './PostFilterFields.svelte';
+    import getMsg from '@/utils/get-message';
+    import type { FilterRule } from '@/text-search/post-filter';
+    import type { PostFilterOptions } from '@/storage/storage-types';
 
     export let ruleList: FilterRule[] = [];
 
@@ -28,28 +28,28 @@
     };
 </script>
 
-<div transition:slide={{ duration: 150, easing: quadOut }} class="w-full space-y-2">
-    <div class="ml-6">
-        <div class="text-sm font-medium">Post filters</div>
-        <div class="text-sm">
+<div transition:slide={{ duration: 150, easing: quadOut }} class='w-full space-y-2'>
+    <div class='ml-6'>
+        <div class='text-sm font-medium'>Post filters</div>
+        <div class='text-sm'>
             <span>
                 Check if the subreddit's posts fit at least one of the rules below. Filter words in the title and post's
                 text fields are case-insensitive and can be stemmed (dogs = dog).
             </span>
             <span
-                class="inline-flex items-center gap-1 text-skin-accent2"
+                class='inline-flex items-center gap-1 text-skin-accent2'
                 use:tooltip={{ content: getMsg('helpFiltersVsSearch'), allowHTML: true }}
             >
                 Filters vs Reddit Search
-                <div class="h-4 w-4">
+                <div class='h-4 w-4'>
                     {@html HelpCircleIcon}
                 </div>
             </span>
         </div>
     </div>
-    <div class="flex flex-col">
+    <div class='flex flex-col'>
         {#each ruleList as filterRule, index}
-            <div class="connected-block">
+            <div class='connected-block'>
                 <PostFilterFields
                     removeFilter={() => removeRule(index)}
                     {commitChanges}
@@ -59,7 +59,7 @@
                 />
             </div>
             {#if ruleList.length - 1 !== index}
-                <div class="py-1 font-mono text-sm">OR</div>
+                <div class='py-1 font-mono text-sm'>OR</div>
             {/if}
         {/each}
     </div>

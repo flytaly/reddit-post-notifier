@@ -1,4 +1,5 @@
 /// <reference types="vitest" />
+import process from 'node:process';
 import { svelte } from '@sveltejs/vite-plugin-svelte';
 import { defineConfig } from 'vite';
 import { r } from './scripts/utils';

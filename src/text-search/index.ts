@@ -1,8 +1,8 @@
 import {
     intersect,
     normalize as normalizeDefault,
-    tokenizer as tokenizerDefault,
     stemmer as stemmerDefault,
+    tokenizer as tokenizerDefault,
 } from './search-helpers';
 
 type StringProcessor = (str: string) => string;
@@ -30,18 +30,22 @@ export class Index {
     }
 
     add(id: TextId, str: string) {
-        if (!str || !id) return;
+        if (!str || !id)
+            return;
         const tokens = this.getTokens(str);
-        if (!tokens.length) return;
+        if (!tokens.length)
+            return;
 
         const duplicates = {} as Record<string, number>;
         let token = '';
         for (let i = 0; i < tokens.length; i++) {
             token = this.stemmer ? this.stemmer(tokens[i]) : tokens[i];
-            if (!token || duplicates[token]) continue;
+            if (!token || duplicates[token])
+                continue;
             duplicates[token] = 1;
 
-            if (!this.map[token]) this.map[token] = [];
+            if (!this.map[token])
+                this.map[token] = [];
             this.map[token].push(id);
         }
     }
@@ -52,7 +56,8 @@ export class Index {
     }
 
     search(query: string): TextId[] {
-        if (!query) return [];
+        if (!query)
+            return [];
         const queryTokens = this.getTokens(query);
         const result: TextId[][] = [];
         for (let i = 0; i < queryTokens.length; i++) {

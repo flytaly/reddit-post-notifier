@@ -1,22 +1,22 @@
-import type { AuthUser } from '@/storage/storage-types';
 import browser from 'webextension-polyfill';
-import { config, DEV_SERVER, USE_DEV_SERVER } from '../constants';
+import { DEV_SERVER, USE_DEV_SERVER, config } from '../constants';
 import storage from '../storage';
 import { generateId, mapObjToQueryStr } from '../utils';
 import { AuthError } from './errors';
 import scopes from './scopes';
+import type { AuthUser } from '@/storage/storage-types';
 
 const { clientId, clientSecret, redirectUri, userAgent } = config;
 
-export type TokenResponseBody = {
+export interface TokenResponseBody {
     access_token: string;
     refresh_token: string;
     expires_in: string;
     scope: string;
     token_type: string;
-};
+}
 
-export type TokenResponseError = { error?: string; message?: string };
+export interface TokenResponseError { error?: string; message?: string }
 
 export function isErrorTokenResponse(r: TokenResponseError | TokenResponseBody): r is TokenResponseError {
     return !(r as TokenResponseBody).access_token;
@@ -44,8 +44,8 @@ const auth = {
         const now = new Date();
         const expires = new Date((expiresIn || 0) - 60000 * 5); // 5 mins before expire
 
-        const token: string =
-            expires > now && accessToken ? accessToken : await auth.renewAccessToken(refreshToken, account.id);
+        const token: string
+            = expires > now && accessToken ? accessToken : await auth.renewAccessToken(refreshToken, account.id);
         return token;
     },
 
@@ -72,12 +72,12 @@ const auth = {
         });
         const responseURL = new URL(response);
 
-        if (responseURL.searchParams.has('error')) {
+        if (responseURL.searchParams.has('error'))
             throw new AuthError(responseURL.searchParams.get('error') || '', id);
-        }
-        if (responseURL.searchParams.get('state') === authState) {
+
+        if (responseURL.searchParams.get('state') === authState)
             return responseURL.searchParams.get('code');
-        }
+
         return false;
     },
 
@@ -86,8 +86,8 @@ const auth = {
         return {
             method: 'POST',
             headers: {
-                Accept: 'application/json',
-                Authorization: `Basic ${base64Credentials}`,
+                'Accept': 'application/json',
+                'Authorization': `Basic ${base64Credentials}`,
                 'Content-Type': 'application/x-www-form-urlencoded',
                 'User-Agent': userAgent,
             },
@@ -103,14 +103,12 @@ const auth = {
         };
 
         const response = await fetch(auth.accessTokenURL, auth.fetchAuthInit(params));
-        if (response.status !== 200) {
+        if (response.status !== 200)
             throw new AuthError(`Couldn't receive tokens. ${response.status}: ${response.statusText || ''}`, id);
-        }
 
         const body = (await response.json()) as TokenResponseBody | TokenResponseError;
-        if (isErrorTokenResponse(body)) {
+        if (isErrorTokenResponse(body))
             throw new AuthError(`Couldn't receive tokens. Error: ${body.error || ''}`, id);
-        }
 
         return body;
     },
@@ -135,14 +133,14 @@ const auth = {
         let body: TokenResponseBody | TokenResponseError;
         try {
             body = (await response.json()) as TokenResponseBody | TokenResponseError;
-        } catch (e) {
+        }
+        catch (e) {
             const error = e as { status: number; message: string };
-            body = { error: '' + error.status, message: error.message };
+            body = { error: `${error.status}`, message: error.message };
         }
 
-        if (isErrorTokenResponse(body)) {
+        if (isErrorTokenResponse(body))
             throw new AuthError(`Couldn't refresh access token. ${body.error || ''}: ${body.message || ''}`, id, true);
-        }
 
         await storage.saveAuthData({ data: body, id });
 
@@ -151,10 +149,12 @@ const auth = {
 
     /** Start OAUTH2 authorization flow */
     async login(id?: string) {
-        if (!id) id = generateId();
+        if (!id)
+            id = generateId();
         auth.authState = auth.generateAuthState();
         const code = await auth.getAuthCode(auth.authState, id);
-        if (!code) throw new AuthError("Couldn't get auth code", id);
+        if (!code)
+            throw new AuthError('Couldn\'t get auth code', id);
 
         const authData = await auth.getTokens(code, id);
         await storage.saveAuthData({ data: authData, id });

@@ -1,4 +1,4 @@
-<script lang="ts">
+<script lang='ts'>
     import { onMount } from 'svelte';
     import type { RedditItem, RedditMessage, RedditPost } from '@/reddit-api/reddit-types';
     import { RedditObjectKind } from '@/reddit-api/reddit-types';
@@ -25,7 +25,7 @@
     function getImageList(post: RedditPost): { url: string; width: number; height: number }[] | undefined {
         if (post.data.is_gallery && post.data.media_metadata) {
             const media = Object.values(post.data.media_metadata);
-            const withPreview = media.find((m) => m.p?.length);
+            const withPreview = media.find(m => m.p?.length);
             if (withPreview) {
                 return withPreview.p?.map((p) => {
                     return { url: p.u, width: p.x, height: p.y };
@@ -39,7 +39,8 @@
     }
 
     function selectFittingImage(imageList: ReturnType<typeof getImageList>) {
-        if (!imageList?.length) return;
+        if (!imageList?.length)
+            return;
         let result = imageList.find((i) => {
             return i.width > MAX_WIDTH && i.height > MAX_HEIGHT;
         });
@@ -69,11 +70,13 @@
                 }
                 const imgList = getImageList(post);
                 const image = selectFittingImage(imgList);
-                if (!image) return;
+                if (!image)
+                    return;
                 imageInfo = { ...image, loaded: false };
                 const imgElem = new Image();
                 imgElem.onload = () => {
-                    if (imageInfo?.url !== image.url) return;
+                    if (imageInfo?.url !== image.url)
+                        return;
                     imageInfo.loaded = true;
                 };
                 imgElem.src = image.url;
@@ -84,23 +87,23 @@
             case RedditObjectKind.comment:
             case RedditObjectKind.message:
                 postText = sliceText(post.data.body || '');
-                return;
+                break;
             default:
                 break;
         }
     }
 
     const positionPreview = (e: MouseEvent) => {
-        if (!previewElement) return;
+        if (!previewElement)
+            return;
         const { pageX, pageY, clientY } = e;
         previewElement.style.left = `${pageX + 10}px`;
         const { height } = previewElement.getBoundingClientRect();
         const offset = document.documentElement.clientHeight - clientY - height - 10;
-        if (offset < 0) {
+        if (offset < 0)
             previewElement.style.top = `${pageY + offset}px`;
-        } else {
+        else
             previewElement.style.top = `${pageY + 10}px`;
-        }
     };
 
     onMount(() => {
@@ -113,10 +116,11 @@
             const { postId } = (e.target as HTMLElement).dataset;
             if (postId && postId !== prevId) {
                 // array union bug: https://github.com/microsoft/TypeScript/issues/44373
-                const post = (posts as { data: { id: string } }[]).find((p) => p.data.id === postId) as
+                const post = (posts as { data: { id: string } }[]).find(p => p.data.id === postId) as
                     | RedditMessage
                     | RedditItem;
-                if (!post) return;
+                if (!post)
+                    return;
                 setData(post);
                 prevId = postId;
                 window.requestAnimationFrame(() => {
@@ -156,15 +160,15 @@
                     src={imageInfo.url}
                     width={imageInfo.width}
                     height={imageInfo.height}
-                    alt="preview"
-                    class="block min-h-full min-w-full"
+                    alt='preview'
+                    class='block min-h-full min-w-full'
                 />
             {/if}
         </div>
     {:else}<span>{postText}</span>{/if}
 </div>
 
-<style lang="postcss">
+<style lang='postcss'>
     .preview {
         @apply absolute z-50 overflow-hidden break-words border
                 border-skin-base

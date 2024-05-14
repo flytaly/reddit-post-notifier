@@ -1,26 +1,26 @@
+import type { RedditPost, RedditPostData, RedditPostExtended } from '../reddit-api/reddit-types';
 import type { RedditScope } from '@/reddit-api/scopes';
 import type redditScopes from '@/reddit-api/scopes';
 import type { StorageFields } from '@/storage/storage-types';
 import type { ExtensionOptions } from '@/types/extension-options';
-import type { RedditPost, RedditPostData, RedditPostExtended } from '../reddit-api/reddit-types';
 import { RedditObjectKind } from '@/reddit-api/reddit-types';
 import type { RedditItem } from '@/reddit-api/reddit-types';
 
-/* eslint-disable @typescript-eslint/explicit-module-boundary-types */
-export const mapObjToQueryStr = (params: Record<string, unknown>): string =>
-    Object.entries(params)
-        .map((pair) => pair.join('='))
+export function mapObjToQueryStr(params: Record<string, unknown>): string {
+    return Object.entries(params)
+        .map(pair => pair.join('='))
         .join('&');
+}
 
-export const subredditNameRegExp = /^[A-Za-z0-9]\w{2,20}$/;
+export const subredditNameRegExp = /^[A-Z0-9]\w{2,20}$/i;
 
-//** test all subreddits name in multireddit */
-export const testMultireddit = (subs: string) => subs.split('+').every((s) => subredditNameRegExp.test(s));
+//* * test all subreddits name in multireddit */
+export const testMultireddit = (subs: string) => subs.split('+').every(s => subredditNameRegExp.test(s));
 
 export const redditUrl = 'https://reddit.com';
 export const redditOldUrl = 'https://old.reddit.com';
 
-export const getRedditBaseUrl = (urlType: ExtensionOptions['redditUrlType'], customUrl: string): string => {
+export function getRedditBaseUrl(urlType: ExtensionOptions['redditUrlType'], customUrl: string): string {
     switch (urlType) {
         case 'old':
             return redditOldUrl;
@@ -29,52 +29,49 @@ export const getRedditBaseUrl = (urlType: ExtensionOptions['redditUrlType'], cus
         default:
             return redditUrl;
     }
-};
+}
 
 export const generateId = () => Math.random().toString(36).substring(2, 6) + new Date().getTime().toString(36);
 
 type UrlOpts = Pick<ExtensionOptions, 'redditUrlType' | 'customRedditUrl'>;
 
-export const constructUrl = (endpoint: string, opts: UrlOpts): string => {
+export function constructUrl(endpoint: string, opts: UrlOpts): string {
     try {
         return new URL(endpoint, getRedditBaseUrl(opts.redditUrlType, opts.customRedditUrl)).href;
-    } catch (error) {
+    }
+    catch (error) {
         return new URL(endpoint, redditUrl).href;
     }
-};
+}
 
-export const getSubredditUrl = (subreddit: string, opts: UrlOpts): string => {
+export function getSubredditUrl(subreddit: string, opts: UrlOpts): string {
     const endpoint = `/r/${subreddit}/new`;
     return constructUrl(endpoint, opts);
-};
+}
 
-export const getInboxUrl = (opts: UrlOpts): string => {
+export function getInboxUrl(opts: UrlOpts): string {
     const endpoint = '/message/inbox';
     return constructUrl(endpoint, opts);
-};
+}
 
-export const getSearchQueryUrl = (query = '', subreddit = '', opts: UrlOpts): string => {
+export function getSearchQueryUrl(query = '', subreddit = '', opts: UrlOpts): string {
     const endpoint = subreddit
         ? `/r/${subreddit}/search?sort=new&restrict_sr=on&q=${query}`
         : `/search?q=${query}&sort=new`;
 
     return constructUrl(endpoint, opts);
-};
+}
 
-export const getUserProfileUrl = (
-    username: string,
-    type: 'overview' | 'submitted' | 'comments' = 'overview',
-    opts: UrlOpts,
-): string => {
+export function getUserProfileUrl(username: string, type: 'overview' | 'submitted' | 'comments' = 'overview', opts: UrlOpts): string {
     let endpoint = `/user/${username}`;
-    if (type === 'comments') {
+    if (type === 'comments')
         endpoint += '/comments';
-    }
-    if (type === 'submitted') {
-        endpoint += opts.redditUrlType == 'old' ? '/submitted' : '/posts';
-    }
+
+    if (type === 'submitted')
+        endpoint += opts.redditUrlType === 'old' ? '/submitted' : '/posts';
+
     return constructUrl(endpoint, opts);
-};
+}
 
 export function debounce<F extends (...args: Parameters<F>) => unknown>(
     func: F,
@@ -84,7 +81,8 @@ export function debounce<F extends (...args: Parameters<F>) => unknown>(
     let tmId: ReturnType<typeof setTimeout>;
 
     return (...args: Parameters<F>) => {
-        if (waiting) clearTimeout(tmId);
+        if (waiting)
+            clearTimeout(tmId);
         waiting = true;
         tmId = setTimeout(() => {
             func(...args);
@@ -105,8 +103,9 @@ export function filterKeys<T>(allowedKeys: string[], obj: Record<string, T> = {}
 }
 
 /** Filter out not needed properties in the Reddit post */
-export const filterPostDataProperties = (post: RedditPostExtended): RedditPost => {
-    if (!post?.data) return post;
+export function filterPostDataProperties(post: RedditPostExtended | RedditPost): RedditPost {
+    if (!post?.data)
+        return post;
     const filterList: Array<keyof RedditPostData> = [
         'author',
         'created_utc',
@@ -125,39 +124,40 @@ export const filterPostDataProperties = (post: RedditPostExtended): RedditPost =
         'media_metadata',
     ];
 
-    const data = filterKeys(filterList, post.data) as RedditPostData;
+    const data = filterKeys(filterList, post.data as Record<string, unknown>) as any as RedditPostData;
 
-    if ((data.selftext?.length || 0) > 400) {
+    if ((data.selftext?.length || 0) > 400)
         data.selftext = data.selftext?.slice(0, 400);
-    }
 
     return { ...post, data };
-};
+}
 
-export const getAccountByScope = (accounts: StorageFields['accounts'], scopeList?: (keyof typeof redditScopes)[]) => {
+export function getAccountByScope(accounts: StorageFields['accounts'], scopeList?: (keyof typeof redditScopes)[]) {
     const fit = Object.values(accounts || {}).filter((ac) => {
         if (scopeList?.length) {
-            if (!ac.auth.scope?.length) return false;
+            if (!ac.auth.scope?.length)
+                return false;
             const acScopes = ac.auth.scope.split(' ') as RedditScope[];
-            if (!scopeList.every((s) => acScopes.includes(s))) return false;
+            if (!scopeList.every(s => acScopes.includes(s)))
+                return false;
         }
 
         return ac.auth.refreshToken;
     });
 
     return fit.length ? fit[0] : null;
-};
+}
 
 export function getItemTitle(post: RedditItem) {
-    if (post.kind === RedditObjectKind.link) {
+    if (post.kind === RedditObjectKind.link)
         return post.data.title;
-    } else if (post.kind === RedditObjectKind.comment) {
-        return post.data.body?.length > 80 ? post.data.body.slice(0, 80) + '...' : post.data.body;
-    }
+    else if (post.kind === RedditObjectKind.comment)
+        return post.data.body?.length > 80 ? `${post.data.body.slice(0, 80)}...` : post.data.body;
 }
 
 export function idToUserIdx(id: string): number | null {
-    const indexNum = parseInt(id.split('_')[1]);
-    if (!isNaN(indexNum)) return indexNum;
+    const indexNum = Number.parseInt(id.split('_')[1]);
+    if (!Number.isNaN(indexNum))
+        return indexNum;
     return null;
 }

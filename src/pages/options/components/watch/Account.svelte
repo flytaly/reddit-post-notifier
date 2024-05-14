@@ -1,8 +1,4 @@
-<script lang="ts">
-    import NotifierApp from '@/notifier/app';
-    import storage from '@/storage';
-    import type { AuthUser, StorageFields } from '@/storage/storage-types';
-    import getMsg from '@/utils/get-message';
+<script lang='ts'>
     import IosCheckbox from '@options/components/common/IosCheckbox.svelte';
     import NotifyToggle from '@options/components/common/NotifyToggle.svelte';
     import Spinner from '@options/components/common/Spinner.svelte';
@@ -11,6 +7,10 @@
     import { tooltip } from '@options/lib/tooltip';
     import { onMount } from 'svelte';
     import MessagesList from './MessagesList.svelte';
+    import getMsg from '@/utils/get-message';
+    import type { AuthUser, StorageFields } from '@/storage/storage-types';
+    import storage from '@/storage';
+    import NotifierApp from '@/notifier/app';
 
     export let accounts: StorageFields['accounts'];
     export let acc: AuthUser;
@@ -37,13 +37,14 @@
 
     const getErrors = (u: AuthUser) => {
         const res: string[] = [];
-        if (u.error) res.push(u.error);
-        if (u.auth.error) {
+        if (u.error)
+            res.push(u.error);
+        if (u.auth.error)
             res.push(u.auth.error);
-        }
-        if (!u.auth.refreshToken) {
+
+        if (!u.auth.refreshToken)
             res.push('Refresh token is missing or invalid. Please reathorize the account');
-        }
+
         return res;
     };
 
@@ -59,20 +60,23 @@
     };
 
     onMount(() => {
-        if (!acc.name) void updateAcc();
+        if (!acc.name)
+            void updateAcc();
     });
 
     const checkMailCommit = async (e: Event) => {
         const checked = (e.currentTarget as HTMLInputElement).checked;
         acc.checkMail = checked;
-        if (!checked) acc.mailNotify = false;
+        if (!checked)
+            acc.mailNotify = false;
         await storage.saveAccounts(accounts);
     };
 
     const notifyMailCommit = async (e: Event) => {
         const checked = (e.currentTarget as HTMLInputElement).checked;
         acc.mailNotify = checked;
-        if (checked) acc.checkMail = true;
+        if (checked)
+            acc.checkMail = true;
         await storage.saveAccounts(accounts);
     };
 
@@ -81,60 +85,60 @@
 
 <li>
     <button
-        class="flex items-center border-transparent bg-transparent p-0 text-xs text-skin-accent2 hover:bg-transparent"
+        class='flex items-center border-transparent bg-transparent p-0 text-xs text-skin-accent2 hover:bg-transparent'
         on:click={updateAcc}
         {disabled}
-        use:tooltip={{ content: "update account's information" }}
+        use:tooltip={{ content: 'update account\'s information' }}
     >
-        <div class="h-5 w-5">
+        <div class='h-5 w-5'>
             {@html RefreshIcon2}
         </div>
     </button>
 
-    <div class="flex items-center gap-1">
+    <div class='flex items-center gap-1'>
         <Spinner show={isUpdating} label="" />
         {#if !isUpdating}
             {#if acc.img}
-                <img class="h-8 w-8" src={acc.img} alt="avatar" />
+                <img class='h-8 w-8' src={acc.img} alt='avatar' />
             {:else}
-                <div class="w-7 text-skin-gray">
+                <div class='w-7 text-skin-gray'>
                     {@html AccountIcon}
                 </div>
             {/if}
-            <span class="overflow-hidden text-ellipsis">
+            <span class='overflow-hidden text-ellipsis'>
                 {acc.name || `~ no account info`}
             </span>
         {/if}
     </div>
 
-    <!--Fetch Messages-->
-    <div class="ml-4">
+    <!-- Fetch Messages -->
+    <div class='ml-4'>
         <button
-            class="flex items-center border-transparent bg-transparent p-0 text-xs text-skin-accent2 hover:bg-transparent"
+            class='flex items-center border-transparent bg-transparent p-0 text-xs text-skin-accent2 hover:bg-transparent'
             on:click={() => void updateMessages()}
             use:tooltip={{ content: getMsg('optionAccountsFetchBtnDesc') }}
             {disabled}
         >
-            <div class="mr-1 h-5 w-5">
+            <div class='mr-1 h-5 w-5'>
                 {@html RefreshIcon2}
             </div>
-            <span class="text-skin-text">{getMsg('optionAccountsFetchBtn')}</span>
+            <span class='text-skin-text'>{getMsg('optionAccountsFetchBtn')}</span>
         </button>
     </div>
 
-    <!--Disable/Enable-->
-    <div class="ml-4">
+    <!-- Disable/Enable -->
+    <div class='ml-4'>
         <IosCheckbox
             checked={acc.checkMail}
             changeHandler={checkMailCommit}
             tooltipText={getMsg('optionAccountsMailCheck_title')}
         >
-            <span class="text-xs">{getMsg('optionAccountsMailCheck')}</span>
+            <span class='text-xs'>{getMsg('optionAccountsMailCheck')}</span>
         </IosCheckbox>
     </div>
 
-    <!--Notify-->
-    <div class="ml-4 flex">
+    <!-- Notify -->
+    <div class='ml-4 flex'>
         <NotifyToggle
             checked={acc.mailNotify}
             changeHandler={notifyMailCommit}
@@ -142,39 +146,39 @@
         />
     </div>
 
-    <!--Remove-->
-    <div class="ml-auto">
+    <!-- Remove -->
+    <div class='ml-auto'>
         <button
-            class="icon-button text-skin-accent"
+            class='icon-button text-skin-accent'
             on:click={deleteHandler}
             {disabled}
             use:tooltip={{ content: 'remove this account' }}
         >
-            <div class="h-5 w-5">
+            <div class='h-5 w-5'>
                 {@html DeleteIcon}
             </div>
         </button>
     </div>
 
-    <!--Login-->
+    <!-- Login -->
     <div>
         <button
-            class="icon-button"
+            class='icon-button'
             use:tooltip={{ content: getMsg('optionAccountsReAuthBtn') }}
             on:click={reAuth}
             {disabled}
         >
-            <span class="mr-1 h-5 w-5">{@html LoginIcon}</span>
+            <span class='mr-1 h-5 w-5'>{@html LoginIcon}</span>
         </button>
     </div>
 
-    <div class="col-span-full text-xs">
-        <div class="flex justify-between">
-            <div class="ml-auto" />
+    <div class='col-span-full text-xs'>
+        <div class='flex justify-between'>
+            <div class='ml-auto' />
         </div>
         <Spinner show={isUpdatingMessages} />
         {#if errorList?.length}
-            <div class="p-1 pl-8 text-skin-error">
+            <div class='p-1 pl-8 text-skin-error'>
                 {#each errorList as errMsg}
                     <div>{errMsg}</div>
                 {/each}
@@ -182,7 +186,7 @@
         {/if}
 
         {#if showMessages}
-            <div class="mt-2 max-w-full border border-skin-delimiter p-1">
+            <div class='mt-2 max-w-full border border-skin-delimiter p-1'>
                 <MessagesList
                     title={`${acc.name || ''} unread private messages`}
                     items={acc.mail?.messages || []}
@@ -196,7 +200,7 @@
     </div>
 </li>
 
-<style lang="postcss">
+<style lang='postcss'>
     li {
         @apply mb-2 grid w-full max-w-full items-center gap-x-2 gap-y-1;
 

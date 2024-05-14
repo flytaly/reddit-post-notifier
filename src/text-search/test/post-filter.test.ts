@@ -1,19 +1,20 @@
-import { describe, expect, test } from 'vitest';
+import { describe, expect, it } from 'vitest';
 
 import type { TextId } from '../index';
 import type { FilterRule, SearchableField, SearchableRedditPost } from '../post-filter';
 import { postFilter } from '../post-filter';
 import { fixtures } from './fixtures';
 
-const m = (fieldToQueryMap: Partial<Record<SearchableField, string>>) =>
-    Object.entries(fieldToQueryMap).map(([field, query]) => ({ field, query })) as FilterRule;
+function m(fieldToQueryMap: Partial<Record<SearchableField, string>>) {
+    return Object.entries(fieldToQueryMap).map(([field, query]) => ({ field, query })) as FilterRule;
+}
 
-const ids = (...idList: TextId[]) => idList.map((id) => ({ data: { id } }));
+const ids = (...idList: TextId[]) => idList.map(id => ({ data: { id } }));
 
-const posts: SearchableRedditPost[] = fixtures.map((data) => ({ data }));
+const posts: SearchableRedditPost[] = fixtures.map(data => ({ data }));
 
-describe('Post filter', () => {
-    test('should filter given posts', () => {
+describe('post filter', () => {
+    it('should filter given posts', () => {
         let filtered = postFilter(posts, [[{ field: 'title', query: 'dog' }]], ['title']);
         expect(filtered).toMatchObject(ids(2));
 

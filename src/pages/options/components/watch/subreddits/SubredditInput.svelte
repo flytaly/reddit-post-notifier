@@ -1,9 +1,4 @@
-<script lang="ts">
-    import NotifierApp from '@/notifier/app';
-    import type { PostFilterOptions, SubredditData, SubredditOpts } from '@/storage/storage-types';
-    import type { FilterRule, SearchableField } from '@/text-search/post-filter';
-    import { debounce, testMultireddit } from '@/utils';
-    import getMsg from '@/utils/get-message';
+<script lang='ts'>
     import RedditItemsList from '@options/components/RedditItemsList.svelte';
     import TooltipIcon from '@options/components/TooltipIcon.svelte';
     import NotifyToggle from '@options/components/common/NotifyToggle.svelte';
@@ -16,6 +11,11 @@
     import PostFilterBlock from './PostFilterBlock.svelte';
     import type { InputStatus } from './subreddits-store';
     import { inputStatusStore, subredditStore } from './subreddits-store';
+    import getMsg from '@/utils/get-message';
+    import { debounce, testMultireddit } from '@/utils';
+    import type { FilterRule, SearchableField } from '@/text-search/post-filter';
+    import type { PostFilterOptions, SubredditData, SubredditOpts } from '@/storage/storage-types';
+    import NotifierApp from '@/notifier/app';
 
     export let subOpts: SubredditOpts;
     export let subData: SubredditData = {};
@@ -40,7 +40,8 @@
     const getName = () => subOpts.name || `r/${subOpts.subreddit}`;
 
     const fetchPosts = async () => {
-        if (!subOpts.subreddit || inputStatus.error) return;
+        if (!subOpts.subreddit || inputStatus.error)
+            return;
         isLoading = true;
         showPosts = false;
         isBlocked.block();
@@ -51,7 +52,8 @@
                 subOpts,
                 subData: { ...subData, lastPostCreated: 0, posts: [], error: null },
             });
-        } catch (e: unknown) {
+        }
+        catch (e: unknown) {
             fetchError = (e as { message?: string }).message || '';
         }
         isLoading = false;
@@ -68,7 +70,8 @@
         if (filter?.rules?.length) {
             filter.rules.forEach((rule) => {
                 rule.forEach(({ field, query }) => {
-                    if (query) fields.add(field);
+                    if (query)
+                        fields.add(field);
                 });
             });
             result.rules = filter.rules;
@@ -92,9 +95,8 @@
 
         const shouldRemoveData = !!filter;
 
-        if (shouldRemoveData && showPosts) {
+        if (shouldRemoveData && showPosts)
             showPosts = false;
-        }
 
         await subredditStore.saveOptions(
             {
@@ -103,7 +105,7 @@
                 name: subOpts.name,
                 disabled: !isActive,
                 notify: subOpts.notify,
-                filterOpts: processFilterOpts(filter ? filter : subOpts.filterOpts),
+                filterOpts: processFilterOpts(filter || subOpts.filterOpts),
             },
             shouldRemoveData,
         );
@@ -120,7 +122,8 @@
     };
 
     const toggleEditBlock = () => {
-        if (!showEditBlock && showPosts) showPosts = false;
+        if (!showEditBlock && showPosts)
+            showPosts = false;
         showEditBlock = !showEditBlock;
     };
 
@@ -144,12 +147,12 @@
     disabled={$isBlocked || !subOpts.subreddit || !!inputStatus.error}
     {errorMessage}
 >
-    <div slot="posts-block">
+    <div slot='posts-block'>
         <!-- Post list row -->
-        <div class="col-span-full">
+        <div class='col-span-full'>
             <Spinner show={isLoading} />
             {#if showPosts}
-                <div class="col-span-full mt-2 border border-skin-delimiter p-1">
+                <div class='col-span-full mt-2 border border-skin-delimiter p-1'>
                     <RedditItemsList
                         title={`The latest posts in the subreddit. ${
                             subOpts.filterOpts?.enabled ? 'With filters.' : 'Without filters.'
@@ -165,44 +168,44 @@
         </div>
     </div>
 
-    <div slot="toggles" class="flex gap-3">
+    <div slot='toggles' class='flex gap-3'>
         <NotifyToggle
             bind:checked={subOpts.notify}
             changeHandler={() => saveInputs()}
             tooltipText={getMsg('optionSubredditsNotify_title')}
-            data-testid="notify"
+            data-testid='notify'
         />
         <!-- Toggle Filters -->
         <button
-            class="toggle-button"
+            class='toggle-button'
             class:toggle-button-on={filterOpts?.enabled}
             use:tooltip={{ content: getMsg('optionSubredditsFilter_title') }}
             aria-label={getMsg('optionSubredditsFilter_title')}
             on:click={onFilterClick}
         >
             {#if filterOpts?.enabled}
-                <div class="h-5 w-5">{@html icons.FilterIcon}</div>
+                <div class='h-5 w-5'>{@html icons.FilterIcon}</div>
             {:else}
-                <div class="h-5 w-5">{@html icons.FilterOffIcon}</div>
+                <div class='h-5 w-5'>{@html icons.FilterOffIcon}</div>
             {/if}
-            <span class="ml-[2px]">
+            <span class='ml-[2px]'>
                 {getMsg('optionSubredditsFilter')} ({(filterOpts?.enabled && filterOpts?.rules?.length) || 0})
             </span>
         </button>
     </div>
     <div>
-        <div class="col-span-full m-2 pb-2">
-            <div class="mb-3 flex justify-between rounded-b text-xs">
+        <div class='col-span-full m-2 pb-2'>
+            <div class='mb-3 flex justify-between rounded-b text-xs'>
                 {#if errorMessage}
-                    <div class="flex items-center font-bold text-skin-error">
-                        <div class="mr-1 h-4 w-4 flex-shrink-0 text-skin-error">{@html icons.WarningIcon}</div>
+                    <div class='flex items-center font-bold text-skin-error'>
+                        <div class='mr-1 h-4 w-4 flex-shrink-0 text-skin-error'>{@html icons.WarningIcon}</div>
                         <div>{errorMessage}</div>
                     </div>
                 {/if}
-                <div class="mr-4 min-h-[1rem] font-medium text-skin-success">
+                <div class='mr-4 min-h-[1rem] font-medium text-skin-success'>
                     {#if inputStatus.saved}
-                        <div class="flex items-center">
-                            <div class="mr-1 h-4 w-4 flex-shrink-0">{@html icons.SaveIcon}</div>
+                        <div class='flex items-center'>
+                            <div class='mr-1 h-4 w-4 flex-shrink-0'>{@html icons.SaveIcon}</div>
                             <span>{getMsg('savedLabel')}</span>
                         </div>
                     {:else}
@@ -211,13 +214,13 @@
                 </div>
             </div>
 
-            <div class="mb-4 grid grid-cols-[auto,1fr] items-center gap-2 text-sm">
+            <div class='mb-4 grid grid-cols-[auto,1fr] items-center gap-2 text-sm'>
                 <label for={`name_${subOpts.id}`}>{getMsg('optionSubredditsInputNameLabel')}</label>
-                <div class="flex items-center gap-2">
+                <div class='flex items-center gap-2'>
                     <input
                         id={`name_${subOpts.id}`}
-                        class="w-full max-w-[20rem] rounded border border-skin-base"
-                        type="text"
+                        class='w-full max-w-[20rem] rounded border border-skin-base'
+                        type='text'
                         bind:value={subOpts.name}
                         on:input={inputHandler}
                         aria-label={getMsg('optionSubredditsInputName_title')}
@@ -226,13 +229,13 @@
                     <TooltipIcon message={getMsg('optionSubredditsInputName_title')} />
                 </div>
 
-                <label class="font-bold" for={`subreddit_${subOpts.id}`}>{getMsg('optionSubredditsInputLabel')}</label>
-                <div class="flex items-center gap-2">
+                <label class='font-bold' for={`subreddit_${subOpts.id}`}>{getMsg('optionSubredditsInputLabel')}</label>
+                <div class='flex items-center gap-2'>
                     <input
                         id={`subreddit_${subOpts.id}`}
                         class:error={errorMessage}
-                        class="w-full max-w-[20rem] rounded border border-skin-base"
-                        type="text"
+                        class='w-full max-w-[20rem] rounded border border-skin-base'
+                        type='text'
                         bind:this={subredditInputRef}
                         bind:value={subOpts.subreddit}
                         on:input={inputHandler}
@@ -247,7 +250,7 @@
     </div>
 </WatchItem>
 
-<style lang="postcss">
+<style lang='postcss'>
     .error {
         @apply border-skin-error;
     }

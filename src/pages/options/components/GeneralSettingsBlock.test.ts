@@ -1,9 +1,9 @@
-/* eslint-disable @typescript-eslint/unbound-method */
 import { cleanup, fireEvent, render, waitFor } from '@testing-library/svelte';
 import { tick } from 'svelte';
-import { afterEach, beforeEach, describe, expect, test, vi } from 'vitest';
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import browser from 'webextension-polyfill';
 
+import GeneralSettingsBlock from './GeneralSettingsBlock.svelte';
 import { sendMessage } from '@/messaging';
 import DEFAULT_OPTIONS from '@/options-default';
 import type { notificationSoundFiles } from '@/sounds';
@@ -12,8 +12,6 @@ import storage from '@/storage/storage';
 import type { ExtensionOptions } from '@/types/extension-options';
 import applyTheme from '@/utils/apply-theme';
 import getMsg from '@/utils/get-message';
-
-import GeneralSettingsBlock from './GeneralSettingsBlock.svelte';
 
 vi.mock('@/storage/storage.ts');
 vi.mock('@/utils/get-message.ts');
@@ -31,7 +29,7 @@ function optionSaved(opt: Partial<ExtensionOptions>) {
     expect(storage.saveOptions).toHaveBeenCalledWith(opt);
 }
 
-describe('General Options', async () => {
+describe('general Options', async () => {
     beforeEach(() => {
         vi.mocked(browser.storage.onChanged.addListener).mockImplementation(() => {});
     });
@@ -41,7 +39,7 @@ describe('General Options', async () => {
         cleanup();
     });
 
-    test('Update interval', async () => {
+    it('update interval', async () => {
         const updateInterval = 100;
 
         mockStorageData({ updateInterval });
@@ -61,19 +59,19 @@ describe('General Options', async () => {
         optionSaved({ updateInterval: 10 });
     });
 
-    test('Theme', async () => {
+    it('theme', async () => {
+        const { getByLabelText } = render(GeneralSettingsBlock);
+        const auto = getByLabelText(getMsg('optionThemeAuto'));
+        const form: HTMLFormElement | null = auto.closest('form');
         const check = (theme: ExtensionOptions['theme']) => {
             expect(form).toHaveFormValues({ theme });
             expect(applyTheme).toHaveBeenCalledWith(theme);
             optionSaved({ theme });
         };
-        mockStorageData({ theme: 'purple' });
-        const { getByLabelText } = render(GeneralSettingsBlock);
-        const auto = getByLabelText(getMsg('optionThemeAuto'));
-        const form: HTMLFormElement | null = auto.closest('form');
+        mockStorageData();
         await waitFor(() => {
             expect(form).toBeInTheDocument();
-            expect(form).toHaveFormValues({ theme: 'purple' });
+            expect(form).toHaveFormValues({ theme: 'auto' });
         });
         await fireEvent.click(getByLabelText(getMsg('optionThemeLight')));
         check('light');
@@ -85,7 +83,7 @@ describe('General Options', async () => {
         check('auto');
     });
 
-    test('delete post after click', async () => {
+    it('delete post after click', async () => {
         mockStorageData();
         const { getByLabelText } = render(GeneralSettingsBlock);
         await tick();
@@ -96,7 +94,7 @@ describe('General Options', async () => {
         optionSaved({ delPostAfterBodyClick: true });
     });
 
-    test('delete list after click', async () => {
+    it('delete list after click', async () => {
         mockStorageData();
         const { getByLabelText } = render(GeneralSettingsBlock);
         await tick();
@@ -107,7 +105,7 @@ describe('General Options', async () => {
         optionSaved({ delListAfterOpening: true });
     });
 
-    test('hide empty groups', async () => {
+    it('hide empty groups', async () => {
         mockStorageData();
         const { getByLabelText } = render(GeneralSettingsBlock);
         await tick();
@@ -117,7 +115,7 @@ describe('General Options', async () => {
         optionSaved({ hideEmptyGroups: true });
     });
 
-    test('notification sound', async () => {
+    it('notification sound', async () => {
         mockStorageData();
         const { getByLabelText } = render(GeneralSettingsBlock);
         await tick();
@@ -130,7 +128,7 @@ describe('General Options', async () => {
         optionSaved({ notificationSoundId: null });
     });
 
-    test('change reddit url', async () => {
+    it('change reddit url', async () => {
         mockStorageData({ redditUrlType: 'new' });
         const { getByLabelText, getByTestId } = render(GeneralSettingsBlock);
         const defaultPath = getByLabelText('default');

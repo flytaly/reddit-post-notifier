@@ -1,9 +1,9 @@
-import { describe, expect, test } from 'vitest';
+import { describe, expect, it } from 'vitest';
 
 import { Index } from '../index';
 
-describe('Search Index', () => {
-    test('should add tokens to the map', () => {
+describe('search Index', () => {
+    it('should add tokens to the map', () => {
         const idx = new Index();
         idx.add(1, 'Some text');
         idx.add(2, 'Another text string');
@@ -19,7 +19,7 @@ describe('Search Index', () => {
         });
     });
 
-    test('should normalize and stem words', () => {
+    it('should normalize and stem words', () => {
         const idx = new Index();
         idx.add('id1', 'cats, ended, disappointment');
         idx.add('id2', ' cat ');
@@ -30,7 +30,7 @@ describe('Search Index', () => {
         });
     });
 
-    test('should find text', () => {
+    it('should find text', () => {
         const idx = new Index();
         idx.add(
             1,

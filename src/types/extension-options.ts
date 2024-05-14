@@ -1,6 +1,6 @@
 import type { SoundId } from '../sounds';
 
-export type ExtensionOptions = {
+export interface ExtensionOptions {
     /** seconds between updates */
     updateInterval: number;
     /** seconds between requests */
@@ -17,7 +17,7 @@ export type ExtensionOptions = {
     delListAfterOpening: boolean;
     hideEmptyGroups: boolean;
     notificationSoundId: null | SoundId;
-    /** open links in 'old.reddit.com'*/
+    /** open links in 'old.reddit.com' */
     /* useOldReddit: boolean; */
 
     /** which reddit address to use */
@@ -28,4 +28,4 @@ export type ExtensionOptions = {
     pollUserInterval: number;
     /** seconds between updates of following user's posts (ignored if < updateInterval) */
     onBadgeClick: 'openall' | 'popup';
-};
+}

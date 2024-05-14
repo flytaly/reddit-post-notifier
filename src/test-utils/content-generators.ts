@@ -3,7 +3,7 @@ import { RedditObjectKind } from '../reddit-api/reddit-types';
 import type { RedditMessage, RedditMessageData, RedditPost, RedditPostData } from '../reddit-api/reddit-types';
 import type { QueryOpts } from '../storage/storage-types';
 
-export const generatePost = (props: Partial<RedditPostData> = {}): RedditPostData => {
+export function generatePost(props: Partial<RedditPostData> = {}): RedditPostData {
     const created = faker.time.recent();
     const subreddit = faker.lorem.word();
     const title = faker.lorem.sentence(4);
@@ -29,10 +29,11 @@ export const generatePost = (props: Partial<RedditPostData> = {}): RedditPostDat
         ...props,
     };
     return post;
-};
+}
 
-export const generatePosts = (num = 2, subreddit?: string) => {
-    if (!subreddit) subreddit = faker.lorem.word();
+export function generatePosts(num = 2, subreddit?: string) {
+    if (!subreddit)
+        subreddit = faker.lorem.word();
     const posts: RedditPost[] = Array(num)
         .fill(null)
         .map(() => ({
@@ -40,9 +41,9 @@ export const generatePosts = (num = 2, subreddit?: string) => {
             data: generatePost({ subreddit }),
         }));
     return posts;
-};
+}
 
-export const generateQuery = (props: Partial<QueryOpts> = {}): QueryOpts => {
+export function generateQuery(props: Partial<QueryOpts> = {}): QueryOpts {
     return {
         id: faker.random.alphaNumeric(8),
         query: faker.random.word(),
@@ -50,9 +51,9 @@ export const generateQuery = (props: Partial<QueryOpts> = {}): QueryOpts => {
         subreddit: faker.lorem.word(),
         ...props,
     };
-};
+}
 
-export const generateMessage = (props: Partial<RedditMessageData> = {}): RedditMessage => {
+export function generateMessage(props: Partial<RedditMessageData> = {}): RedditMessage {
     const created = faker.time.recent();
     return {
         data: {
@@ -69,4 +70,4 @@ export const generateMessage = (props: Partial<RedditMessageData> = {}): RedditM
             ...props,
         },
     };
-};
+}

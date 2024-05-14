@@ -1,9 +1,9 @@
-import { describe, expect, test } from 'vitest';
-import { Document, type DocField, type DocSearch } from '../document';
+import { describe, expect, it } from 'vitest';
+import { type DocField, type DocSearch, Document } from '../document';
 import { Index, type IndexOpts, type TextId } from '../index';
 import { fixtures } from './fixtures';
 
-describe('Document creation', () => {
+describe('document creation', () => {
     const posts = [
         { id: 1, author: 'Cats', title: 'title words', text: 'post text' },
         { id: 2, author: 'Author name', title: 'another title', text: 'something' },
@@ -18,7 +18,7 @@ describe('Document creation', () => {
         { field: 'author', options: { normalize: false, tokenizer: false, stemmer: false } },
     ];
 
-    test('should create indexes with given options for each field', () => {
+    it('should create indexes with given options for each field', () => {
         const doc = new Document({ fields, id: 'id' });
         expect(doc.fields).toEqual(fields);
         expect(doc.id).toBe('id');
@@ -28,19 +28,19 @@ describe('Document creation', () => {
         expect(doc.indexes[fields[0].field].stemmer).toBe(false);
     });
 
-    test('should add words to indexes', () => {
+    it('should add words to indexes', () => {
         const doc = new Document({ fields });
-        posts.forEach((p) => doc.add(p));
-        expect(doc.indexes['title'].map).toMatchObject({ title: [1, 2], words: [1], another: [2] });
-        expect(doc.indexes['text'].map).toMatchObject({ post: [1], text: [1], something: [2] });
-        expect(doc.indexes['author'].map).toMatchObject({ Cats: [1], 'Author name': [2, 3] });
+        posts.forEach(p => doc.add(p));
+        expect(doc.indexes.title.map).toMatchObject({ title: [1, 2], words: [1], another: [2] });
+        expect(doc.indexes.text.map).toMatchObject({ post: [1], text: [1], something: [2] });
+        expect(doc.indexes.author.map).toMatchObject({ 'Cats': [1], 'Author name': [2, 3] });
     });
 });
 
-describe('Document search', () => {
+describe('document search', () => {
     const disableProcessing: IndexOpts = { normalize: false, tokenizer: false, stemmer: false };
     const fields: DocField[] = Object.keys(fixtures[0])
-        .filter((f) => f !== 'id')
+        .filter(f => f !== 'id')
         .map((field) => {
             return {
                 field,
@@ -48,9 +48,9 @@ describe('Document search', () => {
             };
         });
 
-    test('should find text', () => {
+    it('should find text', () => {
         const doc = new Document({ fields, id: 'id' });
-        fixtures.forEach((p) => doc.add(p));
+        fixtures.forEach(p => doc.add(p));
 
         /** @param input - [field, query] */
         const s = (input: [string, string][], result: TextId[]) => {

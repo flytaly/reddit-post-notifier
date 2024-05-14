@@ -1,7 +1,4 @@
-<script lang="ts">
-    import NotifierApp from '@/notifier/app';
-    import type { FollowingUser } from '@/storage/storage-types';
-    import getMsg from '@/utils/get-message';
+<script lang='ts'>
     import * as icons from '@options/lib/icons';
     import { RefreshIcon2 } from '@options/lib/icons';
     import { isBlocked } from '@options/lib/store';
@@ -9,6 +6,9 @@
     import NotifyToggle from '@options/components/common/NotifyToggle.svelte';
     import Spinner from '@options/components/common/Spinner.svelte';
     import RedditItemsList from '@options/components/RedditItemsList.svelte';
+    import getMsg from '@/utils/get-message';
+    import type { FollowingUser } from '@/storage/storage-types';
+    import NotifierApp from '@/notifier/app';
 
     export let userInfo: FollowingUser;
     export let commitChanges: () => void;
@@ -18,10 +18,13 @@
     let inputSaved = true;
     let comments = true;
     let posts = true;
+    let showUserData = false;
+    let saveBtnMessage = '';
+    let errorMsg = '';
+    let isLoading = false;
 
-    $: if (userInfo.username !== username && inputSaved) {
+    $: if (userInfo.username !== username && inputSaved)
         username = userInfo.username;
-    }
 
     $: switch (userInfo.watch) {
         case 'comments':
@@ -38,10 +41,14 @@
     }
 
     const saveWatchTarget = () => {
-        if (posts) userInfo.watch = 'submitted';
-        if (comments) userInfo.watch = 'comments';
-        if (comments && posts) userInfo.watch = 'overview';
-        else if (!comments && !posts) userInfo.watch = userInfo.watch === 'comments' ? 'submitted' : 'comments';
+        if (posts)
+            userInfo.watch = 'submitted';
+        if (comments)
+            userInfo.watch = 'comments';
+        if (comments && posts)
+            userInfo.watch = 'overview';
+        else if (!comments && !posts)
+            userInfo.watch = userInfo.watch === 'comments' ? 'submitted' : 'comments';
         userInfo = { ...userInfo, lastUpdate: null, lastPostCreated: null, data: [] };
         commitChanges();
     };
@@ -55,19 +62,13 @@
         commitChanges();
     };
 
-    let saveBtnMessage = '';
-
-    $: if (!username) saveBtnMessage = ' ';
+    $: if (!username)
+        saveBtnMessage = ' ';
     else saveBtnMessage = username === userInfo.username || inputSaved ? 'saved' : 'save';
 
-    let errorMsg = '';
-
-    $: if (userInfo.error) {
+    $: if (userInfo.error)
         errorMsg = `${userInfo.error.error || ''} ${userInfo.error.message || ''}`;
-    } else errorMsg = '';
-
-    let showUserData = false;
-    let isLoading = false;
+    else errorMsg = '';
 
     async function fetchUser() {
         isLoading = true;
@@ -79,7 +80,8 @@
             userInfo = user;
             showUserData = true;
             commitChanges();
-        } catch (e: unknown) {
+        }
+        catch (e: unknown) {
             errorMsg = (e as { message?: string }).message || '';
         }
         isLoading = false;
@@ -96,12 +98,12 @@
     };
 </script>
 
-<div class="flex rounded border border-skin-base bg-skin-input hover:shadow-input">
+<div class='flex rounded border border-skin-base bg-skin-input hover:shadow-input'>
     <input
-        size="13"
-        maxlength="20"
-        class="m-0 rounded-l rounded-r-none border-none hover:shadow-none"
-        type="text"
+        size='13'
+        maxlength='20'
+        class='m-0 rounded-l rounded-r-none border-none hover:shadow-none'
+        type='text'
         value={username}
         on:input={(e) => {
             username = e.currentTarget.value;
@@ -110,7 +112,7 @@
         on:change={saveUsername}
     />
     <button
-        class="min-w-[4rem] rounded-l-none rounded-r border-0 border-l px-2 py-0 text-xs"
+        class='min-w-[4rem] rounded-l-none rounded-r border-0 border-l px-2 py-0 text-xs'
         on:click={saveWatchTarget}
     >
         {saveBtnMessage}
@@ -128,32 +130,32 @@
 <NotifyToggle
     bind:checked={userInfo.notify}
     changeHandler={commitChanges}
-    title="Show notification on new user activities"
+    title='Show notification on new user activities'
 />
 
-<div class="ml-auto">
+<div class='ml-auto'>
     <button
-        class="icon-button ml-auto text-skin-accent"
+        class='icon-button ml-auto text-skin-accent'
         aria-label={getMsg('optionWatchInputDelete')}
         on:click={onDelete}
     >
-        <div class="h-5 w-5">{@html icons.DeleteIcon}</div>
+        <div class='h-5 w-5'>{@html icons.DeleteIcon}</div>
     </button>
 </div>
 
-<div class="col-span-full mb-3 mt-1">
+<div class='col-span-full mb-3 mt-1'>
     {#if userInfo.username?.length}
         <button
-            class="flex items-center border-transparent bg-transparent p-0 text-xs text-skin-accent2 hover:bg-transparent"
+            class='flex items-center border-transparent bg-transparent p-0 text-xs text-skin-accent2 hover:bg-transparent'
             on:click={() => void fetchUser()}
             disabled={$isBlocked}
         >
-            <div class="mr-1 h-5 w-5">
+            <div class='mr-1 h-5 w-5'>
                 {@html RefreshIcon2}
             </div>
             <span>{getMsg('optionsFollowUserFetch')}</span>
         </button>
-        <div class="mb-2 ml-2">
+        <div class='mb-2 ml-2'>
             <Spinner show={isLoading} />
             {#if showUserData && !errorMsg}
                 <RedditItemsList
@@ -165,7 +167,7 @@
                 />
             {/if}
             {#if errorMsg}
-                <span class="text-skin-error">{errorMsg}</span>
+                <span class='text-skin-error'>{errorMsg}</span>
             {/if}
         </div>
     {/if}

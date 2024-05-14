@@ -1,5 +1,4 @@
 // https://www.reddit.com/dev/api/
-import { DEV_SERVER, IS_DEV, USE_DEV_SERVER, config } from '@/constants';
 import { mapObjToQueryStr } from '../utils/index';
 import type {
     RedditAccount,
@@ -13,20 +12,21 @@ import type {
     RedditUserListing,
     RedditUserOverviewResponse,
 } from './reddit-types';
+import { DEV_SERVER, IS_DEV, USE_DEV_SERVER, config } from '@/constants';
 
 type R<T> = Promise<T | RedditError>;
 
-const enum RateLimitHeaders {
-    'remaining' = 'x-ratelimit-remaining',
-    'reset' = 'x-ratelimit-reset',
-    'used' = 'x-ratelimit-used',
-}
+const RateLimitHeaders = {
+    remaining: 'x-ratelimit-remaining',
+    reset: 'x-ratelimit-reset',
+    used: 'x-ratelimit-used',
+};
 
-export type RateLimits = {
+export interface RateLimits {
     remaining?: number | null;
     reset?: number | null;
     used?: number | null;
-};
+}
 
 function getRateLimits(response: Response): RateLimits {
     const rateLimits = {
@@ -36,9 +36,9 @@ function getRateLimits(response: Response): RateLimits {
     };
 
     return {
-        used: rateLimits.used ? parseInt(rateLimits.used) : null,
-        reset: rateLimits.reset ? parseInt(rateLimits.reset) : null,
-        remaining: rateLimits.remaining ? parseInt(rateLimits.remaining) : null,
+        used: rateLimits.used ? Number.parseInt(rateLimits.used) : null,
+        reset: rateLimits.reset ? Number.parseInt(rateLimits.reset) : null,
+        remaining: rateLimits.remaining ? Number.parseInt(rateLimits.remaining) : null,
     };
 }
 
@@ -63,28 +63,33 @@ export default class RedditApiClient {
             this.publicOrigin = DEV_SERVER;
         }
     }
+
     async GET(endpoint: string, queryParams: Record<string, unknown> = {}) {
         const query = mapObjToQueryStr({ ...queryParams, raw_json: '1' });
         const init: RequestInit = { method: 'GET', headers: { ...this.headers }, ...this.fetchOpts };
 
         if (this.accessToken) {
-            if (!init.headers) init.headers = {};
+            if (!init.headers)
+                init.headers = {};
             const headers = init.headers as Record<string, string | undefined>;
             headers['User-Agent'] = config.userAgent;
-            headers['Authorization'] = `bearer ${this.accessToken}`;
+            headers.Authorization = `bearer ${this.accessToken}`;
         }
         const origin = this.accessToken ? this.authOrigin : this.publicOrigin;
         const actualEndpoint = this.accessToken ? endpoint : `${endpoint}.json`;
         const result = await fetch(encodeURI(`${origin}${actualEndpoint}?${query}`), init);
 
-        if (this.onRateLimits && !this.accessToken) this.onRateLimits(getRateLimits(result));
+        if (this.onRateLimits && !this.accessToken)
+            this.onRateLimits(getRateLimits(result));
 
-        if (result.ok) return result.json();
+        if (result.ok)
+            return result.json();
 
         try {
             const errorResponse = await result.json();
             return errorResponse as RedditError;
-        } catch (error) {
+        }
+        catch (error) {
             throw new Error(`status code: ${result.status}. ${result.statusText}`);
         }
     }
@@ -114,7 +119,8 @@ export default class RedditApiClient {
 
     search(listing: RedditSearchListing, subreddit: string | null = null) {
         const listingSortByNew: RedditSearchListing = { sort: 'new', ...listing };
-        if (subreddit) return this.GET(`/r/${subreddit}/search`, listingSortByNew) as R<RedditPostResponse>;
+        if (subreddit)
+            return this.GET(`/r/${subreddit}/search`, listingSortByNew) as R<RedditPostResponse>;
 
         return this.GET('/search', listingSortByNew) as R<RedditPostResponse>;
     }

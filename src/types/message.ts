@@ -1,4 +1,4 @@
-import { RateLimits } from '@/reddit-api/client';
+import type { RateLimits } from '@/reddit-api/client';
 import type { PostGroup } from '@/utils/post-group';
 
 export type PortMessageId =
@@ -9,10 +9,10 @@ export type PortMessageId =
     | 'OPEN_GROUPS'
     | 'RATE_LIMITS';
 
-export type OpenGroupsPayload = { groups: PostGroup[]; remove: boolean };
+export interface OpenGroupsPayload { groups: PostGroup[]; remove: boolean }
 export type PortMessagePayload = null | OpenGroupsPayload | RateLimits;
 
-export type PortMessage = {
+export interface PortMessage {
     id: PortMessageId;
     payload?: PortMessagePayload;
-};
+}

@@ -1,11 +1,11 @@
-<script lang="ts">
-    import type { RedditItem } from '@/reddit-api/reddit-types';
+<script lang='ts'>
     import { XCircleIcon } from '@options/lib/icons';
+    import type { RedditItem } from '@/reddit-api/reddit-types';
 
     export let items: RedditItem[] = [];
     export let title = '';
     export let onClose: () => void = () => {
-        //
+    //
     };
     export let limit = 5;
 
@@ -29,10 +29,10 @@
     $: displayItems = items
         .slice(0, limit)
         .map(({ kind, data }): DisplayedRedditItem | undefined => {
-            const link = 'https://reddit.com/' + data.permalink;
+            const link = `https://reddit.com/${data.permalink}`;
             const date = new Date(data.created * 1000).toLocaleDateString();
             const fullDate = new Date(data.created * 1000).toLocaleString();
-            if (kind === 't3')
+            if (kind === 't3') {
                 return {
                     type: 'post',
                     subreddit: `r/${data.subreddit}`,
@@ -43,7 +43,8 @@
                     flair: data.link_flair_text || '',
                     author: data.author,
                 };
-            if (kind === 't1')
+            }
+            if (kind === 't1') {
                 return {
                     type: 'comment',
                     subreddit: `r/${data.subreddit}`,
@@ -54,38 +55,40 @@
                     flair: '',
                     author: data.author,
                 };
+            }
+            return undefined;
         })
         .filter(notEmpty);
 </script>
 
 <article>
     <header>
-        <div class="my-1 flex items-center justify-between">
+        <div class='my-1 flex items-center justify-between'>
             <div>{title}</div>
-            <button class="mr-2 h-4 w-4 border-none bg-transparent p-0" on:click={onClose} title="close">
+            <button class='mr-2 h-4 w-4 border-none bg-transparent p-0' on:click={onClose} title='close'>
                 {@html XCircleIcon}
             </button>
         </div>
     </header>
-    <div class="user-items-grid text-xs">
+    <div class='user-items-grid text-xs'>
         {#each displayItems as item}
             <span title={item.fullDate}>{item.date}</span>
             <div>
                 <span>{item.type}</span>
                 <span>in</span>
-                <b class="font-medium">{item.subreddit}</b>
+                <b class='font-medium'>{item.subreddit}</b>
                 <span>by</span>
-                <b class="font-medium">{item.author}</b>
+                <b class='font-medium'>{item.author}</b>
                 <span>: </span>
             </div>
             <a
-                class="overflow-hidden overflow-ellipsis whitespace-nowrap break-all  hover:underline"
+                class='overflow-hidden overflow-ellipsis whitespace-nowrap break-all  hover:underline'
                 href={item.link}
-                target="_blank"
-                rel="noreferrer"
+                target='_blank'
+                rel='noreferrer'
             >
                 {#if item.flair}
-                    <span class="text-skin-text">
+                    <span class='text-skin-text'>
                         {`[${String(item.flair || '')}] `}
                     </span>
                 {/if}
@@ -97,7 +100,7 @@
     </div>
 </article>
 
-<style lang="postcss">
+<style lang='postcss'>
     .user-items-grid {
         @apply mt-2 grid gap-x-2 gap-y-0;
 

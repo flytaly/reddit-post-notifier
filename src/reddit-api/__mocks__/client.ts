@@ -1,5 +1,5 @@
-import type { RedditAccount, RedditComment, RedditListingResponse, RedditMessage, RedditPost } from '../reddit-types';
 import { vi } from 'vitest';
+import type { RedditAccount, RedditComment, RedditListingResponse, RedditMessage, RedditPost } from '../reddit-types';
 
 const response: RedditListingResponse<RedditPost | RedditMessage | RedditComment> = {
     kind: 'Listing',

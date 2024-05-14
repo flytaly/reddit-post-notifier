@@ -1,10 +1,9 @@
-<script lang="ts">
-    /* eslint-disable @typescript-eslint/no-unsafe-argument */
-    import type { SearchableField, FilterRule } from '@/text-search/post-filter';
-    import { XCircleIcon, DeleteIcon } from '@options/lib/icons';
+<script lang='ts'>
+    import { DeleteIcon, XCircleIcon } from '@options/lib/icons';
+    import { inputStatusStore } from './subreddits-store';
+    import type { FilterRule, SearchableField } from '@/text-search/post-filter';
     import { allFields } from '@/text-search/post-filter';
     import { debounce } from '@/utils';
-    import { inputStatusStore } from './subreddits-store';
 
     export let filterRule: FilterRule;
     export let commitChanges: () => void;
@@ -21,8 +20,8 @@
     let usedFields: SearchableField[] = [];
     let unUsedFields: SearchableField[] = [];
 
-    $: usedFields = filterRule.map((r) => r.field);
-    $: unUsedFields = allFields.filter((f) => !usedFields.includes(f));
+    $: usedFields = filterRule.map(r => r.field);
+    $: unUsedFields = allFields.filter(f => !usedFields.includes(f));
 
     const fieldNames: Record<SearchableField, string> = {
         author: 'author',
@@ -32,7 +31,8 @@
     };
 
     const matchType = (field: SearchableField) => {
-        if (field === 'author') return 'is';
+        if (field === 'author')
+            return 'is';
         return 'has the words';
     };
 
@@ -44,21 +44,21 @@
     };
 
     const removeField = (field: SearchableField) => {
-        if (filterRule.length > 1) {
-            filterRule = filterRule.filter((g) => g.field !== field);
-        } else {
-            filterRule = filterRule.map((g) => (g.field === field ? { ...g, query: '' } : g));
-        }
+        if (filterRule.length > 1)
+            filterRule = filterRule.filter(g => g.field !== field);
+        else
+            filterRule = filterRule.map(g => (g.field === field ? { ...g, query: '' } : g));
+
         commitChanges();
     };
 </script>
 
-<fieldset class="rounded border border-skin-delimiter p-3 text-sm shadow-md">
-    <legend class="font-mono text-xs">Filter rule {index + 1 || ''}</legend>
-    <div class="field-grid">
+<fieldset class='rounded border border-skin-delimiter p-3 text-sm shadow-md'>
+    <legend class='font-mono text-xs'>Filter rule {index + 1 || ''}</legend>
+    <div class='field-grid'>
         {#each filterRule as searchRule, idx}
             <select
-                class="rounded border-none bg-transparent hover:bg-skin-input hover:shadow-none focus:bg-skin-input"
+                class='rounded border-none bg-transparent hover:bg-skin-input hover:shadow-none focus:bg-skin-input'
                 name={`field_${idx}`}
                 bind:value={searchRule.field}
                 on:change={commitChanges}
@@ -67,42 +67,42 @@
                     <option value={f}>{fieldNames[f]}</option>
                 {/each}
             </select>
-            <div class="mx-2">{matchType(searchRule.field)}</div>
-            <input class="w-full rounded" type="text" bind:value={searchRule.query} on:input={debouncedHandler} />
+            <div class='mx-2'>{matchType(searchRule.field)}</div>
+            <input class='w-full rounded' type='text' bind:value={searchRule.query} on:input={debouncedHandler} />
             <button
-                class="border-none bg-transparent px-1 py-0 text-skin-gray hover:bg-transparent hover:text-skin-accent hover:shadow-none"
+                class='border-none bg-transparent px-1 py-0 text-skin-gray hover:bg-transparent hover:text-skin-accent hover:shadow-none'
                 on:click={() => removeField(searchRule.field)}
             >
-                <div class="w-4">{@html XCircleIcon}</div>
+                <div class='w-4'>{@html XCircleIcon}</div>
             </button>
-            <div class="pl-3">
+            <div class='pl-3'>
                 {#if idx < filterRule.length - 1}
-                    <div class="rounded px-1 py-px text-center font-mono text-skin-gray ring-1 ring-skin-delimiter">
+                    <div class='rounded px-1 py-px text-center font-mono text-skin-gray ring-1 ring-skin-delimiter'>
                         AND
                     </div>
                 {/if}
             </div>
         {/each}
     </div>
-    <div class="mt-3 flex justify-between">
+    <div class='mt-3 flex justify-between'>
         <button
             on:click={addField}
-            class="standard-button rounded border-transparent bg-transparent px-1 py-0 hover:border-skin-accent2"
+            class='standard-button rounded border-transparent bg-transparent px-1 py-0 hover:border-skin-accent2'
         >
             + add field
         </button>
         <button
             on:click={removeFilter}
-            class="standard-button flex items-center rounded border-transparent bg-transparent p-0 px-1 hover:border-skin-accent hover:text-skin-accent"
-            title="Delete filter"
+            class='standard-button flex items-center rounded border-transparent bg-transparent p-0 px-1 hover:border-skin-accent hover:text-skin-accent'
+            title='Delete filter'
         >
-            <div class="mr-1 h-4 w-4">{@html DeleteIcon}</div>
+            <div class='mr-1 h-4 w-4'>{@html DeleteIcon}</div>
             <div>remove filter</div>
         </button>
     </div>
 </fieldset>
 
-<style lang="postcss">
+<style lang='postcss'>
     .field-grid {
         @apply grid content-center items-center gap-x-2 gap-y-3;
 

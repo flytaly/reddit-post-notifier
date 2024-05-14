@@ -1,10 +1,9 @@
-/* eslint-disable @typescript-eslint/no-unsafe-return */
 // code mostly from https://github.com/antfu/vitesse-webext
 // generate stub index.html files for dev entry
 import fs from 'fs-extra';
 import chokidar from 'chokidar';
 import { getManifest } from '../src/manifest';
-import { r, port, isDev, log } from './utils';
+import { isDev, log, port, r } from './utils';
 
 /** Stub html to use Vite in development */
 async function stubIndexHtml() {
@@ -13,7 +12,7 @@ async function stubIndexHtml() {
     for (const view of pages) {
         await fs.ensureDir(r(`extension/dist/${view}`));
         const files = await fs.readdir(r(`src/pages/${view}`));
-        const pages = files.filter((f) => f.endsWith('.html'));
+        const pages = files.filter(f => f.endsWith('.html'));
         let page = '';
         for (page of pages) {
             let data = await fs.readFile(r(`src/pages/${view}/${page}`), 'utf-8');

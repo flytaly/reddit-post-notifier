@@ -1,9 +1,10 @@
+import process from 'node:process';
 import { svelte } from '@sveltejs/vite-plugin-svelte';
-import { defineConfig, type UserConfig } from 'vite';
+import { type UserConfig, defineConfig } from 'vite';
 
 import { getEnvKeys, isDev, r } from './scripts/utils';
 
-const port = parseInt(process.env.PORT || '') || 3303;
+const port = Number.parseInt(process.env.PORT || '') || 3303;
 const optPath = 'src/pages/options/';
 
 export const sharedConfig: Partial<UserConfig> = {

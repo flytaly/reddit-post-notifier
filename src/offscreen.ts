@@ -3,23 +3,24 @@ import { IS_CHROME } from './constants';
 declare let self: ServiceWorkerGlobalScope;
 let creating: null | Promise<void> = null;
 
-/** https://developer.chrome.com/docs/extensions/reference/offscreen/#example*/
+/** https://developer.chrome.com/docs/extensions/reference/offscreen/#example */
 export async function setupOffscreenDocument(path: string) {
-    if (!IS_CHROME) return;
+    if (!IS_CHROME)
+        return;
     // Check all windows controlled by the service worker to see if one
     // of them is the offscreen document with the given path
     const offscreenUrl = chrome.runtime.getURL(path);
     const matchedClients = await self.clients.matchAll();
     for (const client of matchedClients) {
-        if (client.url === offscreenUrl) {
+        if (client.url === offscreenUrl)
             return;
-        }
     }
 
     // create offscreen document
     if (creating) {
         await creating;
-    } else {
+    }
+    else {
         creating = chrome.offscreen.createDocument({
             url: path,
             reasons: [chrome.offscreen.Reason.AUDIO_PLAYBACK],

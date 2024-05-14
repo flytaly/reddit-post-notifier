@@ -1,4 +1,4 @@
-<script lang="ts">
+<script lang='ts'>
     export let title = '';
     export let column = false;
     export let labelFor: string | null = null;
@@ -6,23 +6,23 @@
 
 <article class:column>
     {#if labelFor}
-        <label for={labelFor} class="description">
+        <label for={labelFor} class='description'>
             <header>{title}</header>
-            <slot name="description" />
+            <slot name='description' />
         </label>
     {:else}
-        <div class="description">
+        <div class='description'>
             <header>{title}</header>
-            <slot name="description" />
+            <slot name='description' />
         </div>
     {/if}
-    <div class="pr-4 text-right">
-        <slot name="controls" />
+    <div class='pr-4 text-right'>
+        <slot name='controls' />
     </div>
     <slot />
 </article>
 
-<style lang="postcss">
+<style lang='postcss'>
     article {
         @apply mb-6 mt-6 flex flex-col items-start overflow-hidden p-1 text-sm font-normal sm:flex-row;
     }

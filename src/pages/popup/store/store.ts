@@ -29,22 +29,22 @@ export const isUpdating = readable(false, (set) => {
 export const storageData = writable(defaultState, () => {
     // Restore data from storage
     void storage.getAllData().then((data) => {
-        storageData.update((prev) => ({ ...prev, ...data, isLoaded: true }));
+        storageData.update(prev => ({ ...prev, ...data, isLoaded: true }));
     });
 
     const listener = (changes: Record<string, Storage.StorageChange>) => {
         const obj: Partial<StorageFields> = {};
-        (Object.keys(changes) as Array<keyof StorageFields>) //
-            .map((changeKey) => {
-                // @ts-ignore
+        (Object.keys(changes) as Array<keyof StorageFields>)
+            .forEach((changeKey) => {
                 obj[changeKey] = changes[changeKey]?.newValue;
             });
-        storageData.update((prev) => ({ ...prev, ...obj }));
+        storageData.update(prev => ({ ...prev, ...obj }));
     };
 
     browser.storage.onChanged.addListener(listener);
 
     return () => {
-        if (!IS_TEST) browser.storage.onChanged.removeListener(listener);
+        if (!IS_TEST)
+            browser.storage.onChanged.removeListener(listener);
     };
 });

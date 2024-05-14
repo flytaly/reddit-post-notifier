@@ -1,20 +1,17 @@
-/* eslint-disable @typescript-eslint/no-unsafe-return,  @typescript-eslint/unbound-method */
-
 import { act, cleanup, fireEvent, render, waitFor } from '@testing-library/svelte';
 import { tick } from 'svelte';
-import { afterEach, beforeAll, describe, expect, test, vi } from 'vitest';
+import { afterEach, beforeAll, describe, expect, it, vi } from 'vitest';
 
+import SubredditsBlock from './SubredditsBlock.svelte';
 import storage from '@/storage/storage';
 import type { SubredditData, SubredditOpts } from '@/storage/storage-types';
 import getMsg from '@/utils/get-message';
-import SubredditsBlock from './SubredditsBlock.svelte';
 import { dataFields } from '@/storage/fields';
 
 let idx = 0;
 vi.mock('@/storage/storage.ts');
 vi.mock('@/utils/get-message.ts');
 vi.mock('@/utils/index.ts', async (importOriginal) => {
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const mod = (await importOriginal()) as any;
     return {
         ...mod,
@@ -25,7 +22,7 @@ vi.mock('@/utils/index.ts', async (importOriginal) => {
 
 const like = expect.objectContaining;
 
-describe('Subreddit settings', () => {
+describe('subreddit settings', () => {
     const subList: SubredditOpts[] = [
         { id: 'awwId', subreddit: 'aww', disabled: true, notify: true },
         { id: 'errorId', subreddit: 'suberror', disabled: false, notify: true },
@@ -49,7 +46,7 @@ describe('Subreddit settings', () => {
         vi.clearAllMocks();
     });
 
-    test('should save only subreddit or multireddit', async () => {
+    it('should save only subreddit or multireddit', async () => {
         const { getAllByTestId, getByText, getByLabelText } = render(SubredditsBlock);
         await tick();
 
@@ -74,7 +71,7 @@ describe('Subreddit settings', () => {
         });
     });
 
-    test('save subreddits and show error', async () => {
+    it('save subreddits and show error', async () => {
         const { getByText, getAllByTestId } = render(SubredditsBlock);
         await tick();
 
@@ -105,7 +102,7 @@ describe('Subreddit settings', () => {
         });
     });
 
-    test('should call storage with other input states', async () => {
+    it('should call storage with other input states', async () => {
         const { getAllByLabelText } = render(SubredditsBlock);
         await tick();
 
@@ -127,7 +124,7 @@ describe('Subreddit settings', () => {
         );
     });
 
-    test('should add and remove subreddits', async () => {
+    it('should add and remove subreddits', async () => {
         const { getAllByLabelText, getByText, getAllByTestId } = render(SubredditsBlock);
         await tick();
 

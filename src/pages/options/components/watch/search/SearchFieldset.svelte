@@ -1,17 +1,17 @@
-<script lang="ts">
-    import NotifierApp from '@/notifier/app';
-    import type { QueryData, QueryOpts } from '@/storage/storage-types';
-    import { debounce, testMultireddit } from '@/utils';
-    import getMsg from '@/utils/get-message';
+<script lang='ts'>
     import { SaveIcon, WarningIcon } from '@options/lib/icons';
     import { isBlocked } from '@options/lib/store';
     import { formatError } from '@options/lib/format-error';
     import RedditItemsList from '@options/components/RedditItemsList.svelte';
-    import { searchStore } from './search-store';
     import TooltipIcon from '@options/components/TooltipIcon.svelte';
     import Spinner from '@options/components/common/Spinner.svelte';
-    import WatchItem from '../WatchItem.svelte';
     import NotifyToggle from '@options/components/common/NotifyToggle.svelte';
+    import WatchItem from '../WatchItem.svelte';
+    import { searchStore } from './search-store';
+    import getMsg from '@/utils/get-message';
+    import { debounce, testMultireddit } from '@/utils';
+    import type { QueryData, QueryOpts } from '@/storage/storage-types';
+    import NotifierApp from '@/notifier/app';
 
     export let queryObject: QueryOpts;
     export let queryData: QueryData;
@@ -31,11 +31,10 @@
     $: fetchError = formatError(queryData.error);
     $: errorMessage = subredditError || fetchError;
 
-    $: if (!queryObject.name && !queryObject.query && !showEditBlock) {
+    $: if (!queryObject.name && !queryObject.query && !showEditBlock)
         name = 'click here to edit...';
-    } else {
+    else
         name = queryObject.name || queryObject.query || '';
-    }
 
     let { id } = queryObject;
     $: id = queryObject.id;
@@ -48,7 +47,8 @@
 
     const saveInputs = debounce(async () => {
         const _query = queryObject.query?.trim();
-        if (!_query) return;
+        if (!_query)
+            return;
         fetchError = '';
         subredditError = '';
         showPosts = false;
@@ -92,7 +92,8 @@
                 query: queryObject,
                 queryData: { ...queryData, lastPostCreated: 0, posts: [], error: null },
             });
-        } catch (e: unknown) {
+        }
+        catch (e: unknown) {
             fetchError = (e as { message?: string }).message || '';
         }
         isLoading = false;
@@ -108,18 +109,18 @@
     onDelete={deleteHandler}
     onFetch={() => void fetchPosts()}
     disabled={$isBlocked || !queryObject.query || !!subredditError}
-    data-testid="search-inputs"
+    data-testid='search-inputs'
     {errorMessage}
 >
-    <div slot="posts-block">
+    <div slot='posts-block'>
         <!-- Post list row -->
-        <div class="col-span-full">
+        <div class='col-span-full'>
             <Spinner show={isLoading} />
 
             {#if showPosts}
-                <div class="border border-skin-delimiter p-1">
+                <div class='border border-skin-delimiter p-1'>
                     <RedditItemsList
-                        title={`The latest posts in the search.`}
+                        title='The latest posts in the search.'
                         items={queryData.posts || []}
                         limit={8}
                         onClose={() => {
@@ -131,27 +132,27 @@
         </div>
     </div>
 
-    <div slot="toggles" class="flex gap-3">
+    <div slot='toggles' class='flex gap-3'>
         <NotifyToggle
             bind:checked={queryObject.notify}
             changeHandler={() => saveInputs()}
             tooltipText={getMsg('optionSearchNotify')}
-            data-testid="notify"
+            data-testid='notify'
         />
     </div>
 
     <fieldset>
-        <div class="mb-3 flex justify-between rounded-b text-xs">
+        <div class='mb-3 flex justify-between rounded-b text-xs'>
             {#if errorMessage}
-                <div class="flex items-center font-bold text-skin-error">
-                    <div class="mr-1 h-4 w-4 flex-shrink-0 text-skin-error">{@html WarningIcon}</div>
+                <div class='flex items-center font-bold text-skin-error'>
+                    <div class='mr-1 h-4 w-4 flex-shrink-0 text-skin-error'>{@html WarningIcon}</div>
                     <div>{errorMessage}</div>
                 </div>
             {/if}
-            <div class="mr-4 min-h-[1rem] font-medium text-skin-success">
-                {#if saveMsg && saveMsg != '...'}
-                    <div class="flex items-center">
-                        <div class="mr-1 h-4 w-4 flex-shrink-0">{@html SaveIcon}</div>
+            <div class='mr-4 min-h-[1rem] font-medium text-skin-success'>
+                {#if saveMsg && saveMsg !== '...'}
+                    <div class='flex items-center'>
+                        <div class='mr-1 h-4 w-4 flex-shrink-0'>{@html SaveIcon}</div>
                         <span>{saveMsg}</span>
                     </div>
                 {:else}
@@ -160,28 +161,28 @@
             </div>
         </div>
 
-        <div class="mb-2 grid grid-cols-[auto,1fr] items-center gap-2">
+        <div class='mb-2 grid grid-cols-[auto,1fr] items-center gap-2'>
             <label for={ids.name}>{getMsg('optionSearchName')}</label>
-            <span class="flex items-center">
+            <span class='flex items-center'>
                 <input
-                    class="w-60 max-w-full"
-                    type="text"
+                    class='w-60 max-w-full'
+                    type='text'
                     title={getMsg('optionSearchName_title')}
                     id={ids.name}
                     placeholder={getMsg('optionSearchName_placeholder')}
                     bind:value={queryObject.name}
                     on:input={inputHandler}
                 />
-                <span class="ml-2">
+                <span class='ml-2'>
                     <TooltipIcon message={getMsg('optionSearchName_title')} />
                 </span>
             </span>
 
-            <label for={ids.subreddit} class="font-bold">{getMsg('optionSearchSubreddit')}</label>
-            <span class="flex items-center">
+            <label for={ids.subreddit} class='font-bold'>{getMsg('optionSearchSubreddit')}</label>
+            <span class='flex items-center'>
                 <input
-                    class="w-60 max-w-full"
-                    type="text"
+                    class='w-60 max-w-full'
+                    type='text'
                     title={getMsg('optionSearchSubreddit_title')}
                     id={ids.subreddit}
                     placeholder={getMsg('optionSearchSubreddit_placeholder')}
@@ -189,34 +190,34 @@
                     bind:this={subredditInputRef}
                     on:input={inputHandler}
                 />
-                <span class="ml-2">
+                <span class='ml-2'>
                     <TooltipIcon message={getMsg('optionSearchSubreddit_title')} />
                 </span>
             </span>
 
-            <label for={ids.query} class="font-bold">{getMsg('optionSearchQuery')}</label>
-            <span class="flex items-center">
+            <label for={ids.query} class='font-bold'>{getMsg('optionSearchQuery')}</label>
+            <span class='flex items-center'>
                 <input
-                    class="w-full"
-                    type="text"
+                    class='w-full'
+                    type='text'
                     title={getMsg('optionSearchQuery_title')}
                     placeholder={getMsg('optionSearchQuery_placeholder')}
                     id={ids.query}
                     bind:value={queryObject.query}
                     on:input={inputHandler}
                 />
-                <span class="ml-2">
+                <span class='ml-2'>
                     <TooltipIcon message={getMsg('optionSearchQuery_title')} />
                 </span>
             </span>
 
             <div />
-            <div class="-mt-1">
+            <div class='-mt-1'>
                 <a
-                    class="text-sm underline"
-                    href="https://www.reddit.com/wiki/search/#wiki_manual_filtering"
-                    target="_blank"
-                    rel="noreferrer"
+                    class='text-sm underline'
+                    href='https://www.reddit.com/wiki/search/#wiki_manual_filtering'
+                    target='_blank'
+                    rel='noreferrer'
                 >
                     {getMsg('optionSearchWiki')}
                 </a>

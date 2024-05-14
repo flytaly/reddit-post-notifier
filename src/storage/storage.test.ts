@@ -1,9 +1,9 @@
-/* eslint-disable @typescript-eslint/no-non-null-assertion */
-/* eslint-disable @typescript-eslint/no-explicit-any */
-/* eslint-disable @typescript-eslint/unbound-method */
 import browser from 'webextension-polyfill';
-import { SpyInstance, afterAll, afterEach, beforeAll, beforeEach, describe, expect, test, vi } from 'vitest';
+import type { MockInstance } from 'vitest';
+import { afterAll, afterEach, beforeAll, beforeEach, describe, expect, it, vi } from 'vitest';
 
+import type { QueryData, QueryOpts, StorageFields, SubredditData, SubredditOpts } from './storage-types';
+import storage from './index';
 import DEFAULT_OPTIONS from '@/options-default';
 import type { TokenResponseBody } from '@/reddit-api/auth';
 import type { RedditMessage, RedditMessageData, RedditPost } from '@/reddit-api/reddit-types';
@@ -11,18 +11,15 @@ import { generatePost, generatePosts, generateQuery } from '@/test-utils/content
 import { mockDate, restoreDate } from '@/test-utils/mock-date';
 import type { ExtensionOptions } from '@/types/extension-options';
 
-import storage from './index';
-import type { QueryData, QueryOpts, StorageFields, SubredditData, SubredditOpts } from './storage-types';
-
-const mockGet = vi.spyOn(storage, 'getLocal') as SpyInstance<[keys?: StorageFields], Promise<Record<string, any>>>;
+const mockGet = vi.spyOn(storage, 'getLocal') as MockInstance<[keys?: StorageFields], Promise<Record<string, any>>>;
 const mockSet = vi.spyOn(storage, 'setLocal');
 
 afterEach(() => {
     vi.clearAllMocks();
 });
 
-describe('Authorization and messages', () => {
-    type PartialMsg = { data: Partial<RedditMessageData> };
+describe('authorization and messages', () => {
+    interface PartialMsg { data: Partial<RedditMessageData> }
     const oldMsgs: PartialMsg[] = [
         { data: { id: 'm1', created: 1552338638 } },
         { data: { id: 'm2', created: 1552338630 } },
@@ -52,7 +49,7 @@ describe('Authorization and messages', () => {
         },
     };
 
-    test('should return accounts data', async () => {
+    it('should return accounts data', async () => {
         mockGet.mockImplementation(async (keys) => {
             expect(keys).toMatchObject({ accounts: {} });
             return { accounts: structuredClone(fakeData) };
@@ -61,7 +58,7 @@ describe('Authorization and messages', () => {
         expect(accs).toMatchObject(fakeData);
     });
 
-    test('should save authorization data', async () => {
+    it('should save authorization data', async () => {
         mockDate('2019-02-17T00:25:58.000Z');
         const expiresInRelative = 3000;
         const expiresIn = new Date().getTime() + expiresInRelative * 1000;
@@ -87,7 +84,7 @@ describe('Authorization and messages', () => {
         restoreDate();
     });
 
-    test('should save private messages', async () => {
+    it('should save private messages', async () => {
         const date = mockDate(new Date());
         mockGet.mockImplementation(async (keys) => {
             expect(keys).toMatchObject({ accounts: {} });
@@ -106,7 +103,7 @@ describe('Authorization and messages', () => {
         restoreDate();
     });
 
-    test('should remove all messages from an account', async () => {
+    it('should remove all messages from an account', async () => {
         const expected = structuredClone(fakeData);
         expected.a1.mail!.messages = [];
         expected.a2.mail!.messages = oldMsgs as RedditMessage[];
@@ -118,7 +115,7 @@ describe('Authorization and messages', () => {
         expect(mockSet).toHaveBeenCalledWith({ accounts: expected });
     });
 
-    test('should remove all messages from all accounts', async () => {
+    it('should remove all messages from all accounts', async () => {
         const expected = structuredClone(fakeData);
         expected.a1.mail!.messages = [];
         expected.a2.mail!.messages = [];
@@ -130,7 +127,7 @@ describe('Authorization and messages', () => {
         expect(mockSet).toHaveBeenCalledWith({ accounts: expected, mail: { messages: [] } });
     });
 
-    test('should remove message', async () => {
+    it('should remove message', async () => {
         const expected = structuredClone(fakeData);
         const messageId = expected.a1.mail!.messages[0].data.id;
         const accountId = expected.a1.id;
@@ -154,12 +151,12 @@ describe('options', () => {
         });
     });
 
-    test('should return options', async () => {
+    it('should return options', async () => {
         const result = await storage.getOptions();
         expect(result).toMatchObject(options);
     });
 
-    test('should save options', async () => {
+    it('should save options', async () => {
         const newOptions: Partial<ExtensionOptions> = { hideEmptyGroups: true };
         await storage.saveOptions(newOptions);
         expect(mockSet).toHaveBeenCalledWith({ options: { ...options, ...newOptions } });
@@ -179,7 +176,7 @@ describe('subreddits', () => {
         });
     });
 
-    test('should get and save the list of subreddits', async () => {
+    it('should get and save the list of subreddits', async () => {
         const subredditList = [...subOpts];
         mockGet.mockImplementation(async (keys) => {
             expect(keys).toMatchObject({ subredditList: [] });
@@ -191,11 +188,11 @@ describe('subreddits', () => {
 
         await storage.saveSubredditList(subredditList);
 
-        expect(storage.prune).toHaveBeenCalledWith({ subIdList: subredditList.map((s) => s.id) });
+        expect(storage.prune).toHaveBeenCalledWith({ subIdList: subredditList.map(s => s.id) });
         vi.mocked(storage.prune).mockRestore();
     });
 
-    test("should return subreddit's data with its posts", async () => {
+    it('should return subreddit\'s data with its posts', async () => {
         mockGet.mockImplementation(async (keys) => {
             expect(keys).toMatchObject({ subreddits: {} });
             return { subreddits };
@@ -204,7 +201,7 @@ describe('subreddits', () => {
         expect(response).toEqual(subreddits);
     });
 
-    test('should save new subreddit with options', async () => {
+    it('should save new subreddit with options', async () => {
         const newSubreddit: SubredditOpts = { id: 'id', subreddit: 'newSub', disabled: false, notify: true };
         mockGet.mockImplementation(async (keys) => {
             expect(keys).toMatchObject({ subredditList: {} });
@@ -215,25 +212,25 @@ describe('subreddits', () => {
         expect(mockSet).toHaveBeenCalledWith({ subredditList: [...subOpts, newSubreddit] });
     });
 
-    test('should remove subreddit list and data', async () => {
+    it('should remove subreddit list and data', async () => {
         const idsToRemove = [subOpts[1].id];
         mockGet.mockImplementation(async (keys) => {
-            if (keys?.['subredditList']) {
+            if (keys?.subredditList)
                 return { subredditList: subOpts };
-            }
-            if (keys?.['subreddits']) {
+
+            if (keys?.subreddits)
                 return { subreddits };
-            }
+
             throw new Error('unexpected keys');
         });
         const subData = structuredClone(subreddits);
-        idsToRemove.forEach((id) => delete subData[id]);
+        idsToRemove.forEach(id => delete subData[id]);
         await storage.removeSubreddits(idsToRemove);
         expect(mockSet).toHaveBeenCalledWith({ subreddits: subData });
         expect(mockSet).toHaveBeenCalledWith({ subredditList: [subOpts[0]] });
     });
 
-    test('should update subreddit opts', async () => {
+    it('should update subreddit opts', async () => {
         const updatedSub: SubredditOpts = {
             ...subOpts[1],
             subreddit: 'newSub',
@@ -244,12 +241,12 @@ describe('subreddits', () => {
         /* mockGet.expect({ subreddits: {} }).andResolve({ subreddits: subData }); */
         /* mockSet.expect({ subreddits: { ...subData, [updatedSub.id]: { posts: [] } } }); */
         mockGet.mockImplementation(async (keys) => {
-            if (keys?.['subredditList']) {
+            if (keys?.subredditList)
                 return { subredditList: subOpts };
-            }
-            if (keys?.['subreddits']) {
+
+            if (keys?.subreddits)
                 return { subreddits: subData };
-            }
+
             throw new Error('unexpected keys');
         });
         mockSet.mockImplementation(async () => {});
@@ -258,7 +255,7 @@ describe('subreddits', () => {
         expect(mockSet).toHaveBeenCalledWith({ subredditList: [subOpts[0], updatedSub, ...subOpts.slice(2)] });
     });
 
-    test("should save subreddit's posts without duplication", async () => {
+    it('should save subreddit\'s posts without duplication', async () => {
         const ts = Date.now();
         mockDate(ts);
         const { subreddit, id } = subOpts[0];
@@ -279,7 +276,7 @@ describe('subreddits', () => {
         restoreDate();
     });
 
-    test('should limit number of posts', async () => {
+    it('should limit number of posts', async () => {
         const limit = 5;
         const posts = generatePosts(7);
         const subreddits = { sId: { posts: generatePosts(1) } };
@@ -289,7 +286,7 @@ describe('subreddits', () => {
         expect(mockSet).toHaveBeenCalledWith({ subreddits: expected });
     });
 
-    test('should save error', async () => {
+    it('should save error', async () => {
         const error = { message: 'some error' };
         const sub: string = subOpts[1].subreddit;
         mockGet.mockImplementation(async () => ({ subreddits }));
@@ -299,17 +296,17 @@ describe('subreddits', () => {
         });
     });
 
-    test('should remove post', async () => {
+    it('should remove post', async () => {
         const { id: subId } = subOpts[0];
         const subs = structuredClone(subreddits);
         const postId = subs[subId].posts?.[1].data.id;
-        const exp = expect.objectContaining({ posts: subreddits[subId].posts?.filter((p) => p.data.id !== postId) });
+        const exp = expect.objectContaining({ posts: subreddits[subId].posts?.filter(p => p.data.id !== postId) });
         mockGet.mockImplementation(async () => ({ subreddits: subs }));
         await storage.removePost({ id: postId!, subreddit: subId });
         expect(mockSet).toHaveBeenCalledWith({ subreddits: { ...subs, [subId]: exp } });
     });
 
-    test('should remove all posts in subreddit', async () => {
+    it('should remove all posts in subreddit', async () => {
         const { id } = subOpts[1];
         const subs = structuredClone(subreddits);
         const exp = expect.objectContaining({ posts: [] });
@@ -318,7 +315,7 @@ describe('subreddits', () => {
         expect(mockSet).toHaveBeenCalledWith({ subreddits: { ...subs, [id]: exp } });
     });
 
-    test('should remove all posts in all subreddits', async () => {
+    it('should remove all posts in all subreddits', async () => {
         const inputSubs = structuredClone(subreddits);
         const expectedSubs = {} as Record<string, SubredditData>;
         subOpts.forEach(({ id }) => (expectedSubs[id] = { posts: [] }));
@@ -345,12 +342,12 @@ describe('search queries', () => {
 
     const mockQueries = () =>
         mockGet.mockImplementation(async (keys) => {
-            if (keys?.['queries']) {
+            if (keys?.queries)
                 return { queries: structuredClone(qData) };
-            }
-            if (keys?.['queriesList']) {
+
+            if (keys?.queriesList)
                 return { queriesList: structuredClone(queriesList) };
-            }
+
             throw new Error('unexpected keys');
         });
 
@@ -362,7 +359,7 @@ describe('search queries', () => {
         });
     });
 
-    test('should save search query data', async () => {
+    it('should save search query data', async () => {
         const created = Date.now();
         mockDate(created + 1000);
         const posts: RedditPost[] = [
@@ -383,54 +380,54 @@ describe('search queries', () => {
         restoreDate();
     });
 
-    test('should get the queries list', async () => {
+    it('should get the queries list', async () => {
         mockQueries();
         const qList = await storage.getQueriesList();
         expect(qList).toEqual(queriesList);
     });
 
-    test('should save new query', async () => {
+    it('should save new query', async () => {
         const newQuery = generateQuery();
         mockQueries();
         await storage.saveQuery(newQuery);
         expect(mockSet).toHaveBeenCalledWith({ queriesList: [...queriesList, newQuery] });
     });
 
-    test('should update query', async () => {
+    it('should update query', async () => {
         const qId = queriesList[1].id;
         const updatedQuery: QueryOpts = { ...queriesList[1], query: 'new query' };
-        const updatedList = [...queriesList.filter((q) => q.id !== qId), updatedQuery];
+        const updatedList = [...queriesList.filter(q => q.id !== qId), updatedQuery];
         mockQueries();
         await storage.saveQuery(updatedQuery);
         expect(mockSet).toHaveBeenCalledWith({ queries: { ...qData, [qId]: { posts: [] } } });
         expect(mockSet).toHaveBeenCalledWith({ queriesList: updatedList });
     });
 
-    test('should remove query', async () => {
+    it('should remove query', async () => {
         const id = queriesList[1].id;
-        const filtered = queriesList.filter((q) => q.id !== id);
+        const filtered = queriesList.filter(q => q.id !== id);
         mockQueries();
         vi.spyOn(storage, 'prune').mockImplementationOnce(() => Promise.resolve());
 
         await storage.removeQueries([id]);
         expect(mockSet).toHaveBeenCalledWith({ queriesList: filtered });
 
-        expect(storage.prune).toHaveBeenCalledWith({ queriesIdList: filtered.map((q) => q.id) });
+        expect(storage.prune).toHaveBeenCalledWith({ queriesIdList: filtered.map(q => q.id) });
         vi.mocked(storage.prune).mockRestore();
     });
 
-    test('should remove post', async () => {
+    it('should remove post', async () => {
         mockQueries();
         const searchId = queriesList[1].id;
         const postId = qData[searchId].posts?.[1].data.id;
-        const posts = qData[searchId].posts?.filter((p) => p.data.id !== postId);
+        const posts = qData[searchId].posts?.filter(p => p.data.id !== postId);
         await storage.removePost({ id: postId!, searchId });
         expect(mockSet).toHaveBeenCalledWith({
             queries: expect.objectContaining({ [searchId]: { posts } }),
         });
     });
 
-    test('should remove all posts in search query', async () => {
+    it('should remove all posts in search query', async () => {
         const searchId = queriesList[0].id;
         mockQueries();
         await storage.removePostsFrom({ searchId });
@@ -439,7 +436,7 @@ describe('search queries', () => {
         });
     });
 
-    test('should remove all posts in all search queries', async () => {
+    it('should remove all posts in all search queries', async () => {
         mockGet.mockImplementationOnce(() =>
             Promise.resolve({
                 subreddits: {},
@@ -449,7 +446,7 @@ describe('search queries', () => {
             } as Partial<StorageFields>),
         );
         const expectedQueries = {} as Record<string, QueryData>;
-        queriesList.forEach((q) => (expectedQueries[q.id] = { posts: [] }));
+        queriesList.forEach(q => (expectedQueries[q.id] = { posts: [] }));
         vi.spyOn(storage, 'getSubredditData').mockImplementationOnce(() => Promise.resolve({}));
         await storage.removeAllPosts();
         expect(mockSet).toHaveBeenCalledWith(expect.objectContaining({ queries: expectedQueries }));
@@ -471,14 +468,14 @@ describe('prune', () => {
         vi.mocked(storage.getQueriesData).mockRestore();
     });
 
-    test('should prune redundant subreddits', async () => {
+    it('should prune redundant subreddits', async () => {
         const subIdList = ['s1', 's2'];
         const subreddits = { s1: subInfo.s1, s2: subInfo.s2 };
         await storage.prune({ subIdList });
         expect(mockSet).toHaveBeenCalledWith({ subreddits });
     });
 
-    test('should prune redundant queries data', async () => {
+    it('should prune redundant queries data', async () => {
         vi.spyOn(storage, 'getQueriesData').mockImplementationOnce(async () => queryInfo);
         const queriesIdList = ['q2'];
         await storage.prune({ queriesIdList });
@@ -487,7 +484,7 @@ describe('prune', () => {
     });
 });
 
-describe('Count unread', () => {
+describe('count unread', () => {
     const storageData = {
         subredditList: [
             { id: 'sid1', subreddit: 's1' },
@@ -513,7 +510,7 @@ describe('Count unread', () => {
 
     const total = 3 + 1 + 2 + 2 + 3 + 2;
 
-    test('should count unread items', async () => {
+    it('should count unread items', async () => {
         vi.spyOn(storage, 'getAllData').mockImplementation(async () => storageData);
         vi.mocked(browser.action.setBadgeText).mockImplementationOnce(async (value) => {
             expect(value.text).toBe(total.toString());

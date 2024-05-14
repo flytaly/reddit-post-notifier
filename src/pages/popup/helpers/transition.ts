@@ -1,15 +1,15 @@
 import { quadOut } from 'svelte/easing';
-import { EasingFunction, TransitionConfig } from 'svelte/transition';
+import type { EasingFunction, TransitionConfig } from 'svelte/transition';
 
 function clamp(n: number, min: number, max: number) {
     return Math.min(Math.max(n, min), max);
 }
 
-export type SlideConfig = {
+export interface SlideConfig {
     duration?: number;
     easing?: EasingFunction;
     id?: string;
-};
+}
 
 export function slideHorizontal(node: Element, { duration, easing = quadOut }: SlideConfig): TransitionConfig {
     const style = getComputedStyle(node);
@@ -18,20 +18,14 @@ export function slideHorizontal(node: Element, { duration, easing = quadOut }: S
         duration,
         css: (t) => {
             const eased = easing(t);
-            return `
-                    transform: ${transform} translate(${(1 - eased) * 100}%, 0);
-                    opacity: ${eased};
-					`;
+            return `transform: ${transform} translate(${(1 - eased) * 100}%, 0);
+                    opacity: ${eased};`;
         },
     };
 }
 
 /* Move `node` to y coordinate  */
-export const slideVertical = (
-    node: Element,
-    y: number,
-    { duration = 0, easing = quadOut }: SlideConfig,
-): TransitionConfig => {
+export function slideVertical(node: Element, y: number, { duration = 0, easing = quadOut }: SlideConfig): TransitionConfig {
     const style = getComputedStyle(node);
     const transform = style.transform === 'none' ? '' : style.transform;
     const { top } = node.getBoundingClientRect();
@@ -43,4 +37,4 @@ export const slideVertical = (
             return `transform: ${transform} translate(0, ${(eased - 1) * distance}px)`;
         },
     };
-};
+}

@@ -1,7 +1,7 @@
+import { writable } from 'svelte/store';
 import storage from '@/storage';
 import type { QueryOpts } from '@/storage/storage-types';
 import { generateId } from '@/utils';
-import { writable } from 'svelte/store';
 
 const genEmpty = (): QueryOpts => ({ id: generateId() });
 
@@ -14,23 +14,22 @@ function createStore() {
     });
 
     async function saveQuery(qOpts: QueryOpts, clearData?: boolean) {
-        update((prev) => prev.map((opts) => (opts.id === qOpts.id ? qOpts : opts)));
+        update(prev => prev.map(opts => (opts.id === qOpts.id ? qOpts : opts)));
         await storage.saveQuery(qOpts);
-        if (clearData) {
+        if (clearData)
             await storage.removePostsFrom({ searchId: qOpts.id, clearTS: true });
-        }
     }
 
     async function removeQuery(id: string) {
         await storage.removeQueries([id]);
-        update((prev) => prev.filter((s) => s.id !== id));
+        update(prev => prev.filter(s => s.id !== id));
     }
 
     return {
         set,
         subscribe,
         update,
-        addQuery: () => update((prev) => [...prev, genEmpty()]),
+        addQuery: () => update(prev => [...prev, genEmpty()]),
         saveQuery,
         removeQuery,
     };

@@ -1,15 +1,15 @@
-<script lang="ts">
+<script lang='ts'>
+    import { storageData } from '@options/lib/store';
+    import AddButton from '@options/components/common/AddButton.svelte';
+    import BlockDescription from '@options/components/common/BlockDescription.svelte';
+    import OptionsItem from '@options/components/OptionsItem.svelte';
+    import RadioGroup from '@options/components/RadioGroup.svelte';
+    import FollowUserInput from './FollowUserInput.svelte';
     import storage from '@/storage';
     import type { FollowingUser } from '@/storage/storage-types';
     import type { ExtensionOptions } from '@/types/extension-options';
     import getMsg from '@/utils/get-message';
     import DEFAULT_OPTIONS from '@/options-default';
-    import { storageData } from '@options/lib/store';
-    import AddButton from '@options/components/common/AddButton.svelte';
-    import BlockDescription from '@options/components/common/BlockDescription.svelte';
-    import FollowUserInput from './FollowUserInput.svelte';
-    import OptionsItem from '@options/components/OptionsItem.svelte';
-    import RadioGroup from '@options/components/RadioGroup.svelte';
 
     let options: ExtensionOptions = $storageData.options;
     let usersList: FollowingUser[] = $storageData.usersList || [];
@@ -32,13 +32,15 @@
         prevLen = $storageData.usersList.length;
     };
 
-    $: if (!usersList.length || usersList.length < prevLen) addUsers(Math.max(prevLen - usersList.length, 1));
+    $: if (!usersList.length || usersList.length < prevLen)
+        addUsers(Math.max(prevLen - usersList.length, 1));
 
     const saveInputs = () => {
         const saved = new Set<string>();
 
         const unique = usersList.filter((u) => {
-            if (!u.username || saved.has(u.username)) return false;
+            if (!u.username || saved.has(u.username))
+                return false;
             saved.add(u.username);
             return true;
         });
@@ -62,42 +64,42 @@
     ];
     const changeIntervalHandler = (value: string) => {
         void storage.saveOptions({
-            pollUserInterval: parseInt(value) || DEFAULT_OPTIONS.updateInterval,
+            pollUserInterval: Number.parseInt(value) || DEFAULT_OPTIONS.updateInterval,
         });
     };
 </script>
 
 <div>
     <BlockDescription>{getMsg('optionsFollowUserDescription')}</BlockDescription>
-    <OptionsItem title="Minimum update interval">
-        <div slot="description">
+    <OptionsItem title='Minimum update interval'>
+        <div slot='description'>
             {getMsg('optionsFollowUserMinUpdate')}
         </div>
-        <div slot="controls">
-            <div class="flex flex-col">
+        <div slot='controls'>
+            <div class='flex flex-col'>
                 <RadioGroup
                     onChange={changeIntervalHandler}
                     valueList={intervalList}
                     currentValue={String($storageData.options.pollUserInterval)}
                 />
-                <div class="mt-4">
+                <div class='mt-4'>
                     {getMsg('optionsFollowUserGlobal', String(Math.round((options.updateInterval / 60) * 10) / 10))}
                 </div>
             </div>
         </div>
     </OptionsItem>
 
-    <div class="user-input-grid text-sm font-medium">
+    <div class='user-input-grid text-sm font-medium'>
         <div>Username</div>
-        <div class="text-center">
+        <div class='text-center'>
             <span>Comments</span>
         </div>
-        <div class="text-center">
+        <div class='text-center'>
             <span>Posts</span>
         </div>
-        <div class="text-center">Notification</div>
-        <div class="ml-auto">Delete</div>
-        <div class="col-span-full my-2" />
+        <div class='text-center'>Notification</div>
+        <div class='ml-auto'>Delete</div>
+        <div class='col-span-full my-2' />
         {#each usersList || [] as userInfo, index}
             <FollowUserInput bind:userInfo commitChanges={saveInputs} onDelete={() => removeUser(index)} />
         {/each}
@@ -105,7 +107,7 @@
     <AddButton clickHandler={() => addUsers()}>{getMsg('optionsFollowUserAdd')}</AddButton>
 </div>
 
-<style lang="postcss">
+<style lang='postcss'>
     .user-input-grid {
         @apply grid grid-cols-5 items-center gap-x-5;
 

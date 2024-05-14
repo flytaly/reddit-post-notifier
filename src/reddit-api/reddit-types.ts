@@ -1,30 +1,30 @@
-export type ImageSource = {
+export interface ImageSource {
     height?: number;
     width?: number;
     url: string;
-};
+}
 
 export type LiteralUnion<LiteralType, BaseType> = LiteralType | (BaseType & Record<never, never>);
 
-export type MediaMedataPreview = {
+export interface MediaMedataPreview {
     /** width */
     x: number;
     /** height */
     y: number;
     /** url */
     u: string;
-};
+}
 
-export type MediaMetadata = {
+export interface MediaMetadata {
     status: LiteralUnion<'valid', string>;
     id: string;
     e: LiteralUnion<'Image' | 'RedditVideo' | 'AnimatedImage', string>;
     /** image/gif, image/png .... */
     m?: string;
     p?: MediaMedataPreview[];
-};
+}
 
-export type RedditPostData = {
+export interface RedditPostData {
     author: string;
     created_utc: number;
     created: number;
@@ -46,9 +46,9 @@ export type RedditPostData = {
     url: string;
     is_gallery?: boolean;
     media_metadata?: Record<string, MediaMetadata>;
-};
+}
 
-export type RedditCommentData = {
+export interface RedditCommentData {
     author: string;
     author_fullname: string;
     author_is_blocked: boolean;
@@ -64,9 +64,9 @@ export type RedditCommentData = {
     over_18: boolean;
     permalink: string;
     subreddit: string;
-};
+}
 
-export type RedditMessageData = {
+export interface RedditMessageData {
     author: string;
     author_fullname: string;
     body: string;
@@ -82,9 +82,9 @@ export type RedditMessageData = {
     subreddit?: string;
     type?: string;
     was_comment?: boolean;
-};
+}
 
-export type RedditAccountData = {
+export interface RedditAccountData {
     id: string;
     icon_img: string;
     total_karma: number;
@@ -93,45 +93,45 @@ export type RedditAccountData = {
     name: string;
     created_utc: number;
     comment_karma: number;
-};
+}
 
 // https://www.reddit.com/dev/api/
 export enum RedditObjectKind {
-    'comment' = 't1',
-    'account' = 't2',
-    'link' = 't3',
-    'message' = 't4',
-    'subreddit' = 't5',
-    'award' = 't6',
+    comment = 't1',
+    account = 't2',
+    link = 't3',
+    message = 't4',
+    subreddit = 't5',
+    award = 't6',
 }
 
-export type RedditPost = {
+export interface RedditPost {
     kind?: RedditObjectKind.link;
     data: RedditPostData;
-};
+}
 
 export type RedditPostExtended = RedditPost & {
     data: RedditPostData & Record<string, unknown>;
 };
 
-export type RedditComment = {
+export interface RedditComment {
     kind?: RedditObjectKind.comment;
     data: RedditCommentData;
-};
+}
 
-export type RedditMessage = {
+export interface RedditMessage {
     kind?: RedditObjectKind.message;
     data: RedditMessageData;
-};
+}
 
-export type RedditAccount = {
+export interface RedditAccount {
     kind?: RedditObjectKind.account;
     data: RedditAccountData;
-};
+}
 
 export type RedditItem = RedditPost | RedditComment;
 
-export type RedditListingResponse<T> = {
+export interface RedditListingResponse<T> {
     kind: 'Listing';
     data: {
         after?: string | null;
@@ -141,20 +141,20 @@ export type RedditListingResponse<T> = {
         geo_filter?: string;
         modhash?: string | null;
     };
-};
+}
 
-export type RedditError = {
+export interface RedditError {
     error?: number;
     message?: string;
     reason?: string;
-};
+}
 
 export type RedditMessageResponse = RedditListingResponse<RedditMessage>;
 export type RedditPostResponse = RedditListingResponse<RedditPostExtended>;
 export type RedditCommentResponse = RedditListingResponse<RedditComment>;
 export type RedditUserOverviewResponse = RedditListingResponse<RedditComment | RedditPostExtended>;
 
-export type RedditListingCommon = {
+export interface RedditListingCommon {
     /** after / before - only one should be specified. these indicate the fullname of an item in the listing to use as the anchor point of the slice. */
     after?: number;
     /** after / before - only one should be specified. these indicate the fullname of an item in the listing to use as the anchor point of the slice */
@@ -167,7 +167,7 @@ export type RedditListingCommon = {
     show?: 'all';
     /** expand subreddits */
     sr_detail?: boolean;
-};
+}
 
 export type RedditSubredditListing = RedditListingCommon;
 export type RedditUserListing = RedditListingCommon & {

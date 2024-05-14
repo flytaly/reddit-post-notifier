@@ -1,4 +1,4 @@
-<script lang="ts">
+<script lang='ts'>
     export let title = '';
     export let href: string | null = null;
     export let disabled = false;
@@ -11,22 +11,22 @@
 </script>
 
 {#if href}
-    <a class="svg-button group" class:with-text={text} {href} {title} on:click>
-        <div class="icon" style={iconStyles}><slot /></div>
+    <a class='svg-button group' class:with-text={text} {href} {title} on:click>
+        <div class='icon' style={iconStyles}><slot /></div>
         {#if text}
-            <div class="ml-1">{text}</div>
+            <div class='ml-1'>{text}</div>
         {/if}
     </a>
 {:else}
-    <button class="svg-button group" class:with-text={text} {title} {disabled} on:click>
-        <div class="icon" style={iconStyles}><slot /></div>
+    <button class='svg-button group' class:with-text={text} {title} {disabled} on:click>
+        <div class='icon' style={iconStyles}><slot /></div>
         {#if text}
-            <div class="ml-1">{text}</div>
+            <div class='ml-1'>{text}</div>
         {/if}
     </button>
 {/if}
 
-<style lang="postcss">
+<style lang='postcss'>
     .svg-button {
         @apply flex items-center justify-center p-0 transition disabled:text-skin-gray2;
     }

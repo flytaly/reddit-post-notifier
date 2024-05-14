@@ -1,7 +1,9 @@
 import { resolve } from 'node:path';
-import { bgCyan, black } from 'kolorist';
-import dotenv from 'dotenv';
+import process from 'node:process';
 import { fileURLToPath } from 'node:url';
+
+import dotenv from 'dotenv';
+import { bgCyan, black } from 'kolorist';
 
 // export const getTarget = () => {
 //     const result = process.argv.find((a) => a === '--chrome' || a === '--firefox') || '--chrome';
@@ -16,17 +18,16 @@ import { fileURLToPath } from 'node:url';
 export const isDev = process.env.NODE_ENV === 'development';
 export const target = process.env.TARGET === 'firefox' ? 'firefox' : 'chrome';
 
-export const port = parseInt(process.env.PORT || '') || 3303;
+export const port = Number.parseInt(process.env.PORT || '') || 3303;
 
 const __dirname = fileURLToPath(new URL('.', import.meta.url));
 export const r = (...args: string[]) => resolve(__dirname, '..', ...args);
 
 export function log(name: string, message: string) {
-    // eslint-disable-next-line no-console
     console.log(black(bgCyan(` ${name} `)), message);
 }
 
-export const getEnvKeys = () => {
+export function getEnvKeys() {
     const envRaw = dotenv.config().parsed || {};
     envRaw.NODE_ENV = process.env.NODE_ENV || 'production';
     envRaw.TARGET = target;
@@ -38,4 +39,4 @@ export const getEnvKeys = () => {
         }),
         {},
     ) as Record<string, string>;
-};
+}

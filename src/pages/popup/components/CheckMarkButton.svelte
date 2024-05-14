@@ -1,8 +1,8 @@
-<script lang="ts">
-    import SvgButton from './SvgButton.svelte';
+<script lang='ts'>
     import CheckMark from '@assets/check-mark.svg?raw';
+    import SvgButton from './SvgButton.svelte';
 
-    export let clickHandler: ((e: MouseEvent) => void) | undefined = undefined;
+    export let clickHandler: ((e: MouseEvent) => void) | undefined;
     export let title = '';
     const handler = (e: MouseEvent) => {
         e.stopPropagation();
@@ -10,7 +10,7 @@
     };
 </script>
 
-<span class="mr-1 text-skin-gray hover:scale-105 hover:text-skin-success" data-keys-target="check-mark">
+<span class='mr-1 text-skin-gray hover:scale-105 hover:text-skin-success' data-keys-target='check-mark'>
     <SvgButton on:click={handler} {title}>
         {@html CheckMark}
     </SvgButton>
