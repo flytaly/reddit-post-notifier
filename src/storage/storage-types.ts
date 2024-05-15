@@ -118,4 +118,6 @@ export interface StorageFields {
     usersList?: FollowingUser[];
     audio?: { dataUrl?: string };
     mail?: MailInfo;
+
+    showReddixPromo?: boolean;
 }

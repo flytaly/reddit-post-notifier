@@ -12,5 +12,6 @@ export const dataFields: StorageFields = {
     pinnedPostList: [],
     notifications: [],
     usersList: [],
+    showReddixPromo: true,
     /* audio: {} */
 };

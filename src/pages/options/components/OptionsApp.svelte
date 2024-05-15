@@ -11,6 +11,7 @@
     import nProgress from 'nprogress';
     import { onMount } from 'svelte';
     import DonatePage from './DonatePage.svelte';
+    import ReddixPromo from './info/ReddixPromo.svelte';
     import getMsg from '@/utils/get-message';
     import applyTheme from '@/utils/apply-theme';
 
@@ -53,7 +54,10 @@
     </div>
     <div class='w-full'>
         <div class='mb-5 mt-4 flex items-center justify-between'>
-            <ShortInfo />
+            <div class='flex justify-between w-full gap-2'>
+                <ShortInfo />
+                <ReddixPromo />
+            </div>
             {#if $isUpdating}
                 <div class='flex items-center rounded-md border border-skin-delimiter p-1'>
                     <div class='mr-1 h-4 w-4' class:animate-spin={$isUpdating}>{@html RefreshIcon}</div>
