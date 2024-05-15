@@ -1,8 +1,8 @@
+import { scheduleNextUpdate } from './timers';
 import { sendMessage } from '@/messaging';
 import NotifierApp from '@/notifier/app';
 import { isAuthError } from '@/reddit-api/errors';
 import storage from '@/storage';
-import { scheduleNextUpdate } from './timers';
 
 /* eslint-disable-next-line import/no-mutable-exports */
 export let isUpdating = false;
