@@ -30,12 +30,12 @@
             <div>
                 <p class='flex justify-between gap-2'>
                     <span>
-                        Check out <a href={reddixHref} class='font-bold text-sm' target='_blank'>Reddix</a>
+                        Check out <a href={reddixHref} class='font-bold text-sm' target='_blank'>Reddix</a> extension
                     </span>
                     <button on:click={hidePromo} title='close' class='font-mono text-base font-bold hover:text-skin-accent'>⨯</button>
                 </p>
                 <p class='text-xs text-skin-gray'>
-                    search in your Reddit saved items
+                    to search in your Reddit saved items
                 </p>
             </div>
         </div>
