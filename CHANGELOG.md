@@ -1,5 +1,11 @@
 # Release Notes
 
+## v6.2.0 (2024-05-15)
+
+-   Lessen the minimum update interval in Chrome to 30 seconds
+-   Slightly change updating logic by using repeating alarms
+-   Add Reddix Promo Banner
+
 ## v6.1.0 (2023-09-18)
 
 -   Save and restore extension icon in Chrome
