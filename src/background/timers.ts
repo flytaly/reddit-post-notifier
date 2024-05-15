@@ -14,8 +14,8 @@ export function watchAlarms() {
 export async function scheduleNextUpdate() {
     const { updateInterval } = await storage.getOptions();
 
-    // in Chrome it's impossible to set alarms with delay less than 1 minute
-    const minInterval = TARGET === 'chrome' ? 60 : 10;
+    // in Chrome it's impossible to set alarms with delay less than 30 seconds (Chrome v120+)
+    const minInterval = TARGET === 'chrome' ? 30 : 10;
     const delayInMinutes = Math.max(updateInterval, minInterval);
 
     browser.alarms.create(AlarmType.ALARM_UPDATE, { delayInMinutes: delayInMinutes / 60 });

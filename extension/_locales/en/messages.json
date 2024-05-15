@@ -116,7 +116,7 @@
         "description": "Update interval description"
     },
     "optionUpdateIntervalDescriptionChrome": {
-        "message": "Due to changes in the way extensions work after upgrading to \"Manifest V3\", refresh intervals of less than 60 seconds will be ignored in Chromium-based browsers.",
+        "message": "Due to changes in the way extensions work after upgrading to \"Manifest V3\", refresh intervals of less than 30 seconds will be ignored in Chromium-based browsers.",
         "description": "Update interval description"
     },
     "optionsThemeDescription": {

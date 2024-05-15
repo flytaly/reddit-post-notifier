@@ -27,6 +27,7 @@
     };
 
     const intervalList: Array<{ value: string; id: string; label: string }> = [
+        { value: String(30), id: 'update_30s', label: '30s' },
         { value: String(60), id: 'update_1m', label: '1m' },
         { value: String(5 * 60), id: 'update_5m', label: '5m' },
         { value: String(10 * 60), id: 'update_10m', label: '10m' },

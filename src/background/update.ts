@@ -28,13 +28,12 @@ export async function updateAndSchedule(isForcedByUser = false) {
             isUpdating = false;
             if (e.invalidateToken)
                 await updateAndSchedule();
-        }
-        else {
-            await scheduleNextUpdate();
+            return;
         }
     }
     finally {
         isUpdating = false;
         void sendMessage('UPDATING_END');
     }
+    scheduleNextUpdate();
 }
