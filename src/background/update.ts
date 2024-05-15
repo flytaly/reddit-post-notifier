@@ -1,17 +1,20 @@
-import NotifierApp from '../notifier/app';
-import { sendMessage } from '../messaging';
-import storage from '../storage';
-import { scheduleNextUpdate } from './timers';
+import { sendMessage } from '@/messaging';
+import NotifierApp from '@/notifier/app';
 import { isAuthError } from '@/reddit-api/errors';
+import storage from '@/storage';
+import { scheduleNextUpdate } from './timers';
 
 /* eslint-disable-next-line import/no-mutable-exports */
 export let isUpdating = false;
 
-export async function updateAndSchedule(isForcedByUser = false) {
+export async function updateData(isForcedByUser = false, isRecurring = false) {
     if (isUpdating)
         return;
+
     isUpdating = true;
     void sendMessage('UPDATING_START');
+
+    let shouldReupdate = false;
 
     try {
         const app = new NotifierApp((rl) => {
@@ -19,21 +22,24 @@ export async function updateAndSchedule(isForcedByUser = false) {
                 void sendMessage('RATE_LIMITS', rl);
         });
         await app.update(isForcedByUser);
-        await scheduleNextUpdate();
     }
     catch (e) {
         console.error(e);
         if (isAuthError(e)) {
             await storage.setAuthError(e);
-            isUpdating = false;
             if (e.invalidateToken)
-                await updateAndSchedule();
-            return;
+                shouldReupdate = true;
         }
     }
-    finally {
-        isUpdating = false;
-        void sendMessage('UPDATING_END');
-    }
-    scheduleNextUpdate();
+
+    isUpdating = false;
+    void sendMessage('UPDATING_END');
+
+    if (shouldReupdate && !isRecurring)
+        return updateData(isForcedByUser, true);
+}
+
+export async function updateAndSchedule(isForcedByUser = false) {
+    await updateData(isForcedByUser);
+    await scheduleNextUpdate();
 }
