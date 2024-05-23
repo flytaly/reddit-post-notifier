@@ -19,6 +19,8 @@ A browser extension that watches and notifies about:
 
 [![Video demonstration](https://img.youtube.com/vi/PZ69Vljtrg8/0.jpg)](https://www.youtube.com/watch?v=PZ69Vljtrg8)
 
+Also check out my other web extension to search in your Reddit saved posts: [Reddix](https://github.com/flytaly/reddix-extension).
+
 ## Usage for developers
 
 Install dependencies with `npm install`.
@@ -37,13 +39,13 @@ To archive the contents of the "extension" folder as a package in the /web-ext-a
 
     npm run zip
 
-### Authorization
+### Authorization (optional)
 
-This extension uses [OAuth2](https://github.com/reddit-archive/reddit/wiki/OAuth2) authentication to get authorization and refresh tokens. These tokens will be used to check reddit private mail. To generate credentials [create new reddit app](https://www.reddit.com/prefs/apps/), and add id of the app in `.env` file (see .env.example).
+This extension uses [OAuth2](https://github.com/reddit-archive/reddit/wiki/OAuth2) authentication to get authorization and refresh tokens. These tokens will be used to check reddit private messages for multiple accounts. To generate credentials [create new reddit app](https://www.reddit.com/prefs/apps/), and add id of the app in `.env` file (see .env.example).
 
 ### External libraries and frameworks
 
-The pop-up and option pages UI are made with [Svelte](https://github.com/sveltejs/svelte) + [Tailwind CSS](https://tailwindcss.com/) and bundled with [esbuild](https://github.com/evanw/esbuild) and [Vite](https://github.com/vitejs/vite).
+The pop-up and option pages UI are made with [Svelte](https://github.com/sveltejs/svelte) + [Tailwind CSS](https://tailwindcss.com/) and bundled with [Vite](https://github.com/vitejs/vite).
 
 ## Keyboard shortcuts
 
