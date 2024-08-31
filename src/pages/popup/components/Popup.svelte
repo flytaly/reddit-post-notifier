@@ -18,6 +18,9 @@
     import { sendMessage } from '@/messaging';
     import type { OpenGroupsPayload } from '@/types/message';
 
+    import 'nprogress/nprogress.css';
+    import './Popup.pcss';
+
     let groupsWithPosts: PostGroup[] = [];
     let groupsWithoutPosts: PostGroup[] = [];
 
@@ -114,8 +117,3 @@
     {/if}
 </main>
 <Footer />
-
-<style global lang='postcss'>
-    @import './Popup.pcss';
-    @import '@/../node_modules/nprogress/nprogress.css';
-</style>

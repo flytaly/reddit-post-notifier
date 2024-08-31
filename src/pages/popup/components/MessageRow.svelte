@@ -7,7 +7,7 @@
     import type { ExtensionOptions } from '@/types/extension-options';
     import { getInboxUrl } from '@/utils';
     import getMsg from '@/utils/get-message';
-    import { PostGroup } from '@/utils/post-group';
+    import type { PostGroup } from '@/utils/post-group';
 
     export let group: PostGroup;
     export let item: RedditMessage;

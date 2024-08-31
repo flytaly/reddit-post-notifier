@@ -15,6 +15,9 @@
     import getMsg from '@/utils/get-message';
     import applyTheme from '@/utils/apply-theme';
 
+    import 'nprogress/nprogress.css';
+    import './OptionsApp.pcss';
+
     export let pageId: PageId = 'settings';
 
     onMount(() => {
@@ -69,8 +72,3 @@
     </div>
     <div class='hidden w-52 xl:block' />
 </div>
-
-<style global lang='postcss'>
-    @import './OptionsApp.pcss';
-    @import '@/../node_modules/nprogress/nprogress.css';
-</style>
