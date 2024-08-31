@@ -89,7 +89,7 @@ export default class RedditApiClient {
             const errorResponse = await result.json();
             return errorResponse as RedditError;
         }
-        catch (error) {
+        catch {
             throw new Error(`status code: ${result.status}. ${result.statusText}`);
         }
     }
@@ -101,7 +101,7 @@ export default class RedditApiClient {
     getSubreddit(subreddit: string) {
         return {
             new: async (listing?: RedditSubredditListing) =>
-                this.GET(`/r/${subreddit}/new`, listing) as R<RedditPostResponse>,
+                this.GET(`/r/${subreddit}/new`, listing || {}) as R<RedditPostResponse>,
             search: async (listing: RedditSearchListing) => this.search(listing, subreddit),
         };
     }

@@ -34,7 +34,7 @@ export function generatePost(props: Partial<RedditPostData> = {}): RedditPostDat
 export function generatePosts(num = 2, subreddit?: string) {
     if (!subreddit)
         subreddit = faker.lorem.word();
-    const posts: RedditPost[] = Array(num)
+    const posts: RedditPost[] = Array.from({ length: num })
         .fill(null)
         .map(() => ({
             kind: RedditObjectKind.link,

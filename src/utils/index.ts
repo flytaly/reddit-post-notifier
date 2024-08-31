@@ -39,7 +39,7 @@ export function constructUrl(endpoint: string, opts: UrlOpts): string {
     try {
         return new URL(endpoint, getRedditBaseUrl(opts.redditUrlType, opts.customRedditUrl)).href;
     }
-    catch (error) {
+    catch {
         return new URL(endpoint, redditUrl).href;
     }
 }

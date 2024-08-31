@@ -10,5 +10,6 @@ export default antfu({
 }, {
     rules: {
         'svelte/no-at-html-tags': 'off',
+        'unicorn/consistent-function-scoping': 'off',
     },
 });
