@@ -64,8 +64,9 @@ export default class RedditApiClient {
         }
     }
 
-    async GET(endpoint: string, queryParams: Record<string, unknown> = {}) {
-        const query = mapObjToQueryStr({ ...queryParams, raw_json: '1' });
+    async GET(endpoint: string, queryParams: unknown = {}) {
+        const params = queryParams ? queryParams as Record<string, unknown> : {};
+        const query = mapObjToQueryStr({ ...params, raw_json: '1' });
         const init: RequestInit = { method: 'GET', headers: { ...this.headers }, ...this.fetchOpts };
 
         if (this.accessToken) {
@@ -101,15 +102,16 @@ export default class RedditApiClient {
     getSubreddit(subreddit: string) {
         return {
             new: async (listing?: RedditSubredditListing) =>
-                this.GET(`/r/${subreddit}/new`, listing || {}) as R<RedditPostResponse>,
+                this.GET(`/r/${subreddit}/new`, listing) as R<RedditPostResponse>,
             search: async (listing: RedditSearchListing) => this.search(listing, subreddit),
         };
     }
 
     user(username: string) {
         return {
-            overview: async (listing?: RedditUserListing) =>
-                this.GET(`/user/${username}/overview`, listing) as R<RedditUserOverviewResponse>,
+            overview: async (listing?: RedditUserListing) => {
+                return this.GET(`/user/${username}/overview`, listing) as R<RedditUserOverviewResponse>;
+            },
             comments: async (listing?: RedditUserListing) =>
                 this.GET(`/user/${username}/comments`, listing) as R<RedditCommentResponse>,
             submitted: async (listing?: RedditUserListing) =>

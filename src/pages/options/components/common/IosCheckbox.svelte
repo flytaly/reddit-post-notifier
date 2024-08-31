@@ -3,7 +3,8 @@
     import type { InputChangeEv } from './events';
 
     export let checked: boolean = false;
-    export let changeHandler: ((e: InputChangeEv) => void) | undefined;
+    // eslint-disable-next-line no-undef-init
+    export let changeHandler: ((e: InputChangeEv) => void) | undefined = undefined;
     export let tooltipText: string = '';
 
     /** Activate/toggle input on Enter and Space */
