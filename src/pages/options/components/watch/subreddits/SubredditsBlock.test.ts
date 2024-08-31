@@ -1,6 +1,7 @@
 import { act, cleanup, fireEvent, render, waitFor } from '@testing-library/svelte';
 import { tick } from 'svelte';
 import { afterEach, beforeAll, describe, expect, it, vi } from 'vitest';
+import userEvent from '@testing-library/user-event';
 
 import SubredditsBlock from './SubredditsBlock.svelte';
 import storage from '@/storage/storage';
@@ -59,16 +60,15 @@ describe('subreddit settings', () => {
         const lastInput = inputBlocks[inputBlocks.length - 1];
         lastInput.click();
 
-        await waitFor(async () => {
-            const input = getByLabelText(getMsg('optionSubredditsInputLabel'));
-            for (const subreddit of ['!not', '12', 'aww+3']) {
-                await fireEvent.input(input, { target: { value: subreddit } });
-                await waitFor(() => {
-                    expect(getByText(/Invalid subreddit\/multireddit name/)).toBeInTheDocument();
-                });
-                expect(storage.saveSubredditOpts).not.toHaveBeenCalledWith(expect.objectContaining({ subreddit }));
-            }
-        });
+        const input = getByLabelText(getMsg('optionSubredditsInputLabel'));
+        for (const subreddit of ['!not', '12', 'aww+3']) {
+            const user = userEvent.setup();
+            await user.type(input, subreddit);
+            await waitFor(() => {
+                expect(getByText(/Invalid subreddit\/multireddit name/)).toBeInTheDocument();
+            });
+            expect(storage.saveSubredditOpts).not.toHaveBeenCalledWith(expect.objectContaining({ subreddit }));
+        }
     });
 
     it('save subreddits and show error', async () => {

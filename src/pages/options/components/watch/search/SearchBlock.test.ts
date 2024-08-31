@@ -1,6 +1,7 @@
 import { act, cleanup, fireEvent, getByLabelText, render, waitFor } from '@testing-library/svelte';
 import { afterEach, beforeAll, describe, expect, it, vi } from 'vitest';
 
+import userEvent from '@testing-library/user-event';
 import SearchBlock from './SearchBlock.svelte';
 import storage from '@/storage';
 import { dataFields } from '@/storage/fields';
@@ -43,11 +44,12 @@ describe('search settings block', () => {
         await waitFor(() => {
             expect(getByTestId('search-inputs')).toBeInTheDocument();
         });
+        const user = userEvent.setup();
 
         const items = getAllByTestId('search-inputs');
         expect(items).toHaveLength(1);
 
-        await fireEvent.click(getByText('q1Name'));
+        await user.click(getByText('q1Name'));
 
         const getInput = (label: string) => getByLabelText(items[0], label, { exact: false });
 
@@ -55,7 +57,9 @@ describe('search settings block', () => {
         expect(getInput('Subreddit:')).toHaveValue(queriesList[0].subreddit);
         expect(getInput('Search query:')).toHaveValue(queriesList[0].query);
         expect(getInput(getMsg('optionSearchNotify'))).toBeChecked();
-        await fireEvent.input(getInput('Subreddit:'), { target: { value: 'Sub2' } });
+        const inp = getInput('Subreddit:');
+        await user.clear(inp);
+        await user.type(inp, 'Sub2');
         expect(storage.saveQuery).toHaveBeenCalledWith({ ...queriesList[0], subreddit: 'Sub2' });
     });
 

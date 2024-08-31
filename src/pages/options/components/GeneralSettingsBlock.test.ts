@@ -3,6 +3,7 @@ import { tick } from 'svelte';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import browser from 'webextension-polyfill';
 
+import userEvent from '@testing-library/user-event';
 import GeneralSettingsBlock from './GeneralSettingsBlock.svelte';
 import { sendMessage } from '@/messaging';
 import DEFAULT_OPTIONS from '@/options-default';
@@ -26,7 +27,7 @@ function mockStorageData(opts?: Partial<ExtensionOptions>) {
 }
 
 function optionSaved(opt: Partial<ExtensionOptions>) {
-    expect(storage.saveOptions).toHaveBeenCalledWith(opt);
+    expect(storage.saveOptions).toHaveBeenLastCalledWith(opt);
 }
 
 describe('general Options', async () => {
@@ -51,11 +52,16 @@ describe('general Options', async () => {
         await waitFor(() => {
             expect(input).toHaveValue(updateInterval);
         });
-        await fireEvent.input(input, { target: { value: 30 } });
+        const user = userEvent.setup();
+        await user.clear(input);
+        await user.type(input, '30');
         optionSaved({ updateInterval: 30 });
         expect(sendMessage).toHaveBeenCalledWith('SCHEDULE_NEXT_UPDATE');
+
         // not less than 10 sec
-        await fireEvent.input(input, { target: { value: 5 } });
+        await user.clear(input);
+        await user.type(input, '5');
+
         optionSaved({ updateInterval: 10 });
     });
 
@@ -151,8 +157,11 @@ describe('general Options', async () => {
         const inputElem = getByTestId('redditUrlInput');
         expect(inputElem).toHaveValue(DEFAULT_OPTIONS.customRedditUrl);
         const value = 'https://localhost:3000/';
-        await fireEvent.input(inputElem, { target: { value } });
-        await fireEvent.click(getByTestId('saveUrlBtn'));
+
+        const user = userEvent.setup();
+        await user.clear(inputElem);
+        await user.type(inputElem, value);
+        await user.click(getByTestId('saveUrlBtn'));
         optionSaved({ customRedditUrl: value });
     });
 });
