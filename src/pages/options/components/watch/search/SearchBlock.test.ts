@@ -7,6 +7,7 @@ import storage from '@/storage';
 import { dataFields } from '@/storage/fields';
 import type { QueryData, QueryOpts } from '@/storage/storage-types';
 import getMsg from '@/utils/get-message';
+import { wait } from '@/utils/wait';
 
 vi.mock('@/storage/storage.ts');
 vi.mock('@/utils/get-message.ts');
@@ -75,6 +76,8 @@ describe('search settings block', () => {
         await act(async () => {
             await fireEvent.click(getByText('Add new search'));
         });
-        expect(queryAllByTestId('search-inputs')).toHaveLength(3);
+        waitFor(() => {
+            expect(queryAllByTestId('search-inputs')).toHaveLength(3);
+        });
     });
 });

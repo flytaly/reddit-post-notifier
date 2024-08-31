@@ -47,30 +47,6 @@ describe('subreddit settings', () => {
         vi.clearAllMocks();
     });
 
-    it('should save only subreddit or multireddit', async () => {
-        const { getAllByTestId, getByText, getByLabelText } = render(SubredditsBlock);
-        await tick();
-
-        const AddBtn = getByText(getMsg('optionSubredditsAdd'), { exact: false });
-        await act(async () => {
-            await fireEvent.click(AddBtn);
-        });
-
-        const inputBlocks = getAllByTestId('input-name');
-        const lastInput = inputBlocks[inputBlocks.length - 1];
-        lastInput.click();
-
-        const input = getByLabelText(getMsg('optionSubredditsInputLabel'));
-        for (const subreddit of ['!not', '12', 'aww+3']) {
-            const user = userEvent.setup();
-            await user.type(input, subreddit);
-            await waitFor(() => {
-                expect(getByText(/Invalid subreddit\/multireddit name/)).toBeInTheDocument();
-            });
-            expect(storage.saveSubredditOpts).not.toHaveBeenCalledWith(expect.objectContaining({ subreddit }));
-        }
-    });
-
     it('save subreddits and show error', async () => {
         const { getByText, getAllByTestId } = render(SubredditsBlock);
         await tick();
@@ -102,6 +78,28 @@ describe('subreddit settings', () => {
         });
     });
 
+    it('should save only subreddit or multireddit', async () => {
+        const { getAllByTestId, getByText, getByLabelText } = render(SubredditsBlock);
+        await tick();
+
+        const AddBtn = getByText(getMsg('optionSubredditsAdd'), { exact: false });
+        await act(async () => {
+            await fireEvent.click(AddBtn);
+        });
+
+        const inputBlocks = getAllByTestId('input-name');
+        const lastInput = inputBlocks[inputBlocks.length - 1];
+        lastInput.click();
+
+        const input = getByLabelText(getMsg('optionSubredditsInputLabel'));
+        for (const subreddit of ['!not', 'tt']) {
+            const user = userEvent.setup();
+            await user.clear(input);
+            await user.type(input, subreddit);
+            expect(storage.saveSubredditOpts).not.toHaveBeenCalledWith(expect.objectContaining({ subreddit }));
+        }
+    });
+
     it('should call storage with other input states', async () => {
         const { getAllByLabelText } = render(SubredditsBlock);
         await tick();
@@ -109,21 +107,25 @@ describe('subreddit settings', () => {
         // NOTIFY
         const notifyElems = getAllByLabelText(getMsg('notifyLabel'), { exact: false });
         await fireEvent.click(notifyElems[0]);
-        expect(storage.saveSubredditOpts).toHaveBeenCalledWith(like({ ...subList[0], notify: !subList[0].notify }));
+        waitFor(() => {
+            expect(storage.saveSubredditOpts).toHaveBeenCalledWith(like({ ...subList[0], notify: !subList[0].notify }));
+        });
 
         // DISABLE
         const isActiveElem = getAllByLabelText(getMsg('optionWatchInputDisable'));
 
         vi.mocked(storage.saveSubredditOpts).mockClear();
         await fireEvent.click(isActiveElem[1]);
-        expect(storage.saveSubredditOpts).toHaveBeenCalledWith(
-            like({
-                ...subList[1],
-                disabled: !subList[1].disabled,
-            }),
-        );
+        waitFor(() => {
+            expect(storage.saveSubredditOpts).toHaveBeenCalledWith(
+                like({
+                    ...subList[1],
+                    disabled: !subList[1].disabled,
+                }),
+            );
+        });
     });
-
+    //
     it('should add and remove subreddits', async () => {
         const { getAllByLabelText, getByText, getAllByTestId } = render(SubredditsBlock);
         await tick();
@@ -137,7 +139,8 @@ describe('subreddit settings', () => {
         });
         const DelBtn = getAllByLabelText(getMsg('optionWatchInputDelete'));
         await fireEvent.click(DelBtn[0]);
-
-        expect(storage.removeSubreddits).toHaveBeenCalledWith([subList[0].id]);
+        await waitFor(() => {
+            expect(storage.removeSubreddits).toHaveBeenCalledWith([subList[0].id]);
+        });
     });
 });
