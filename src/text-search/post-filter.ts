@@ -1,5 +1,5 @@
 import type { RedditPostData } from '../reddit-api/reddit-types';
-import type { DocField, DocSearch } from './document';
+import type { DocField } from './document';
 import { Document } from './document';
 import type { TextId } from './index';
 
@@ -8,9 +8,27 @@ export type SearchableRedditPostData = Pick<RedditPostData, SearchableField> & {
 export interface SearchableRedditPost {
     data: SearchableRedditPostData;
 }
-export type FilterRule = (DocSearch & { field: SearchableField })[];
+
+export interface FilterField { field: SearchableField; query: string; queryType?: 'negative' | 'positive' };
+export type FilterRule = FilterField[];
 
 export const allFields: SearchableField[] = ['title', 'selftext', 'author', 'link_flair_text'];
+
+function getPositives(rule: FilterRule) {
+    return rule.filter((r) => {
+        if (!r.query)
+            return false;
+        return (!r.queryType || r.queryType === 'positive');
+    });
+}
+
+function getNegatives(rule: FilterRule) {
+    return rule.filter((r) => {
+        if (!r.query)
+            return false;
+        return r.queryType === 'negative';
+    });
+}
 
 //* * Filter out posts that don't fit given search queries */
 export function postFilter<T extends SearchableRedditPost>(
@@ -32,6 +50,7 @@ export function postFilter<T extends SearchableRedditPost>(
 
     const doc = new Document({ fields: usedFields, id: 'id' });
     posts.forEach(p => doc.add(p.data));
+    const idList = posts.map(p => p.data.id);
 
     const result = new Set<TextId>();
 
@@ -39,8 +58,18 @@ export function postFilter<T extends SearchableRedditPost>(
         const qList = queriesLists[i];
         if (!qList)
             continue;
-        const ids = doc.search(qList);
-        ids.forEach(id => result.add(id));
+
+        const positiveRules = getPositives(qList);
+        const filteredIDs = positiveRules?.length
+            ? doc.search(getPositives(qList))
+            : idList;
+
+        const excludeIDs = getNegatives(qList).flatMap(r => doc.search([r]));
+
+        filteredIDs.forEach((id) => {
+            if (!excludeIDs.includes(id))
+                return result.add(id);
+        });
     }
     return posts.filter(p => result.has(p.data.id));
 }

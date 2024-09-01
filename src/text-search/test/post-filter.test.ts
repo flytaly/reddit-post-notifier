@@ -53,4 +53,47 @@ describe('post filter', () => {
         filtered = postFilter(posts, [m({ selftext: 'Toy Spaniel' })], ['selftext']);
         expect(filtered).toMatchObject(ids(2));
     });
+
+    it('should filter with negative query ', () => {
+        let filtered: SearchableRedditPost[];
+
+        // single negative filter
+        filtered = postFilter(posts, [[{ field: 'selftext', query: 'seal', queryType: 'negative' }]], ['selftext']);
+        expect(filtered).toMatchObject(ids(2, 3, 4));
+
+        // multiple negative filters
+        filtered = postFilter(posts, [[
+            { field: 'selftext', query: 'papillon', queryType: 'negative' },
+            { field: 'selftext', query: 'seal', queryType: 'negative' },
+        ]], ['selftext']);
+        expect(filtered).toMatchObject(ids(3, 4));
+
+        // positive + negative filters
+        filtered = postFilter(posts, [[
+            { field: 'selftext', query: 'dog', queryType: 'positive' },
+            { field: 'selftext', query: 'Papillon', queryType: 'negative' },
+        ]], ['selftext']);
+        expect(filtered).toMatchObject(ids(3));
+
+        // different fields
+        filtered = postFilter(posts, [[
+            { field: 'author', query: 'JakeCakes', queryType: 'positive' },
+            { field: 'selftext', query: 'dog', queryType: 'negative' },
+        ]], ['author', 'selftext']);
+        expect(filtered).toMatchObject(ids(4));
+
+        // no match
+        filtered = postFilter(posts, [[
+            { field: 'author', query: 'JakeCakes', queryType: 'positive' },
+            { field: 'selftext', query: 'dog', queryType: 'negative' },
+            { field: 'selftext', query: 'cat', queryType: 'negative' },
+        ]], ['author', 'selftext']);
+        expect(filtered).toMatchObject(ids());
+
+        // author
+        filtered = postFilter(posts, [[
+            { field: 'author', query: 'JakeCakes', queryType: 'negative' },
+        ]], ['author']);
+        expect(filtered).toMatchObject(ids(1));
+    });
 });
