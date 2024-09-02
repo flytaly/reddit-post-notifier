@@ -1,11 +1,12 @@
 <script>
-    import { HeartIcon, QRCodeBTC, QRCodeDoge, QRCodeETH, QRCodeLTC, QRCodeXLM } from '@options/lib/icons';
+    import { HeartIcon, QRCodeBTC, QRCodeDoge, QRCodeETH, QRCodeLTC, QRCodeSOL, QRCodeXLM } from '@options/lib/icons';
     import DonateAddress from './DonateAddress.svelte';
 
     const addresses = [
         { name: 'Bitcoin (BTC)', address: 'bc1q6w68rerfyy7ex45fjwhwfe36zs5qjvwwl3xgz5', QRCode: QRCodeBTC },
         { name: 'Ethereum (ETH)', address: '0xE36CeaEa3Da6f24A629450b927cd380973E72DD9', QRCode: QRCodeETH },
         { name: 'Litecoin (LTC)', address: 'LTzrVCTUobG7XmDAjMYdRbAF22oArZGoVZ', QRCode: QRCodeLTC },
+        { name: 'Solana', address: 'ArfcBJfZE8UERucen9W9UfjX2D2yV2TctAnD6ovrQzKQ', QRCode: QRCodeSOL },
         { name: 'Doge', address: 'DGyddoAuhfnHfF3qxpv9Zsrt3H399i4Rxe', QRCode: QRCodeDoge },
         {
             name: 'Stellar (XLM)',
