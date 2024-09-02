@@ -1,7 +1,7 @@
 {
     "name": "reddit-post-notifier",
     "type": "module",
-    "version": "6.2.0",
+    "version": "6.3.0",
     "packageManager": "pnpm@9.9.0",
     "description": "Browser extension that watches for posts in given subreddits or reddit searches",
     "author": "Vitaly Yerofeyevsky",

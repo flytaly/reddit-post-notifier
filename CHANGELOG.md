@@ -1,5 +1,9 @@
 # Release Notes
 
+## v6.3.0 (2024-09-02)
+
+-   Add negative filters
+
 ## v6.2.0 (2024-05-15)
 
 -   Lessen the minimum update interval in Chrome to 30 seconds
