@@ -17,12 +17,6 @@
         debounced();
     };
 
-    let usedFields: SearchableField[] = [];
-    let unUsedFields: SearchableField[] = [];
-
-    $: usedFields = filterRule.map(r => r.field);
-    $: unUsedFields = allFields.filter(f => !usedFields.includes(f));
-
     const fieldNames: Record<SearchableField, string> = {
         author: 'author',
         selftext: 'selftext',
@@ -30,24 +24,32 @@
         title: 'title',
     };
 
-    const matchType = (field: SearchableField) => {
-        if (field === 'author')
-            return 'is';
-        return 'has the words';
+    const matchTypes = (field: SearchableField): {
+        queryType: 'negative' | 'positive';
+        text: string;
+    }[] => {
+        if (field === 'author') {
+            return [
+                { queryType: 'positive', text: 'is' },
+                { queryType: 'negative', text: 'is not' },
+            ];
+        }
+        return [
+            { queryType: 'positive', text: 'has the words' },
+            { queryType: 'negative', text: 'doesn\'t have' },
+        ];
     };
 
     const addField = () => {
-        if (unUsedFields.length) {
-            filterRule = [...filterRule, { field: unUsedFields[0], query: '' }];
-            commitChanges();
-        }
+        filterRule = [...filterRule, { field: allFields[0], query: '', queryType: 'positive' }];
+        commitChanges();
     };
 
-    const removeField = (field: SearchableField) => {
+    const removeField = (index: number) => {
         if (filterRule.length > 1)
-            filterRule = filterRule.filter(g => g.field !== field);
+            filterRule = filterRule.filter((_, i) => i !== index);
         else
-            filterRule = filterRule.map(g => (g.field === field ? { ...g, query: '' } : g));
+            filterRule = [{ field: allFields[0], query: '', queryType: 'positive' }];
 
         commitChanges();
     };
@@ -63,15 +65,24 @@
                 bind:value={searchRule.field}
                 on:change={commitChanges}
             >
-                {#each [searchRule.field, ...unUsedFields] as f}
+                {#each allFields as f}
                     <option value={f}>{fieldNames[f]}</option>
                 {/each}
             </select>
-            <div class='mx-2'>{matchType(searchRule.field)}</div>
+            <select
+                class='mx-2 rounded border-none bg-transparent hover:bg-skin-input hover:shadow-none focus:bg-skin-input'
+                name={`matchType_${idx}`}
+                bind:value={searchRule.queryType}
+                on:change={commitChanges}
+            >
+                {#each matchTypes(searchRule.field) as mt}
+                    <option value={mt.queryType}>{mt.text}</option>
+                {/each}
+            </select>
             <input class='w-full rounded' type='text' bind:value={searchRule.query} on:input={debouncedHandler} />
             <button
                 class='border-none bg-transparent px-1 py-0 text-skin-gray hover:bg-transparent hover:text-skin-accent hover:shadow-none'
-                on:click={() => removeField(searchRule.field)}
+                on:click={() => removeField(idx)}
             >
                 <div class='w-4'>{@html XCircleIcon}</div>
             </button>
