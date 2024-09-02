@@ -1,13 +1,12 @@
 import { act, cleanup, fireEvent, getByLabelText, render, waitFor } from '@testing-library/svelte';
+import userEvent from '@testing-library/user-event';
 import { afterEach, beforeAll, describe, expect, it, vi } from 'vitest';
 
-import userEvent from '@testing-library/user-event';
 import SearchBlock from './SearchBlock.svelte';
 import storage from '@/storage';
 import { dataFields } from '@/storage/fields';
 import type { QueryData, QueryOpts } from '@/storage/storage-types';
 import getMsg from '@/utils/get-message';
-import { wait } from '@/utils/wait';
 
 vi.mock('@/storage/storage.ts');
 vi.mock('@/utils/get-message.ts');

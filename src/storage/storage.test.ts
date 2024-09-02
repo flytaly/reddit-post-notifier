@@ -1,6 +1,6 @@
-import browser from 'webextension-polyfill';
 import type { MockInstance } from 'vitest';
 import { afterAll, afterEach, beforeAll, beforeEach, describe, expect, it, vi } from 'vitest';
+import browser from 'webextension-polyfill';
 
 import type { QueryData, QueryOpts, StorageFields, SubredditData, SubredditOpts } from './storage-types';
 import storage from './index';
@@ -11,7 +11,8 @@ import { generatePost, generatePosts, generateQuery } from '@/test-utils/content
 import { mockDate, restoreDate } from '@/test-utils/mock-date';
 import type { ExtensionOptions } from '@/types/extension-options';
 
-const mockGet = vi.spyOn(storage, 'getLocal') as MockInstance<[keys?: StorageFields], Promise<Record<string, any>>>;
+type SG = typeof storage.getLocal;
+const mockGet = vi.spyOn(storage, 'getLocal') as MockInstance<(...args: Parameters<SG>) => ReturnType<SG>>;
 const mockSet = vi.spyOn(storage, 'setLocal');
 
 afterEach(() => {
@@ -215,12 +216,11 @@ describe('subreddits', () => {
     it('should remove subreddit list and data', async () => {
         const idsToRemove = [subOpts[1].id];
         mockGet.mockImplementation(async (keys) => {
-            if (keys?.subredditList)
+            if ((keys as StorageFields)?.subredditList)
                 return { subredditList: subOpts };
 
-            if (keys?.subreddits)
+            if ((keys as StorageFields)?.subreddits)
                 return { subreddits };
-
             throw new Error('unexpected keys');
         });
         const subData = structuredClone(subreddits);
@@ -241,10 +241,10 @@ describe('subreddits', () => {
         /* mockGet.expect({ subreddits: {} }).andResolve({ subreddits: subData }); */
         /* mockSet.expect({ subreddits: { ...subData, [updatedSub.id]: { posts: [] } } }); */
         mockGet.mockImplementation(async (keys) => {
-            if (keys?.subredditList)
+            if ((keys as StorageFields)?.subredditList)
                 return { subredditList: subOpts };
 
-            if (keys?.subreddits)
+            if ((keys as StorageFields)?.subreddits)
                 return { subreddits: subData };
 
             throw new Error('unexpected keys');
@@ -342,10 +342,10 @@ describe('search queries', () => {
 
     const mockQueries = () =>
         mockGet.mockImplementation(async (keys) => {
-            if (keys?.queries)
+            if ((keys as StorageFields)?.queries)
                 return { queries: structuredClone(qData) };
 
-            if (keys?.queriesList)
+            if ((keys as StorageFields)?.queriesList)
                 return { queriesList: structuredClone(queriesList) };
 
             throw new Error('unexpected keys');

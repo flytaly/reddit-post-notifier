@@ -32,7 +32,8 @@ export function listenForMessages(context: Context) {
     listener = function (request /* , sender, sendResponse */) {
         const message = request as PortMessage;
         console.info(`${context} received message`, message);
-        void messageListeners.get(message.id)?.(message.payload);
+        messageListeners.get(message.id)?.(message.payload);
+        return undefined;
     };
     browser.runtime.onMessage.addListener(listener);
 }

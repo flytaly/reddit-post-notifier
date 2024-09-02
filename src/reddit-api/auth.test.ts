@@ -132,7 +132,7 @@ describe('token Refreshing', () => {
 
 describe('get Access Token', () => {
     type RA = typeof auth.renewAccessToken;
-    let renewAccessToken: MockInstance<Parameters<RA>, ReturnType<RA>>;
+    let renewAccessToken: MockInstance<(...args: Parameters<RA>) => ReturnType<RA>>;
     const renewedToken = 'renewedToken';
     const authData = {
         accessToken: 'oldAccessToken',

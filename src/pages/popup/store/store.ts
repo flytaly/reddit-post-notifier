@@ -36,6 +36,7 @@ export const storageData = writable(defaultState, () => {
         const obj: Partial<StorageFields> = {};
         (Object.keys(changes) as Array<keyof StorageFields>)
             .forEach((changeKey) => {
+                // @ts-expect-error ignore unknown assignment warning
                 obj[changeKey] = changes[changeKey]?.newValue;
             });
         storageData.update(prev => ({ ...prev, ...obj }));

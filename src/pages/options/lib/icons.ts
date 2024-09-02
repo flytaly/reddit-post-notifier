@@ -24,6 +24,7 @@ export { default as QRCodeBTC } from '@assets/qr-btc.svg?raw';
 export { default as QRCodeDoge } from '@assets/qr-doge.svg?raw';
 export { default as QRCodeETH } from '@assets/qr-eth.svg?raw';
 export { default as QRCodeLTC } from '@assets/qr-ltc.svg?raw';
+export { default as QRCodeSOL } from '@assets/qr-sol.svg?raw';
 export { default as QRCodeXLM } from '@assets/qr-xlm.svg?raw';
 export { default as RefreshIcon } from '@assets/refresh.svg?raw';
 export { default as RefreshIcon2 } from '@assets/refresh2.svg?raw';

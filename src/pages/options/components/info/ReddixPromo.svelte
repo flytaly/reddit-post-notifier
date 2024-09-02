@@ -10,7 +10,7 @@
         : 'https://addons.mozilla.org/firefox/addon/reddix-reddit-bookmarks/';
 
     storage.getLocal({ showReddixPromo: true } as Pick<StorageFields, 'showReddixPromo'>).then(({ showReddixPromo }) => {
-        isShown = showReddixPromo;
+        isShown = showReddixPromo as boolean;
     });
 
     function hidePromo() {

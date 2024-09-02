@@ -1,4 +1,5 @@
-import browser, { type Storage } from 'webextension-polyfill';
+import browser from 'webextension-polyfill';
+
 import DEFAULT_OPTIONS from '../options-default';
 import type { TokenResponseBody } from '../reddit-api/auth';
 import type { RedditItem, RedditMessage } from '../reddit-api/reddit-types';
@@ -16,8 +17,8 @@ import type {
     SubredditData,
     SubredditOpts,
 } from './storage-types';
-import type { AuthError } from '@/reddit-api/errors';
 import type { RateLimits } from '@/reddit-api/client';
+import type { AuthError } from '@/reddit-api/errors';
 
 /** Concat two arrays and remove duplications */
 function concatUnique<T>(arr1: Array<T>, arr2: Array<T>, getId: (item: T) => string | number) {
@@ -110,7 +111,7 @@ const storage = {
     },
 
     async getAllData() {
-        return storage.getLocal(dataFields) as Promise<SF>;
+        return storage.getLocal(dataFields) as unknown as Promise<SF>;
     },
 
     async getExportData(accounts = false) {
@@ -635,14 +636,13 @@ const storage = {
 
 export const session = {
     async saveRateLimits(rateLimits: RateLimits) {
-        // https://github.com/mozilla/webextension-polyfill/issues/424
-        const session = (browser.storage as unknown as { session: Storage.LocalStorageArea }).session;
+        const session = browser.storage.session;
         if (!session)
             return;
         void session.set({ rateLimits });
     },
     async getRateLimits() {
-        const session = (browser.storage as unknown as { session: Storage.LocalStorageArea }).session;
+        const session = browser.storage.session;
         const defaults = { remaining: null, reset: null, used: null } as RateLimits;
         if (!session)
             return defaults;
