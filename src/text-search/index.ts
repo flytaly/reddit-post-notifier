@@ -62,6 +62,8 @@ export class Index {
         const result: TextId[][] = [];
         for (let i = 0; i < queryTokens.length; i++) {
             const token = this.stemmer ? this.stemmer(queryTokens[i]) : queryTokens[i];
+            if (!token)
+                continue;
             result.push(this.map[token] || []);
         }
         return intersect(result);
