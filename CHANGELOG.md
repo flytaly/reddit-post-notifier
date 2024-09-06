@@ -1,5 +1,9 @@
 # Release Notes
 
+## v6.3.1 (2024-09-06)
+
+-  Post filters no longer ignore punctuation and other characters
+
 ## v6.3.0 (2024-09-02)
 
 -   Add negative filters
