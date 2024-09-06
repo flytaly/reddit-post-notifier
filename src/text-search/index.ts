@@ -3,6 +3,7 @@ import {
     normalize as normalizeDefault,
     stemmer as stemmerDefault,
     tokenizer as tokenizerDefault,
+    whitespaceTokenizer as whitespaceTokenizerDefault,
 } from './search-helpers';
 
 type StringProcessor = (str: string) => string;
@@ -12,6 +13,7 @@ export interface IndexOpts {
     normalize?: StringProcessor | false;
     stemmer?: StringProcessor | false;
     tokenizer?: ((str: string) => string[]) | false;
+    queryTokenizer?: ((str: string) => string[]) | false;
 }
 
 /** Create index of words in the given text and search  */
@@ -19,6 +21,7 @@ export class Index {
     normalize?: StringProcessor | false;
     stemmer?: StringProcessor | false;
     tokenizer?: ((str: string) => string[]) | false;
+    queryTokenizer?: ((str: string) => string[]) | false;
     /** Map token to array of ids */
     map: Record<string, TextId[]>;
 
@@ -26,6 +29,7 @@ export class Index {
         this.normalize = opts.normalize ?? normalizeDefault;
         this.stemmer = opts.stemmer ?? stemmerDefault;
         this.tokenizer = opts.tokenizer ?? tokenizerDefault;
+        this.queryTokenizer = opts.queryTokenizer ?? whitespaceTokenizerDefault;
         this.map = {};
     }
 
@@ -52,13 +56,24 @@ export class Index {
 
     getTokens(str: string): string[] {
         str = this.normalize ? this.normalize(str) : str;
-        return this.tokenizer ? this.tokenizer(str) : [str];
+        const result: string[] = [];
+        if (!this.tokenizer && !this.queryTokenizer) {
+            return [str];
+        }
+        if (this.tokenizer) {
+            result.push(...this.tokenizer(str));
+        }
+        if (this.queryTokenizer) {
+            result.push(...this.queryTokenizer(str));
+        }
+        return result;
     }
 
     search(query: string): TextId[] {
         if (!query)
             return [];
-        const queryTokens = this.getTokens(query);
+        query = this.normalize ? this.normalize(query) : query;
+        const queryTokens = this.queryTokenizer ? this.queryTokenizer(query) : [query];
         const result: TextId[][] = [];
         for (let i = 0; i < queryTokens.length; i++) {
             const token = this.stemmer ? this.stemmer(queryTokens[i]) : queryTokens[i];

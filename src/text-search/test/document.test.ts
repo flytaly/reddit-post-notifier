@@ -15,7 +15,7 @@ describe('document creation', () => {
             options: { stemmer: false },
         },
         { field: 'text' },
-        { field: 'author', options: { normalize: false, tokenizer: false, stemmer: false } },
+        { field: 'author', options: { normalize: false, tokenizer: false, queryTokenizer: false, stemmer: false } },
     ];
 
     it('should create indexes with given options for each field', () => {
@@ -38,7 +38,7 @@ describe('document creation', () => {
 });
 
 describe('document search', () => {
-    const disableProcessing: IndexOpts = { normalize: false, tokenizer: false, stemmer: false };
+    const disableProcessing: IndexOpts = { normalize: false, tokenizer: false, queryTokenizer: false, stemmer: false };
     const fields: DocField[] = Object.keys(fixtures[0])
         .filter(f => f !== 'id')
         .map((field) => {

@@ -96,4 +96,30 @@ describe('post filter', () => {
         ]], ['author']);
         expect(filtered).toMatchObject(ids(1));
     });
+
+    it('should match brackets and parentheses', () => {
+        const cases: SearchableRedditPost[] = [
+            { data: { author: 'title', id: 100, title: 'just a title' } },
+            { data: { author: 'title', id: 101, title: 'with [brackets]' } },
+            { data: { author: 'title', id: 102, title: 'without brackets' } },
+            { data: { author: 'title', id: 103, title: 'with punctuation?!' } },
+            { data: { author: 'title', id: 104, title: 'without punctuation' } },
+        ];
+
+        const filter = (query: string, positive = true) => postFilter(cases, [[
+            { field: 'title', query, queryType: positive ? 'positive' : 'negative' },
+        ]], ['title']);
+
+        // broad match
+        expect(filter('brackets')).toMatchObject(ids(101, 102));
+        expect(filter('brackets', false)).toMatchObject(ids(100, 103, 104));
+        expect(filter('punctuation')).toMatchObject(ids(103, 104));
+        expect(filter('punctuation', false)).toMatchObject(ids(100, 101, 102));
+
+        // exact match
+        expect(filter('[brackets]')).toMatchObject(ids(101));
+        expect(filter('[brackets]', false)).toMatchObject(ids(100, 102, 103, 104));
+        expect(filter('punctuation?!')).toMatchObject(ids(103));
+        expect(filter('punctuation?!', false)).toMatchObject(ids(100, 101, 102, 104));
+    });
 });

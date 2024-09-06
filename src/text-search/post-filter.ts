@@ -41,7 +41,7 @@ export function postFilter<T extends SearchableRedditPost>(
 
         // match author field without any modifications
         if (field === 'author')
-            result.options = { normalize: false, stemmer: false, tokenizer: false };
+            result.options = { normalize: false, stemmer: false, tokenizer: false, queryTokenizer: false };
         // disable stemming for flair
         if (field === 'link_flair_text')
             result.options = { stemmer: false };

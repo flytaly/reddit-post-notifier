@@ -1,7 +1,14 @@
 // https://www.regular-expressions.info/unicode.html
 export const separator = /[\p{Z}\p{S}\p{P}\p{C}]+/u;
+export const whitespaceSeparator = /\p{Z}+/u;
 
-export const tokenizer = (str: string): string[] => str.split(separator);
+export function tokenizer(str: string): string[] {
+    return str.split(separator);
+}
+
+export function whitespaceTokenizer(str: string): string[] {
+    return str.split(whitespaceSeparator);
+}
 
 export const normalize = (str: string) => str.trim().toLowerCase();
 
