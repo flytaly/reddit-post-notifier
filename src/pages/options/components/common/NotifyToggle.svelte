@@ -3,10 +3,15 @@
     import { tooltip } from '@options/lib/tooltip';
     import type { InputChangeEv } from './events';
     import getMsg from '@/utils/get-message';
+    import type { HTMLAttributes } from 'svelte/elements';
 
-    export let checked: boolean = false;
-    export let changeHandler: ((e: InputChangeEv) => void) | undefined;
-    export let tooltipText: string = '';
+    interface Props extends HTMLAttributes<HTMLDivElement> {
+        checked?: boolean;
+        changeHandler?: ((e: InputChangeEv) => void) | undefined;
+        tooltipText?: string;
+    }
+
+    let { checked = $bindable(false), changeHandler, tooltipText = '', ...rest }: Props = $props();
 
     const btnClick = (e: KeyboardEvent & { currentTarget: HTMLElement }) => {
         if (e.key === 'Enter' || e.key === ' ') {
@@ -20,14 +25,14 @@
 <div
     class='toggle-button'
     class:toggle-button-on={checked}
-    on:keydown={btnClick}
+    onkeydown={btnClick}
     tabindex='0'
     role='button'
     use:tooltip={{ content: tooltipText }}
-    {...$$restProps}
+    {...rest}
 >
     <label class='flex max-w-max items-center space-x-1'>
-        <input class='peer hidden' type='checkbox' aria-label={tooltipText} bind:checked on:change={changeHandler} />
+        <input class='peer hidden' type='checkbox' aria-label={tooltipText} bind:checked onchange={changeHandler} />
         <div class='flex'>
             {#if checked}
                 <div class='h-5 w-5'>{@html NotifyIcon}</div>

@@ -17,25 +17,34 @@
     import type { PostFilterOptions, SubredditData, SubredditOpts } from '@/storage/storage-types';
     import NotifierApp from '@/notifier/app';
 
-    export let subOpts: SubredditOpts;
-    export let subData: SubredditData = {};
+    interface Props {
+        subOptsIn: SubredditOpts;
+        subData?: SubredditData;
+    }
 
-    let inputStatus: InputStatus = {};
-    let isActive = !subOpts.disabled;
-    let filterOpts: PostFilterOptions;
-    let ruleList: FilterRule[];
-    let fetchError = '';
-    let showPosts = false;
-    let isLoading = false;
+    let { subOptsIn = { id: '', subreddit: '' }, subData = {} }: Props = $props();
 
-    let showEditBlock = !subOpts?.subreddit;
+    let subOpts = $state({ disabled: false, filterOpts: undefined, notify: false, ...subOptsIn });
+
+    $effect(() => {
+        subOpts = { disabled: false, filterOpts: undefined, notify: false, ...subOptsIn };
+    });
+
+    let inputStatus: InputStatus = $derived($inputStatusStore[subOpts.id] || {});
+    let filterOpts: PostFilterOptions = $derived(subOpts.filterOpts || {});
+    let ruleList: FilterRule[] = $derived(filterOpts?.rules || []);
+    let fetchError = $state('');
+    let showPosts = $state(false);
+    let isLoading = $state(false);
+
+    let showEditBlock = $state(!subOptsIn.subreddit);
     let subredditInputRef: HTMLInputElement;
 
-    $: filterOpts = subOpts.filterOpts || {};
-    $: ruleList = filterOpts?.rules || [];
-    $: inputStatus = $inputStatusStore[subOpts.id] || {};
-    $: fetchError = formatError(subData.error);
-    $: errorMessage = inputStatus.error || fetchError;
+    $effect(() => {
+        fetchError = formatError(subData.error);
+    });
+
+    let errorMessage = $derived(inputStatus.error || fetchError);
 
     const getName = () => subOpts.name || `r/${subOpts.subreddit}`;
 
@@ -103,7 +112,7 @@
                 id: subOpts.id,
                 subreddit: _subreddit,
                 name: subOpts.name,
-                disabled: !isActive,
+                disabled: subOpts.disabled,
                 notify: subOpts.notify,
                 filterOpts: processFilterOpts(filter || subOpts.filterOpts),
             },
@@ -138,61 +147,70 @@
 </script>
 
 <WatchItem
-    bind:isActive
+    itemDisabled={subOpts.disabled}
     bind:showEditBlock
     name={subOpts.name || subOpts.subreddit || showEditBlock ? getName() : 'click here to edit...'}
-    onActiveToggle={() => void saveInputs()}
+    onActiveToggle={(e) => {
+        subOpts.disabled = !e.currentTarget.checked;
+        void saveInputs();
+    }}
     onDelete={() => void subredditStore.deleteSubreddit(subOpts.id)}
     onFetch={() => void fetchPosts()}
-    disabled={$isBlocked || !subOpts.subreddit || !!inputStatus.error}
+    fetchBlocked={$isBlocked || !subOpts.subreddit || !!inputStatus.error}
     {errorMessage}
 >
-    <div slot='posts-block'>
-        <!-- Post list row -->
-        <div class='col-span-full'>
-            <Spinner show={isLoading} />
-            {#if showPosts}
-                <div class='col-span-full mt-2 border border-skin-delimiter p-1'>
-                    <RedditItemsList
-                        title={`The latest posts in the subreddit. ${
-                            subOpts.filterOpts?.enabled ? 'With filters.' : 'Without filters.'
-                        }`}
-                        items={subData.posts || []}
-                        limit={10}
-                        onClose={() => {
-                            showPosts = false;
-                        }}
-                    />
-                </div>
-            {/if}
+    {#snippet posts()}
+        <div>
+            <!-- Post list row -->
+            <div class='col-span-full'>
+                <Spinner show={isLoading} />
+                {#if showPosts}
+                    <div class='col-span-full mt-2 border border-skin-delimiter p-1'>
+                        <RedditItemsList
+                            title={`The latest posts in the subreddit. ${
+                                subOpts.filterOpts?.enabled ? 'With filters.' : 'Without filters.'
+                            }`}
+                            items={subData.posts || []}
+                            limit={10}
+                            onClose={() => {
+                                showPosts = false;
+                            }}
+                        />
+                    </div>
+                {/if}
+            </div>
         </div>
-    </div>
+    {/snippet}
 
-    <div slot='toggles' class='flex gap-3'>
-        <NotifyToggle
-            bind:checked={subOpts.notify}
-            changeHandler={() => saveInputs()}
-            tooltipText={getMsg('optionSubredditsNotify_title')}
-            data-testid='notify'
-        />
-        <!-- Toggle Filters -->
-        <button
-            class='toggle-button'
-            class:toggle-button-on={filterOpts?.enabled}
-            use:tooltip={{ content: getMsg('optionSubredditsFilter_title') }}
-            aria-label={getMsg('optionSubredditsFilter_title')}
-            on:click={onFilterClick}
-        >
-            {#if filterOpts?.enabled}
-                <div class='h-5 w-5'>{@html icons.FilterIcon}</div>
-            {:else}
-                <div class='h-5 w-5'>{@html icons.FilterOffIcon}</div>
-            {/if}
-            <span class='ml-[2px]'>
-                {getMsg('optionSubredditsFilter')} ({(filterOpts?.enabled && filterOpts?.rules?.length) || 0})
-            </span>
-        </button>
-    </div>
+    {#snippet toggles()}
+        <div class='flex gap-3'>
+            <NotifyToggle
+                bind:checked={subOpts.notify}
+                changeHandler={() => saveInputs()}
+                tooltipText={getMsg('optionSubredditsNotify_title')}
+                data-testid='notify'
+            />
+            <!-- Toggle Filters -->
+            <button
+                class='toggle-button'
+                class:toggle-button-on={filterOpts?.enabled}
+                use:tooltip={{ content: getMsg('optionSubredditsFilter_title') }}
+                aria-label={getMsg('optionSubredditsFilter_title')}
+                onclick={onFilterClick}
+            >
+                {#if filterOpts?.enabled}
+                    <div class='h-5 w-5'>{@html icons.FilterIcon}</div>
+                {:else}
+                    <div class='h-5 w-5'>{@html icons.FilterOffIcon}</div>
+                {/if}
+                <span class='ml-[2px]'>
+                    {getMsg('optionSubredditsFilter')} ({(filterOpts?.enabled && filterOpts?.rules?.length) || 0})
+                </span>
+            </button>
+        </div>
+    {/snippet}
+
+    <!-- Children-->
     <div>
         <div class='col-span-full m-2 pb-2'>
             <div class='mb-3 flex justify-between rounded-b text-xs'>
@@ -222,7 +240,7 @@
                         class='w-full max-w-[20rem] rounded border border-skin-base'
                         type='text'
                         bind:value={subOpts.name}
-                        on:input={inputHandler}
+                        oninput={inputHandler}
                         aria-label={getMsg('optionSubredditsInputName_title')}
                         placeholder={getMsg('optionSubredditsInputName_placeholder')}
                     />
@@ -238,7 +256,7 @@
                         type='text'
                         bind:this={subredditInputRef}
                         bind:value={subOpts.subreddit}
-                        on:input={inputHandler}
+                        oninput={inputHandler}
                         aria-label={getMsg('optionSubredditsInput_title')}
                         placeholder={getMsg('optionSubredditsInput_placeholder')}
                     />

@@ -1,24 +1,47 @@
 <script lang='ts'>
+    import getMsg from '@/utils/get-message';
+    import type { InputChangeEv } from '@options/components/common/events';
+    import IosCheckbox from '@options/components/common/IosCheckbox.svelte';
     import * as icons from '@options/lib/icons';
     import { tooltip } from '@options/lib/tooltip';
-    import IosCheckbox from '@options/components/common/IosCheckbox.svelte';
-    import getMsg from '@/utils/get-message';
+    import type { Snippet } from 'svelte';
+    import type { HTMLAttributes } from 'svelte/elements';
 
-    export let isActive = false;
-    export let name = '';
-    export let disabled = false;
-    export let errorMessage = '';
-    export let showEditBlock = false;
-    export let onDelete: () => void;
-    export let onFetch: () => void;
-    export let onActiveToggle: () => void;
+    interface Props extends HTMLAttributes<HTMLDivElement> {
+        itemDisabled?: boolean;
+        name?: string;
+        fetchBlocked?: boolean;
+        errorMessage?: string;
+        showEditBlock?: boolean;
+        onDelete?: () => void;
+        onFetch?: () => void;
+        onActiveToggle?: (e: InputChangeEv) => void;
+        posts?: Snippet;
+        toggles?: Snippet;
+        children?: Snippet;
+    }
+
+    let {
+        itemDisabled = false,
+        name = '',
+        fetchBlocked = false,
+        errorMessage = '',
+        showEditBlock = $bindable(false),
+        onDelete = () => {},
+        onFetch = () => {},
+        onActiveToggle = () => {},
+        posts: postsSnip,
+        toggles: togglesSnip,
+        children,
+        ...restProps
+    }: Props = $props();
 
     const toggleEditBlock = () => {
         showEditBlock = !showEditBlock;
     };
 </script>
 
-<div class='rounded-md hover:ring-1 hover:ring-skin-delimiter' class:expanded={showEditBlock} {...$$restProps}>
+<div class='rounded-md hover:ring-1 hover:ring-skin-delimiter' class:expanded={showEditBlock} {...restProps}>
     <div
         class='watch-item-grid rounded-md border border-dashed border-transparent bg-skin-bg'
         class:delimiter={showEditBlock}
@@ -26,7 +49,7 @@
         <!-- Input name -->
         <button
             class='flex h-full border-none p-0 px-2 text-left text-sm'
-            on:click={toggleEditBlock}
+            onclick={toggleEditBlock}
             data-testid='input-name'
         >
             <div class='w-full overflow-hidden text-ellipsis whitespace-nowrap' class:font-bold={name}>
@@ -44,9 +67,9 @@
         <!-- Fetch posts -->
         <button
             class='flex items-center p-0 text-skin-text hover:text-skin-accent2 disabled:text-skin-gray'
-            on:click={onFetch}
+            onclick={onFetch}
             use:tooltip={{ content: getMsg('optionsWatchInputFetchDesc') }}
-            {disabled}
+            disabled={fetchBlocked}
         >
             <div class='mr-1 h-5 w-5 text-skin-accent2'>
                 {@html icons.RefreshIcon2}
@@ -56,17 +79,17 @@
 
         <IosCheckbox
             tooltipText={getMsg('optionWatchInputDisable')}
-            bind:checked={isActive}
+            checked={!itemDisabled}
             changeHandler={onActiveToggle}
             data-testid='isActive'
         />
 
-        <slot name='toggles' />
+        {@render togglesSnip?.()}
 
         <!-- Toggle editor -->
         <button
             class='flex items-center justify-start border-transparent bg-transparent px-2 py-0'
-            on:click={toggleEditBlock}
+            onclick={toggleEditBlock}
         >
             <span class='h-5 w-5'>
                 {@html icons.EditIcon}
@@ -79,21 +102,21 @@
             class='icon-button text-skin-accent'
             aria-label={getMsg('optionWatchInputDelete')}
             use:tooltip={{ content: getMsg('optionWatchInputDelete') }}
-            on:click={onDelete}
+            onclick={onDelete}
         >
             <div class='h-5 w-5'>{@html icons.DeleteIcon}</div>
         </button>
 
         <!-- Post list row -->
         <div class='col-span-full'>
-            <slot name='posts-block' />
+            {@render postsSnip?.()}
         </div>
     </div>
 
     <!-- Editor -->
     {#if showEditBlock}
         <div class='col-span-full m-2 pb-2'>
-            <slot />
+            {@render children?.()}
         </div>
     {/if}
 </div>

@@ -12,7 +12,7 @@
         },
         "resolveJsonModule": true,
         "types": ["vitest/globals", "chrome"],
-        "allowJs": false,
+        "allowJs": true,
         "strictNullChecks": true,
         "outDir": "./dist",
         "plugins": [{ "name": "typescript-svelte-plugin" }],

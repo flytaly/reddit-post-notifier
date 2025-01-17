@@ -1,29 +1,32 @@
 <script lang='ts'>
-    import browser from 'webextension-polyfill';
-    import { storageData } from '../store/store';
-    import CheckMarkButton from './CheckMarkButton.svelte';
     import type { RedditMessage } from '@/reddit-api/reddit-types';
     import storage from '@/storage';
     import type { ExtensionOptions } from '@/types/extension-options';
     import { getInboxUrl } from '@/utils';
     import getMsg from '@/utils/get-message';
     import type { PostGroup } from '@/utils/post-group';
+    import browser from 'webextension-polyfill';
+    import { storageData } from '../store/store';
+    import CheckMarkButton from './CheckMarkButton.svelte';
 
-    export let group: PostGroup;
-    export let item: RedditMessage;
+    interface Props {
+        group: PostGroup;
+        item: RedditMessage;
+    }
 
-    let options: ExtensionOptions = $storageData.options;
-    let href: string;
+    let { group, item }: Props = $props();
 
-    $: options = $storageData.options;
-    $: href = getInboxUrl(options);
+    let options: ExtensionOptions = $derived($storageData.options);
+    let href: string = $derived(getInboxUrl(options));
 
     const removePost = async (messageId: string) => {
         const accId = group.type === 'account-message' ? group.id : undefined;
         await storage.removeMessage({ accId, messageId });
     };
 
-    const onLinkClick = async () => {
+    const onLinkClick = async (ev: MouseEvent) => {
+        ev.preventDefault();
+        ev.stopPropagation();
         if (options.delPostAfterBodyClick)
             await removePost(item.data.id);
 
@@ -36,7 +39,7 @@
     <a
         class='flex-grow px-1 py-[0.125rem] text-skin-link'
         {href}
-        on:click|preventDefault|stopPropagation={onLinkClick}
+        onclick={onLinkClick}
         data-keys-target='post-link'
         data-post-id={item.data.id}
     >

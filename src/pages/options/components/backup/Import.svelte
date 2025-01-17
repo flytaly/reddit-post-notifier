@@ -4,11 +4,12 @@
     import storage from '@/storage';
     import type { StorageFields } from '@/storage/storage-types';
 
-    let data: string;
+    let data: string = $state('');
+    let errMessage: string = $state('');
+    let importing: boolean = $state(false);
+    let wasImported: boolean = $state(false);
+
     let fileInput: HTMLInputElement;
-    let errMessage: string = '';
-    let importing: boolean = false;
-    let wasImported: boolean = false;
 
     onMount(() => {
         fileInput.addEventListener('change', (e: Event) => {
@@ -63,12 +64,12 @@
         cols='35'
         rows='10'
         bind:value={data}
-        on:change={() => {
+        onchange={() => {
             errMessage = '';
             wasImported = false;
         }}
-    />
-    <button class='standard-button' on:click={() => void onImport()} disabled={importing}>Import</button>
+    ></textarea>
+    <button class='standard-button' onclick={() => void onImport()} disabled={importing}>Import</button>
     {#if errMessage}
         <div class='text-skin-error'>{errMessage}</div>
     {/if}

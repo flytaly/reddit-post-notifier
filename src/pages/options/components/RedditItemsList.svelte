@@ -2,12 +2,19 @@
     import { XCircleIcon } from '@options/lib/icons';
     import type { RedditItem } from '@/reddit-api/reddit-types';
 
-    export let items: RedditItem[] = [];
-    export let title = '';
-    export let onClose: () => void = () => {
-    //
-    };
-    export let limit = 5;
+    interface Props {
+        items?: RedditItem[];
+        title?: string;
+        onClose?: () => void;
+        limit?: number;
+    }
+
+    let {
+        items = [],
+        title = '',
+        onClose = () => {},
+        limit = 5,
+    }: Props = $props();
 
     type DisplayedRedditItem = {
         type: string;
@@ -20,52 +27,54 @@
         author: string;
     };
 
-    let displayItems: DisplayedRedditItem[] = [];
+    let displayItems: DisplayedRedditItem[] = $state([]);
 
     function notEmpty<T>(value: T | null | undefined): value is T {
         return value !== null && value !== undefined;
     }
 
-    $: displayItems = items
-        .slice(0, limit)
-        .map(({ kind, data }): DisplayedRedditItem | undefined => {
-            const link = `https://reddit.com/${data.permalink}`;
-            const date = new Date(data.created * 1000).toLocaleDateString();
-            const fullDate = new Date(data.created * 1000).toLocaleString();
-            if (kind === 't3') {
-                return {
-                    type: 'post',
-                    subreddit: `r/${data.subreddit}`,
-                    text: data.title,
-                    date,
-                    fullDate,
-                    link,
-                    flair: data.link_flair_text || '',
-                    author: data.author,
-                };
-            }
-            if (kind === 't1') {
-                return {
-                    type: 'comment',
-                    subreddit: `r/${data.subreddit}`,
-                    text: data.body,
-                    date,
-                    fullDate,
-                    link,
-                    flair: '',
-                    author: data.author,
-                };
-            }
-            return undefined;
-        })
-        .filter(notEmpty);
+    $effect(() => {
+        displayItems = items
+            .slice(0, limit)
+            .map(({ kind, data }): DisplayedRedditItem | undefined => {
+                const link = `https://reddit.com/${data.permalink}`;
+                const date = new Date(data.created * 1000).toLocaleDateString();
+                const fullDate = new Date(data.created * 1000).toLocaleString();
+                if (kind === 't3') {
+                    return {
+                        type: 'post',
+                        subreddit: `r/${data.subreddit}`,
+                        text: data.title,
+                        date,
+                        fullDate,
+                        link,
+                        flair: data.link_flair_text || '',
+                        author: data.author,
+                    };
+                }
+                if (kind === 't1') {
+                    return {
+                        type: 'comment',
+                        subreddit: `r/${data.subreddit}`,
+                        text: data.body,
+                        date,
+                        fullDate,
+                        link,
+                        flair: '',
+                        author: data.author,
+                    };
+                }
+                return undefined;
+            })
+            .filter(notEmpty);
+    });
 </script>
 
 <article>
     <header>
         <div class='my-1 flex items-center justify-between'>
             <div>{title}</div>
-            <button class='mr-2 h-4 w-4 border-none bg-transparent p-0' on:click={onClose} title='close'>
+            <button class='mr-2 h-4 w-4 border-none bg-transparent p-0' onclick={onClose} title='close'>
                 {@html XCircleIcon}
             </button>
         </div>

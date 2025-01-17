@@ -9,19 +9,12 @@
     import type { AuthUser, StorageFields } from '@/storage/storage-types';
     import auth from '@/reddit-api/auth';
 
-    let accounts: StorageFields['accounts'] = $storageData.accounts;
-    let accList: AuthUser[] = [];
+    let accounts: StorageFields['accounts'] = $derived($storageData.accounts);
+    let accList: AuthUser[] = $derived(Object.values($storageData.accounts || {}));
 
-    $: {
-        accounts = $storageData.accounts;
-        accList = Object.values(accounts || {});
-    }
-
-    let authError = '';
-    let isAuthorizing = false;
-    let disabled = false;
-
-    $: disabled = isAuthorizing || $isBlocked;
+    let authError = $state('');
+    let isAuthorizing = $state(false);
+    let disabled = $derived(isAuthorizing || $isBlocked);
 
     const authorize = async (id?: string, onSuccess?: () => unknown) => {
         isAuthorizing = true;

@@ -4,11 +4,9 @@
     import Heading from '../Heading.svelte';
     import storage from '@/storage';
 
-    let wasCopied = false;
-    let withAccs = false;
-    let dataPromise: Promise<string>;
-
-    $: dataPromise = storage.getExportData(withAccs).then(d => JSON.stringify(d, null, 2));
+    let wasCopied = $state(false);
+    let withAccs = $state(false);
+    let dataPromise: Promise<string> = $derived(storage.getExportData(withAccs).then(d => JSON.stringify(d, null, 2)));
 
     function downloadText(text: string, filename = 'file.txt', type = 'text/plain') {
         const element = document.createElement('a');
@@ -61,7 +59,7 @@
                     <button
                         class='flex items-center border-none bg-transparent px-1 py-0 hover:bg-transparent hover:text-skin-accent disabled:cursor-default'
                         class:success={wasCopied}
-                        on:click={() => setClipboard(data)}
+                        onclick={() => setClipboard(data)}
                         disabled={wasCopied}
                     >
                         <div class='mr-[0.125rem] h-5 w-5'>{@html wasCopied ? CheckMarkIcon : CopyIcon}</div>
@@ -69,7 +67,7 @@
                     </button>
                     <button
                         class='flex items-center border-none bg-transparent px-1 py-0 hover:bg-transparent hover:text-skin-accent disabled:cursor-default'
-                        on:click={() => downloadText(data, 'reddit-post-notifier_config.json', 'application/json')}
+                        onclick={() => downloadText(data, 'reddit-post-notifier_config.json', 'application/json')}
                     >
                         <div class='h-5 w-5'>
                             {@html JsonIcon}

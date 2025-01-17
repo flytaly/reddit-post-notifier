@@ -4,7 +4,11 @@
     import tippy from 'tippy.js';
     import { HelpCircleIcon } from '@options/lib/icons';
 
-    export let message: Content;
+    interface Props {
+        message: Content;
+    }
+
+    let { message }: Props = $props();
 
     let ref: HTMLElement;
 

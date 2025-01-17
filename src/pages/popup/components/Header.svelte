@@ -1,4 +1,10 @@
 <script lang='ts'>
+    import { sendMessage } from '@/messaging';
+    import storage from '@/storage';
+    import type { OpenGroupsPayload } from '@/types/message';
+    import { getInboxUrl } from '@/utils';
+    import getMsg from '@/utils/get-message';
+    import type { PostGroup } from '@/utils/post-group';
     import MailIcon from '@assets/mail.svg?raw';
     import OpenIcon from '@assets/open-in-new.svg?raw';
     import RefreshIcon from '@assets/refresh.svg?raw';
@@ -6,25 +12,22 @@
     import browser from 'webextension-polyfill';
     import { isUpdating, storageData } from '../store/store';
     import SvgButton from './SvgButton.svelte';
-    import type { PostGroup } from '@/utils/post-group';
-    import getMsg from '@/utils/get-message';
-    import { getInboxUrl } from '@/utils';
-    import type { OpenGroupsPayload } from '@/types/message';
-    import storage from '@/storage';
-    import { sendMessage } from '@/messaging';
 
-    export let groupsWithPosts: PostGroup[] = [];
-
-    let loading = false;
-    let messagesCount = 0;
-
-    $: loading = $isUpdating;
-    $: {
-        messagesCount = $storageData.mail?.messages?.length || 0;
-        Object.values($storageData.accounts || {})?.forEach((a) => {
-            messagesCount += a.mail?.messages?.length || 0;
-        });
+    interface Props {
+        groupsWithPosts?: PostGroup[];
     }
+
+    let { groupsWithPosts = [] }: Props = $props();
+
+    let loading = $derived($isUpdating);
+
+    let messagesCount = $derived.by(() => {
+        let result = $storageData.mail?.messages?.length || 0;
+        Object.values($storageData.accounts || {})?.forEach((a) => {
+            result += a.mail?.messages?.length || 0;
+        });
+        return result;
+    });
 
     const onOptionClick = async () => {
         await browser.runtime.openOptionsPage();
@@ -36,7 +39,7 @@
             await storage.removeAllMessages();
     };
 
-    let disableOpenAll = false;
+    let disableOpenAll = $state(false);
     const onOpenAll = async () => {
         const payload: OpenGroupsPayload = {
             groups: groupsWithPosts,
@@ -56,7 +59,7 @@
 <header class='flex min-h-[1.2rem] items-center justify-between space-x-3 border-b border-skin-delimiter p-1'>
     <SvgButton
         disabled={loading}
-        on:click={updateNow}
+        onclick={updateNow}
         title={getMsg('headerUpdateBtn_title')}
         text={loading ? 'updating' : 'update'}
     >
@@ -66,7 +69,7 @@
     </SvgButton>
 
     <SvgButton
-        on:click={onOpenAll}
+        onclick={onOpenAll}
         text='open all'
         title='Open all unread items'
         disabled={groupsWithPosts.length === 0 || disableOpenAll}
@@ -78,7 +81,7 @@
         <a
             class='group flex items-center gap-1 text-current'
             class:accent={messagesCount}
-            on:click={onMailClick}
+            onclick={onMailClick}
             title={getMsg('headerMailLink_title')}
             href={getInboxUrl($storageData.options)}
         >
@@ -89,7 +92,7 @@
         </a>
         <SvgButton
             text={getMsg('headerOptionsBtn')}
-            on:click={onOptionClick}
+            onclick={onOptionClick}
             title={getMsg('headerOptionsBtn_title')}
             w='1.1rem'
         >

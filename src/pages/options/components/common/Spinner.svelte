@@ -1,8 +1,12 @@
 <script lang='ts'>
     import { LoadingIcon } from '@options/lib/icons';
 
-    export let label = 'Loading';
-    export let show = false;
+    interface Props {
+        label?: string;
+        show?: boolean;
+    }
+
+    let { label = 'Loading', show = false }: Props = $props();
 </script>
 
 {#if show}

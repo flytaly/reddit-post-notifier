@@ -1,44 +1,62 @@
 <script lang='ts'>
-    import * as icons from '@options/lib/icons';
-    import { RefreshIcon2 } from '@options/lib/icons';
-    import { isBlocked } from '@options/lib/store';
+    import NotifierApp from '@/notifier/app';
+    import type { FollowingUser } from '@/storage/storage-types';
+    import getMsg from '@/utils/get-message';
     import IosCheckbox from '@options/components/common/IosCheckbox.svelte';
     import NotifyToggle from '@options/components/common/NotifyToggle.svelte';
     import Spinner from '@options/components/common/Spinner.svelte';
     import RedditItemsList from '@options/components/RedditItemsList.svelte';
-    import getMsg from '@/utils/get-message';
-    import type { FollowingUser } from '@/storage/storage-types';
-    import NotifierApp from '@/notifier/app';
+    import * as icons from '@options/lib/icons';
+    import { RefreshIcon2 } from '@options/lib/icons';
+    import { isBlocked } from '@options/lib/store';
+    import { type InputChangeEv } from '../common/events';
 
-    export let userInfo: FollowingUser;
-    export let commitChanges: () => void;
-    export let onDelete: () => void;
-
-    let username: string = userInfo.username;
-    let inputSaved = true;
-    let comments = true;
-    let posts = true;
-    let showUserData = false;
-    let saveBtnMessage = '';
-    let errorMsg = '';
-    let isLoading = false;
-
-    $: if (userInfo.username !== username && inputSaved)
-        username = userInfo.username;
-
-    $: switch (userInfo.watch) {
-        case 'comments':
-            comments = true;
-            posts = false;
-            break;
-        case 'submitted':
-            comments = false;
-            posts = true;
-            break;
-        default:
-            comments = true;
-            posts = true;
+    interface Props {
+        userInfo: FollowingUser;
+        commitChanges: () => void;
+        onDelete: () => void;
     }
+
+    let { userInfo = $bindable(), commitChanges, onDelete }: Props = $props();
+
+    let username: string = $state(userInfo.username);
+    let notify = $state(!!userInfo.notify);
+
+    $effect(() => {
+        userInfo.notify = notify;
+    });
+
+    let inputSaved = $state(true);
+    let comments = $state(true);
+    let posts = $state(true);
+    let showUserData = $state(false);
+    let errorMsg = $state('');
+    let isLoading = $state(false);
+    let saveBtnMessage = $derived.by(() => {
+        if (!username) return ' ';
+        return username === userInfo.username || inputSaved ? 'saved' : 'save';
+    });
+
+    $effect(() => {
+        if (userInfo.username !== username && inputSaved)
+            username = userInfo.username;
+    });
+
+    $effect(() => {
+        switch (userInfo.watch) {
+            case 'comments':
+                comments = true;
+                posts = false;
+                break;
+            case 'submitted':
+                comments = false;
+                posts = true;
+                break;
+            default:
+                comments = true;
+                posts = true;
+        }
+    });
 
     const saveWatchTarget = () => {
         if (posts)
@@ -58,17 +76,14 @@
         showUserData = false;
         username = username.replace(/\s/g, '');
         userInfo = { ...userInfo, username, error: null, lastUpdate: null, lastPostCreated: null, data: [] };
-        // userInfo.username = username;
         commitChanges();
     };
 
-    $: if (!username)
-        saveBtnMessage = ' ';
-    else saveBtnMessage = username === userInfo.username || inputSaved ? 'saved' : 'save';
-
-    $: if (userInfo.error)
-        errorMsg = `${userInfo.error.error || ''} ${userInfo.error.message || ''}`;
-    else errorMsg = '';
+    $effect(() => {
+        if (userInfo.error)
+            errorMsg = `${userInfo.error.error || ''} ${userInfo.error.message || ''}`;
+        else errorMsg = '';
+    });
 
     async function fetchUser() {
         isLoading = true;
@@ -87,12 +102,12 @@
         isLoading = false;
     }
 
-    const commentChange = (e: Event & { currentTarget: HTMLInputElement }) => {
-        comments = (e.currentTarget as HTMLInputElement).checked;
+    const commentChange = (e: InputChangeEv) => {
+        comments = e.currentTarget.checked;
         saveWatchTarget();
     };
 
-    const postChange = (e: Event & { currentTarget: HTMLInputElement }) => {
+    const postChange = (e: InputChangeEv) => {
         posts = e.currentTarget.checked;
         saveWatchTarget();
     };
@@ -105,15 +120,15 @@
         class='m-0 rounded-l rounded-r-none border-none hover:shadow-none'
         type='text'
         value={username}
-        on:input={(e) => {
+        oninput={(e) => {
             username = e.currentTarget.value;
             inputSaved = false;
         }}
-        on:change={saveUsername}
+        onchange={saveUsername}
     />
     <button
         class='min-w-[4rem] rounded-l-none rounded-r border-0 border-l px-2 py-0 text-xs'
-        on:click={saveWatchTarget}
+        onclick={saveWatchTarget}
     >
         {saveBtnMessage}
     </button>
@@ -128,8 +143,8 @@
 </IosCheckbox>
 
 <NotifyToggle
-    bind:checked={userInfo.notify}
-    changeHandler={commitChanges}
+    bind:checked={notify}
+    changeHandler={() => commitChanges()}
     title='Show notification on new user activities'
 />
 
@@ -137,7 +152,7 @@
     <button
         class='icon-button ml-auto text-skin-accent'
         aria-label={getMsg('optionWatchInputDelete')}
-        on:click={onDelete}
+        onclick={onDelete}
     >
         <div class='h-5 w-5'>{@html icons.DeleteIcon}</div>
     </button>
@@ -147,7 +162,7 @@
     {#if userInfo.username?.length}
         <button
             class='flex items-center border-transparent bg-transparent p-0 text-xs text-skin-accent2 hover:bg-transparent'
-            on:click={() => void fetchUser()}
+            onclick={() => void fetchUser()}
             disabled={$isBlocked}
         >
             <div class='mr-1 h-5 w-5'>

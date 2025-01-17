@@ -1,17 +1,17 @@
 <script lang='ts'>
-    import { OpenInNew, PlayIcon, SaveIcon, UploadIcon } from '@options/lib/icons';
-    import { storageData } from '@options/lib/store';
-    import ChangeUrlInput from './ChangeUrlInput.svelte';
-    import OptionsItem from './OptionsItem.svelte';
-    import RadioGroup from './RadioGroup.svelte';
-    import DEFAULT_OPTIONS from '@/options-default';
+    import { IS_CHROME } from '@/constants';
     import { sendMessage } from '@/messaging';
+    import DEFAULT_OPTIONS from '@/options-default';
     import { getAudioSrc, notificationSoundFiles } from '@/sounds';
     import storage from '@/storage';
     import type { ExtensionOptions } from '@/types/extension-options';
     import applyTheme from '@/utils/apply-theme';
     import getMsg from '@/utils/get-message';
-    import { IS_CHROME } from '@/constants';
+    import { OpenInNew, PlayIcon, SaveIcon, UploadIcon } from '@options/lib/icons';
+    import { storageData } from '@options/lib/store';
+    import ChangeUrlInput from './ChangeUrlInput.svelte';
+    import OptionsItem from './OptionsItem.svelte';
+    import RadioGroup from './RadioGroup.svelte';
 
     const themeValueList: Array<{ value: ExtensionOptions['theme']; id: string; label: string }> = [
         { value: 'light', id: 'theme_light', label: getMsg('optionThemeLight') },
@@ -40,11 +40,13 @@
     const isCustomInterval = () =>
         intervalList.findIndex(i => i.value === String($storageData.options.updateInterval)) === -1;
 
-    let wasUploaded = false;
-    let audioErrMsg = '';
-    let intervalValue = 'custom';
+    let wasUploaded = $state(false);
+    let audioErrMsg = $state('');
+    let intervalValue = $state('custom');
 
-    $: intervalValue = isCustomInterval() ? 'custom' : String($storageData.options.updateInterval);
+    $effect(() => {
+        intervalValue = isCustomInterval() ? 'custom' : String($storageData.options.updateInterval);
+    });
 
     const updateInterval = async (value: number) => {
         if (!value)
@@ -115,154 +117,182 @@
 </script>
 
 <OptionsItem title={getMsg('optionUpdateInterval')} labelFor='updateIntervalInput'>
-    <div slot='description'>
-        <p>
-            {getMsg('optionUpdateIntervalDescription')}
-        </p>
-        {#if IS_CHROME}
+    {#snippet description()}
+        <div >
             <p>
-                {getMsg('optionUpdateIntervalDescriptionChrome')}
+                {getMsg('optionUpdateIntervalDescription')}
             </p>
-        {/if}
-    </div>
-    <div slot='controls'>
-        <RadioGroup onChange={intervalRadioInputHandler} valueList={intervalList} currentValue={intervalValue} />
-        <div class='ml-auto mt-2 flex items-baseline justify-end gap-2'>
-            <input
-                id='updateIntervalInput'
-                type='number'
-                min='10'
-                max='7200'
-                size='8'
-                bind:value={$storageData.options.updateInterval}
-                on:input={intervalCustomInputHandler}
-            />
-            <span>seconds</span>
+            {#if IS_CHROME}
+                <p>
+                    {getMsg('optionUpdateIntervalDescriptionChrome')}
+                </p>
+            {/if}
         </div>
-    </div>
+    {/snippet}
+    {#snippet controls()}
+        <div >
+            <RadioGroup onChange={intervalRadioInputHandler} valueList={intervalList} currentValue={intervalValue} />
+            <div class='ml-auto mt-2 flex items-baseline justify-end gap-2'>
+                <input
+                    id='updateIntervalInput'
+                    type='number'
+                    min='10'
+                    max='7200'
+                    size='8'
+                    bind:value={$storageData.options.updateInterval}
+                    oninput={intervalCustomInputHandler}
+                />
+                <span>seconds</span>
+            </div>
+        </div>
+    {/snippet}
 </OptionsItem>
 
 <OptionsItem title={getMsg('optionTheme')}>
-    <div slot='description'>{getMsg('optionsThemeDescription')}</div>
-    <div slot='controls'>
-        <RadioGroup
-            bind:currentValue={$storageData.options.theme}
-            valueList={themeValueList}
-            onChange={onThemeChange}
-            name='theme'
-        />
-    </div>
+    {#snippet description()}
+        <div >{getMsg('optionsThemeDescription')}</div>
+    {/snippet}
+    {#snippet controls()}
+        <div >
+            <RadioGroup
+                bind:currentValue={$storageData.options.theme}
+                valueList={themeValueList}
+                onChange={onThemeChange}
+                name='theme'
+            />
+        </div>
+    {/snippet}
 </OptionsItem>
 
 <OptionsItem title={getMsg('optionDelPostAfterClick')} labelFor='deletePostInput'>
-    <div slot='description'>{getMsg('optionDelPostAfterClickDescription')}</div>
-    <div slot='controls'>
-        <input
-            id='deletePostInput'
-            type='checkbox'
-            bind:checked={$storageData.options.delPostAfterBodyClick}
-            on:change={() => storage.saveOptions({ delPostAfterBodyClick: $storageData.options.delPostAfterBodyClick })}
-        />
-    </div>
+    {#snippet description()}
+        <div >{getMsg('optionDelPostAfterClickDescription')}</div>
+    {/snippet}
+    {#snippet controls()}
+        <div >
+            <input
+                id='deletePostInput'
+                type='checkbox'
+                bind:checked={$storageData.options.delPostAfterBodyClick}
+                onchange={() => storage.saveOptions({ delPostAfterBodyClick: $storageData.options.delPostAfterBodyClick })}
+            />
+        </div>
+    {/snippet}
 </OptionsItem>
 
 <OptionsItem title={getMsg('optionDelListAfterClick')} labelFor='deleteListInput'>
-    <div slot='description'>
-        <span class='inline-block'>
-            <span>{getMsg('optionDelListAfterClickDescription')}</span>
-            <span class='inline-block w-4'>{@html OpenInNew}</span>
-        </span>
-    </div>
-    <div slot='controls'>
-        <input
-            id='deleteListInput'
-            type='checkbox'
-            bind:checked={$storageData.options.delListAfterOpening}
-            on:change={() => storage.saveOptions({ delListAfterOpening: $storageData.options.delListAfterOpening })}
-        />
-    </div>
+    {#snippet description()}
+        <div >
+            <span class='inline-block'>
+                <span>{getMsg('optionDelListAfterClickDescription')}</span>
+                <span class='inline-block w-4'>{@html OpenInNew}</span>
+            </span>
+        </div>
+    {/snippet}
+    {#snippet controls()}
+        <div >
+            <input
+                id='deleteListInput'
+                type='checkbox'
+                bind:checked={$storageData.options.delListAfterOpening}
+                onchange={() => storage.saveOptions({ delListAfterOpening: $storageData.options.delListAfterOpening })}
+            />
+        </div>
+    {/snippet}
 </OptionsItem>
 
 <OptionsItem title={getMsg('optionHideEmptyGroups')} labelFor='hideEmptyInput'>
-    <div slot='description'>{getMsg('optionHideEmptyGroupsDescription')}</div>
-    <div slot='controls'>
-        <input
-            id='hideEmptyInput'
-            type='checkbox'
-            bind:checked={$storageData.options.hideEmptyGroups}
-            on:change={() => storage.saveOptions({ hideEmptyGroups: $storageData.options.hideEmptyGroups })}
-        />
-    </div>
+    {#snippet description()}
+        <div >{getMsg('optionHideEmptyGroupsDescription')}</div>
+    {/snippet}
+    {#snippet controls()}
+        <div >
+            <input
+                id='hideEmptyInput'
+                type='checkbox'
+                bind:checked={$storageData.options.hideEmptyGroups}
+                onchange={() => storage.saveOptions({ hideEmptyGroups: $storageData.options.hideEmptyGroups })}
+            />
+        </div>
+    {/snippet}
 </OptionsItem>
 
 <OptionsItem title={getMsg('optionNotificationAudioId')} labelFor='soundSelect'>
-    <div slot='description'>{getMsg('optionNotificationAudioIdDescription')}</div>
-    <div slot='controls'>
-        <div class='flex items-stretch justify-end'>
-            <select
-                name='sound'
-                id='soundSelect'
-                class='w-max'
-                bind:value={$storageData.options.notificationSoundId}
-                on:change={() => storage.saveOptions({ notificationSoundId: $storageData.options.notificationSoundId })}
-            >
-                <option value={null}>No sound</option>
-                {#each Object.keys(notificationSoundFiles) as soundFileId, idx}
-                    <option value={soundFileId}>{`Sound ${idx + 1}`}</option>
-                {/each}
-                <option value='custom'>Custom sound file</option>
-            </select>
-            <button class='standard-button play-btn' on:click={getSoundAndPlay} title='play'>
-                {@html PlayIcon}
-            </button>
-        </div>
-        <div>
-            {#if $storageData.options.notificationSoundId === 'custom'}
-                <span class='text-left text-skin-error'>{audioErrMsg}</span>
-                <form class='mt-2 flex flex-col'>
-                    <label
-                        for='fileElem'
-                        class='flex w-full items-center justify-center border-2 border-dashed border-skin-gray2 p-1 py-4 text-center hover:border-skin-accent hover:text-skin-accent'
-                    >
-                        {#if wasUploaded}
-                            <span class='mr-2 h-6 w-6 text-skin-success'>{@html SaveIcon}</span>
-                            <span>Saved</span>
-                        {:else}
-                            <span class='mr-2 h-6 w-6'>{@html UploadIcon}</span>
-                            <span>Click here to upload a file</span>
-                        {/if}
-                    </label>
+    {#snippet description()}
+        <div >{getMsg('optionNotificationAudioIdDescription')}</div>
+    {/snippet}
+    {#snippet controls()}
+        <div >
+            <div class='flex items-stretch justify-end'>
+                <select
+                    name='sound'
+                    id='soundSelect'
+                    class='w-max'
+                    bind:value={$storageData.options.notificationSoundId}
+                    onchange={() => storage.saveOptions({ notificationSoundId: $storageData.options.notificationSoundId })}
+                >
+                    <option value={null}>No sound</option>
+                    {#each Object.keys(notificationSoundFiles) as soundFileId, idx}
+                        <option value={soundFileId}>{`Sound ${idx + 1}`}</option>
+                    {/each}
+                    <option value='custom'>Custom sound file</option>
+                </select>
+                <button class='standard-button play-btn' onclick={getSoundAndPlay} title='play'>
+                    {@html PlayIcon}
+                </button>
+            </div>
+            <div>
+                {#if $storageData.options.notificationSoundId === 'custom'}
+                    <span class='text-left text-skin-error'>{audioErrMsg}</span>
+                    <form class='mt-2 flex flex-col'>
+                        <label
+                            for='fileElem'
+                            class='flex w-full items-center justify-center border-2 border-dashed border-skin-gray2 p-1 py-4 text-center hover:border-skin-accent hover:text-skin-accent'
+                        >
+                            {#if wasUploaded}
+                                <span class='mr-2 h-6 w-6 text-skin-success'>{@html SaveIcon}</span>
+                                <span>Saved</span>
+                            {:else}
+                                <span class='mr-2 h-6 w-6'>{@html UploadIcon}</span>
+                                <span>Click here to upload a file</span>
+                            {/if}
+                        </label>
 
-                    <input
-                        class='hidden'
-                        type='file'
-                        id='fileElem'
-                        accept='audio/*'
-                        on:change={onFilesDrop}
-                        disabled={false}
-                    />
-                </form>
-            {/if}
+                        <input
+                            class='hidden'
+                            type='file'
+                            id='fileElem'
+                            accept='audio/*'
+                            onchange={onFilesDrop}
+                            disabled={false}
+                        />
+                    </form>
+                {/if}
+            </div>
         </div>
-    </div>
+    {/snippet}
 </OptionsItem>
 
 <ChangeUrlInput />
 
 <OptionsItem title='Badge click action'>
-    <div slot='description'>Change behavior when clicking on the extension icon in the toolbar.</div>
-    <div slot='controls'>
-        <select
-            name='onBadgeClick'
-            id='badgeClickSelect'
-            class='w-max'
-            bind:value={$storageData.options.onBadgeClick}
-            on:change={onBadgeClickChangeHandler}
-        >
-            <option value='popup'>Open Popup</option>
-            <option value='openall'>Open all unread items</option>
-        </select>
-    </div>
+    {#snippet description()}
+        <div >Change behavior when clicking on the extension icon in the toolbar.</div>
+    {/snippet}
+    {#snippet controls()}
+        <div >
+            <select
+                name='onBadgeClick'
+                id='badgeClickSelect'
+                class='w-max'
+                bind:value={$storageData.options.onBadgeClick}
+                onchange={onBadgeClickChangeHandler}
+            >
+                <option value='popup'>Open Popup</option>
+                <option value='openall'>Open all unread items</option>
+            </select>
+        </div>
+    {/snippet}
 </OptionsItem>
 
 <style lang='postcss'>

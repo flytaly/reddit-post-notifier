@@ -49,7 +49,7 @@
             <Heading id={s['follow-user'].id} name={s['follow-user'].name} />
             <FollowUsersBlock />
         </section>
-        <div class='h-[80vh]' />
+        <div class='h-[80vh]'></div>
     {/if}
 </div>
 

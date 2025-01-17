@@ -1,8 +1,4 @@
 <script lang='ts'>
-    import browser from 'webextension-polyfill';
-    import { storageData } from '../store/store';
-    import CheckMarkButton from './CheckMarkButton.svelte';
-    import SvgButton from './SvgButton.svelte';
     import Pin from '@/assets/pin-outline.svg?raw';
     import type { RedditItem } from '@/reddit-api/reddit-types';
     import storage from '@/storage';
@@ -10,15 +6,20 @@
     import { constructUrl, getItemTitle, idToUserIdx } from '@/utils';
     import getMsg from '@/utils/get-message';
     import type { PostGroup } from '@/utils/post-group';
+    import browser from 'webextension-polyfill';
+    import { storageData } from '../store/store';
+    import CheckMarkButton from './CheckMarkButton.svelte';
+    import SvgButton from './SvgButton.svelte';
 
-    export let group: PostGroup;
-    export let post: RedditItem;
+    interface Props {
+        group: PostGroup;
+        post: RedditItem;
+    }
 
-    let options: ExtensionOptions = $storageData.options;
-    let href: string;
+    let { group, post }: Props = $props();
 
-    $: options = $storageData.options;
-    $: href = constructUrl(post.data.permalink, options);
+    let options: ExtensionOptions = $derived($storageData.options);
+    let href: string = $derived(constructUrl(post.data.permalink, options));
 
     const removePost = async (id: string) => {
         const itemId = group.id;
@@ -47,7 +48,9 @@
         return removePost(post.data.id);
     };
 
-    const onLinkClick = async () => {
+    const onLinkClick = async (ev: MouseEvent) => {
+        ev.preventDefault();
+        ev.stopPropagation();
         if (options.delPostAfterBodyClick)
             await removePost(post.data.id);
 
@@ -61,7 +64,7 @@
         class='flex-grow px-1 py-[0.125rem] text-skin-link'
         {href}
         data-keys-target='post-link'
-        on:click|preventDefault|stopPropagation={onLinkClick}
+        onclick={onLinkClick}
         data-post-id={post.data.id}
     >
         {#if group.isMultireddit}
@@ -70,7 +73,7 @@
         {getItemTitle(post)}</a
     >
     <span data-keys-target='pin-post'>
-        <SvgButton on:click={onPinClick} title={getMsg('watchListItemPin_title')}>
+        <SvgButton onclick={onPinClick} title={getMsg('watchListItemPin_title')}>
             {@html Pin}
         </SvgButton>
     </span>

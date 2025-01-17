@@ -6,7 +6,11 @@
     import getMsg from '@/utils/get-message';
     import { tooltip } from '@/pages/options/lib/tooltip';
 
-    export let current: PageId;
+    interface Props {
+        current: PageId;
+    }
+
+    let { current }: Props = $props();
 
     const pageIcons: Record<PageId, string> = {
         'watch': WatchListIcon,
