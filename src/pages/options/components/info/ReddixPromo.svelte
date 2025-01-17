@@ -4,7 +4,7 @@
     import type { StorageFields } from '@/storage/storage-types';
     import { IS_CHROME } from '@/constants';
 
-    let isShown = false;
+    let isShown = $state(false);
     const reddixHref = IS_CHROME
         ? 'https://chromewebstore.google.com/detail/reddix-reddit-bookmarks/mbedpjfdcabldemjmbkngheehfaelohe'
         : 'https://addons.mozilla.org/firefox/addon/reddix-reddit-bookmarks/';
@@ -32,7 +32,7 @@
                     <span>
                         Check out <a href={reddixHref} class='font-bold text-sm' target='_blank'>Reddix</a> extension
                     </span>
-                    <button on:click={hidePromo} title='close' class='font-mono text-base font-bold hover:text-skin-accent'>⨯</button>
+                    <button onclick={hidePromo} title='close' class='font-mono text-base font-bold hover:text-skin-accent'>⨯</button>
                 </p>
                 <p class='text-xs text-skin-gray'>
                     to search in your Reddit saved items

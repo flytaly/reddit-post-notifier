@@ -11,7 +11,7 @@ export const notificationSoundFiles = {
     sound_04: '/audio/512136__beezlefm__notification-sound.webm',
 };
 
-export type SoundId = keyof typeof notificationSoundFiles | 'custom';
+export type SoundId = keyof typeof notificationSoundFiles | 'custom' | '';
 
 export async function getAudioSrc(soundId: SoundId | undefined | null): Promise<string> {
     if (!soundId)

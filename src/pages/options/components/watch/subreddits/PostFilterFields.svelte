@@ -5,11 +5,21 @@
     import { allFields } from '@/text-search/post-filter';
     import { debounce } from '@/utils';
 
-    export let filterRule: FilterRule;
-    export let commitChanges: () => void;
-    export let removeFilter: () => void;
-    export let subId: string;
-    export let index: number;
+    interface Props {
+        filterRule: FilterRule;
+        commitChanges: () => void;
+        removeFilter: () => void;
+        subId: string;
+        index: number;
+    }
+
+    let {
+        filterRule = $bindable(),
+        commitChanges,
+        removeFilter,
+        subId,
+        index,
+    }: Props = $props();
 
     const debounced = debounce(commitChanges, 700);
     const debouncedHandler = () => {
@@ -63,7 +73,7 @@
                 class='rounded border-none bg-transparent hover:bg-skin-input hover:shadow-none focus:bg-skin-input'
                 name={`field_${idx}`}
                 bind:value={searchRule.field}
-                on:change={commitChanges}
+                onchange={commitChanges}
             >
                 {#each allFields as f}
                     <option value={f}>{fieldNames[f]}</option>
@@ -73,16 +83,16 @@
                 class='mx-2 rounded border-none bg-transparent hover:bg-skin-input hover:shadow-none focus:bg-skin-input'
                 name={`matchType_${idx}`}
                 bind:value={searchRule.queryType}
-                on:change={commitChanges}
+                onchange={commitChanges}
             >
                 {#each matchTypes(searchRule.field) as mt}
                     <option value={mt.queryType}>{mt.text}</option>
                 {/each}
             </select>
-            <input class='w-full rounded' type='text' bind:value={searchRule.query} on:input={debouncedHandler} />
+            <input class='w-full rounded' type='text' bind:value={searchRule.query} oninput={debouncedHandler} />
             <button
                 class='border-none bg-transparent px-1 py-0 text-skin-gray hover:bg-transparent hover:text-skin-accent hover:shadow-none'
-                on:click={() => removeField(idx)}
+                onclick={() => removeField(idx)}
             >
                 <div class='w-4'>{@html XCircleIcon}</div>
             </button>
@@ -97,13 +107,13 @@
     </div>
     <div class='mt-3 flex justify-between'>
         <button
-            on:click={addField}
+            onclick={addField}
             class='standard-button rounded border-transparent bg-transparent px-1 py-0 hover:border-skin-accent2'
         >
             + add field
         </button>
         <button
-            on:click={removeFilter}
+            onclick={removeFilter}
             class='standard-button flex items-center rounded border-transparent bg-transparent p-0 px-1 hover:border-skin-accent hover:text-skin-accent'
             title='Delete filter'
         >

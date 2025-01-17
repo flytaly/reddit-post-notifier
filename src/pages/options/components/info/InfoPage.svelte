@@ -15,4 +15,4 @@
     <Heading id={s.shortcuts.id} name={s.shortcuts.name} />
     <ShortcutsTable />
 </section>
-<div class='h-52' />
+<div class='h-52'></div>

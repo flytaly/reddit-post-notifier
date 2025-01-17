@@ -480,7 +480,6 @@ describe('prune', () => {
         const queriesIdList = ['q2'];
         await storage.prune({ queriesIdList });
         expect(mockSet).toHaveBeenCalledWith({ queries: { q2: queryInfo.q2 } });
-        vi.mocked(storage.getQueriesData).mockRestore();
     });
 });
 

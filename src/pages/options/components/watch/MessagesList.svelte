@@ -3,10 +3,19 @@
     import type { RedditMessage } from '@/reddit-api/reddit-types';
     import getMsg from '@/utils/get-message';
 
-    export let items: RedditMessage[] = [];
-    export let title = '';
-    export let onClose: (() => void) | undefined;
-    export let limit = 5;
+    interface Props {
+        items?: RedditMessage[];
+        title?: string;
+        onClose: (() => void) | undefined;
+        limit?: number;
+    }
+
+    let {
+        items = [],
+        title = '',
+        onClose,
+        limit = 5,
+    }: Props = $props();
 
     type DisplayedMessage = {
         subreddit: string;
@@ -17,19 +26,21 @@
         author: string;
     };
 
-    let displayItems: DisplayedMessage[] = [];
+    let displayItems: DisplayedMessage[] = $state([]);
 
-    $: displayItems = items.slice(0, limit).map(({ data }) => {
-        const date = new Date(data.created * 1000).toLocaleDateString();
-        const fullDate = new Date(data.created * 1000).toLocaleString();
-        return {
-            subreddit: data.subreddit,
-            title: data.subject,
-            text: data.body?.slice(),
-            date,
-            fullDate,
-            author: data.author,
-        } as DisplayedMessage;
+    $effect(() => {
+        displayItems = items.slice(0, limit).map(({ data }) => {
+            const date = new Date(data.created * 1000).toLocaleDateString();
+            const fullDate = new Date(data.created * 1000).toLocaleString();
+            return {
+                subreddit: data.subreddit,
+                title: data.subject,
+                text: data.body?.slice(),
+                date,
+                fullDate,
+                author: data.author,
+            } as DisplayedMessage;
+        });
     });
 </script>
 
@@ -37,7 +48,7 @@
     <header>
         <div class='my-1 flex items-center justify-between'>
             <a href='https://reddit.com/message/unread/' target='_blank' rel='noreferrer'>{title}</a>
-            <button class='mr-2 h-4 w-4 border-none bg-transparent p-0' on:click={onClose} title={getMsg('closeLabel')}>
+            <button class='mr-2 h-4 w-4 border-none bg-transparent p-0' onclick={onClose} title={getMsg('closeLabel')}>
                 {@html XCircleIcon}
             </button>
         </div>

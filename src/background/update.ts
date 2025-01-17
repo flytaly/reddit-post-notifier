@@ -4,7 +4,6 @@ import NotifierApp from '@/notifier/app';
 import { isAuthError } from '@/reddit-api/errors';
 import storage from '@/storage';
 
-/* eslint-disable-next-line import/no-mutable-exports */
 export let isUpdating = false;
 
 export async function updateData(isForcedByUser = false, isRecurring = false) {

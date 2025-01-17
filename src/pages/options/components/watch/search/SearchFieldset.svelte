@@ -13,46 +13,60 @@
     import type { QueryData, QueryOpts } from '@/storage/storage-types';
     import NotifierApp from '@/notifier/app';
 
-    export let queryObject: QueryOpts;
-    export let queryData: QueryData;
+    interface Props {
+        queryObject: QueryOpts;
+        queryData: QueryData;
+    }
 
-    let subredditInputRef: HTMLInputElement;
-    let isLoading = false;
-    let showPosts = false;
-    let saveMsg = '';
-    let name = '';
+    let { queryObject, queryData }: Props = $props();
 
-    let isActive = !queryObject.disabled;
-    let showEditBlock = !queryObject.query;
+    let query = $state(queryObject.query || '');
+    let name = $state(queryObject.name || '');
+    let subreddit = $state(queryObject.subreddit || '');
+    let notify = $state(!!queryObject.notify);
+    let isActive = $state(!queryObject.disabled);
+    let showEditBlock = $state(!queryObject.query);
 
-    let errorMessage = '';
-    let subredditError = '';
-    let fetchError = '';
-    $: fetchError = formatError(queryData.error);
-    $: errorMessage = subredditError || fetchError;
+    let subredditInputRef: HTMLInputElement | undefined = $state();
+    let isLoading = $state(false);
+    let showPosts = $state(false);
+    let saveMsg = $state('');
 
-    $: if (!queryObject.name && !queryObject.query && !showEditBlock)
-        name = 'click here to edit...';
-    else
-        name = queryObject.name || queryObject.query || '';
+    let errorMessage = $state('');
+    let subredditError = $state('');
+    let fetchError = $state('');
 
-    let { id } = queryObject;
-    $: id = queryObject.id;
+    $effect(() => {
+        fetchError = formatError(queryData.error);
+    });
 
-    const ids = {
-        name: `search_name_${id}`,
-        subreddit: `search_subreddit_${id}`,
-        query: `search_query_${id}`,
-    };
+    $effect(() => {
+        errorMessage = subredditError || fetchError;
+    });
+
+    let searchBlockName = $derived.by(() => {
+        if (!name && !query && !showEditBlock)
+            return 'click here to edit...';
+        return name || query || '';
+    });
+
+    let ids = $derived.by(() => {
+        const id = queryObject.id;
+        return {
+            name: `search_name_${id}`,
+            subreddit: `search_subreddit_${id}`,
+            query: `search_query_${id}`,
+        };
+    });
 
     const saveInputs = debounce(async () => {
-        const _query = queryObject.query?.trim();
+        const _query = query.trim();
         if (!_query)
             return;
         fetchError = '';
         subredditError = '';
         showPosts = false;
-        const _subreddit = queryObject.subreddit?.trim().replace(/\s/g, '+');
+        const _subreddit = subreddit?.trim().replace(/\s/g, '+');
         if (_subreddit && !testMultireddit(_subreddit)) {
             const msg = 'Invalid subreddit name';
             subredditInputRef?.setCustomValidity(msg);
@@ -64,7 +78,8 @@
 
         await searchStore.saveQuery({
             ...queryObject,
-            name: queryObject.name?.trim(),
+            notify: notify,
+            name: name.trim(),
             subreddit: _subreddit,
             query: _query,
             disabled: !isActive,
@@ -89,7 +104,7 @@
             const app = new NotifierApp();
             app.reddit.fetchOpts = { cache: 'default' };
             await app.updateQuery({
-                query: queryObject,
+                query: { ...queryObject, name, subreddit, query },
                 queryData: { ...queryData, lastPostCreated: 0, posts: [], error: null },
             });
         }
@@ -103,16 +118,19 @@
 
 <WatchItem
     bind:showEditBlock
-    bind:isActive
-    name={name || showEditBlock ? name : 'click here to edit...'}
-    onActiveToggle={() => void saveInputs()}
+    itemDisabled={isActive}
+    name={searchBlockName}
+    onActiveToggle={(e) => {
+        isActive = !e.currentTarget.checked;
+        void saveInputs();
+    }}
     onDelete={deleteHandler}
     onFetch={() => void fetchPosts()}
-    disabled={$isBlocked || !queryObject.query || !!subredditError}
+    fetchBlocked={$isBlocked || !query || !!subredditError}
     data-testid='search-inputs'
     {errorMessage}
 >
-    <div slot='posts-block'>
+    {#snippet posts()}
         <!-- Post list row -->
         <div class='col-span-full'>
             <Spinner show={isLoading} />
@@ -130,16 +148,18 @@
                 </div>
             {/if}
         </div>
-    </div>
+    {/snippet}
 
-    <div slot='toggles' class='flex gap-3'>
-        <NotifyToggle
-            bind:checked={queryObject.notify}
-            changeHandler={() => saveInputs()}
-            tooltipText={getMsg('optionSearchNotify')}
-            data-testid='notify'
-        />
-    </div>
+    {#snippet toggles()}
+        <div class='flex gap-3'>
+            <NotifyToggle
+                bind:checked={notify}
+                changeHandler={() => saveInputs() }
+                tooltipText={getMsg('optionSearchNotify')}
+                data-testid='notify'
+            />
+        </div>
+    {/snippet}
 
     <fieldset>
         <div class='mb-3 flex justify-between rounded-b text-xs'>
@@ -170,8 +190,8 @@
                     title={getMsg('optionSearchName_title')}
                     id={ids.name}
                     placeholder={getMsg('optionSearchName_placeholder')}
-                    bind:value={queryObject.name}
-                    on:input={inputHandler}
+                    bind:value={name}
+                    oninput={inputHandler}
                 />
                 <span class='ml-2'>
                     <TooltipIcon message={getMsg('optionSearchName_title')} />
@@ -186,9 +206,9 @@
                     title={getMsg('optionSearchSubreddit_title')}
                     id={ids.subreddit}
                     placeholder={getMsg('optionSearchSubreddit_placeholder')}
-                    bind:value={queryObject.subreddit}
+                    bind:value={subreddit}
                     bind:this={subredditInputRef}
-                    on:input={inputHandler}
+                    oninput={inputHandler}
                 />
                 <span class='ml-2'>
                     <TooltipIcon message={getMsg('optionSearchSubreddit_title')} />
@@ -203,15 +223,15 @@
                     title={getMsg('optionSearchQuery_title')}
                     placeholder={getMsg('optionSearchQuery_placeholder')}
                     id={ids.query}
-                    bind:value={queryObject.query}
-                    on:input={inputHandler}
+                    bind:value={query}
+                    oninput={inputHandler}
                 />
                 <span class='ml-2'>
                     <TooltipIcon message={getMsg('optionSearchQuery_title')} />
                 </span>
             </span>
 
-            <div />
+            <div></div>
             <div class='-mt-1'>
                 <a
                     class='text-sm underline'

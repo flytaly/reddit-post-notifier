@@ -31,13 +31,13 @@
             <span>{getMsg('optionsSubredditFetch')}</span>
         </div>
         <div class='w-12 text-center font-medium'>{getMsg('optionWatchInputActiveColumn')}</div>
-        <div class='w-48' />
-        <div class='w-14' />
-        <div class='w-8' />
+        <div class='w-48'></div>
+        <div class='w-14'></div>
+        <div class='w-8'></div>
     </div>
     {#each $subredditStore as subOpts (subOpts.id)}
         <div class='mb-2' transition:fade|local={{ duration: 200 }} animate:flip={{ delay: 230, duration: 150 }}>
-            <SubredditInput bind:subOpts subData={$storageData.subreddits[subOpts.id] || {}} />
+            <SubredditInput subOptsIn={subOpts} subData={$storageData.subreddits[subOpts.id] || {}} />
         </div>
     {/each}
     <AddButton clickHandler={subredditStore.addSubreddit}>{getMsg('optionSubredditsAdd')}</AddButton>

@@ -1,21 +1,26 @@
 <script lang='ts'>
-    import PinRemove from '@assets/pin-remove.svg?raw';
-    import { storageData } from '../store/store';
-    import SvgButton from './SvgButton.svelte';
-    import { RedditObjectKind } from '@/reddit-api/reddit-types';
     import type { RedditItem, RedditMessage } from '@/reddit-api/reddit-types';
+    import { RedditObjectKind } from '@/reddit-api/reddit-types';
     import storage from '@/storage';
     import { constructUrl, getItemTitle } from '@/utils';
     import getMsg from '@/utils/get-message';
+    import PinRemove from '@assets/pin-remove.svg?raw';
+    import { storageData } from '../store/store';
+    import SvgButton from './SvgButton.svelte';
 
-    export let item: RedditItem | RedditMessage;
+    interface Props {
+        item: RedditItem | RedditMessage;
+    }
 
-    let redditItem: RedditItem;
-    let href: string;
-    $: href = constructUrl(redditItem.data.permalink, $storageData.options);
+    let { item }: Props = $props();
 
-    if (item.kind && item.kind !== RedditObjectKind.message)
-        redditItem = item as RedditItem;
+    let redditItem = $derived.by(() => {
+        if (item.kind && item.kind !== RedditObjectKind.message)
+            return item as RedditItem;
+    });
+
+    let href: string = $derived(!redditItem ? '' : constructUrl(redditItem.data.permalink, $storageData.options));
+
 </script>
 
 {#if redditItem}
@@ -26,7 +31,7 @@
         </a>
         <span data-keys-target='pin-post'>
             <SvgButton
-                on:click={() => void storage.removePinPost(redditItem.data.id)}
+                onclick={() => void storage.removePinPost(redditItem.data.id)}
                 title={getMsg('watchListItemUnpin_title')}
             >
                 {@html PinRemove}

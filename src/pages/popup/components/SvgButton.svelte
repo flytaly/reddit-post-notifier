@@ -1,25 +1,39 @@
 <script lang='ts'>
-    export let title = '';
-    export let href: string | null = null;
-    export let disabled = false;
-    export let text = '';
-    export let w = '1rem';
-    export let h = w;
+    import type { HTMLAttributes } from 'svelte/elements';
 
-    let iconStyles = '';
-    $: iconStyles = `width:${w};height:${h};`;
+    interface Props extends HTMLAttributes<HTMLElement> {
+        href?: string | null;
+        disabled?: boolean;
+        text?: string;
+        w?: string;
+        h?: string;
+        children?: import('svelte').Snippet;
+    }
+
+    let {
+        href = null,
+        disabled = false,
+        text = '',
+        w = '1rem',
+        h = w,
+        children,
+        ...rest
+    }: Props = $props();
+
+    let iconStyles = $derived(`width:${w};height:${h};`);
+
 </script>
 
 {#if href}
-    <a class='svg-button group' class:with-text={text} {href} {title} on:click>
-        <div class='icon' style={iconStyles}><slot /></div>
+    <a class='svg-button group' class:with-text={text} {href} {...rest}>
+        <div class='icon' style={iconStyles}>{@render children?.()}</div>
         {#if text}
             <div class='ml-1'>{text}</div>
         {/if}
     </a>
 {:else}
-    <button class='svg-button group' class:with-text={text} {title} {disabled} on:click>
-        <div class='icon' style={iconStyles}><slot /></div>
+    <button class='svg-button group' class:with-text={text} {disabled} {...rest}>
+        <div class='icon' style={iconStyles}>{@render children?.()}</div>
         {#if text}
             <div class='ml-1'>{text}</div>
         {/if}

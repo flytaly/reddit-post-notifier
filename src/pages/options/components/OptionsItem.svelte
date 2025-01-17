@@ -1,25 +1,39 @@
 <script lang='ts'>
-    export let title = '';
-    export let column = false;
-    export let labelFor: string | null = null;
+    interface Props {
+        title?: string;
+        column?: boolean;
+        labelFor?: string | null;
+        description?: import('svelte').Snippet;
+        controls?: import('svelte').Snippet;
+        children?: import('svelte').Snippet;
+    }
+
+    let {
+        title = '',
+        column = false,
+        labelFor = null,
+        description,
+        controls,
+        children,
+    }: Props = $props();
 </script>
 
 <article class:column>
     {#if labelFor}
         <label for={labelFor} class='description'>
             <header>{title}</header>
-            <slot name='description' />
+            {@render description?.()}
         </label>
     {:else}
         <div class='description'>
             <header>{title}</header>
-            <slot name='description' />
+            {@render description?.()}
         </div>
     {/if}
     <div class='pr-4 text-right'>
-        <slot name='controls' />
+        {@render controls?.()}
     </div>
-    <slot />
+    {@render children?.()}
 </article>
 
 <style lang='postcss'>
@@ -31,9 +45,6 @@
     }
     .description {
         @apply mb-2 min-w-[18rem] flex-grow pr-4 leading-6 text-skin-gray;
-    }
-    :not(.column) .description :global([slot='description']) {
-        max-width: 90%;
     }
     header {
         @apply mb-2 text-base font-bold text-skin-text;

@@ -3,8 +3,6 @@ import { tick } from 'svelte';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import browser from 'webextension-polyfill';
 
-import userEvent from '@testing-library/user-event';
-import GeneralSettingsBlock from './GeneralSettingsBlock.svelte';
 import { sendMessage } from '@/messaging';
 import DEFAULT_OPTIONS from '@/options-default';
 import type { notificationSoundFiles } from '@/sounds';
@@ -13,6 +11,8 @@ import storage from '@/storage/storage';
 import type { ExtensionOptions } from '@/types/extension-options';
 import applyTheme from '@/utils/apply-theme';
 import getMsg from '@/utils/get-message';
+import userEvent from '@testing-library/user-event';
+import GeneralSettingsBlock from './GeneralSettingsBlock.svelte';
 
 vi.mock('@/storage/storage.ts');
 vi.mock('@/utils/get-message.ts');
@@ -131,7 +131,7 @@ describe('general Options', async () => {
         await fireEvent.change(select, { target: { value: id } });
         optionSaved({ notificationSoundId: id });
         await fireEvent.change(select, { target: { value: null } });
-        optionSaved({ notificationSoundId: null });
+        optionSaved({ notificationSoundId: '' });
     });
 
     it('change reddit url', async () => {

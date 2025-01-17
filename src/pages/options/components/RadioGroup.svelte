@@ -1,13 +1,21 @@
 <script lang='ts'>
-    /* Accessible radio buttons group */
+    interface Props {
+        /* Accessible radio buttons group */
+        currentValue: string;
+        valueList: Array<{ value: string; id: string; label: string }>;
+        onChange: (value: string) => unknown;
+        name?: string;
+    }
 
-    export let currentValue: string;
-    export let valueList: Array<{ value: string; id: string; label: string }>;
-    export let onChange: (value: string) => unknown;
-    export let name = '';
+    let {
+        currentValue = $bindable(),
+        valueList,
+        onChange,
+        name = '',
+    }: Props = $props();
 </script>
 
-<form class='flex gap-2 gap-y-4 overflow-visible py-1' on:change={() => onChange(currentValue)}>
+<form class='flex gap-2 gap-y-4 overflow-visible py-1' onchange={() => onChange(currentValue)}>
     {#each valueList as { value, id, label }}
         <div class='group overflow-visible'>
             <input class='peer absolute opacity-0' type='radio' bind:group={currentValue} {value} {id} {name} />

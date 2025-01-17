@@ -7,8 +7,13 @@
     import type { MailInfo } from '@/storage/storage-types';
     import storage from '@/storage';
 
-    let mailData: MailInfo;
-    $: mailData = $storageData.mail || {};
+    const defaultData = { error: '', mailNotify: false, checkMail: false } as MailInfo;
+
+    let mailData = $state(defaultData);
+
+    $effect(() => {
+        mailData = $storageData.mail || defaultData;
+    });
 
     const checkHandler = async (e: Event) => {
         const checked = (e.currentTarget as HTMLInputElement).checked;

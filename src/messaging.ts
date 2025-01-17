@@ -1,4 +1,3 @@
-/* eslint-disable no-console */
 import browser from 'webextension-polyfill';
 import type { PortMessage, PortMessageId, PortMessagePayload } from './types/message';
 

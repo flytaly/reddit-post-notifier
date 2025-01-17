@@ -60,8 +60,8 @@ export const rateLimits = derived<typeof msgStore, RateLimits>(msgStore, ($store
     const timeoutId
         = wait > 0
             ? setTimeout(() => {
-                msgStore.update(state => ({ ...state, rateLimits: { used: null, reset: null, remaining: null } }));
-            }, wait)
+                    msgStore.update(state => ({ ...state, rateLimits: { used: null, reset: null, remaining: null } }));
+                }, wait)
             : undefined;
 
     set({ ...$store.rateLimits });

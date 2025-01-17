@@ -1,22 +1,25 @@
 <script lang='ts'>
+    import FilterOnIcon from '@/assets/filter-on.svg?raw';
+    import MailIcon from '@/assets/mail.svg?raw';
+    import NotifyOffIcon from '@/assets/notify-off.svg?raw';
+    import NotifyOnIcon from '@/assets/notify.svg?raw';
+    import OpenInNew from '@/assets/open-in-new.svg?raw';
+    import UpdatesDisabledIcon from '@/assets/updates-disable.svg?raw';
+    import WarningIcon from '@/assets/warning.svg?raw';
+    import getMsg from '@/utils/get-message';
+    import type { PostGroup } from '@/utils/post-group';
     import browser from 'webextension-polyfill';
     import { storageData } from '../store/store';
     import CheckMarkButton from './CheckMarkButton.svelte';
     import SvgButton from './SvgButton.svelte';
-    import MailIcon from '@/assets/mail.svg?raw';
-    import OpenInNew from '@/assets/open-in-new.svg?raw';
-    import getMsg from '@/utils/get-message';
-    // import SearchIcon from '@/assets/search.svg?raw';
-    import FilterOnIcon from '@/assets/filter-on.svg?raw';
-    import NotifyOffIcon from '@/assets/notify-off.svg?raw';
-    import NotifyOnIcon from '@/assets/notify.svg?raw';
-    import UpdatesDisabledIcon from '@/assets/updates-disable.svg?raw';
-    import WarningIcon from '@/assets/warning.svg?raw';
-    import type { PostGroup } from '@/utils/post-group';
 
-    export let group: PostGroup;
-    export let onCheck: (() => Promise<void>) | null = null;
-    export let disabled = false;
+    interface Props {
+        group: PostGroup;
+        onCheck?: (() => Promise<void>) | null;
+        disabled?: boolean;
+    }
+
+    let { group, onCheck = null, disabled = false }: Props = $props();
 
     const linkClickHandler = async (e: Event) => {
         e.stopPropagation();
@@ -38,10 +41,6 @@
             <div class='h-4 w-4 shrink-0 text-skin-gray' title={getMsg('watchListMailIcon')}>
                 {@html MailIcon}
             </div>
-            <!-- {:else if group.type == 'search'}
-            <div class="h-4 w-4 text-skin-gray" title="Reddit search">
-                {@html SearchIcon}
-            </div> -->
         {/if}
         <span class='mr-auto max-w-[40ch] overflow-hidden text-ellipsis whitespace-nowrap'>{group.title}</span>
         {#if group.updatesDisabled}
@@ -70,7 +69,7 @@
         {/if}
     </div>
     <span class='ml-2 text-skin-link opacity-50 hover:opacity-100'>
-        <SvgButton href={group.href} title={getMsg('watchListOpenInNew_title')} on:click={linkClickHandler}>
+        <SvgButton href={group.href} title={getMsg('watchListOpenInNew_title')} onclick={linkClickHandler}>
             {@html OpenInNew}
         </SvgButton>
     </span>

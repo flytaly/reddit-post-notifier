@@ -9,10 +9,13 @@
     import type { FilterRule } from '@/text-search/post-filter';
     import type { PostFilterOptions } from '@/storage/storage-types';
 
-    export let ruleList: FilterRule[] = [];
+    interface Props {
+        ruleList?: FilterRule[];
+        saveInputs: (filter: PostFilterOptions) => void;
+        subId: string;
+    }
 
-    export let saveInputs: (filter: PostFilterOptions) => void;
-    export let subId: string;
+    let { ruleList = $bindable([]), saveInputs, subId }: Props = $props();
 
     const commitChanges = () => {
         saveInputs({ rules: ruleList });
@@ -48,13 +51,14 @@
         </div>
     </div>
     <div class='flex flex-col'>
-        {#each ruleList as filterRule, index}
+        <!-- eslint-disable-next-line @typescript-eslint/no-unused-vars -->
+        {#each ruleList as _filterRule, index}
             <div class='connected-block'>
                 <PostFilterFields
                     removeFilter={() => removeRule(index)}
                     {commitChanges}
                     {subId}
-                    bind:filterRule
+                    bind:filterRule={ruleList[index]}
                     {index}
                 />
             </div>

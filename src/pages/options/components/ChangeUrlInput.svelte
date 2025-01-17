@@ -7,7 +7,7 @@
     import storage from '@/storage';
     import getMsg from '@/utils/get-message';
 
-    let url = '';
+    let url = $state('');
 
     const setUrl = (urlType: ExtensionOptions['redditUrlType']) => {
         url = getRedditBaseUrl(urlType, $storageData.options.customRedditUrl);
@@ -37,7 +37,7 @@
         }
     }
 
-    let wasSaved = true;
+    let wasSaved = $state(true);
 
     async function save() {
         const temp = validateUrl(url);
@@ -50,39 +50,43 @@
 </script>
 
 <OptionsItem title={getMsg('optionUseOldReddit')}>
-    <div slot='description'>{getMsg('optionUseOldRedditDescription')}</div>
-    <div slot='controls'>
-        <div>
-            <RadioGroup
-                bind:currentValue={$storageData.options.redditUrlType}
-                valueList={redditTypesList}
-                onChange={onRedditTypeChange}
-                name='redditUrlType'
-            />
-            <div class='mt-2 flex items-center'>
-                <input
-                    bind:value={url}
-                    class='rounded-r-none border border-r-0'
-                    type='url'
-                    on:input={() => (wasSaved = false)}
-                    on:change={save}
-                    disabled={$storageData.options.redditUrlType !== 'custom'}
-                    data-testid='redditUrlInput'
+    {#snippet description()}
+        <div >{getMsg('optionUseOldRedditDescription')}</div>
+    {/snippet}
+    {#snippet controls()}
+        <div >
+            <div>
+                <RadioGroup
+                    bind:currentValue={$storageData.options.redditUrlType}
+                    valueList={redditTypesList}
+                    onChange={onRedditTypeChange}
+                    name='redditUrlType'
                 />
-                <button
-                    type='submit'
-                    on:click={save}
-                    class='standard-button min-w-[5em] px-2'
-                    disabled={$storageData.options.redditUrlType !== 'custom'}
-                    data-testid='saveUrlBtn'
-                >
-                    {#if wasSaved}
-                        saved
-                    {:else}
-                        save
-                    {/if}
-                </button>
+                <div class='mt-2 flex items-center'>
+                    <input
+                        bind:value={url}
+                        class='rounded-r-none border border-r-0'
+                        type='url'
+                        oninput={() => (wasSaved = false)}
+                        onchange={save}
+                        disabled={$storageData.options.redditUrlType !== 'custom'}
+                        data-testid='redditUrlInput'
+                    />
+                    <button
+                        type='submit'
+                        onclick={save}
+                        class='standard-button min-w-[5em] px-2'
+                        disabled={$storageData.options.redditUrlType !== 'custom'}
+                        data-testid='saveUrlBtn'
+                    >
+                        {#if wasSaved}
+                            saved
+                        {:else}
+                            save
+                        {/if}
+                    </button>
+                </div>
             </div>
         </div>
-    </div>
+    {/snippet}
 </OptionsItem>

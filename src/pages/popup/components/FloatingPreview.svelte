@@ -1,23 +1,27 @@
 <script lang='ts'>
-    import { onMount } from 'svelte';
     import type { RedditItem, RedditMessage, RedditPost } from '@/reddit-api/reddit-types';
     import { RedditObjectKind } from '@/reddit-api/reddit-types';
+    import { onMount } from 'svelte';
 
-    export let posts: RedditItem[] | RedditMessage[];
-    export let containerElement: HTMLElement;
+    interface Props {
+        posts: RedditItem[] | RedditMessage[];
+        containerElement: HTMLElement;
+    }
 
-    let previewElement: HTMLElement;
-    let imageInfo: { url: string; width: number; height: number; loaded: boolean } | null = null;
-    let postText: string | null = null;
+    let { posts, containerElement }: Props = $props();
 
-    $: {
+    let previewElement: HTMLElement | undefined = $state();
+    let imageInfo: { url: string; width: number; height: number; loaded: boolean } | null = $state(null);
+    let postText: string | null = $state(null);
+
+    $effect(() => {
         if (posts) {
             // Clear if post list was updated. Usefull in case
             // when a post is removed from the list but mouseleave event wasn't triggered
             imageInfo = null;
             postText = null;
         }
-    }
+    });
 
     const MAX_WIDTH = 300;
     const MAX_HEIGHT = 200;

@@ -12,18 +12,24 @@
     import storage from '@/storage';
     import NotifierApp from '@/notifier/app';
 
-    export let accounts: StorageFields['accounts'];
-    export let acc: AuthUser;
-    export let authorize: (id?: string, fn?: () => Promise<void>) => Promise<void>;
-    export let isAuthorizing = false;
+    interface Props {
+        accounts: StorageFields['accounts'];
+        acc: AuthUser;
+        authorize: (id?: string, fn?: () => Promise<void>) => Promise<void>;
+        isAuthorizing?: boolean;
+    }
 
-    let isUpdating = false;
-    let isUpdatingMessages = false;
-    let errorList: string[] = [];
-    let disabled = false;
-    let showMessages = false;
+    let {
+        accounts,
+        acc = $bindable(),
+        authorize,
+        isAuthorizing = false,
+    }: Props = $props();
 
-    $: disabled = isUpdating || isUpdatingMessages || isAuthorizing || $isBlocked;
+    let isUpdating = $state(false);
+    let isUpdatingMessages = $state(false);
+    let showMessages = $state(false);
+    let disabled = $derived.by(() => isUpdating || isUpdatingMessages || isAuthorizing || $isBlocked);
 
     const updateAcc = async () => {
         isUpdating = true;
@@ -48,7 +54,7 @@
         return res;
     };
 
-    $: errorList = getErrors(acc);
+    let errorList = $derived.by(() => getErrors(acc));
 
     const updateMessages = async () => {
         isUpdatingMessages = true;
@@ -86,7 +92,7 @@
 <li>
     <button
         class='flex items-center border-transparent bg-transparent p-0 text-xs text-skin-accent2 hover:bg-transparent'
-        on:click={updateAcc}
+        onclick={updateAcc}
         {disabled}
         use:tooltip={{ content: 'update account\'s information' }}
     >
@@ -115,7 +121,7 @@
     <div class='ml-4'>
         <button
             class='flex items-center border-transparent bg-transparent p-0 text-xs text-skin-accent2 hover:bg-transparent'
-            on:click={() => void updateMessages()}
+            onclick={() => void updateMessages()}
             use:tooltip={{ content: getMsg('optionAccountsFetchBtnDesc') }}
             {disabled}
         >
@@ -150,7 +156,7 @@
     <div class='ml-auto'>
         <button
             class='icon-button text-skin-accent'
-            on:click={deleteHandler}
+            onclick={deleteHandler}
             {disabled}
             use:tooltip={{ content: 'remove this account' }}
         >
@@ -165,7 +171,7 @@
         <button
             class='icon-button'
             use:tooltip={{ content: getMsg('optionAccountsReAuthBtn') }}
-            on:click={reAuth}
+            onclick={reAuth}
             {disabled}
         >
             <span class='mr-1 h-5 w-5'>{@html LoginIcon}</span>
@@ -174,7 +180,7 @@
 
     <div class='col-span-full text-xs'>
         <div class='flex justify-between'>
-            <div class='ml-auto' />
+            <div class='ml-auto'></div>
         </div>
         <Spinner show={isUpdatingMessages} />
         {#if errorList?.length}

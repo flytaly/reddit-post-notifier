@@ -1,4 +1,10 @@
 <script lang='ts'>
+    import Pin from '@/assets/pin.svg?raw';
+    import type { StorageFields } from '@/storage/storage-types';
+    import getMsg from '@/utils/get-message';
+    import type { PostGroup } from '@/utils/post-group';
+    import { getGroupItems, removePostsFromGroup } from '@/utils/post-group';
+    import { onMount } from 'svelte';
     import type { SlideConfig } from '../helpers/transition';
     import { slideHorizontal } from '../helpers/transition';
     import { storageData } from '../store/store';
@@ -6,37 +12,28 @@
     import GroupTitle from './GroupTitle.svelte';
     import PinPostRow from './PinPostRow.svelte';
     import Row from './Row.svelte';
-    import type { PostGroup } from '@/utils/post-group';
-    import { getGroupItems, removePostsFromGroup } from '@/utils/post-group';
-    import getMsg from '@/utils/get-message';
-    import type { StorageFields } from '@/storage/storage-types';
-    import Pin from '@/assets/pin.svg?raw';
 
-    export let groupsWithPosts: PostGroup[] = [];
-    export let groupsWithoutPosts: PostGroup[] = [];
-
-    let expanded = new Set<string>();
-    let initialLoading = true;
-    let data: StorageFields;
-
-    $: data = $storageData;
-
-    $: if (initialLoading) {
-        if (groupsWithPosts.length === 1) {
-            expanded = new Set(groupsWithPosts.map(g => g.id));
-        }
-        else {
-            expanded = new Set([
-                ...expanded,
-                ...groupsWithPosts.filter(g => g.size <= data.options.expandWithItems).map(g => g.id),
-            ]);
-        }
-        if (expanded.size)
-            initialLoading = false;
+    interface Props {
+        groupsWithPosts?: PostGroup[];
+        groupsWithoutPosts?: PostGroup[];
     }
 
-    let big = false;
-    $: big = big || Boolean(expanded.size);
+    let { groupsWithPosts = [], groupsWithoutPosts = [] }: Props = $props();
+    let expanded = $state(new Set<string>());
+    let data: StorageFields = $derived($storageData);
+
+    onMount(() => {
+        if (groupsWithPosts.length === 1) {
+            expanded = new Set(groupsWithPosts.map(g => g.id));
+            return;
+        }
+        expanded = new Set([
+            ...expanded,
+            ...groupsWithPosts.filter(g => g.size <= data.options.expandWithItems).map(g => g.id),
+        ]);
+    });
+
+    let big = $derived(expanded.size > 0);
 
     const getToggleHandler = (id: string) => (e: MouseEvent) => {
         e.stopPropagation();
@@ -50,9 +47,6 @@
     };
 
     const pinTransition = (node: Element, props: SlideConfig) => slideHorizontal(node, props);
-    //     props.id && props.id === getId() //
-    //         ? slideVertical(node, pinContainer.getBoundingClientRect().bottom, props) : slideHorizontal(node, props);
-
     const postGroupTransition = (node: Element, props: SlideConfig) => slideHorizontal(node, props);
 </script>
 
@@ -66,17 +60,17 @@
                 isExpanded={expanded.has('PINNED_POST_LIST')}
                 rowOutTransition={slideHorizontal}
             >
-                <div slot='header-row'>
+                {#snippet headerRow()}
                     <div class='flex w-full items-center p-1 pb-2 pr-4'>
                         <div class='mr-1 h-4 w-4'>{@html Pin}</div>
                         <span>{`Pinned posts (${data.pinnedPostList.length})`}</span>
                     </div>
-                </div>
-                <div slot='list-row' let:item>
+                {/snippet}
+                {#snippet listRow(item)}
                     <PinPostRow {item} />
-                </div>
+                {/snippet}
             </DropDownList>
-            <div class='delimiter' />
+            <div class='delimiter'></div>
         {/if}
     </div>
 
@@ -89,12 +83,12 @@
                 isExpanded={expanded.has(g.id)}
                 rowOutTransition={pinTransition}
             >
-                <div slot='header-row'>
+                {#snippet headerRow()}
                     <GroupTitle onCheck={() => removePostsFromGroup(g.id, g.type)} group={g} />
-                </div>
-                <div slot='list-row' let:item>
+                {/snippet}
+                {#snippet listRow(item)}
                     <Row group={g} {item} />
-                </div>
+                {/snippet}
             </DropDownList>
         </div>
     {/each}
@@ -104,7 +98,7 @@
 
     <!-- EMPTY GROUPS -->
     {#if !data.options.hideEmptyGroups && groupsWithoutPosts.length}
-        <div class='delimiter' />
+        <div class='delimiter'></div>
         {#each groupsWithoutPosts as group (group.id)}
             <GroupTitle {group} disabled />
         {/each}

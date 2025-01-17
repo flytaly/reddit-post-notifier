@@ -1,11 +1,12 @@
 <script lang='ts'>
+    import DEFAULT_OPTIONS from '@/options-default';
+    import getMsg from '@/utils/get-message';
     import { BellIcon } from '@options/lib/icons';
     import { routes } from '@options/lib/routes';
     import { storageData } from '@options/lib/store';
-    import getMsg from '@/utils/get-message';
 
-    let limit = 10;
-    $: limit = $storageData.options.limit || 10;
+    let limit = $derived($storageData.options.limit || DEFAULT_OPTIONS.limit);
+
     const subredditHref = `${routes.settings.href}#${routes.watch.sections.subreddit.id}`;
     const searchHref = `${routes.settings.href}#${routes.watch.sections['reddit-search'].id}`;
 </script>
@@ -14,8 +15,8 @@
     <details>
         <summary>Update interval and missing posts</summary>
         <div class='ml-8'>
-            The extension's update logic is simple. It just checks the latest {limit || 10} posts in given Subreddits, Reddit
-            Searches, or following users. This means that the extension may miss some posts if more than {limit || 10} of
+            The extension's update logic is simple. It just checks the latest {limit} posts in given Subreddits, Reddit
+            Searches, or following users. This means that the extension may miss some posts if more than {limit} of
             them were posted during the selected interval. It often happens when you just open the browser after a long time
             or set a big update interval for Subreddits with frequent updates.
         </div>
