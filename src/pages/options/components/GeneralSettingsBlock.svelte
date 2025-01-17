@@ -2,7 +2,7 @@
     import { IS_CHROME } from '@/constants';
     import { sendMessage } from '@/messaging';
     import DEFAULT_OPTIONS from '@/options-default';
-    import { getAudioSrc, notificationSoundFiles } from '@/sounds';
+    import { getAudioSrc, notificationSoundFiles, type SoundId } from '@/sounds';
     import storage from '@/storage';
     import type { ExtensionOptions } from '@/types/extension-options';
     import applyTheme from '@/utils/apply-theme';
@@ -219,19 +219,21 @@
 
 <OptionsItem title={getMsg('optionNotificationAudioId')} labelFor='soundSelect'>
     {#snippet description()}
-        <div >{getMsg('optionNotificationAudioIdDescription')}</div>
+        <div>{getMsg('optionNotificationAudioIdDescription')}</div>
     {/snippet}
     {#snippet controls()}
-        <div >
+        <div>
             <div class='flex items-stretch justify-end'>
                 <select
                     name='sound'
                     id='soundSelect'
                     class='w-max'
-                    bind:value={$storageData.options.notificationSoundId}
-                    onchange={() => storage.saveOptions({ notificationSoundId: $storageData.options.notificationSoundId })}
+                    value={$storageData.options.notificationSoundId}
+                    onchange={(ev) => {
+                        storage.saveOptions({ notificationSoundId: ev.currentTarget.value as SoundId });
+                    }}
                 >
-                    <option value={null}>No sound</option>
+                    <option value="">No sound</option>
                     {#each Object.keys(notificationSoundFiles) as soundFileId, idx}
                         <option value={soundFileId}>{`Sound ${idx + 1}`}</option>
                     {/each}

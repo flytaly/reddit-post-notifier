@@ -70,10 +70,10 @@ describe('subreddit settings', () => {
             expect(isActiveElems[idx].querySelector('input')?.checked).toEqual(!s.disabled);
         });
 
-        const warnings = getAllByTestId('warning-icon');
-        expect(warnings).toHaveLength(1);
-        warnings[0].click();
         await waitFor(() => {
+            const warnings = getAllByTestId('warning-icon');
+            expect(warnings).toHaveLength(1);
+            warnings[0].click();
             expect(getByText(/404 Not Found \(banned\)/)).toBeInTheDocument();
         });
     });

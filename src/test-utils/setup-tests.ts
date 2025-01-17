@@ -13,3 +13,10 @@ process.env.CHROME_REDIRECT_URI = 'https://test.chromiumapp.org/';
 process.env.CHROME_USER_AGENT = 'test_agent';
 
 vi.mock('webextension-polyfill');
+
+Element.prototype.animate = vi.fn().mockImplementation(() => ({
+    finished: Promise.resolve(),
+    cancel: vi.fn(),
+}));
+
+Element.prototype.getAnimations = vi.fn(() => []);

@@ -9,7 +9,7 @@ const DEFAULT_OPTIONS: ExtensionOptions = {
     delPostAfterBodyClick: false,
     delListAfterOpening: false,
     hideEmptyGroups: false,
-    notificationSoundId: null,
+    notificationSoundId: '',
     pollUserInterval: 10 * 60,
     redditUrlType: 'new',
     customRedditUrl: 'https://troddit.com/',

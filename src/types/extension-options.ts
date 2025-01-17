@@ -16,7 +16,7 @@ export interface ExtensionOptions {
     /** delete the item list after opening */
     delListAfterOpening: boolean;
     hideEmptyGroups: boolean;
-    notificationSoundId: null | SoundId;
+    notificationSoundId: '' | SoundId;
     /** open links in 'old.reddit.com' */
     /* useOldReddit: boolean; */
 

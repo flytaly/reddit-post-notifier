@@ -46,9 +46,6 @@
     .description {
         @apply mb-2 min-w-[18rem] flex-grow pr-4 leading-6 text-skin-gray;
     }
-    :not(.column) .description :global([slot='description']) {
-        max-width: 90%;
-    }
     header {
         @apply mb-2 text-base font-bold text-skin-text;
     }

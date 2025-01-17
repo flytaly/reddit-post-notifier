@@ -1,13 +1,5 @@
 import { afterAll, afterEach, beforeAll, describe, expect, it, vi } from 'vitest';
 
-import type { ExtensionOptions } from '../types/extension-options';
-import NotifierApp from './app';
-import type {
-    MessageNotification as MN,
-    PostNotification,
-    UserNotification,
-} from './notifications';
-import notify, { NotificationId as NId } from './notifications';
 import DEFAULT_OPTIONS from '@/options-default';
 import authModule from '@/reddit-api/auth';
 import RedditApiClient from '@/reddit-api/client';
@@ -31,6 +23,14 @@ import { generateMessage, generatePost, generatePosts, generateQuery } from '@/t
 import { mockDate, restoreDate } from '@/test-utils/mock-date';
 import { postFilter } from '@/text-search/post-filter';
 import { getSearchQueryUrl } from '@/utils';
+import type { ExtensionOptions } from '../types/extension-options';
+import NotifierApp from './app';
+import type {
+    MessageNotification as MN,
+    PostNotification,
+    UserNotification,
+} from './notifications';
+import notify, { NotificationId as NId } from './notifications';
 
 vi.mock('@/reddit-api/client.ts');
 vi.mock('@/storage/storage.ts');
@@ -270,7 +270,7 @@ describe('update subreddits', () => {
             items: [{ len: newPosts.length, link: `https://reddit.com/r/${subreddit}/new`, name }],
         };
 
-        expect(mockNotify).toHaveBeenCalledWith(n, null);
+        expect(mockNotify).toHaveBeenCalledWith(n, '');
     });
 
     it('should save error', async () => {
@@ -353,7 +353,7 @@ describe('update reddit search', () => {
             type: NId.post,
             items: [{ len: 1, link: getSearchQueryUrl(q2.query || '', q2.subreddit, getOpts()), name: q2.name || '' }],
         };
-        expect(mockNotify).toHaveBeenCalledWith(ntf, null);
+        expect(mockNotify).toHaveBeenCalledWith(ntf, '');
     });
 });
 
@@ -460,7 +460,7 @@ describe('update user', () => {
                     { len, link: `https://old.reddit.com/user/user3/submitted`, name: 'user3' },
                 ],
             };
-            expect(mockNotify).toHaveBeenCalledWith(expected, null);
+            expect(mockNotify).toHaveBeenCalledWith(expected, '');
         });
     });
 
