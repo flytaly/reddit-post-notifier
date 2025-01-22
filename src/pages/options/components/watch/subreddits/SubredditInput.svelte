@@ -1,4 +1,9 @@
 <script lang='ts'>
+    import NotifierApp from '@/notifier/app';
+    import type { PostFilterOptions, SubredditData, SubredditOpts } from '@/storage/storage-types';
+    import type { FilterRule, SearchableField } from '@/text-search/post-filter';
+    import { debounce, testMultireddit } from '@/utils';
+    import getMsg from '@/utils/get-message';
     import RedditItemsList from '@options/components/RedditItemsList.svelte';
     import TooltipIcon from '@options/components/TooltipIcon.svelte';
     import NotifyToggle from '@options/components/common/NotifyToggle.svelte';
@@ -11,11 +16,6 @@
     import PostFilterBlock from './PostFilterBlock.svelte';
     import type { InputStatus } from './subreddits-store';
     import { inputStatusStore, subredditStore } from './subreddits-store';
-    import getMsg from '@/utils/get-message';
-    import { debounce, testMultireddit } from '@/utils';
-    import type { FilterRule, SearchableField } from '@/text-search/post-filter';
-    import type { PostFilterOptions, SubredditData, SubredditOpts } from '@/storage/storage-types';
-    import NotifierApp from '@/notifier/app';
 
     interface Props {
         subOptsIn: SubredditOpts;
@@ -26,13 +26,11 @@
 
     let subOpts = $state({ disabled: false, filterOpts: undefined, notify: false, ...subOptsIn });
 
-    $effect(() => {
-        subOpts = { disabled: false, filterOpts: undefined, notify: false, ...subOptsIn };
-    });
-
     let inputStatus: InputStatus = $derived($inputStatusStore[subOpts.id] || {});
     let filterOpts: PostFilterOptions = $derived(subOpts.filterOpts || {});
-    let ruleList: FilterRule[] = $derived(filterOpts?.rules || []);
+
+    let ruleList: FilterRule[] = $state(subOptsIn.filterOpts?.rules || []);
+
     let fetchError = $state('');
     let showPosts = $state(false);
     let isLoading = $state(false);
@@ -114,7 +112,7 @@
                 name: subOpts.name,
                 disabled: subOpts.disabled,
                 notify: subOpts.notify,
-                filterOpts: processFilterOpts(filter || subOpts.filterOpts),
+                filterOpts: processFilterOpts(filter || $state.snapshot(subOpts.filterOpts)),
             },
             shouldRemoveData,
         );

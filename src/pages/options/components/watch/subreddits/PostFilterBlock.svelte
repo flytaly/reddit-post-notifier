@@ -18,7 +18,7 @@
     let { ruleList = $bindable([]), saveInputs, subId }: Props = $props();
 
     const commitChanges = () => {
-        saveInputs({ rules: ruleList });
+        saveInputs({ rules: $state.snapshot(ruleList) });
     };
 
     const addRule = () => {

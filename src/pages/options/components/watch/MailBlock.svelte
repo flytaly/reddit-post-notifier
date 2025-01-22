@@ -20,14 +20,14 @@
         mailData.checkMail = checked;
         if (!checked)
             mailData.mailNotify = false;
-        await storage.saveMail(mailData);
+        await storage.saveMail($state.snapshot(mailData));
     };
     const notifyHandler = async (e: Event) => {
         const checked = (e.currentTarget as HTMLInputElement).checked;
         mailData.mailNotify = checked;
         if (checked)
             mailData.checkMail = true;
-        await storage.saveMail(mailData);
+        await storage.saveMail($state.snapshot(mailData));
     };
 </script>
 
