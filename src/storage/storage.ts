@@ -458,34 +458,34 @@ const storage = {
         });
     },
 
-    async removePostsFrom({
-        subredditId,
-        searchId,
-        followUserIndex,
-        clearTS,
-    }: {
-        subredditId?: string;
-        searchId?: string;
-        followUserIndex?: number;
-        /** clear the last post timestamp  */
-        clearTS?: boolean;
-    }) {
-        if (subredditId) {
+    async removePostsFrom(
+        params: ({ subredditId: string } | { searchId: string } | { followUserIndex: number }) & {
+        /** clear the last post timestamp */
+            clearTS?: boolean;
+        },
+    ) {
+        if ('subredditId' in params) {
+            const { subredditId, clearTS } = params;
             const subreddits = await storage.getSubredditData();
+            if (!subreddits[subredditId]) return;
             subreddits[subredditId].posts = [];
             if (clearTS)
                 subreddits[subredditId].lastPostCreated = null;
             await storage.setLocal({ subreddits });
         }
-        if (searchId) {
+        if ('searchId' in params) {
+            const { searchId, clearTS } = params;
             const queries = await storage.getQueriesData();
+            if (!queries[searchId]) return;
             queries[searchId].posts = [];
             if (clearTS)
                 queries[searchId].lastPostCreated = null;
             await storage.setLocal({ queries });
         }
-        if (followUserIndex !== undefined) {
+        if ('followUserIndex' in params) {
+            const { followUserIndex, clearTS } = params;
             const usersList = await storage.getUsersList();
+            if (!usersList[followUserIndex]) return;
             usersList[followUserIndex].data = [];
             if (clearTS)
                 usersList[followUserIndex].lastPostCreated = null;
