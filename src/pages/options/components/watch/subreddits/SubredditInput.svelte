@@ -25,11 +25,15 @@
     let { subOptsIn = { id: '', subreddit: '' }, subData = {} }: Props = $props();
 
     let subOpts = $state({ disabled: false, filterOpts: undefined, notify: false, ...subOptsIn });
+    let ruleList: FilterRule[] = $state(subOptsIn.filterOpts?.rules || []);
+
+    $effect(() => {
+        subOpts = { disabled: false, filterOpts: undefined, notify: false, ...subOptsIn };
+        ruleList = subOptsIn.filterOpts?.rules || [];
+    });
 
     let inputStatus: InputStatus = $derived($inputStatusStore[subOpts.id] || {});
     let filterOpts: PostFilterOptions = $derived(subOpts.filterOpts || {});
-
-    let ruleList: FilterRule[] = $state(subOptsIn.filterOpts?.rules || []);
 
     let fetchError = $state('');
     let showPosts = $state(false);
@@ -261,7 +265,7 @@
                     <TooltipIcon message={getMsg('optionSubredditsInput_title')} />
                 </div>
             </div>
-            <PostFilterBlock {ruleList} {saveInputs} subId={subOpts.id} />
+            <PostFilterBlock bind:ruleList={ruleList} {saveInputs} subId={subOpts.id} />
         </div>
     </div>
 </WatchItem>
