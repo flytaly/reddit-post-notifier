@@ -40,7 +40,7 @@
     const saveInputs = () => {
         const saved = new Set<string>();
 
-        const unique = usersList.filter((u) => {
+        const unique = $state.snapshot(usersList).filter((u) => {
             if (!u.username || saved.has(u.username))
                 return false;
             saved.add(u.username);
