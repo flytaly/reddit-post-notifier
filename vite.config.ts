@@ -37,6 +37,7 @@ export default defineConfig(({ command }) => {
         base: command === 'serve' ? `http://localhost:${port}/` : undefined,
         server: {
             port,
+            cors: { origin: '*' },
             hmr: {
                 host: 'localhost',
             },
