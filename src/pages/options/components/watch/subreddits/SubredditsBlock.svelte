@@ -36,7 +36,7 @@
         <div class='w-8'></div>
     </div>
     {#each $subredditStore as subOpts (subOpts.id)}
-        <div class='mb-2' transition:fade|local={{ duration: 200 }} animate:flip={{ delay: 230, duration: 150 }}>
+        <div class='mb-2' transition:fade|local={{ duration: 200 }} animate:flip={{ duration: 150 }}>
             <SubredditInput subOptsIn={subOpts} subData={$storageData.subreddits[subOpts.id] || {}} />
         </div>
     {/each}
