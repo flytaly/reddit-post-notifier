@@ -124,7 +124,7 @@
     };
 
     const onFilterClick = () => {
-        if (!showEditBlock && !subOpts.filterOpts) {
+        if (!showEditBlock && !subOpts.filterOpts?.rules?.length) {
             subOpts.filterOpts = {
                 rules: [[{ field: 'title', query: '' }]],
             };
