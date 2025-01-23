@@ -1,29 +1,33 @@
 <script lang='ts'>
     import { DeleteIcon, XCircleIcon } from '@options/lib/icons';
-    import { inputStatusStore } from './subreddits-store';
     import type { FilterRule, SearchableField } from '@/text-search/post-filter';
     import { allFields } from '@/text-search/post-filter';
     import { debounce } from '@/utils';
+    import { inputState } from './state.svelte';
 
     interface Props {
         filterRule: FilterRule;
         commitChanges: () => void;
         removeFilter: () => void;
+        addRuleField: () => void;
+        removeRuleField: (index: number) => void;
         subId: string;
-        index: number;
+        filterIdx: number;
     }
 
     let {
         filterRule = $bindable(),
         commitChanges,
+        addRuleField,
         removeFilter,
+        removeRuleField,
         subId,
-        index,
+        filterIdx,
     }: Props = $props();
 
     const debounced = debounce(commitChanges, 700);
     const debouncedHandler = () => {
-        $inputStatusStore[subId] = { typing: true };
+        inputState.set(subId, { typing: false });
         debounced();
     };
 
@@ -50,23 +54,10 @@
         ];
     };
 
-    const addField = () => {
-        filterRule = [...filterRule, { field: allFields[0], query: '', queryType: 'positive' }];
-        commitChanges();
-    };
-
-    const removeField = (index: number) => {
-        if (filterRule.length > 1)
-            filterRule = filterRule.filter((_, i) => i !== index);
-        else
-            filterRule = [{ field: allFields[0], query: '', queryType: 'positive' }];
-
-        commitChanges();
-    };
 </script>
 
 <fieldset class='rounded border border-skin-delimiter p-3 text-sm shadow-md'>
-    <legend class='font-mono text-xs'>Filter rule {index + 1 || ''}</legend>
+    <legend class='font-mono text-xs'>Filter rule {filterIdx + 1 || ''}</legend>
     <div class='field-grid'>
         {#each filterRule as searchRule, idx}
             <select
@@ -92,7 +83,7 @@
             <input class='w-full rounded' type='text' bind:value={searchRule.query} oninput={debouncedHandler} />
             <button
                 class='border-none bg-transparent px-1 py-0 text-skin-gray hover:bg-transparent hover:text-skin-accent hover:shadow-none'
-                onclick={() => removeField(idx)}
+                onclick={() => removeRuleField(idx)}
             >
                 <div class='w-4'>{@html XCircleIcon}</div>
             </button>
@@ -107,7 +98,7 @@
     </div>
     <div class='mt-3 flex justify-between'>
         <button
-            onclick={addField}
+            onclick={addRuleField}
             class='standard-button rounded border-transparent bg-transparent px-1 py-0 hover:border-skin-accent2'
         >
             + add field

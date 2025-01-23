@@ -7,7 +7,6 @@ import { listenForMessages, onMessage } from '@/messaging';
 import storage from '@/storage';
 import { dataFields } from '@/storage/fields';
 import type { StorageFields } from '@/storage/storage-types';
-import { IS_TEST } from '@/constants';
 
 const defaultState = {
     ...dataFields,
@@ -45,7 +44,6 @@ export const storageData = writable(defaultState, () => {
     browser.storage.onChanged.addListener(listener);
 
     return () => {
-        if (!IS_TEST)
-            browser.storage.onChanged.removeListener(listener);
+        browser.storage.onChanged.removeListener(listener);
     };
 });

@@ -1,8 +1,8 @@
 {
     "extends": "@tsconfig/svelte/tsconfig.json",
     "compilerOptions": {
-        "target": "ES2019",
-        "lib": ["es2020", "dom", "DOM.Iterable", "webworker"],
+        "target": "ES2022",
+        "lib": ["es2022", "dom", "DOM.Iterable", "webworker"],
         "baseUrl": "./src",
         "module": "ES2020",
         "paths": {
