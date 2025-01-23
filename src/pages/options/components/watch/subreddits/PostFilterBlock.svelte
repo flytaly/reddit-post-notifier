@@ -6,27 +6,50 @@
     import { tooltip } from '@options/lib/tooltip';
     import PostFilterFields from './PostFilterFields.svelte';
     import getMsg from '@/utils/get-message';
-    import type { FilterRule } from '@/text-search/post-filter';
     import type { PostFilterOptions } from '@/storage/storage-types';
+    import { allFields } from '@/text-search/post-filter';
+    import { subState } from './state.svelte';
 
     interface Props {
-        ruleList?: FilterRule[];
         saveInputs: (filter: PostFilterOptions) => void;
         subId: string;
+        index: number;
     }
 
-    let { ruleList = $bindable([]), saveInputs, subId }: Props = $props();
+    let { index: stateIdx, saveInputs, subId }: Props = $props();
+
+    let ruleList = $state(subState.state[stateIdx]?.filterOpts?.rules || []);
+
+    $effect(() => {
+        ruleList = subState.state[stateIdx]?.filterOpts?.rules || [];
+    });
 
     const commitChanges = () => {
         saveInputs({ rules: $state.snapshot(ruleList) });
     };
 
     const addRule = () => {
-        ruleList = [...ruleList, [{ field: 'title', query: '' }]];
+        ruleList.push([{ field: 'title', query: '' }]);
     };
 
-    const removeRule = (index: number) => {
-        ruleList = ruleList.filter((_, i) => i !== index);
+    const removeRule = (ruleIndex: number) => {
+        ruleList = ruleList.filter((_, i) => i !== ruleIndex);
+        commitChanges();
+    };
+
+    const removeRuleField = (index: number) => {
+        let filterRule = ruleList[stateIdx];
+        if (filterRule.length > 1)
+            filterRule = filterRule.filter((_, i) => i !== index);
+        else
+            filterRule = [{ field: allFields[0], query: '', queryType: 'positive' }];
+        ruleList[stateIdx] = filterRule;
+        commitChanges();
+    };
+
+    const addRuleField = () => {
+        if (!ruleList[stateIdx]) ruleList[stateIdx] = [];
+        ruleList[stateIdx].push({ field: allFields[0], query: '', queryType: 'positive' });
         commitChanges();
     };
 </script>
@@ -52,17 +75,19 @@
     </div>
     <div class='flex flex-col'>
         <!-- eslint-disable-next-line @typescript-eslint/no-unused-vars -->
-        {#each ruleList as _filterRule, index}
+        {#each ruleList as _filterRule, ruleIndex}
             <div class='connected-block'>
                 <PostFilterFields
-                    removeFilter={() => removeRule(index)}
+                    {addRuleField}
+                    {removeRuleField}
+                    removeFilter={() => removeRule(ruleIndex)}
                     {commitChanges}
                     {subId}
-                    bind:filterRule={ruleList[index]}
-                    {index}
+                    filterRule={ruleList[ruleIndex]}
+                    filterIdx={ruleIndex}
                 />
             </div>
-            {#if ruleList.length - 1 !== index}
+            {#if ruleList.length - 1 !== stateIdx}
                 <div class='py-1 font-mono text-sm'>OR</div>
             {/if}
         {/each}

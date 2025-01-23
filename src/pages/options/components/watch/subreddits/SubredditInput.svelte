@@ -1,7 +1,7 @@
 <script lang='ts'>
     import NotifierApp from '@/notifier/app';
-    import type { PostFilterOptions, SubredditData, SubredditOpts } from '@/storage/storage-types';
-    import type { FilterRule, SearchableField } from '@/text-search/post-filter';
+    import type { PostFilterOptions, SubredditData } from '@/storage/storage-types';
+    import type { SearchableField } from '@/text-search/post-filter';
     import { debounce, testMultireddit } from '@/utils';
     import getMsg from '@/utils/get-message';
     import RedditItemsList from '@options/components/RedditItemsList.svelte';
@@ -14,44 +14,36 @@
     import { tooltip } from '@options/lib/tooltip';
     import WatchItem from '../WatchItem.svelte';
     import PostFilterBlock from './PostFilterBlock.svelte';
-    import type { InputStatus } from './subreddits-store';
-    import { inputStatusStore, subredditStore } from './subreddits-store';
+    import { inputState, subState } from './state.svelte';
 
     interface Props {
-        subOptsIn: SubredditOpts;
         subData?: SubredditData;
+        index: number;
     }
 
-    let { subOptsIn = { id: '', subreddit: '' }, subData = {} }: Props = $props();
+    let { subData = {}, index }: Props = $props();
 
-    let subOpts = $state({ disabled: false, filterOpts: undefined, notify: false, ...subOptsIn });
-    let ruleList: FilterRule[] = $state(subOptsIn.filterOpts?.rules || []);
+    let subOpts = $derived(subState.state[index]);
 
-    $effect(() => {
-        subOpts = { disabled: false, filterOpts: undefined, notify: false, ...subOptsIn };
-        ruleList = subOptsIn.filterOpts?.rules || [];
-    });
-
-    let inputStatus: InputStatus = $derived($inputStatusStore[subOpts.id] || {});
     let filterOpts: PostFilterOptions = $derived(subOpts.filterOpts || {});
 
     let fetchError = $state('');
     let showPosts = $state(false);
     let isLoading = $state(false);
 
-    let showEditBlock = $state(!subOptsIn.subreddit);
+    let showEditBlock = $state(!subState.state[index].subreddit);
     let subredditInputRef: HTMLInputElement;
 
     $effect(() => {
         fetchError = formatError(subData.error);
     });
 
-    let errorMessage = $derived(inputStatus.error || fetchError);
+    let errorMessage = $derived(inputState.get(subOpts.id).error || fetchError);
 
     const getName = () => subOpts.name || `r/${subOpts.subreddit}`;
 
     const fetchPosts = async () => {
-        if (!subOpts.subreddit || inputStatus.error)
+        if (!subOpts.subreddit || inputState.get(subOpts.id).error)
             return;
         isLoading = true;
         showPosts = false;
@@ -99,7 +91,7 @@
             const msg = 'Invalid subreddit/multireddit name';
             subredditInputRef?.setCustomValidity(msg);
 
-            $inputStatusStore[subOpts.id] = { error: msg };
+            inputState.set(subOpts.id, { error: msg });
             return;
         }
         subredditInputRef?.setCustomValidity('');
@@ -109,26 +101,19 @@
         if (shouldRemoveData && showPosts)
             showPosts = false;
 
-        await subredditStore.saveOptions(
-            {
-                id: subOpts.id,
-                subreddit: _subreddit,
-                name: subOpts.name,
-                disabled: subOpts.disabled,
-                notify: subOpts.notify,
-                filterOpts: processFilterOpts(filter || $state.snapshot(subOpts.filterOpts)),
-            },
-            shouldRemoveData,
-        );
+        const snapshot = $state.snapshot(subOpts);
+        snapshot.subreddit = _subreddit;
+        snapshot.filterOpts = processFilterOpts(filter || snapshot.filterOpts);
+        await subState.saveOpts(snapshot, shouldRemoveData);
 
         fetchError = '';
-        $inputStatusStore[subOpts.id] = { saved: true };
+        inputState.set(subOpts.id, { saved: true });
     };
 
     const saveInputsDebounced = debounce(saveInputs, 600);
 
     const inputHandler = () => {
-        $inputStatusStore[subOpts.id] = { typing: true };
+        inputState.set(subOpts.id, { typing: true });
         saveInputsDebounced();
     };
 
@@ -156,9 +141,9 @@
         subOpts.disabled = !e.currentTarget.checked;
         void saveInputs();
     }}
-    onDelete={() => void subredditStore.deleteSubreddit(subOpts.id)}
+    onDelete={() => void subState.deleteSubreddit(subOpts.id)}
     onFetch={() => void fetchPosts()}
-    fetchBlocked={$isBlocked || !subOpts.subreddit || !!inputStatus.error}
+    fetchBlocked={$isBlocked || !subOpts.subreddit || !!inputState.get(subOpts.id).error}
     {errorMessage}
 >
     {#snippet posts()}
@@ -223,13 +208,13 @@
                     </div>
                 {/if}
                 <div class='mr-4 min-h-[1rem] font-medium text-skin-success'>
-                    {#if inputStatus.saved}
+                    {#if inputState.get(subOpts.id).saved}
                         <div class='flex items-center'>
                             <div class='mr-1 h-4 w-4 flex-shrink-0'>{@html icons.SaveIcon}</div>
                             <span>{getMsg('savedLabel')}</span>
                         </div>
                     {:else}
-                        <span>{inputStatus.typing ? '...' : ''} &nbsp;</span>
+                        <span>{inputState.get(subOpts.id).typing ? '...' : ''} &nbsp;</span>
                     {/if}
                 </div>
             </div>
@@ -265,7 +250,7 @@
                     <TooltipIcon message={getMsg('optionSubredditsInput_title')} />
                 </div>
             </div>
-            <PostFilterBlock bind:ruleList={ruleList} {saveInputs} subId={subOpts.id} />
+            <PostFilterBlock {index} {saveInputs} subId={subOpts.id} />
         </div>
     </div>
 </WatchItem>
