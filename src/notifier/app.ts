@@ -234,6 +234,10 @@ export default class NotifierApp {
             user.error = response;
             return { user };
         }
+
+        user.error = null;
+        user.lastUpdate = Date.now();
+
         if (!response.data?.children?.length)
             return { user };
 
@@ -243,9 +247,7 @@ export default class NotifierApp {
         const itemsToSave = newItems.map(p => (p.kind === RedditObjectKind.link ? filterPostDataProperties(p) : p));
 
         user.data = [...itemsToSave, ...(user.data || [])].slice(0, 50);
-        user.error = null;
         user.lastPostCreated = itemsToSave[0].data.created;
-        user.lastUpdate = Date.now();
         return { user, newItemsLen: itemsToSave.length };
     }
 
