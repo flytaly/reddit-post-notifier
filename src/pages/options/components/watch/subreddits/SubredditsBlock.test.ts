@@ -21,7 +21,7 @@ vi.mock('@/utils/index.ts', async (importOriginal) => {
     };
 });
 
-const like = expect.objectContaining;
+const like = (obj: any) => expect.objectContaining(obj);
 
 describe('subreddit settings', () => {
     const subList: SubredditOpts[] = [
@@ -82,9 +82,11 @@ describe('subreddit settings', () => {
         const { getAllByTestId, getByText, getByLabelText } = render(SubredditsBlock);
         await tick();
 
-        const AddBtn = getByText(getMsg('optionSubredditsAdd'), { exact: false });
-        await act(async () => {
-            await fireEvent.click(AddBtn);
+        await waitFor(async () => {
+            const AddBtn = getByText(getMsg('optionSubredditsAdd'), { exact: false });
+            await act(async () => {
+                await fireEvent.click(AddBtn);
+            });
         });
 
         const inputBlocks = getAllByTestId('input-name');
@@ -105,9 +107,12 @@ describe('subreddit settings', () => {
         await tick();
 
         // NOTIFY
-        const notifyElems = getAllByLabelText(getMsg('notifyLabel'), { exact: false });
-        await fireEvent.click(notifyElems[0]);
-        waitFor(() => {
+        await waitFor(async () => {
+            const notifyElems = getAllByLabelText(getMsg('notifyLabel'), { exact: false });
+            await fireEvent.click(notifyElems[0]);
+        });
+
+        await waitFor(() => {
             expect(storage.saveSubredditOpts).toHaveBeenCalledWith(like({ ...subList[0], notify: !subList[0].notify }));
         });
 
@@ -116,7 +121,7 @@ describe('subreddit settings', () => {
 
         vi.mocked(storage.saveSubredditOpts).mockClear();
         await fireEvent.click(isActiveElem[1]);
-        waitFor(() => {
+        await waitFor(() => {
             expect(storage.saveSubredditOpts).toHaveBeenCalledWith(
                 like({
                     ...subList[1],
@@ -125,12 +130,15 @@ describe('subreddit settings', () => {
             );
         });
     });
-    //
+
     it('should add and remove subreddits', async () => {
         const { getAllByLabelText, getByText, getAllByTestId } = render(SubredditsBlock);
         await tick();
 
-        const len = getAllByTestId('input-name').length;
+        let len = 0;
+        await waitFor(() => {
+            len = getAllByTestId('input-name').length;
+        });
 
         const AddBtn = getByText(getMsg('optionSubredditsAdd'), { exact: false });
         await fireEvent.click(AddBtn);
