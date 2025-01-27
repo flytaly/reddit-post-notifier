@@ -23,8 +23,10 @@
 </script>
 
 <div
-    class='toggle-button'
-    class:toggle-button-on={checked}
+    class={[
+        'toggle-button',
+        { 'toggle-button-on': checked },
+    ]}
     onkeydown={btnClick}
     tabindex='0'
     role='button'

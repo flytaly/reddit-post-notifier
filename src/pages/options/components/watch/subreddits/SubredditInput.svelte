@@ -179,8 +179,10 @@
             />
             <!-- Toggle Filters -->
             <button
-                class='toggle-button'
-                class:toggle-button-on={filterOpts?.enabled}
+                class={[
+                    'toggle-button',
+                    { 'toggle-button-on': filterOpts?.enabled },
+                ]}
                 use:tooltip={{ content: getMsg('optionSubredditsFilter_title') }}
                 aria-label={getMsg('optionSubredditsFilter_title')}
                 onclick={onFilterClick}
