@@ -4,10 +4,12 @@ body {
     @apply m-0 max-h-[600px] overflow-y-auto overflow-x-hidden bg-skin-bg text-sm text-skin-text;
 }
 
-a {
-    @apply text-skin-link;
-}
+@layer base {
+    a {
+        @apply text-skin-link;
+    }
 
-svg {
-    @apply fill-current;
+    svg {
+        @apply fill-current;
+    }
 }

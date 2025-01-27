@@ -58,7 +58,7 @@
 
 <fieldset class='rounded border border-skin-delimiter p-3 text-sm shadow-md'>
     <legend class='font-mono text-xs'>Filter rule {filterIdx + 1 || ''}</legend>
-    <div class='field-grid'>
+    <div class='field-grid gap-x-2 gap-y-3'>
         {#each filterRule as searchRule, idx}
             <select
                 class='rounded border-none bg-transparent hover:bg-skin-input hover:shadow-none focus:bg-skin-input'
@@ -116,8 +116,9 @@
 
 <style lang='postcss'>
     .field-grid {
-        @apply grid content-center items-center gap-x-2 gap-y-3;
-
+        display: grid;
         grid-template-columns: max-content max-content 1fr auto auto;
+        align-content: center;
+        align-items: center;
     }
 </style>

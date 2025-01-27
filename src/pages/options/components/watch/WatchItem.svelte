@@ -41,10 +41,17 @@
     };
 </script>
 
-<div class='rounded-md hover:ring-1 hover:ring-skin-delimiter' class:expanded={showEditBlock} {...restProps}>
+<div
+    class={[
+        'rounded-md hover:ring-1 hover:ring-skin-delimiter',
+        { 'bg-skin-bg2 shadow-input-expand': showEditBlock },
+    ]}
+    {...restProps}>
     <div
-        class='watch-item-grid rounded-md border border-dashed border-transparent bg-skin-bg'
-        class:delimiter={showEditBlock}
+        class={[
+            'watch-item-grid rounded-md border border-dashed border-transparent bg-skin-bg',
+            { 'border-b-skin-delimiter': showEditBlock },
+        ]}
     >
         <!-- Input name -->
         <button
@@ -120,12 +127,3 @@
         </div>
     {/if}
 </div>
-
-<style lang='postcss'>
-    .expanded {
-        @apply bg-skin-bg2 shadow-input-expand;
-    }
-    .delimiter {
-        @apply border-b-skin-delimiter;
-    }
-</style>

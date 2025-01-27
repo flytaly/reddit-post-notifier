@@ -152,9 +152,9 @@
 </script>
 
 <div
-    class={`preview ${!imageInfo && !postText ? 'hidden' : 'block'}`}
+    class={`absolute z-50 overflow-hidden break-words border border-skin-border bg-skin-bg p-1 text-xs`}
+    class:hidden={!imageInfo && !postText}
     bind:this={previewElement}
-    class:hide={!imageInfo && !postText}
     style={`max-width: ${MAX_WIDTH}px; max-height: ${MAX_HEIGHT}px`}
 >
     {#if imageInfo}
@@ -172,11 +172,8 @@
     {:else}<span>{postText}</span>{/if}
 </div>
 
-<style lang='postcss'>
-    .preview {
-        @apply absolute z-50 overflow-hidden break-words border
-                border-skin-base
-                bg-skin-bg p-1
-                text-xs;
+<style>
+    .hidden {
+        visibility: hidden;
     }
 </style>

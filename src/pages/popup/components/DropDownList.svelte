@@ -1,13 +1,14 @@
 <script lang='ts'>
+    import type { RedditItem, RedditMessage } from '@/reddit-api/reddit-types';
     import ArrowUp from '@assets/arrowhead-up.svg?raw';
+    import type { Snippet } from 'svelte';
     import { flip } from 'svelte/animate';
     import { quadOut } from 'svelte/easing';
     import { slide } from 'svelte/transition';
     import { slideHorizontal } from '../helpers/transition';
+    import DropDownListItem from './DropDownListItem.svelte';
     import FloatingPreview from './FloatingPreview.svelte';
     import SvgButton from './SvgButton.svelte';
-    import type { RedditItem, RedditMessage } from '@/reddit-api/reddit-types';
-    import type { Snippet } from 'svelte';
 
     interface Props {
         toggle?: (e: MouseEvent) => void;
@@ -30,9 +31,8 @@
     let containerElement: HTMLElement | undefined = $state();
 </script>
 
-<div class='drop-down-list' data-keys-target='list-container' bind:this={containerElement}>
-    <!-- svelte-ignore a11y_click_events_have_key_events -->
-    <div class='item' tabindex='0' role='button' onclick={toggle} data-keys-target='list-row'>
+<div class='flex w-full min-w-[18rem] flex-col' data-keys-target='list-container' bind:this={containerElement}>
+    <DropDownListItem tabindex={0} role='button' onclick={toggle} data-keys-target='list-row'>
         {@render headerRow()}
         <span class='ml-auto mr-3'>
             <SvgButton onclick={toggle}>
@@ -41,7 +41,7 @@
                 </div>
             </SvgButton>
         </span>
-    </div>
+    </DropDownListItem>
     {#if isExpanded}
         <div class='ml-2 flex flex-row' transition:slide|local={{ duration: 150, easing: quadOut }}>
             <!-- Vertical Line -->
@@ -55,9 +55,9 @@
                         animate:flip={{ delay: 100, duration: 100 }}
                         out:rowOutTransition|local={{ duration: 150, id: item.data.id }}
                     >
-                        <div class='item' tabindex='0' role='button' data-keys-target='post-row'>
+                        <DropDownListItem tabindex={0} role='button' data-keys-target='post-row'>
                             {@render listRow(item)}
-                        </div>
+                        </DropDownListItem>
                     </li>
                 {/each}
             </ul>
@@ -67,17 +67,3 @@
         {/if}
     {/if}
 </div>
-
-<style lang='postcss'>
-    .drop-down-list {
-        @apply flex w-full min-w-[18rem] flex-col;
-    }
-
-    .item {
-        @apply my-px flex w-full items-center
-               border-b border-t border-skin-bg
-               hover:border-skin-delimiter hover:bg-skin-item-hover
-               focus:border-skin-delimiter focus:bg-skin-item-hover
-               focus-visible:border-skin-outline focus-visible:outline-none;
-    }
-</style>

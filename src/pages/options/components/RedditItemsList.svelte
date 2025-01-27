@@ -79,7 +79,7 @@
             </button>
         </div>
     </header>
-    <div class='user-items-grid text-xs'>
+    <div class='mt-2 grid gap-x-2 grid-cols-[auto_auto_1fr] gap-y-0 text-xs'>
         {#each displayItems as item}
             <span title={item.fullDate}>{item.date}</span>
             <div>
@@ -108,11 +108,3 @@
         {/each}
     </div>
 </article>
-
-<style lang='postcss'>
-    .user-items-grid {
-        @apply mt-2 grid gap-x-2 gap-y-0;
-
-        grid-template-columns: auto auto 1fr;
-    }
-</style>

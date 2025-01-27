@@ -181,7 +181,7 @@
             </div>
         </div>
 
-        <div class='mb-2 grid grid-cols-[auto,1fr] items-center gap-2'>
+        <div class='mb-2 grid grid-cols-[auto_1fr] items-center gap-2'>
             <label for={ids.name}>{getMsg('optionSearchName')}</label>
             <span class='flex items-center'>
                 <input

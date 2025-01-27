@@ -95,7 +95,7 @@
         {/snippet}
     </OptionsItem>
 
-    <div class='user-input-grid text-sm font-medium'>
+    <div class='user-input-grid grid grid-cols-[repeat(4,max-content)_1fr] items-center gap-x-5 text-sm font-medium'>
         <div>Username</div>
         <div class='text-center'>
             <span>Comments</span>
@@ -113,11 +113,3 @@
     </div>
     <AddButton clickHandler={() => addUsers()}>{getMsg('optionsFollowUserAdd')}</AddButton>
 </div>
-
-<style lang='postcss'>
-    .user-input-grid {
-        @apply grid grid-cols-5 items-center gap-x-5;
-
-        grid-template-columns: repeat(4, max-content) 1fr;
-    }
-</style>
