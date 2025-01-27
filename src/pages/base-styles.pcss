@@ -1,6 +1,33 @@
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
+@import 'tailwindcss';
+
+@theme inline {
+    /* colors */
+    --color-skin-bg: var(--color-bg-base);
+    --color-skin-bg2: var(--color-bg-second);
+    --color-skin-accent: var(--color-accent);
+    --color-skin-accent2: var(--color-accent2);
+    --color-skin-gray: var(--color-gray);
+    --color-skin-gray2: var(--color-gray2);
+    --color-skin-outline: var(--color-outline);
+    --color-skin-delimiter: var(--color-delimiter);
+    --color-skin-text: var(--color-text-base);
+    --color-skin-error: var(--color-error);
+    --color-skin-error-bg: var(--color-error-bg);
+    --color-skin-success: var(--color-success);
+    --color-skin-link: var(--color-link);
+    --color-skin-item-hover: var(--color-item-bg-hover);
+    --color-skin-input-checked: var(--color-input-bg-checked);
+    --color-skin-input-hover: var(--color-input-bg-hover);
+    --color-skin-input: var(--color-input-bg);
+    --color-skin-btn: var(--color-btn);
+    --color-skin-btn-hover: var(--color-btn-hover);
+    --color-skin-btn-active: var(--color-btn-active);
+    --color-skin-border: var(--color-border);
+
+    /* shadows */
+    --shadow-input-expand: var(--shadow-input-expand);
+    --shadow-input: var(--shadow-input-hover);
+}
 
 @layer components {
     .ios-checkbox {
