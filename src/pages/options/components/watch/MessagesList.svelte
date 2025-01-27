@@ -1,7 +1,7 @@
 <script lang='ts'>
-    import { XCircleIcon } from '@options/lib/icons';
     import type { RedditMessage } from '@/reddit-api/reddit-types';
     import getMsg from '@/utils/get-message';
+    import { XCircleIcon } from '@options/lib/icons';
 
     interface Props {
         items?: RedditMessage[];
@@ -53,7 +53,7 @@
             </button>
         </div>
     </header>
-    <div class='user-items-grid text-xs'>
+    <div class='mt-2 grid grid-cols-[auto_auto_1fr] gap-x-2 gap-y-0 text-xs'>
         {#each displayItems as item}
             <span title={item.fullDate}>{item.date}</span>
             <div>
@@ -73,11 +73,3 @@
         {/each}
     </div>
 </article>
-
-<style lang='postcss'>
-    .user-items-grid {
-        @apply mt-2 grid gap-x-2 gap-y-0;
-
-        grid-template-columns: auto auto 1fr;
-    }
-</style>

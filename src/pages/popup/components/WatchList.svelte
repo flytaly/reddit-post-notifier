@@ -50,7 +50,15 @@
     const postGroupTransition = (node: Element, props: SlideConfig) => slideHorizontal(node, props);
 </script>
 
-<div class='flex flex-col' class:big>
+{#snippet delimiter()}
+    <div class='my-2 w-full border-t border-dashed text-skin-gray'></div>
+{/snippet}
+
+<div
+    class={[
+        'flex flex-col',
+        { 'min-h-[19rem] min-w-[28rem]': big },
+    ]}>
     <!-- PINNED POSTS BLOCK -->
     <div>
         {#if data.pinnedPostList.length}
@@ -70,7 +78,7 @@
                     <PinPostRow {item} />
                 {/snippet}
             </DropDownList>
-            <div class='delimiter'></div>
+            {@render delimiter()}
         {/if}
     </div>
 
@@ -98,19 +106,9 @@
 
     <!-- EMPTY GROUPS -->
     {#if !data.options.hideEmptyGroups && groupsWithoutPosts.length}
-        <div class='delimiter'></div>
+        {@render delimiter()}
         {#each groupsWithoutPosts as group (group.id)}
             <GroupTitle {group} disabled />
         {/each}
     {/if}
 </div>
-
-<style lang='postcss'>
-    .big {
-        @apply min-h-[19rem] min-w-[28rem];
-    }
-
-    .delimiter {
-        @apply my-2 w-full border-t border-dashed border-skin-gray;
-    }
-</style>

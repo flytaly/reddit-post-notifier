@@ -1,15 +1,16 @@
 <script lang='ts'>
     import { onMount, tick } from 'svelte';
+
+    import storage from '@/storage/storage';
+    import getMsg from '@/utils/get-message';
+    import Heading from '@options/components/Heading.svelte';
     import { routes } from '@options/lib/routes';
     import { storageData } from '@options/lib/store';
-    import Heading from '@options/components/Heading.svelte';
+    import AccountsBlock from './AccountsBlock.svelte';
     import FollowUsersBlock from './FollowUsersBlock.svelte';
+    import MailBlock from './MailBlock.svelte';
     import SearchBlock from './search/SearchBlock.svelte';
     import SubredditsBlock from './subreddits/SubredditsBlock.svelte';
-    import MailBlock from './MailBlock.svelte';
-    import AccountsBlock from './AccountsBlock.svelte';
-    import getMsg from '@/utils/get-message';
-    import storage from '@/storage/storage';
 
     const dataPromise = storage.getAllData();
 
@@ -32,29 +33,23 @@
         <h1 class='mb-2 text-xl font-bold uppercase tracking-widest text-skin-gray'>
             {getMsg('optionsNavWatch')}
         </h1>
-        <section>
+        <section class="mb-8">
             <Heading id={s.mail.id} name={s.mail.name} />
             <MailBlock />
             <AccountsBlock />
         </section>
-        <section>
+        <section class="mb-8">
             <Heading id={s.subreddit.id} name={s.subreddit.name} />
             <SubredditsBlock />
         </section>
-        <section>
+        <section class="mb-8">
             <Heading id={s['reddit-search'].id} name={s['reddit-search'].name} />
             <SearchBlock />
         </section>
-        <section>
+        <section class="mb-8">
             <Heading id={s['follow-user'].id} name={s['follow-user'].name} />
             <FollowUsersBlock />
         </section>
         <div class='h-[80vh]'></div>
     {/if}
 </div>
-
-<style lang='postcss'>
-    section {
-        @apply mb-8;
-    }
-</style>

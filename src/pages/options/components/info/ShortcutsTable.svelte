@@ -1,4 +1,8 @@
-<table class='border-collapse text-base'>
+<script lang='ts'>
+    import './ShortcutTable.pcss';
+</script>
+
+<table class='shortcut-table border-collapse text-base'>
     <thead>
         <tr>
             <th align='center'>Key</th>
@@ -47,21 +51,3 @@
         </tr>
     </tbody>
 </table>
-
-<style lang='postcss'>
-    /* Github markdown keys styles */
-    .kbd {
-        @apply inline-block rounded-md border
-               border-skin-base bg-skin-input px-[5px] py-[2px]
-               align-middle
-               font-mono
-               text-xs leading-normal text-skin-text;
-
-        box-shadow: inset 0 -1px 0 var(--color-gray);
-    }
-
-    th,
-    td {
-        @apply border border-skin-delimiter py-1 px-2;
-    }
-</style>

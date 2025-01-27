@@ -49,7 +49,7 @@
 <section class='mb-8 text-sm'>
     <Heading id='import' name='Import config' />
     <div
-        class='flex items-center justify-between space-x-4 rounded-t-md border border-b-0 border-skin-base bg-skin-bg2 p-1'
+        class='flex items-center justify-between space-x-4 rounded-t-md border border-b-0 border-skin-border bg-skin-bg2 p-1'
     >
         <span class='text-sm'>Paste configuration below or import from a file</span>
         <label
@@ -60,6 +60,7 @@
         </label>
     </div>
     <textarea
+        class="w-full border border-skin-border bg-skin-input font-mono ring-skin-outline focus-visible:outline-none focus-visible:ring-1"
         name='import-conf'
         cols='35'
         rows='10'
@@ -77,9 +78,3 @@
         <div class='text-skin-success'>successfully imported</div>
     {/if}
 </section>
-
-<style lang='postcss'>
-    textarea {
-        @apply w-full border border-skin-base bg-skin-input font-mono ring-skin-outline focus-visible:outline-none focus-visible:ring-1;
-    }
-</style>

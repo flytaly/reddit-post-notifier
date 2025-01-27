@@ -1,16 +1,17 @@
 <script lang='ts'>
+    import { onMount } from 'svelte';
+
+    import NotifierApp from '@/notifier/app';
+    import storage from '@/storage';
+    import type { AuthUser, StorageFields } from '@/storage/storage-types';
+    import getMsg from '@/utils/get-message';
     import IosCheckbox from '@options/components/common/IosCheckbox.svelte';
     import NotifyToggle from '@options/components/common/NotifyToggle.svelte';
     import Spinner from '@options/components/common/Spinner.svelte';
     import { AccountIcon, DeleteIcon, LoginIcon, RefreshIcon2 } from '@options/lib/icons';
     import { isBlocked } from '@options/lib/store';
     import { tooltip } from '@options/lib/tooltip';
-    import { onMount } from 'svelte';
     import MessagesList from './MessagesList.svelte';
-    import getMsg from '@/utils/get-message';
-    import type { AuthUser, StorageFields } from '@/storage/storage-types';
-    import storage from '@/storage';
-    import NotifierApp from '@/notifier/app';
 
     interface Props {
         accounts: StorageFields['accounts'];
@@ -89,7 +90,7 @@
     const reAuth = () => authorize(acc.id, updateAcc);
 </script>
 
-<li>
+<li class="mb-2 grid w-full max-w-full items-center gap-x-2 gap-y-1">
     <button
         class='flex items-center border-transparent bg-transparent p-0 text-xs text-skin-accent2 hover:bg-transparent'
         onclick={updateAcc}
@@ -208,8 +209,6 @@
 
 <style lang='postcss'>
     li {
-        @apply mb-2 grid w-full max-w-full items-center gap-x-2 gap-y-1;
-
         grid-template-columns: min-content minmax(10rem, 18rem) max-content max-content auto min-content min-content;
     }
 </style>

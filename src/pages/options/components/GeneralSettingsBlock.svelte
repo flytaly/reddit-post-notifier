@@ -239,7 +239,7 @@
                     {/each}
                     <option value='custom'>Custom sound file</option>
                 </select>
-                <button class='standard-button play-btn' onclick={getSoundAndPlay} title='play'>
+                <button class='standard-button play-btn ml-1 flex items-center bg-skin-input' onclick={getSoundAndPlay} title='play'>
                     {@html PlayIcon}
                 </button>
             </div>
@@ -298,10 +298,6 @@
 </OptionsItem>
 
 <style lang='postcss'>
-    .play-btn {
-        @apply ml-1 flex items-center bg-skin-input;
-    }
-
     .play-btn :global(svg) {
         width: 1.3rem;
         height: 1.3rem;

@@ -79,8 +79,10 @@
 
     <span class='flex items-center space-x-2'>
         <a
-            class='group flex items-center gap-1 text-current'
-            class:accent={messagesCount}
+            class={[
+                'group flex items-center gap-1',
+                messagesCount ? 'text-skin-accent' : 'text-current',
+            ]}
             onclick={onMailClick}
             title={getMsg('headerMailLink_title')}
             href={getInboxUrl($storageData.options)}
@@ -100,9 +102,3 @@
         </SvgButton>
     </span>
 </header>
-
-<style lang='postcss'>
-    .accent {
-        @apply text-skin-accent;
-    }
-</style>

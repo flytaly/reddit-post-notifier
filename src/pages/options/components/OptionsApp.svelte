@@ -56,7 +56,7 @@
 </svelte:head>
 
 <div
-    class="mx-auto grid max-w-[100rem] grid-cols-[max-content,1fr] justify-center gap-x-4 p-3 pt-0 xl:grid-cols-[max-content,1fr,min-content]"
+    class="mx-auto grid max-w-[100rem] grid-cols-[max-content_1fr] justify-center gap-x-4 p-3 pt-0 xl:grid-cols-[max-content_1fr_min-content]"
 >
     <div>
         <Sidebar current={pageId}> </Sidebar>

@@ -32,7 +32,11 @@
     };
 </script>
 
-<div class='flex w-full items-center p-1 pr-4' class:disabled={disabled || group.updatesDisabled}>
+<div
+    class={[
+        'flex w-full items-center p-1 pr-4',
+        { 'text-skin-gray': disabled || group.updatesDisabled },
+    ]}>
     {#if onCheck}
         <CheckMarkButton clickHandler={onCheck} title={getMsg('watchListCheckMark_title')} />
     {/if}
@@ -74,9 +78,3 @@
         </SvgButton>
     </span>
 </div>
-
-<style lang='postcss'>
-    .disabled {
-        @apply text-skin-gray;
-    }
-</style>

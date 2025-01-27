@@ -52,13 +52,15 @@
     </div>
     <div>
         <div>
-            <div class='flex justify-end space-x-4 rounded-t-md border border-b-0 border-skin-base bg-skin-bg2 p-1'>
+            <div class='flex justify-end space-x-4 rounded-t-md border border-b-0 border-skin-border bg-skin-bg2 p-1'>
                 {#await dataPromise}
                     <div class='mr-auto'>Loading</div>
                 {:then data}
                     <button
-                        class='flex items-center border-none bg-transparent px-1 py-0 hover:bg-transparent hover:text-skin-accent disabled:cursor-default'
-                        class:success={wasCopied}
+                        class={[
+                            'flex items-center border-none bg-transparent px-1 py-0 hover:bg-transparent hover:text-skin-accent disabled:cursor-default',
+                            { 'text-skin-success hover:text-skin-success': wasCopied },
+                        ] }
                         onclick={() => setClipboard(data)}
                         disabled={wasCopied}
                     >
@@ -77,7 +79,7 @@
                 {/await}
             </div>
             <div
-                class='h-56 w-full overflow-y-scroll whitespace-pre-wrap break-all rounded-b-md border border-skin-base p-1 font-mono'
+                class='h-56 w-full overflow-y-scroll whitespace-pre-wrap break-all rounded-b-md border border-skin-border p-1 font-mono'
             >
                 {#await dataPromise}
                     <div class='h-60 w-full'>Loading</div>
@@ -88,9 +90,3 @@
         </div>
     </div>
 </section>
-
-<style lang='postcss'>
-    .success {
-        @apply text-skin-success hover:text-skin-success;
-    }
-</style>

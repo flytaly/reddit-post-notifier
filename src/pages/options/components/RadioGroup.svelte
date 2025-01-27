@@ -20,7 +20,7 @@
         <div class='group overflow-visible'>
             <input class='peer absolute opacity-0' type='radio' bind:group={currentValue} {value} {id} {name} />
             <label
-                class='border border-skin-base bg-skin-input px-2 py-1
+                class='border border-skin-border bg-skin-input px-2 py-1
                     text-sm text-skin-text
                     transition-colors
                     hover:brightness-90 active:brightness-125

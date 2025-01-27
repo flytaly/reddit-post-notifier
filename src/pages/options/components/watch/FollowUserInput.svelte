@@ -113,7 +113,7 @@
     };
 </script>
 
-<div class='flex rounded border border-skin-base bg-skin-input hover:shadow-input'>
+<div class='flex rounded border border-skin-border bg-skin-input hover:shadow-input'>
     <input
         size='13'
         maxlength='20'

@@ -219,12 +219,12 @@
                 </div>
             </div>
 
-            <div class='mb-4 grid grid-cols-[auto,1fr] items-center gap-2 text-sm'>
+            <div class='mb-4 grid grid-cols-[auto_1fr] items-center gap-2 text-sm'>
                 <label for={`name_${subOpts.id}`}>{getMsg('optionSubredditsInputNameLabel')}</label>
                 <div class='flex items-center gap-2'>
                     <input
                         id={`name_${subOpts.id}`}
-                        class='w-full max-w-[20rem] rounded border border-skin-base'
+                        class='w-full max-w-[20rem] rounded border border-skin-border'
                         type='text'
                         bind:value={subOpts.name}
                         oninput={inputHandler}
@@ -238,8 +238,10 @@
                 <div class='flex items-center gap-2'>
                     <input
                         id={`subreddit_${subOpts.id}`}
-                        class:error={errorMessage}
-                        class='w-full max-w-[20rem] rounded border border-skin-base'
+                        class={[
+                            'w-full max-w-[20rem] rounded border',
+                            errorMessage ? 'border-skin-error' : 'border-skin-border',
+                        ]}
                         type='text'
                         bind:this={subredditInputRef}
                         bind:value={subOpts.subreddit}
@@ -254,9 +256,3 @@
         </div>
     </div>
 </WatchItem>
-
-<style lang='postcss'>
-    .error {
-        @apply border-skin-error;
-    }
-</style>
