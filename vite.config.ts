@@ -1,6 +1,7 @@
 import process from 'node:process';
 import { svelte } from '@sveltejs/vite-plugin-svelte';
 import { type UserConfig, defineConfig } from 'vite';
+import tailwindcss from '@tailwindcss/vite';
 
 import { getEnvKeys, isDev, r } from './scripts/utils';
 
@@ -59,6 +60,7 @@ export default defineConfig(({ command }) => {
         },
         plugins: [
             svelte({ configFile: r('svelte.config.js') }),
+            tailwindcss(),
             // rewrite assets to use relative path
             {
                 name: 'assets-rewrite',
