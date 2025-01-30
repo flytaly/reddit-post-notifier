@@ -1,13 +1,13 @@
 <script lang='ts'>
     import { DeleteIcon, XCircleIcon } from '@options/lib/icons';
-    import type { FilterRule, SearchableField } from '@/text-search/post-filter';
+    import type { FilterField, FilterRule, SearchableField } from '@/text-search/post-filter';
     import { allFields } from '@/text-search/post-filter';
     import { debounce } from '@/utils';
     import { inputState } from './state.svelte';
 
     interface Props {
         filterRule: FilterRule;
-        commitChanges: () => void;
+        onChange: (r: FilterRule) => void;
         removeFilter: () => void;
         addRuleField: () => void;
         removeRuleField: (index: number) => void;
@@ -16,8 +16,8 @@
     }
 
     let {
-        filterRule = $bindable(),
-        commitChanges,
+        filterRule,
+        onChange,
         addRuleField,
         removeFilter,
         removeRuleField,
@@ -25,9 +25,18 @@
         filterIdx,
     }: Props = $props();
 
+    // "snapshot" data and make sure all fields are defined
+    const fixRules = (r: FilterRule) => r.map(f => ({ field: f.field || 'title', queryType: f.queryType || 'positive', query: f.query || '' } as FilterField));
+
+    let rule = $state(fixRules(filterRule) || [{ field: 'title', queryType: 'positive', query: '' }] as FilterRule);
+
+    $effect(() => {
+        rule = fixRules(filterRule);
+    });
+
     const debounced = debounce(commitChanges, 700);
     const debouncedHandler = () => {
-        inputState.set(subId, { typing: false });
+        inputState.set(subId, { typing: true });
         debounced();
     };
 
@@ -54,16 +63,21 @@
         ];
     };
 
+    function commitChanges() {
+        onChange(rule);
+    }
+
 </script>
 
 <fieldset class='rounded border border-skin-delimiter p-3 text-sm shadow-md'>
     <legend class='font-mono text-xs'>Filter rule {filterIdx + 1 || ''}</legend>
     <div class='field-grid gap-x-2 gap-y-3'>
-        {#each filterRule as searchRule, idx}
+        <!-- eslint-disable-next-line @typescript-eslint/no-unused-vars -->
+        {#each rule as _searchRule, idx}
             <select
                 class='rounded border-none bg-transparent hover:bg-skin-input hover:shadow-none focus:bg-skin-input'
                 name={`field_${idx}`}
-                bind:value={searchRule.field}
+                bind:value={rule[idx].field}
                 onchange={commitChanges}
             >
                 {#each allFields as f}
@@ -73,14 +87,19 @@
             <select
                 class='mx-2 rounded border-none bg-transparent hover:bg-skin-input hover:shadow-none focus:bg-skin-input'
                 name={`matchType_${idx}`}
-                bind:value={searchRule.queryType}
+                bind:value={rule[idx].queryType}
                 onchange={commitChanges}
             >
-                {#each matchTypes(searchRule.field) as mt}
+                {#each matchTypes(rule[idx].field) as mt}
                     <option value={mt.queryType}>{mt.text}</option>
                 {/each}
             </select>
-            <input class='w-full rounded' type='text' bind:value={searchRule.query} oninput={debouncedHandler} />
+            <input
+                class='w-full rounded'
+                type='text'
+                bind:value={rule[idx].query}
+                oninput={debouncedHandler}
+            />
             <button
                 class='border-none bg-transparent px-1 py-0 text-skin-gray hover:bg-transparent hover:text-skin-accent hover:shadow-none'
                 onclick={() => removeRuleField(idx)}
