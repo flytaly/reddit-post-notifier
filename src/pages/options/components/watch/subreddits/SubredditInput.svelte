@@ -101,9 +101,12 @@
         if (shouldRemoveData && showPosts)
             showPosts = false;
 
+        if (filter) {
+            subOpts.filterOpts = processFilterOpts(filter);
+        }
+
         const snapshot = $state.snapshot(subOpts);
         snapshot.subreddit = _subreddit;
-        snapshot.filterOpts = processFilterOpts(filter || snapshot.filterOpts);
         await subState.saveOpts(snapshot, shouldRemoveData);
 
         fetchError = '';
