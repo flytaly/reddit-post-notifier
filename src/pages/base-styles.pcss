@@ -54,43 +54,6 @@
         @apply bg-skin-input-checked hover:bg-skin-input-checked;
     }
 
-    .connected-block {
-        @apply relative ml-6;
-
-        &::before {
-            @apply absolute right-full h-1/2 w-4 rounded-bl-xl border-skin-gray2;
-
-            content: '';
-        }
-
-        &::after {
-            @apply absolute right-full top-1/2 h-1/2 w-4 rounded-tl-xl border-skin-gray2;
-
-            content: '';
-        }
-
-        &:first-child::after {
-            @apply border-l border-t;
-        }
-
-        &:last-child::before {
-            @apply border-b border-l;
-        }
-
-        &:not(:first-child, :last-child)::after {
-            @apply border-l border-t;
-        }
-
-        &:not(:first-child, :last-child)::before {
-            @apply border-l;
-        }
-
-        &:first-child:last-child::after,
-        &:first-child:last-child::before {
-            @apply border-none;
-        }
-    }
-
     .icon-button {
         @apply flex items-center border-transparent bg-transparent px-1 py-0 transition-transform hover:scale-105 hover:bg-transparent;
     }
