@@ -9,6 +9,7 @@
     import type { PostFilterOptions } from '@/storage/storage-types';
     import { allFields } from '@/text-search/post-filter';
     import { subState } from './state.svelte';
+    import './PostFilterBlock.pcss';
 
     interface Props {
         saveInputs: (filter: PostFilterOptions) => void;
@@ -87,7 +88,7 @@
                     filterIdx={ruleIndex}
                 />
             </div>
-            {#if ruleList.length - 1 !== stateIdx}
+            {#if ruleList.length - 1 !== ruleIndex}
                 <div class='py-1 font-mono text-sm'>OR</div>
             {/if}
         {/each}
