@@ -254,7 +254,7 @@
                     <TooltipIcon message={getMsg('optionSubredditsInput_title')} />
                 </div>
             </div>
-            <PostFilterBlock {index} {saveInputs} subId={subOpts.id} />
+            <PostFilterBlock subIndex={index} {saveInputs} subId={subOpts.id} />
         </div>
     </div>
 </WatchItem>

@@ -1,28 +1,28 @@
 <script lang='ts'>
-    import { quadOut } from 'svelte/easing';
-    import { slide } from 'svelte/transition';
+    import type { PostFilterOptions } from '@/storage/storage-types';
+    import { allFields, type FilterRule } from '@/text-search/post-filter';
+    import getMsg from '@/utils/get-message';
     import AddButton from '@options/components/common/AddButton.svelte';
     import { HelpCircleIcon } from '@options/lib/icons';
     import { tooltip } from '@options/lib/tooltip';
+    import { quadOut } from 'svelte/easing';
+    import { slide } from 'svelte/transition';
     import PostFilterFields from './PostFilterFields.svelte';
-    import getMsg from '@/utils/get-message';
-    import type { PostFilterOptions } from '@/storage/storage-types';
-    import { allFields } from '@/text-search/post-filter';
     import { subState } from './state.svelte';
     import './PostFilterBlock.pcss';
 
     interface Props {
         saveInputs: (filter: PostFilterOptions) => void;
         subId: string;
-        index: number;
+        subIndex: number;
     }
 
-    let { index: stateIdx, saveInputs, subId }: Props = $props();
+    let { subIndex, saveInputs, subId }: Props = $props();
 
-    let ruleList = $state(subState.state[stateIdx]?.filterOpts?.rules || []);
+    let ruleList = $state($state.snapshot(subState.state[subIndex])?.filterOpts?.rules || []);
 
     $effect(() => {
-        ruleList = subState.state[stateIdx]?.filterOpts?.rules || [];
+        ruleList = $state.snapshot(subState.state[subIndex])?.filterOpts?.rules || [];
     });
 
     const commitChanges = () => {
@@ -30,28 +30,23 @@
     };
 
     const addRule = () => {
-        ruleList.push([{ field: 'title', query: '' }]);
+        ruleList.push([{ field: 'title', query: '', queryType: 'positive' }]);
     };
 
     const removeRule = (ruleIndex: number) => {
-        ruleList = ruleList.filter((_, i) => i !== ruleIndex);
+        ruleList.splice(ruleIndex, 1);
         commitChanges();
     };
 
-    const removeRuleField = (index: number) => {
-        let filterRule = ruleList[stateIdx];
-        if (filterRule.length > 1)
-            filterRule = filterRule.filter((_, i) => i !== index);
-        else
-            filterRule = [{ field: allFields[0], query: '', queryType: 'positive' }];
-        ruleList[stateIdx] = filterRule;
+    const removeRuleField = (ruleIndex: number, index: number) => {
+        if (ruleList[ruleIndex].length <= 1) ruleList.splice(ruleIndex, 1);
+        else ruleList[ruleIndex].splice(index, 1);
         commitChanges();
     };
 
-    const addRuleField = () => {
-        if (!ruleList[stateIdx]) ruleList[stateIdx] = [];
-        ruleList[stateIdx].push({ field: allFields[0], query: '', queryType: 'positive' });
-        commitChanges();
+    const addRuleField = (ruleIndex: number) => {
+        if (!ruleList[ruleIndex]) ruleList[ruleIndex] = [];
+        ruleList[ruleIndex].push({ field: allFields[0], query: '', queryType: 'positive' });
     };
 </script>
 
@@ -79,10 +74,13 @@
         {#each ruleList as _filterRule, ruleIndex}
             <div class='connected-block'>
                 <PostFilterFields
-                    {addRuleField}
-                    {removeRuleField}
+                    addRuleField={() => addRuleField(ruleIndex)}
+                    removeRuleField ={ (fieldIndex: number) => removeRuleField(ruleIndex, fieldIndex) }
                     removeFilter={() => removeRule(ruleIndex)}
-                    {commitChanges}
+                    onChange = {(r: FilterRule) => {
+                        ruleList[ruleIndex] = r;
+                        commitChanges();
+                    }}
                     {subId}
                     filterRule={ruleList[ruleIndex]}
                     filterIdx={ruleIndex}
