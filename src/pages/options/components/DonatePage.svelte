@@ -45,7 +45,7 @@
                     <div>
                         <h3 class="mb-4 text-sm">or directly to the addresses</h3>
                         <ul class="grid grid-cols-2 gap-6">
-                            {#each addresses as { name, address, QRCode }}
+                            {#each addresses as { name, address, QRCode } (name)}
                                 <DonateAddress {address} {name}>
                                     {#snippet qr()}
                                         <span>{@html QRCode}</span>

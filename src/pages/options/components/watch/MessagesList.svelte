@@ -54,7 +54,7 @@
         </div>
     </header>
     <div class='mt-2 grid grid-cols-[auto_auto_1fr] gap-x-2 gap-y-0 text-xs'>
-        {#each displayItems as item}
+        {#each displayItems as item, index (index)}
             <span title={item.fullDate}>{item.date}</span>
             <div>
                 <b class='font-bold'>{item.author}</b>

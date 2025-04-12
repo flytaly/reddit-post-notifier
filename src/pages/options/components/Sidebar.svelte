@@ -36,7 +36,7 @@
         </div>
     </a>
     <nav class='flex flex-col p-4 leading-8'>
-        {#each Object.values(routes) as { id, href, name, sections }}
+        {#each Object.values(routes) as { id, href, name, sections } (id)}
             <a
                 {href}
                 class={[
@@ -56,7 +56,7 @@
                 {/if}
                 {name}
             </a>
-            {#each Object.values(sections) as { id, name }}
+            {#each Object.values(sections) as { id, name } (id)}
                 <a href={`${href}#${String(id)}`} class='text-skin-text ml-8'>{name}</a>
             {/each}
         {/each}

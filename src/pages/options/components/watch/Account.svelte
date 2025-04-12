@@ -186,7 +186,7 @@
         <Spinner show={isUpdatingMessages} />
         {#if errorList?.length}
             <div class='p-1 pl-8 text-skin-error'>
-                {#each errorList as errMsg}
+                {#each errorList as errMsg, idx (idx)}
                     <div>{errMsg}</div>
                 {/each}
             </div>

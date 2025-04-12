@@ -16,7 +16,7 @@
 </script>
 
 <form class='flex gap-2 gap-y-4 overflow-visible py-1' onchange={() => onChange(currentValue)}>
-    {#each valueList as { value, id, label }}
+    {#each valueList as { value, id, label } (id)}
         <div class='group overflow-visible'>
             <input class='peer absolute opacity-0' type='radio' bind:group={currentValue} {value} {id} {name} />
             <label
