@@ -5,8 +5,9 @@
     import { constructUrl, getItemTitle } from '@/utils';
     import getMsg from '@/utils/get-message';
     import PinRemove from '@assets/pin-remove.svg?raw';
-    import { storageData } from '../store/store';
-    import SvgButton from './SvgButton.svelte';
+    import { storageData } from '../../store/store';
+    import SvgButton from '../SvgButton.svelte';
+    import PostLink from './PostLink.svelte';
 
     interface Props {
         item: RedditItem | RedditMessage;
@@ -20,15 +21,18 @@
     });
 
     let href: string = $derived(!redditItem ? '' : constructUrl(redditItem.data.permalink, $storageData.options));
-
 </script>
 
 {#if redditItem}
     <div class='flex w-full items-center py-1 pr-3'>
-        <a class='flex-grow px-1' {href} data-keys-target='post-link' data-post-id={redditItem.data.id}>
+        <PostLink
+            class='flex-grow px-1'
+            {href}
+            postId={redditItem.data.id}
+        >
             <span class='pr-2 text-xs text-skin-text'>{`r/${redditItem.data.subreddit}`}</span>
             <span>{getItemTitle(redditItem)}</span>
-        </a>
+        </PostLink>
         <span data-keys-target='pin-post'>
             <SvgButton
                 onclick={() => void storage.removePinPost(redditItem.data.id)}

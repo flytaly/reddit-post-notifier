@@ -6,10 +6,10 @@
     import { constructUrl, getItemTitle, idToUserIdx } from '@/utils';
     import getMsg from '@/utils/get-message';
     import type { PostGroup } from '@/utils/post-group';
-    import browser from 'webextension-polyfill';
-    import { storageData } from '../store/store';
-    import CheckMarkButton from './CheckMarkButton.svelte';
-    import SvgButton from './SvgButton.svelte';
+    import { storageData } from '../../store/store';
+    import CheckMarkButton from '../CheckMarkButton.svelte';
+    import PostLink from './PostLink.svelte';
+    import SvgButton from '../SvgButton.svelte';
 
     interface Props {
         group: PostGroup;
@@ -48,30 +48,26 @@
         return removePost(post.data.id);
     };
 
-    const onLinkClick = async (ev: MouseEvent) => {
-        ev.preventDefault();
-        ev.stopPropagation();
-        if (options.delPostAfterBodyClick)
+    const onPostOpen = async () => {
+        if (options.delPostAfterBodyClick) {
             await removePost(post.data.id);
-
-        await browser.tabs.create({ url: href, active: false });
+        }
     };
 </script>
 
 <div class='flex w-full items-center py-[0.125rem] pr-3' data-post-id={post.data.id}>
     <CheckMarkButton clickHandler={() => removePost(post.data.id)} title={getMsg('watchListItemCheckMark_title')} />
-    <a
+    <PostLink
         class='flex-grow px-1 py-[0.125rem] text-skin-link'
         {href}
-        data-keys-target='post-link'
-        onclick={onLinkClick}
-        data-post-id={post.data.id}
+        onOpen={onPostOpen}
+        postId={post.data.id}
     >
         {#if group.isMultireddit}
             <span class='mr-1 text-xs text-skin-text'>{`r/${post.data.subreddit}`}</span>
         {/if}
-        {getItemTitle(post)}</a
-    >
+        {getItemTitle(post)}
+    </PostLink>
     <span data-keys-target='pin-post'>
         <SvgButton onclick={onPinClick} title={getMsg('watchListItemPin_title')}>
             {@html Pin}

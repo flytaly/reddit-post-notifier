@@ -5,10 +5,10 @@
     import { flip } from 'svelte/animate';
     import { quadOut } from 'svelte/easing';
     import { slide } from 'svelte/transition';
-    import { slideHorizontal } from '../helpers/transition';
+    import { slideHorizontal } from '../../helpers/transition';
     import DropDownListItem from './DropDownListItem.svelte';
-    import FloatingPreview from './FloatingPreview.svelte';
-    import SvgButton from './SvgButton.svelte';
+    import FloatingPreview from '../FloatingPreview.svelte';
+    import SvgButton from '../SvgButton.svelte';
 
     interface Props {
         toggle?: (e: MouseEvent) => void;
