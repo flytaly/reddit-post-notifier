@@ -8,10 +8,10 @@
     import type { SlideConfig } from '../helpers/transition';
     import { slideHorizontal } from '../helpers/transition';
     import { storageData } from '../store/store';
-    import DropDownList from './DropDownList.svelte';
+    import DropDownList from './list/DropDownList.svelte';
     import GroupTitle from './GroupTitle.svelte';
-    import PinPostRow from './PinPostRow.svelte';
-    import Row from './Row.svelte';
+    import PinPostRow from './list/PinPostRow.svelte';
+    import Row from './list/Row.svelte';
 
     interface Props {
         groupsWithPosts?: PostGroup[];

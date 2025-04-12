@@ -12,7 +12,6 @@
     import { onMount } from 'svelte';
     import browser from 'webextension-polyfill';
     import handleKeydownEvent from '../helpers/handle-keys';
-    import { openLinksOnClick } from '../helpers/open-links';
     import { storageData } from '../store/store';
     import Footer from './Footer.svelte';
     import Header from './Header.svelte';
@@ -28,7 +27,6 @@
     onMount(() => {
         void applyTheme();
         nProgress.configure({ showSpinner: false });
-        openLinksOnClick();
         document.addEventListener('keydown', handleKeydownEvent);
         return () => {
             document.removeEventListener('keydown', handleKeydownEvent);
@@ -45,7 +43,6 @@
     const optionsHref = browser.runtime.getURL('options.html');
     const optionsClick = async (e: MouseEvent) => {
         e.preventDefault();
-        e.stopPropagation();
         await browser.runtime.openOptionsPage();
         window.close();
     };
@@ -107,7 +104,7 @@
     {:else}
         <div class="mx-4 my-auto flex h-full flex-col items-center justify-center py-2 text-center">
             <span>{getMsg('noQueries')}</span>
-            <a class="mt-2 flex items-center font-medium" href={optionsHref} onclick={optionsClick}>
+            <a class="mt-2 flex items-center font-medium" href={optionsHref} onclick={optionsClick} target="_blank">
                 <div class="mr-1 h-5 w-5">
                     {@html SettingsIcon}
                 </div>
