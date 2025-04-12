@@ -1,5 +1,10 @@
 # Release Notes
 
+## v6.4.0 (2025-04-12)
+
+- Open links with a middle click next to the current tab
+- Fixed error messages that persist if there are no new items after an update.  
+
 ## v6.3.1 (2024-09-06)
 
 -  Post filters no longer ignore punctuation and other characters
