@@ -152,7 +152,7 @@
 </script>
 
 <div
-    class={`absolute z-50 overflow-hidden break-words border border-skin-border bg-skin-bg p-1 text-xs`}
+    class="absolute z-50 overflow-hidden break-words border border-skin-border bg-skin-bg p-1 text-xs"
     class:hidden={!imageInfo && !postText}
     bind:this={previewElement}
     style={`max-width: ${MAX_WIDTH}px; max-height: ${MAX_HEIGHT}px`}

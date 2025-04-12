@@ -107,7 +107,7 @@
         <div class='ml-auto'>Delete</div>
         <div class='col-span-full my-2'></div>
         <!-- eslint-disable-next-line @typescript-eslint/no-unused-vars -->
-        {#each usersList || [] as _, index}
+        {#each usersList || [] as _, index (index)}
             <FollowUserInput bind:userInfo={usersList[index]} commitChanges={saveInputs} onDelete={() => removeUser(index)} />
         {/each}
     </div>

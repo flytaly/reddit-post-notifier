@@ -71,7 +71,7 @@
     </div>
     <div class='flex flex-col'>
         <!-- eslint-disable-next-line @typescript-eslint/no-unused-vars -->
-        {#each ruleList as _filterRule, ruleIndex}
+        {#each ruleList as _filterRule, ruleIndex (ruleIndex)}
             <div class='connected-block'>
                 <PostFilterFields
                     addRuleField={() => addRuleField(ruleIndex)}

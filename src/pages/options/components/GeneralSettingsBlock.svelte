@@ -234,7 +234,7 @@
                     }}
                 >
                     <option value="">No sound</option>
-                    {#each Object.keys(notificationSoundFiles) as soundFileId, idx}
+                    {#each Object.keys(notificationSoundFiles) as soundFileId, idx (soundFileId)}
                         <option value={soundFileId}>{`Sound ${idx + 1}`}</option>
                     {/each}
                     <option value='custom'>Custom sound file</option>

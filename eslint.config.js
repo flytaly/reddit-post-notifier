@@ -32,12 +32,12 @@ export default ts.config(
         jsx: false,
     }),
     {
-        files: ['**/*.svelte'],
+        files: ['**/*.svelte', '**/*.svelte.ts'],
         rules: {
             'svelte/no-at-html-tags': 'off',
             'svelte/indent': ['warn', { indent: 4 }],
             '@stylistic/js/indent': 'off',
-            '@stylistic/indent-binary-ops': 'off'
+            '@stylistic/indent-binary-ops': 'off',
         },
         languageOptions: {
             parserOptions: {

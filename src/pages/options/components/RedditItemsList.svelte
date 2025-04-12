@@ -80,7 +80,7 @@
         </div>
     </header>
     <div class='mt-2 grid gap-x-2 grid-cols-[auto_auto_1fr] gap-y-0 text-xs'>
-        {#each displayItems as item}
+        {#each displayItems as item (item.link)}
             <span title={item.fullDate}>{item.date}</span>
             <div>
                 <span>{item.type}</span>

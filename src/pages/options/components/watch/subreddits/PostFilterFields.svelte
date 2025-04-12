@@ -73,14 +73,14 @@
     <legend class='font-mono text-xs'>Filter rule {filterIdx + 1 || ''}</legend>
     <div class='field-grid gap-x-2 gap-y-3'>
         <!-- eslint-disable-next-line @typescript-eslint/no-unused-vars -->
-        {#each rule as _searchRule, idx}
+        {#each rule as _searchRule, idx (idx)}
             <select
                 class='rounded border-none bg-transparent hover:bg-skin-input hover:shadow-none focus:bg-skin-input'
                 name={`field_${idx}`}
                 bind:value={rule[idx].field}
                 onchange={commitChanges}
             >
-                {#each allFields as f}
+                {#each allFields as f (f)}
                     <option value={f}>{fieldNames[f]}</option>
                 {/each}
             </select>
@@ -90,7 +90,7 @@
                 bind:value={rule[idx].queryType}
                 onchange={commitChanges}
             >
-                {#each matchTypes(rule[idx].field) as mt}
+                {#each matchTypes(rule[idx].field) as mt, idx (idx)}
                     <option value={mt.queryType}>{mt.text}</option>
                 {/each}
             </select>
