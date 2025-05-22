@@ -1,4 +1,4 @@
-@import '@/pages/base-styles.pcss' reference;
+@import '@/pages/base-styles.css' reference;
 
 .connected-block {
     @apply relative ml-6;

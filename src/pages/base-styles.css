@@ -1,5 +1,7 @@
 @import 'tailwindcss';
 
+@source '../**/*.{svelte,js,ts,jsx,tsx,html,css}';
+
 @theme inline {
     /* colors */
     --color-skin-bg: var(--color-bg-base);

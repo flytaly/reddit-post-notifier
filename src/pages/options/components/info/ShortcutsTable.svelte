@@ -1,5 +1,5 @@
 <script lang='ts'>
-    import './ShortcutTable.pcss';
+    import './ShortcutTable.css';
 </script>
 
 <table class='shortcut-table border-collapse text-base'>

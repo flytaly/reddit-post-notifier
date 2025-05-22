@@ -9,7 +9,7 @@
     import { slide } from 'svelte/transition';
     import PostFilterFields from './PostFilterFields.svelte';
     import { subState } from './state.svelte';
-    import './PostFilterBlock.pcss';
+    import './PostFilterBlock.css';
 
     interface Props {
         saveInputs: (filter: PostFilterOptions) => void;

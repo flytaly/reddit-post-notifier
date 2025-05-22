@@ -18,7 +18,7 @@
     import WatchList from './WatchList.svelte';
 
     import 'nprogress/nprogress.css';
-    import './Popup.pcss';
+    import './Popup.css';
 
     let groups = $derived.by(() => extractPostGroups($storageData));
     let groupsWithPosts: PostGroup[] = $derived(groups.groupsWithPosts);

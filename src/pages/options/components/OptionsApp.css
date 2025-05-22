@@ -1,6 +1,6 @@
-@import url('@/pages/base-styles.pcss');
-@import url('tippy.js/dist/tippy.css');
-@import url('tippy.js/themes/material.css');
+@import '@/pages/base-styles.css';
+@import 'tippy.js/dist/tippy.css';
+@import 'tippy.js/themes/material.css';
 
 @layer components {
     .standard-button {

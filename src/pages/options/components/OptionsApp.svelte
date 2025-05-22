@@ -16,7 +16,7 @@
     import { isUpdating } from '@options/lib/store';
 
     import 'nprogress/nprogress.css';
-    import './OptionsApp.pcss';
+    import './OptionsApp.css';
 
     interface Props {
         pageId?: PageId;

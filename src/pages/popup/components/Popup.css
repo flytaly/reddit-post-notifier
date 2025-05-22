@@ -1,4 +1,4 @@
-@import url('@/pages/base-styles.pcss');
+@import '@/pages/base-styles.css';
 
 body {
     @apply m-0 max-h-[600px] overflow-y-auto overflow-x-hidden bg-skin-bg text-sm text-skin-text;
