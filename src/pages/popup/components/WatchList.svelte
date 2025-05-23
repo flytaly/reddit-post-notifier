@@ -57,7 +57,7 @@
 <div
     class={[
         'flex flex-col',
-        { 'min-h-[19rem] min-w-[28rem]': big },
+        { 'min-h-[19rem] min-w-[36rem]': big },
     ]}>
     <!-- PINNED POSTS BLOCK -->
     <div>

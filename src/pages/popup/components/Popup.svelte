@@ -86,7 +86,7 @@
 
 <Header {groupsWithPosts} />
 <main
-    class="flex max-h-[500px] min-h-[6rem] min-w-[22rem] max-w-[32rem] flex-1 flex-col overflow-y-auto overflow-x-hidden pb-2"
+    class="flex max-h-[500px] min-h-[6rem] min-w-[22rem] flex-1 flex-col overflow-y-auto overflow-x-hidden pb-2"
 >
     {#if !permissionsGranted}
         <div class="my-4 flex h-full justify-center py-2 text-center">
