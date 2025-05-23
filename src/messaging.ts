@@ -28,7 +28,7 @@ export function listenForMessages(context: Context) {
     if (listener && browser.runtime.onMessage.hasListener(listener))
         browser.runtime.onMessage.removeListener(listener);
 
-    listener = function (request /* , sender, sendResponse */) {
+    listener = function (request: any /* , sender, sendResponse */) {
         const message = request as PortMessage;
         console.info(`${context} received message`, message);
         messageListeners.get(message.id)?.(message.payload);

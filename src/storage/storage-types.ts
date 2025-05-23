@@ -72,7 +72,7 @@ export interface QueryOpts {
 
 export interface SubredditOpts {
     id: string;
-    subreddit: string;
+    subreddit?: string;
     customFeed?: string;
     type?: 'subreddit' | 'custom_feed';
     name?: string;

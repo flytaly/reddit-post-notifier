@@ -44,7 +44,10 @@
     const getName = () => subOpts.name || `r/${subOpts.subreddit}`;
 
     const fetchPosts = async () => {
-        if (!subOpts.subreddit || inputState.get(subOpts.id).error) return;
+        if (inputState.get(subOpts.id).error) return;
+        const isCustomFeed = subOpts.type === 'custom_feed';
+        if (isCustomFeed && !subOpts.customFeed) return;
+        if (!isCustomFeed && !subOpts.subreddit) return;
         isLoading = true;
         showPosts = false;
         isBlocked.block();
@@ -121,6 +124,7 @@
 
         const snapshot = $state.snapshot(subOpts);
         snapshot.subreddit = _subreddit;
+        snapshot.customFeed = _customFeed;
         await subState.saveOpts(snapshot, shouldRemoveData);
 
         fetchError = '';
@@ -147,19 +151,33 @@
         }
         toggleEditBlock();
     };
+
+    let fetchBlocked = $derived.by(() => {
+        if ($isBlocked || inputState.get(subOpts.id).error) return true;
+        if (subOpts.type === 'custom_feed' && !subOpts.customFeed) return true;
+        if (subOpts.type !== 'custom_feed' && !subOpts.subreddit) return true;
+        return false;
+    });
+
+    let inputName = $derived.by(() => {
+        if (subOpts.name) return subOpts.name;
+        if (subOpts.type === 'custom_feed' && subOpts.customFeed) return subOpts.customFeed;
+        if (subOpts.type !== 'custom_feed' && subOpts.subreddit) return `r/${subOpts.subreddit}`;
+        return showEditBlock ? '' : 'click here to edit...';
+    });
 </script>
 
 <WatchItem
     itemDisabled={subOpts.disabled}
     bind:showEditBlock
-    name={subOpts.name || subOpts.subreddit || showEditBlock ? getName() : 'click here to edit...'}
+    name={inputName}
     onActiveToggle={(e) => {
         subOpts.disabled = !e.currentTarget.checked;
         void saveInputs();
     }}
     onDelete={() => void subState.deleteSubreddit(subOpts.id)}
     onFetch={() => void fetchPosts()}
-    fetchBlocked={$isBlocked || !subOpts.subreddit || !!inputState.get(subOpts.id).error}
+    fetchBlocked={fetchBlocked}
     {errorMessage}
 >
     {#snippet posts()}
@@ -263,7 +281,7 @@
                     <option value="custom_feed">{getMsg('optionSubredditsCustomFeedInputLabel')}</option>
                 </select>
                 <div class='flex items-center gap-2'>
-                    {#if subOpts.type === 'customFeed'}
+                    {#if subOpts.type === 'custom_feed'}
                         <div class="text-skin-gray/80">reddit.com/user/</div>
                         <input
                             id={`subreddit_${subOpts.id}`}

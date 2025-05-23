@@ -221,6 +221,7 @@ describe('update messages', () => {
 
 describe('update subreddits', () => {
     const mockGetSubreddit = vi.mocked(mockClient.getSubreddit);
+    const mockGetCustomFeed = vi.mocked(mockClient.getCustomFeed);
     const mockSubredditNew = vi.mocked(mockClient.getSubreddit('').new);
     let ts: number;
     let posts: RedditPost[];
@@ -237,21 +238,28 @@ describe('update subreddits', () => {
         console.error = vi.fn();
     });
 
-    it('should fetch and save new posts', async () => {
+    it('should fetch and save new posts from', async () => {
         const limit = 20;
         mockStorageData({
             subredditList: [
-                { id: 'id1', subreddit: 'sub1' },
-                { id: 'id2', subreddit: 'sub2', disabled: true },
+                { id: 'id1', subreddit: 'sub1' }, // subreddit
+                { id: 'id2', subreddit: 'sub2', disabled: true }, // disabled
+                { id: 'id3', subreddit: '' }, // empty
+                { id: 'id4', customFeed: 'user_name/m/feed_name', subreddit: '', type: 'custom_feed' }, // empty
             ],
-            subreddits: { id1: { lastPostCreated: ts, posts: posts.slice(2) } },
+            subreddits: {
+                id1: { lastPostCreated: ts, posts: posts.slice(2) },
+                id4: { lastPostCreated: ts, posts: posts.slice(2) },
+            },
             options: getOpts({ limit }),
         });
         await new NotifierApp().update();
 
         expect(mockGetSubreddit.mock.calls).toEqual([['sub1']]);
+        expect(mockGetCustomFeed.mock.calls).toEqual([['user_name/m/feed_name']]);
         expect(mockSubredditNew).toHaveBeenCalledWith(expect.objectContaining({ limit }));
         expect(mockStorage.saveSubredditData).toHaveBeenCalledWith('id1', expect.objectContaining({ posts: newPosts }));
+        expect(mockStorage.saveSubredditData).toHaveBeenCalledWith('id4', expect.objectContaining({ posts: newPosts }));
         expect(mockNotify).not.toHaveBeenCalled();
     });
 

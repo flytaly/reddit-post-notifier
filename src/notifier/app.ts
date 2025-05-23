@@ -33,6 +33,7 @@ import type { ExtensionOptions } from '@/types/extension-options';
 import {
     filterPostDataProperties,
     getAccountByScope,
+    getCustomFeedUrl,
     getSearchQueryUrl,
     getSubredditUrl,
     getUserProfileUrl,
@@ -91,28 +92,39 @@ export default class NotifierApp {
         this.reddit = new RedditApiClient(onRateLimits);
     }
 
+    /** update subreddit/multireddit or custom feed */
     async updateSubreddit({
         subOpts,
         subData = {},
         listing,
     }: UpdateSubredditProps): Promise<RedditPostExtended[] | null> {
-        const { subreddit, id, filterOpts } = subOpts;
+        const { subreddit, id, filterOpts, customFeed } = subOpts;
         const info = subData;
+        const isCustomFeed = subOpts.type === 'custom_feed';
 
         // fetch subreddits with error at a slower pace
         if (info.error && info.lastUpdate && Date.now() - info.lastUpdate < 1000 * 60 * 2)
             return null;
 
-        let response: RedditPostResponse | RedditError;
+        if (isCustomFeed && !customFeed) return null;
+        if (!isCustomFeed && !subreddit) return null;
+
+        let response: RedditPostResponse | RedditError | undefined;
         try {
-            response = await this.reddit.getSubreddit(subreddit).new(listing);
+            response = isCustomFeed
+                ? await this.reddit.getCustomFeed(customFeed!).new(listing)
+                : await this.reddit.getSubreddit(subreddit!).new(listing);
         }
         catch (error) {
             response = { message: (error as Error).message };
         }
 
+        if (!response) return null;
         if (isErrorResponse(response)) {
-            console.error(`Error during fetching new posts from r/${subreddit}: `, response);
+            const msg = isCustomFeed
+                ? `Error during fetching new posts from the feed: ${customFeed}`
+                : `Error during fetching new posts from r/${subreddit}`;
+            console.error(msg, response);
             await storage.saveSubredditData(id, { error: response });
             return null;
         }
@@ -434,7 +446,7 @@ export default class NotifierApp {
             mail,
         } = await storage.getAllData();
 
-        const { waitTimeout, limit = 10, notificationSoundId } = options;
+        const { waitTimeout, limit = 25, notificationSoundId } = options;
 
         let shouldThrottle = false;
 
@@ -466,10 +478,18 @@ export default class NotifierApp {
                 subData: subData[subOpts.id],
                 listing: { limit: actualLimit },
             });
+
             if (subOpts.notify && newPosts?.length) {
-                const link = getSubredditUrl(subOpts.subreddit, options);
-                postNotif.items.push({ name: subOpts.name || subOpts.subreddit, len: newPosts.length, link });
+                const link = subOpts.type === 'custom_feed'
+                    ? getCustomFeedUrl(subOpts.customFeed!, options)
+                    : getSubredditUrl(subOpts.subreddit!, options);
+                let name = subOpts.name;
+                if (!name) {
+                    name = subOpts.type === 'custom_feed' ? subOpts.customFeed : subOpts.subreddit;
+                }
+                postNotif.items.push({ name: name || '', len: newPosts.length, link });
             }
+
             shouldThrottle = true;
         }
         if (postNotif.items.length)

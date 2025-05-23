@@ -65,7 +65,7 @@ describe('subreddit settings', () => {
         expect(isActiveElems).toHaveLength(len);
 
         subList.forEach((s, idx) => {
-            expect(names[idx]).toHaveTextContent(s.subreddit);
+            expect(names[idx]).toHaveTextContent(s.subreddit!);
             expect(notifyElems[idx].querySelector('input')?.checked).toEqual(s.notify);
             expect(isActiveElems[idx].querySelector('input')?.checked).toEqual(!s.disabled);
         });

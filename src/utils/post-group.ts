@@ -1,5 +1,5 @@
 import { formatError } from '@options/lib/format-error';
-import { idToUserIdx } from './index';
+import { getCustomFeedUrl, idToUserIdx } from './index';
 import type { RedditItem, RedditMessage } from '@/reddit-api/reddit-types';
 import storage from '@/storage';
 import type { StorageFields } from '@/storage/storage-types';
@@ -69,14 +69,20 @@ export function extractPostGroups(storageData: StorageFields) {
         const subData = storageData.subreddits[s.id];
         const length = subData?.posts?.length || 0;
         const lastPostCreated = subData?.lastPostCreated;
+        const isCustomFeed = s.type === 'custom_feed';
+        const href = isCustomFeed
+            ? getCustomFeedUrl(s.customFeed!, storageData.options)
+            : getSubredditUrl(s.subreddit!, storageData.options);
+        const name = s.name || (isCustomFeed ? s.customFeed : `r/${s.subreddit}`);
+
         const group: PostGroup = {
             type: 'subreddit',
             id: s.id,
-            href: getSubredditUrl(s.subreddit, storageData.options),
-            title: `${s.name || `r/${s.subreddit}`} (${length})`,
+            href: href,
+            title: `${name} (${length})`,
             lastPostCreated,
             size: length,
-            isMultireddit: s.subreddit.includes('+'),
+            isMultireddit: isCustomFeed ? true : s.subreddit!.includes('+'),
             notify: s.notify ? 'on' : 'off',
             error: formatError(subData?.error),
             filter: s.filterOpts?.enabled ? 'on' : 'off',

@@ -262,7 +262,7 @@ const storage = {
             if (current.id !== subOpts.id)
                 return current;
             // Clear if subreddit name changes
-            if (subOpts.subreddit !== current.subreddit)
+            if (subOpts.subreddit !== current.subreddit || subOpts.customFeed !== current.customFeed)
                 storage.removeSubredditData(current.id).catch(console.error);
 
             wasUpdated = true;

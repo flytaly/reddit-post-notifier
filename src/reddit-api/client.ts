@@ -107,6 +107,14 @@ export default class RedditApiClient {
         };
     }
 
+    getCustomFeed(link: string) {
+        link = link.trim().replace(/^\/+|\/+$/g, ''); // make sure there is no leading or trailing slash
+        return {
+            new: async (listing?: RedditSubredditListing) =>
+                this.GET(`/user/${link}/new`, listing) as R<RedditPostResponse>,
+        };
+    }
+
     user(username: string) {
         return {
             overview: async (listing?: RedditUserListing) => {

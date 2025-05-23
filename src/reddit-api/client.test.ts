@@ -18,7 +18,7 @@ function jsonResponse(result: unknown, status = 200) {
     return new Promise<Response>(resolve => resolve(response));
 }
 
-describe('hTTP GET request', () => {
+describe('HTTP GET request', () => {
     const response = { data: 'data' };
     const endpoint = '/endpoint';
     const accessToken = 'accessToken';
@@ -93,7 +93,7 @@ describe('hTTP GET request', () => {
     });
 });
 
-describe('aPI', () => {
+describe('API', () => {
     const response = { data: 'data' };
     let reddit: RedditApiClient;
 

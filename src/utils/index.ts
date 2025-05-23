@@ -51,6 +51,11 @@ export function getSubredditUrl(subreddit: string, opts: UrlOpts): string {
     return constructUrl(endpoint, opts);
 }
 
+export function getCustomFeedUrl(feed: string, opts: UrlOpts): string {
+    const endpoint = `/user/${feed}/new`;
+    return constructUrl(endpoint, opts);
+}
+
 export function getInboxUrl(opts: UrlOpts): string {
     const endpoint = '/message/inbox';
     return constructUrl(endpoint, opts);

@@ -11,6 +11,7 @@ export const mockUnread = vi.fn(async () => response);
 export const mockNewPosts = vi.fn(async () => response);
 export const mockNewSearchPosts = vi.fn(async () => response);
 export const mockGetSub = vi.fn(() => ({ new: mockNewPosts, search: mockNewSearchPosts }));
+export const mockGetCustomFeed = vi.fn(() => ({ new: mockNewPosts }));
 
 export const mockSearch = vi.fn(async () => response);
 
@@ -34,6 +35,7 @@ const mockMe = vi.fn(
 const mock = vi.fn().mockImplementation(() => {
     return {
         getSubreddit: mockGetSub,
+        getCustomFeed: mockGetCustomFeed,
         search: mockSearch,
         messages: { unread: mockUnread },
         user: mockUser,

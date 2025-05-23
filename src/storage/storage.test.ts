@@ -288,7 +288,7 @@ describe('subreddits', () => {
 
     it('should save error', async () => {
         const error = { message: 'some error' };
-        const sub: string = subOpts[1].subreddit;
+        const sub: string = subOpts[1].subreddit!;
         mockGet.mockImplementation(async () => ({ subreddits }));
         await storage.saveSubredditData(sub, { error });
         expect(mockSet).toHaveBeenCalledWith({
