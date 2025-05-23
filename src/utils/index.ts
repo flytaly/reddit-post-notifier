@@ -14,8 +14,10 @@ export function mapObjToQueryStr(params: Record<string, unknown>): string {
 
 export const subredditNameRegExp = /^[A-Z0-9]\w{2,20}$/i;
 
-//* * test all subreddits name in multireddit */
+/** test all subreddits name in multireddit */
 export const testMultireddit = (subs: string) => subs.split('+').every(s => subredditNameRegExp.test(s));
+/** test custom feed link: username/m/feed_name */
+export const testCustomFeed = (link: string) => link.match(/^[a-zA-Z0-9_\-]{1,30}\/m\/[a-zA-Z0-9_.~\-]{1,50}$/);
 
 export const redditUrl = 'https://reddit.com';
 export const redditOldUrl = 'https://old.reddit.com';

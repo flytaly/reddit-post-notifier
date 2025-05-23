@@ -2,7 +2,7 @@
     import NotifierApp from '@/notifier/app';
     import type { PostFilterOptions, SubredditData } from '@/storage/storage-types';
     import type { SearchableField } from '@/text-search/post-filter';
-    import { debounce, testMultireddit } from '@/utils';
+    import { debounce, testMultireddit, testCustomFeed } from '@/utils';
     import getMsg from '@/utils/get-message';
     import RedditItemsList from '@options/components/RedditItemsList.svelte';
     import TooltipIcon from '@options/components/TooltipIcon.svelte';
@@ -32,7 +32,8 @@
     let isLoading = $state(false);
 
     let showEditBlock = $state(!subState.state[index].subreddit);
-    let subredditInputRef: HTMLInputElement;
+    let subredditInputRef = $state<HTMLInputElement | null>(null);
+    let customFeedInputRef = $state<HTMLInputElement | null>(null);
 
     $effect(() => {
         fetchError = formatError(subData.error);
@@ -43,8 +44,7 @@
     const getName = () => subOpts.name || `r/${subOpts.subreddit}`;
 
     const fetchPosts = async () => {
-        if (!subOpts.subreddit || inputState.get(subOpts.id).error)
-            return;
+        if (!subOpts.subreddit || inputState.get(subOpts.id).error) return;
         isLoading = true;
         showPosts = false;
         isBlocked.block();
@@ -87,19 +87,33 @@
 
     const saveInputs = async (filter?: PostFilterOptions) => {
         const _subreddit = subOpts.subreddit?.trim().replace(/\s/g, '+');
-        if (!_subreddit || !testMultireddit(_subreddit)) {
-            const msg = 'Invalid subreddit/multireddit name';
-            subredditInputRef?.setCustomValidity(msg);
+        const _customFeed = subOpts.customFeed?.trim().replace(/^\/+|\/+$/g, '');
 
-            inputState.set(subOpts.id, { error: msg });
-            return;
-        }
         subredditInputRef?.setCustomValidity('');
+        customFeedInputRef?.setCustomValidity('');
+        inputState.set(subOpts.id, { error: '' });
+
+        switch (subOpts.type) {
+            case 'custom_feed':
+                if (!_customFeed || !testCustomFeed(_customFeed)) {
+                    const msg = 'Invalid custom feed link';
+                    customFeedInputRef?.setCustomValidity(msg);
+                    inputState.set(subOpts.id, { error: msg });
+                    return;
+                }
+                break;
+            default:
+                if (!_subreddit || !testMultireddit(_subreddit)) {
+                    const msg = 'Invalid subreddit/multireddit name';
+                    subredditInputRef?.setCustomValidity(msg);
+                    inputState.set(subOpts.id, { error: msg });
+                    return;
+                }
+        }
 
         const shouldRemoveData = !!filter;
 
-        if (shouldRemoveData && showPosts)
-            showPosts = false;
+        if (shouldRemoveData && showPosts) showPosts = false;
 
         if (filter) {
             subOpts.filterOpts = processFilterOpts(filter);
@@ -121,8 +135,7 @@
     };
 
     const toggleEditBlock = () => {
-        if (!showEditBlock && showPosts)
-            showPosts = false;
+        if (!showEditBlock && showPosts) showPosts = false;
         showEditBlock = !showEditBlock;
     };
 
@@ -224,12 +237,12 @@
                 </div>
             </div>
 
-            <div class='mb-4 grid grid-cols-[auto_1fr] items-center gap-2 text-sm'>
+            <div class='mb-4 grid grid-cols-[auto_1fr] items-center gap-2 text-sm max-w-fit'>
                 <label for={`name_${subOpts.id}`}>{getMsg('optionSubredditsInputNameLabel')}</label>
                 <div class='flex items-center gap-2'>
                     <input
                         id={`name_${subOpts.id}`}
-                        class='w-full max-w-[20rem] rounded border border-skin-border'
+                        class='w-full rounded border border-skin-border'
                         type='text'
                         bind:value={subOpts.name}
                         oninput={inputHandler}
@@ -239,22 +252,52 @@
                     <TooltipIcon message={getMsg('optionSubredditsInputName_title')} />
                 </div>
 
-                <label class='font-bold' for={`subreddit_${subOpts.id}`}>{getMsg('optionSubredditsInputLabel')}</label>
+                <select
+                    class='rounded py-1 border-none bg-transparent hover:bg-skin-input hover:shadow-none focus:bg-skin-input font-bold text-sm'
+                    name="subredditType"
+                    bind:value={subOpts.type}
+                    onchange={inputHandler}
+                    id="typeSelection"
+                >
+                    <option value="subreddit">{getMsg('optionSubredditsInputLabel')}</option>
+                    <option value="custom_feed">{getMsg('optionSubredditsCustomFeedInputLabel')}</option>
+                </select>
                 <div class='flex items-center gap-2'>
-                    <input
-                        id={`subreddit_${subOpts.id}`}
-                        class={[
-                            'w-full max-w-[20rem] rounded border',
-                            errorMessage ? 'border-skin-error' : 'border-skin-border',
-                        ]}
-                        type='text'
-                        bind:this={subredditInputRef}
-                        bind:value={subOpts.subreddit}
-                        oninput={inputHandler}
-                        aria-label={getMsg('optionSubredditsInput_title')}
-                        placeholder={getMsg('optionSubredditsInput_placeholder')}
-                    />
-                    <TooltipIcon message={getMsg('optionSubredditsInput_title')} />
+                    {#if subOpts.type === 'customFeed'}
+                        <div class="text-skin-gray/80">reddit.com/user/</div>
+                        <input
+                            id={`subreddit_${subOpts.id}`}
+                            class={[
+                                'w-[20rem] max-w-full rounded border',
+                                errorMessage ? 'border-skin-error' : 'border-skin-border',
+                            ]}
+                            type='text'
+                            bind:this={customFeedInputRef}
+                            bind:value={subOpts.customFeed}
+                            oninput={inputHandler}
+                            aria-label={getMsg('optionSubredditsCustomFeedInput_title')}
+                            placeholder={getMsg('optionSubredditsCustomFeedInput_placeholder')}
+                            data-testid='customFeedInput'
+                        />
+                        <TooltipIcon message={getMsg('optionSubredditsCustomFeedInput_title')} />
+                    {:else }
+                        <div class="text-skin-gray/80">r/</div>
+                        <input
+                            id={`customFeed_${subOpts.id}`}
+                            class={[
+                                'w-[20rem] max-w-full rounded border',
+                                errorMessage ? 'border-skin-error' : 'border-skin-border',
+                            ]}
+                            type='text'
+                            bind:this={subredditInputRef}
+                            bind:value={subOpts.subreddit}
+                            oninput={inputHandler}
+                            aria-label={getMsg('optionSubredditsInput_title')}
+                            placeholder={getMsg('optionSubredditsInput_placeholder')}
+                            data-testid='subredditInput'
+                        />
+                        <TooltipIcon message={getMsg('optionSubredditsInput_title')} />
+                    {/if}
                 </div>
             </div>
             <PostFilterBlock subIndex={index} {saveInputs} subId={subOpts.id} />

@@ -1,13 +1,13 @@
 import { act, cleanup, fireEvent, render, waitFor } from '@testing-library/svelte';
+import userEvent from '@testing-library/user-event';
 import { tick } from 'svelte';
 import { afterEach, beforeAll, describe, expect, it, vi } from 'vitest';
-import userEvent from '@testing-library/user-event';
 
-import SubredditsBlock from './SubredditsBlock.svelte';
+import { dataFields } from '@/storage/fields';
 import storage from '@/storage/storage';
 import type { SubredditData, SubredditOpts } from '@/storage/storage-types';
 import getMsg from '@/utils/get-message';
-import { dataFields } from '@/storage/fields';
+import SubredditsBlock from './SubredditsBlock.svelte';
 
 let idx = 0;
 vi.mock('@/storage/storage.ts');
@@ -78,8 +78,8 @@ describe('subreddit settings', () => {
         });
     });
 
-    it('should save only subreddit or multireddit', async () => {
-        const { getAllByTestId, getByText, getByLabelText } = render(SubredditsBlock);
+    it('should save subreddit or multireddit', async () => {
+        const { getAllByTestId, getByText, getByTestId } = render(SubredditsBlock);
         await tick();
 
         await waitFor(async () => {
@@ -93,7 +93,7 @@ describe('subreddit settings', () => {
         const lastInput = inputBlocks[inputBlocks.length - 1];
         lastInput.click();
 
-        const input = getByLabelText(getMsg('optionSubredditsInputLabel'));
+        const input = getByTestId('subredditInput');
         for (const subreddit of ['!not', 'tt']) {
             const user = userEvent.setup();
             await user.clear(input);

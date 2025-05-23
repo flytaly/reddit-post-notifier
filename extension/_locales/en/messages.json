@@ -252,6 +252,15 @@
     "optionSubredditsInput_placeholder": {
         "message": "e.g.: Midjourney+StableDiffusion"
     },
+    "optionSubredditsCustomFeedInputLabel": {
+        "message": "Custom Feed:"
+    },
+    "optionSubredditsCustomFeedInput_title": {
+        "message": "Enter Custom Feed link (e.g. reddit_user/m/my_feed)"
+    },
+    "optionSubredditsCustomFeedInput_placeholder": {
+        "message": "e.g.: reddit_user/m/my_feed"
+    },
     "optionSubredditsInputNameLabel": {
         "message": "Display name:"
     },

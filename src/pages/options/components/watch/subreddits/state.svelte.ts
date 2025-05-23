@@ -5,6 +5,8 @@ import { generateId } from '@/utils';
 const genEmpty = (): SubredditOpts => ({
     id: generateId(),
     subreddit: '',
+    customFeed: '',
+    type: 'subreddit',
     disabled: false,
     notify: false,
     filterOpts: { enabled: false, rules: [], fields: [] },
