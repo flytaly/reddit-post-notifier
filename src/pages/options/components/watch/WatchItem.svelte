@@ -15,6 +15,7 @@
         showEditBlock?: boolean;
         onDelete?: () => void;
         onFetch?: () => void;
+        onCollapse?: () => void;
         onActiveToggle?: (e: InputChangeEv) => void;
         posts?: Snippet;
         toggles?: Snippet;
@@ -28,6 +29,7 @@
         errorMessage = '',
         showEditBlock = $bindable(false),
         onDelete = () => {},
+        onCollapse = () => {},
         onFetch = () => {},
         onActiveToggle = () => {},
         posts: postsSnip,
@@ -38,6 +40,7 @@
 
     const toggleEditBlock = () => {
         showEditBlock = !showEditBlock;
+        if (!showEditBlock) onCollapse();
     };
 </script>
 

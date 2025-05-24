@@ -41,8 +41,6 @@
 
     let errorMessage = $derived(inputState.get(subOpts.id).error || fetchError);
 
-    const getName = () => subOpts.name || `r/${subOpts.subreddit}`;
-
     const fetchPosts = async () => {
         if (inputState.get(subOpts.id).error) return;
         const isCustomFeed = subOpts.type === 'custom_feed';
@@ -177,6 +175,7 @@
     }}
     onDelete={() => void subState.deleteSubreddit(subOpts.id)}
     onFetch={() => void fetchPosts()}
+    onCollapse={() => showPosts = false}
     fetchBlocked={fetchBlocked}
     {errorMessage}
 >
