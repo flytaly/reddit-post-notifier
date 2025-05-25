@@ -7,9 +7,10 @@
     interface Props {
         group: PostGroup;
         item: RedditItem | RedditMessage;
+        colorId?: number;
     }
 
-    let { group, item }: Props = $props();
+    let { group, item, colorId }: Props = $props();
 
     let row = $derived.by(() => {
         if (group.type === 'message' || group.type === 'account-message')
@@ -19,7 +20,7 @@
 </script>
 
 {#if row.redditItem}
-    <PostRow post={row.redditItem} {group} />
+    <PostRow post={row.redditItem} {group} {colorId} />
 {:else if row.redditMessage}
     <MessageRow item={row.redditMessage} {group} />
 {/if}

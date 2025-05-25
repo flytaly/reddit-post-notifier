@@ -16,7 +16,8 @@
         rowOutTransition?: typeof slideHorizontal;
         items: RedditItem[] | RedditMessage[];
         headerRow: Snippet;
-        listRow: Snippet<[item: RedditItem | RedditMessage]>;
+        listRow: Snippet<[item: RedditItem | RedditMessage, colorId: number]>;
+        colorVariants?: number;
     }
 
     let {
@@ -26,9 +27,25 @@
         items,
         headerRow,
         listRow,
+        colorVariants,
     }: Props = $props();
 
     let containerElement: HTMLElement | undefined = $state();
+
+    // Alternate colors for different consecutive subreddits
+    let coloredItems = $derived.by(() => {
+        if (!colorVariants) return items.map(item => ({ item: item, colorId: 0 }));
+        let current = colorVariants - 1;
+        let prevId = '';
+        return items.map((item) => {
+            const currentId = item.data.subreddit;
+            if (currentId !== prevId) {
+                current = (current + 1) % colorVariants;
+                prevId = currentId || '';
+            }
+            return { item: item, colorId: current };
+        });
+    });
 </script>
 
 <div class='flex w-full min-w-[18rem] flex-col' data-keys-target='list-container' bind:this={containerElement}>
@@ -50,13 +67,13 @@
             </button>
 
             <ul class='flex flex-grow flex-col' data-floatpreview-target='true'>
-                {#each items as item (item.data.id)}
+                {#each coloredItems as aItem (aItem.item.data.id)}
                     <li
                         animate:flip={{ delay: 100, duration: 100 }}
-                        out:rowOutTransition|local={{ duration: 150, id: item.data.id }}
+                        out:rowOutTransition|local={{ duration: 150, id: aItem.item.data.id }}
                     >
                         <DropDownListItem tabindex={0} role='button' data-keys-target='post-row'>
-                            {@render listRow(item)}
+                            {@render listRow(aItem.item, aItem.colorId)}
                         </DropDownListItem>
                     </li>
                 {/each}

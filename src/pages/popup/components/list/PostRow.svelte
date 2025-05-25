@@ -14,9 +14,10 @@
     interface Props {
         group: PostGroup;
         post: RedditItem;
+        colorId?: number;
     }
 
-    let { group, post }: Props = $props();
+    let { group, post, colorId }: Props = $props();
 
     let options: ExtensionOptions = $derived($storageData.options);
     let href: string = $derived(constructUrl(post.data.permalink, options));
@@ -53,6 +54,14 @@
             await removePost(post.data.id);
         }
     };
+
+    const colorClasses = [
+        'bg-skin-subreddit-bg1 text-skin-subreddit-text1',
+        'bg-skin-subreddit-bg2 text-skin-subreddit-text2',
+    ];
+
+    let colorClass = $derived.by(() => colorClasses[colorId ?? 0]);
+
 </script>
 
 <div class='flex w-full items-center py-[0.125rem] pr-3' data-post-id={post.data.id}>
@@ -64,7 +73,13 @@
         postId={post.data.id}
     >
         {#if group.isMultireddit}
-            <span class='mr-1 text-xs text-skin-text'>{`r/${post.data.subreddit}`}</span>
+            <span
+                class={[
+                    'mr-1 text-xs px-px py-[2px] rounded',
+                    colorClass,
+                ]}>
+                {`r/${post.data.subreddit}`}
+            </span>
         {/if}
         {getItemTitle(post)}
     </PostLink>

@@ -90,12 +90,13 @@
                 items={getGroupItems(data, g.id, g.type)}
                 isExpanded={expanded.has(g.id)}
                 rowOutTransition={pinTransition}
+                colorVariants={2}
             >
                 {#snippet headerRow()}
                     <GroupTitle onCheck={() => removePostsFromGroup(g.id, g.type)} group={g} />
                 {/snippet}
-                {#snippet listRow(item)}
-                    <Row group={g} {item} />
+                {#snippet listRow(item, colorId)}
+                    <Row group={g} {item} {colorId} />
                 {/snippet}
             </DropDownList>
         </div>
