@@ -7,8 +7,8 @@
 
     let limit = $derived($storageData.options.limit || DEFAULT_OPTIONS.limit);
 
-    const subredditHref = `${routes.settings.href}#${routes.watch.sections.subreddit.id}`;
-    const searchHref = `${routes.settings.href}#${routes.watch.sections['reddit-search'].id}`;
+    const subredditHref = `${routes.watch.href}#${routes.watch.sections.subreddit.id}`;
+    const searchHref = `${routes.watch.href}#${routes.watch.sections['reddit-search'].id}`;
 </script>
 
 {#snippet summary(t: string)}
@@ -27,15 +27,22 @@
     </details>
 
     <details class='mt-6'>
-        {@render summary('Watch for new posts in a subreddit')}
+        {@render summary('Watch for new posts in a subreddit or custom feed')}
         <div class='ml-8'>
-            <span>
+            <p>
                 If you want to monitor
                 <b>every</b>
-                post in a Subreddit/Multireddit go to the
+                post in a subreddit or multireddit go to the
                 <a href={subredditHref}>Subreddits section</a>
-                and add the Subreddit name to the list.</span
-            >
+                and add the Subreddit name to the list.</p>
+            <p class="mt-1">
+            </p>
+            <details class='mt-2' open>
+                {@render summary('Custom Feed')}
+                <p>
+                    To monitor a custom feed, select "Custom Feed" option and add link to your feed. For example, if the full address is <span class="font-mono">https://www.reddit.com/user/user_name/m/my_feed</span>, then enter <b class="mono">user_name/m/my_feed</b>. <br> Make sure that the feed is not private, or that you are logged into your account if it is private.
+                </p>
+            </details>
             <details class='mt-2' open>
                 {@render summary('Filter Subreddit posts')}
                 <div>
@@ -56,13 +63,9 @@
                 You can stay up to date with Reddit Search by adding a query in the "search query" field in the
                 <a href={searchHref}>Reddit Search</a>
                 section. Look at the
-                <a href='https://www.reddit.com/wiki/search#wiki_field_search' target='_blank' rel='noreferrer'>
+                <a href='https://support.reddithelp.com/hc/en-us/articles/19696541895316-Available-search-features' target='_blank' rel='noreferrer'>
                     Reddit Search wiki
-                </a>
-                to learn supported keywords and
-                <a href='https://www.reddit.com/wiki/search#wiki_boolean_operators' target='_blank' rel='noreferrer'>
-                    boolean operators
-                </a>.
+                </a> to learn supported keywords and boolean operators.
             </div>
             <br />
             <div>
@@ -79,7 +82,7 @@
                 </ul>
             </div>
             <div>
-                To receive notifications don't forget to select the checkbox with
+                To receive desktop notifications don't forget to select the checkbox with
                 <span class='icon inline-block h-4 w-4'>
                     {@html BellIcon}
                 </span>

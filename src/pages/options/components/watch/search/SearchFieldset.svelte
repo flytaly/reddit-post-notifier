@@ -235,7 +235,7 @@
             <div class='-mt-1'>
                 <a
                     class='text-sm underline'
-                    href='https://www.reddit.com/wiki/search/#wiki_manual_filtering'
+                    href='https://support.reddithelp.com/hc/en-us/articles/19696541895316-Available-search-features'
                     target='_blank'
                     rel='noreferrer'
                 >

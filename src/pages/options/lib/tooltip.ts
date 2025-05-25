@@ -3,6 +3,7 @@ import tippy, { type Props } from 'tippy.js';
 export function tooltip(node: Element, params: Partial<Props>) {
     const tip = tippy(node, {
         theme: 'material',
+        maxWidth: 450,
         delay: [200, 0],
         duration: [300, 0],
         ...params,

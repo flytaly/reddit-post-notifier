@@ -238,7 +238,10 @@
         "message": "fetch and show the latest post"
     },
     "optionSubredditsDescription": {
-        "message": "Monitor every post in a subreddit. You can filter posts based on a given rule, but it's recommended to use Reddit Search instead of filters."
+        "message": "Monitor every post in a subreddit, multireddit or your custom feed. You can filter posts based on a specific rule or use the Reddit Search (see the next section)."
+    },
+    "optionSubredditsDescriptionFiltersVsSearch": {
+        "message": "Filters vs Reddit Search"
     },
     "optionSubredditsName": {
         "message": "Subreddit name"
@@ -256,7 +259,7 @@
         "message": "Custom Feed:"
     },
     "optionSubredditsCustomFeedInput_title": {
-        "message": "Enter Custom Feed link (e.g. reddit_user/m/my_feed)"
+        "message": "Enter Custom Feed link endpoint. For example, if the full address is https://www.reddit.com/user/user_name/m/my_feed, then enter <b>user_name/m/my_feed</b>. <br />Make sure that the feed is not private, or that you are logged into your account if it is private."
     },
     "optionSubredditsCustomFeedInput_placeholder": {
         "message": "e.g.: reddit_user/m/my_feed"
@@ -316,7 +319,7 @@
         "message": "Add new subreddit"
     },
     "optionSearchDescription": {
-        "message": "Stay up to date with reddit search by adding a query in the \"search query\" field. Look at the <a href=\"https://www.reddit.com/wiki/search/#wiki_manual_filtering\" target=\"_blank\">reddit search wiki</a> to learn supported keywords and <a href=\"https://www.reddit.com/wiki/search/#wiki_boolean_operators_and_grouping\" target=\"_blank\">boolean operators</a>."
+        "message": "Stay up to date with reddit search by adding a query in the \"search query\" field. Look at the <a href=\"https://support.reddithelp.com/hc/en-us/articles/19696541895316-Available-search-features\" target=\"_blank\">reddit search wiki</a> to learn supported keywords and boolean operators."
     },
     "optionSearchName": {
         "message": "Name:",

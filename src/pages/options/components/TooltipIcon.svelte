@@ -15,6 +15,8 @@
     onMount(() => {
         tippy(ref, {
             content: message,
+            allowHTML: true,
+            maxWidth: 450,
         });
     });
 </script>
