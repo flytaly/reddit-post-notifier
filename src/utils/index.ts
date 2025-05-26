@@ -124,6 +124,7 @@ export function filterPostDataProperties(post: RedditPostExtended | RedditPost):
         'permalink',
         'preview',
         'selftext',
+        'selftext_html',
         'subreddit',
         'title',
         'url',

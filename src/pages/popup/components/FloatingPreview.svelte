@@ -12,19 +12,20 @@
 
     let previewElement: HTMLElement | undefined = $state();
     let imageInfo: { url: string; width: number; height: number; loaded: boolean } | null = $state(null);
-    let postText: string | null = $state(null);
+    let postContent: string | null = $state(null);
 
     $effect(() => {
         if (posts) {
             // Clear if post list was updated. Usefull in case
             // when a post is removed from the list but mouseleave event wasn't triggered
             imageInfo = null;
-            postText = null;
+            postContent = null;
         }
     });
 
-    const MAX_WIDTH = 300;
-    const MAX_HEIGHT = 200;
+    const MAX_WIDTH = 340;
+    const MAX_HEIGHT = 280;
+    const MAX_HEIGHT_IMG = 180;
 
     function getImageList(post: RedditPost): { url: string; width: number; height: number }[] | undefined {
         if (post.data.is_gallery && post.data.media_metadata) {
@@ -46,11 +47,11 @@
         if (!imageList?.length)
             return;
         let result = imageList.find((i) => {
-            return i.width > MAX_WIDTH && i.height > MAX_HEIGHT;
+            return i.width > MAX_WIDTH && i.height > MAX_HEIGHT_IMG;
         });
         result = result || imageList[0];
         result.width = Math.max(result.width, MAX_WIDTH);
-        result.height = Math.max(result.height, MAX_HEIGHT);
+        result.height = Math.max(result.height, MAX_HEIGHT_IMG);
 
         const aspectRatio = result.width / result.height;
         if (aspectRatio > 1) {
@@ -58,19 +59,22 @@
             result.height = result.width / aspectRatio;
             return result;
         }
-        result.height = Math.min(MAX_HEIGHT, result.height);
+        result.height = Math.min(MAX_HEIGHT_IMG, result.height);
         result.width = result.height * aspectRatio;
         return result;
     }
 
     function setData(post: RedditItem | RedditMessage) {
         imageInfo = null;
+        postContent = null;
         const sliceText = (str: string, max = 400) => (str.length > max ? `${str.slice(0, max)}...` : str);
         switch (post.kind) {
             case RedditObjectKind.link: {
-                if (post.data.selftext) {
-                    postText = sliceText(post.data.selftext);
-                    return;
+                if (post.data.selftext_html) {
+                    postContent = post.data.selftext_html;
+                }
+                else if (post.data.selftext) {
+                    postContent = sliceText(post.data.selftext);
                 }
                 const imgList = getImageList(post);
                 const image = selectFittingImage(imgList);
@@ -84,13 +88,15 @@
                     imageInfo.loaded = true;
                 };
                 imgElem.src = image.url;
+                if (!postContent && !imageInfo) {
+                    postContent = post.data.url;
+                }
 
-                postText = !imageInfo ? post.data.url : null;
                 return;
             }
             case RedditObjectKind.comment:
             case RedditObjectKind.message:
-                postText = sliceText(post.data.body || '');
+                postContent = sliceText(post.data.body || '');
                 break;
             default:
                 break;
@@ -135,7 +141,7 @@
         const mouseleave = () => {
             prevId = null;
             imageInfo = null;
-            postText = null;
+            postContent = null;
         };
 
         const elem = containerElement.querySelector('[data-floatpreview-target]');
@@ -153,7 +159,7 @@
 
 <div
     class="absolute z-50 overflow-hidden break-words border border-skin-border bg-skin-bg p-1 text-xs"
-    class:hidden={!imageInfo && !postText}
+    class:hidden={!imageInfo && !postContent}
     bind:this={previewElement}
     style={`max-width: ${MAX_WIDTH}px; max-height: ${MAX_HEIGHT}px`}
 >
@@ -162,14 +168,13 @@
             {#if imageInfo.loaded}
                 <img
                     src={imageInfo.url}
-                    width={imageInfo.width}
-                    height={imageInfo.height}
                     alt='preview'
-                    class='block min-h-full min-w-full'
+                    class='block'
                 />
             {/if}
         </div>
-    {:else}<span>{postText}</span>{/if}
+    {/if}
+    <div>{@html postContent}</div>
 </div>
 
 <style>

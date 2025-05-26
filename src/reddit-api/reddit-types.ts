@@ -41,6 +41,7 @@ export interface RedditPostData {
         }>;
     };
     selftext?: string;
+    selftext_html?: string;
     subreddit: string;
     title: string;
     url: string;
