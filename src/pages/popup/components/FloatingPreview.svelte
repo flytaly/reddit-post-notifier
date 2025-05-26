@@ -26,6 +26,7 @@
     const MAX_WIDTH = 340;
     const MAX_HEIGHT = 280;
     const MAX_HEIGHT_IMG = 180;
+    const MAX_HEIGHT_TEXT = 180;
 
     function getImageList(post: RedditPost): { url: string; width: number; height: number }[] | undefined {
         if (post.data.is_gallery && post.data.media_metadata) {
@@ -158,7 +159,7 @@
 </script>
 
 <div
-    class="absolute z-50 overflow-hidden break-words border border-skin-border bg-skin-bg p-1 text-xs"
+    class="floating-preview absolute z-50 overflow-hidden break-words border border-skin-border bg-skin-bg p-1 text-xs"
     class:hidden={!imageInfo && !postContent}
     bind:this={previewElement}
     style={`max-width: ${MAX_WIDTH}px; max-height: ${MAX_HEIGHT}px`}
@@ -174,11 +175,17 @@
             {/if}
         </div>
     {/if}
-    <div>{@html postContent}</div>
+    <div style={`max-height: ${MAX_HEIGHT_TEXT}px`}>{@html postContent}</div>
 </div>
 
 <style>
     .hidden {
         visibility: hidden;
     }
+
+    .floating-preview :global(li) {
+        list-style: disc;
+        margin-left: 1rem;
+    }
+
 </style>
