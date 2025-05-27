@@ -47,6 +47,13 @@
             </div>
         {/if}
         <span class='mr-auto max-w-[40ch] overflow-hidden text-ellipsis whitespace-nowrap'>{group.title}</span>
+        <span class={[
+            ' rounded ml-1 text-xs border-1 px-0.5 min-w-[3ch] text-center',
+            { 'bg-skin-hl-bg1 text-skin-hl-text1 border-skin-hl-border1/70': group.size > 0 },
+            { 'bg-transparent border-skin-gray/70': group.size === 0 },
+        ]}>
+            {group.size}
+        </span>
         {#if group.updatesDisabled}
             <div class='h-4 w-4 shrink-0 text-skin-gray' title={getMsg('watchListUpdatesOff')}>
                 {@html UpdatesDisabledIcon}

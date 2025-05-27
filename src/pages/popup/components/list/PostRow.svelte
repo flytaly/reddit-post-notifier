@@ -56,8 +56,8 @@
     };
 
     const colorClasses = [
-        'bg-skin-subreddit-bg1 text-skin-subreddit-text1',
-        'bg-skin-subreddit-bg2 text-skin-subreddit-text2',
+        'bg-skin-hl-bg1 text-skin-hl-text1',
+        'bg-skin-hl-bg2 text-skin-hl-text2',
     ];
 
     let colorClass = $derived.by(() => colorClasses[colorId ?? 0]);
