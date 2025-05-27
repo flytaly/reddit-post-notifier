@@ -23,9 +23,10 @@
         }
     });
 
+    const IMG_WIDTH = 280;
+    const IMG_HEIGHT = 160;
     const MAX_WIDTH = 340;
     const MAX_HEIGHT = 280;
-    const MAX_HEIGHT_IMG = 180;
     const MAX_HEIGHT_TEXT = 180;
 
     function getImageList(post: RedditPost): { url: string; width: number; height: number }[] | undefined {
@@ -48,19 +49,19 @@
         if (!imageList?.length)
             return;
         let result = imageList.find((i) => {
-            return i.width > MAX_WIDTH && i.height > MAX_HEIGHT_IMG;
+            return i.width > IMG_WIDTH && i.height > IMG_HEIGHT;
         });
         result = result || imageList[0];
-        result.width = Math.max(result.width, MAX_WIDTH);
-        result.height = Math.max(result.height, MAX_HEIGHT_IMG);
+        result.width = Math.max(result.width, IMG_WIDTH);
+        result.height = Math.max(result.height, IMG_HEIGHT);
 
         const aspectRatio = result.width / result.height;
         if (aspectRatio > 1) {
-            result.width = Math.min(MAX_WIDTH, result.width);
+            result.width = Math.min(IMG_WIDTH, result.width);
             result.height = result.width / aspectRatio;
             return result;
         }
-        result.height = Math.min(MAX_HEIGHT_IMG, result.height);
+        result.height = Math.min(IMG_HEIGHT, result.height);
         result.width = result.height * aspectRatio;
         return result;
     }
