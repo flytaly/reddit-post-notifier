@@ -85,7 +85,9 @@
     </PostLink>
     <span data-keys-target='pin-post'>
         <SvgButton onclick={onPinClick} title={getMsg('watchListItemPin_title')}>
-            {@html Pin}
+            <div class="text-skin-text/70">
+                {@html Pin}
+            </div>
         </SvgButton>
     </span>
 </div>

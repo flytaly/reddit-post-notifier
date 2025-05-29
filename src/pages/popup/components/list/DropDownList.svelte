@@ -53,7 +53,9 @@
         {@render headerRow()}
         <span class='ml-auto mr-3'>
             <SvgButton onclick={toggle}>
-                <div class={`transform duration-200 ease-out ${isExpanded ? 'rotate-180' : ''}`}>
+                <div class={[
+                    'transform duration-200 ease-out text-skin-text/70',
+                    { 'rotate-180': isExpanded }]}>
                     {@html ArrowUp}
                 </div>
             </SvgButton>

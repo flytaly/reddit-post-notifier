@@ -38,7 +38,9 @@
                 onclick={() => void storage.removePinPost(redditItem.data.id)}
                 title={getMsg('watchListItemUnpin_title')}
             >
-                {@html PinRemove}
+                <div class="text-skin-text/70">
+                    {@html PinRemove}
+                </div>
             </SvgButton>
         </span>
     </div>
