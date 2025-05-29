@@ -24,7 +24,7 @@
     let name = $state(queryObject.name || '');
     let subreddit = $state(queryObject.subreddit || '');
     let notify = $state(!!queryObject.notify);
-    let isActive = $state(!queryObject.disabled);
+    let disabled = $state(!!queryObject.disabled);
     let showEditBlock = $state(!queryObject.query);
 
     let subredditInputRef: HTMLInputElement | undefined = $state();
@@ -82,7 +82,7 @@
             name: name.trim(),
             subreddit: _subreddit,
             query: _query,
-            disabled: !isActive,
+            disabled: disabled,
         });
         saveMsg = 'saved';
     }, 500);
@@ -118,10 +118,10 @@
 
 <WatchItem
     bind:showEditBlock
-    itemDisabled={isActive}
+    itemDisabled={disabled}
     name={searchBlockName}
     onActiveToggle={(e) => {
-        isActive = !e.currentTarget.checked;
+        disabled = !e.currentTarget.checked;
         void saveInputs();
     }}
     onDelete={deleteHandler}
