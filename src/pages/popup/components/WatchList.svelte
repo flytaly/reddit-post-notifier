@@ -71,7 +71,8 @@
                 {#snippet headerRow()}
                     <div class='flex w-full items-center p-1 pb-2 pr-4'>
                         <div class='mr-1 h-4 w-4'>{@html Pin}</div>
-                        <span>{`Pinned posts (${data.pinnedPostList.length})`}</span>
+                        <span>Pinned posts</span>
+                        <span class="rounded ml-1 text-xs border-1 px-0.5 min-w-[3ch] text-center text-skin-text border-skin-border/70">{data.pinnedPostList.length}</span>
                     </div>
                 {/snippet}
                 {#snippet listRow(item)}
