@@ -62,7 +62,7 @@
         {/each}
     </nav>
     <div class='mt-auto w-full text-xs'>
-        {#if $rateLimits}
+        {#if $rateLimits && typeof $rateLimits.used === 'number'}
             <div class='my-4 grid w-max grid-cols-2 gap-x-4 gap-y-1'>
                 <span
                     use:tooltip={{ content: getMsg('rateLimitsDescription'), allowHTML: true }}
