@@ -1,0 +1,136 @@
+@theme inline {
+    /* colors */
+    --color-skin-bg: var(--color-bg-base);
+    --color-skin-bg2: var(--color-bg-second);
+    --color-skin-hl-bg1: var(--color-bg-hl1);
+    --color-skin-hl-bg2: var(--color-bg-hl2);
+    --color-skin-hl-text1: var(--color-text-hl1);
+    --color-skin-hl-text2: var(--color-text-hl2);
+    --color-skin-hl-border1: var(--color-border-hl1);
+    --color-skin-hl-border2: var(--color-border-hl2);
+    --color-skin-accent: var(--color-accent);
+    --color-skin-accent2: var(--color-accent2);
+    --color-skin-gray: var(--color-gray);
+    --color-skin-gray2: var(--color-gray2);
+    --color-skin-outline: var(--color-outline);
+    --color-skin-delimiter: var(--color-delimiter);
+    --color-skin-text: var(--color-text-base);
+    --color-skin-error: var(--color-error);
+    --color-skin-error-bg: var(--color-error-bg);
+    --color-skin-success: var(--color-success);
+    --color-skin-link: var(--color-link);
+    --color-skin-item-hover: var(--color-item-bg-hover);
+    --color-skin-input-checked: var(--color-input-bg-checked);
+    --color-skin-input-hover: var(--color-input-bg-hover);
+    --color-skin-input: var(--color-input-bg);
+    --color-skin-btn: var(--color-btn);
+    --color-skin-btn-hover: var(--color-btn-hover);
+    --color-skin-btn-active: var(--color-btn-active);
+    --color-skin-border: var(--color-border);
+
+    /* shadows */
+    --shadow-input-expand: var(--shadow-input-expand);
+    --shadow-input: var(--shadow-input-hover);
+}
+
+:root {
+    --color-text-base: theme('colors.slate.900');
+    --color-text-hl1: var(--color-text-base);
+    --color-text-hl2: var(--color-text-base);
+    --color-bg-hl1: theme('color-amber-50');
+    --color-bg-hl2: theme('color-fuchsia-50');
+    --color-border-hl1: theme('color-amber-500');
+    --color-border-hl2: theme('color-fuchsia-500');
+    --color-bg-base: oklch(100% 0 100);
+    --color-bg-second: oklch(97.8% 0.0051 228.8);
+    --color-accent: theme('colors.red.700');
+    --color-accent2: theme('colors.sky.700');
+    --color-outline: theme('colors.sky.500');
+    --color-gray: theme('colors.slate.600');
+    --color-gray2: theme('colors.slate.500');
+    --color-delimiter: theme('colors.slate.300');
+    --color-border: theme('colors.slate.700');
+    --color-input-bg: theme('colors.slate.50');
+    --color-input-bg-checked: theme('colors.sky.600');
+    --color-input-bg-hover: theme('colors.slate.100');
+    --color-item-bg-hover: theme('colors.slate.100');
+    --color-btn: theme('colors.slate.200');
+    --color-btn-hover: theme('colors.slate.300');
+    --color-btn-active: theme('colors.slate.400');
+    --color-error: theme('colors.red.600');
+    --color-error-bg: theme('colors.red.100');
+    --color-success: theme('colors.emerald.700');
+    --color-link: theme('colors.blue.600');
+
+    /* shadows */
+    --shadow-input-expand: 0 0 3px 0 rgba(0, 0, 0, 0.6);
+    --shadow-input-hover: 0 0 3px 3px var(--color-input-bg-hover);
+}
+
+.dark-theme {
+    --color-text-base: theme('colors.zinc.200');
+    --color-text-hl1: theme('color-orange-100');
+    --color-text-hl2: theme('color-rose-100');
+    --color-bg-hl1: theme('color-zinc-900');
+    --color-bg-hl2: theme('color-zinc-900');
+    --color-border-hl1: theme('color-orange-200');
+    --color-border-hl2: theme('color-rose-200');
+    --color-bg-base: theme('colors.zinc.800');
+    --color-bg-second: oklch(31.3% 0.009 285.9);
+    --color-accent: theme('colors.rose.300');
+    --color-accent2: theme('colors.sky.200');
+    --color-outline: theme('colors.sky.300');
+    --color-gray: theme('colors.zinc.300');
+    --color-gray2: theme('colors.zinc.500');
+    --color-delimiter: theme('colors.zinc.600');
+    --color-border: theme('colors.zinc.400');
+    --color-input-bg: theme('colors.zinc.600');
+    --color-input-bg-checked: theme('colors.sky.600');
+    --color-input-bg-hover: theme('colors.zinc.500');
+    --color-item-bg-hover: theme('colors.zinc.700');
+    --color-btn: theme('colors.zinc.700');
+    --color-btn-hover: theme('colors.zinc.600');
+    --color-btn-active: theme('colors.zinc.500');
+    --color-error: theme('colors.red.400');
+    --color-error-bg: oklch(35.6% 0.1094 23.2);
+    --color-success: theme('colors.green.300');
+    --color-link: theme('colors.blue.300');
+
+    /* shadows */
+    --shadow-input-expand: 0 0 3px 0 rgba(255, 255, 255, 0.5);
+    --shadow-input-hover: 0 0 3px 3px var(--color-input-bg-hover);
+}
+
+.purple-theme {
+    --color-text-base: oklch(97.4% 0.0122 289.2);
+    --color-text-hl1: theme('color-indigo-100');
+    --color-text-hl2: var(--color-text-base);
+    --color-bg-hl1: theme('color-indigo-900');
+    --color-bg-hl2: theme('color-blue-950');
+    --color-border-hl1: theme('color-indigo-200');
+    --color-border-hl2: theme('color-blue-200');
+    --color-bg-base: oklch(33.7% 0.081 284.2);
+    --color-bg-second: oklch(30.6% 0.0712 284.4);
+    --color-accent: theme('colors.yellow.300');
+    --color-accent2: theme('colors.sky.200');
+    --color-outline: theme('colors.yellow.400');
+    --color-gray: oklch(82.1% 0.0284 288.8);
+    --color-gray2: oklch(53.4% 0.0792 286.4);
+    --color-delimiter: oklch(53.9% 0.1609 300.3);
+    --color-border: oklch(58.9% 0.0972 286.1);
+    --color-input-bg: oklch(34.5% 0.0833 284.1);
+    --color-input-bg-checked: oklch(47.2% 0.1597 299.4);
+    --color-input-bg-hover: oklch(49.6% 0.1343 283.4);
+    --color-item-bg-hover: oklch(33.1% 0.0527 281.6);
+    --color-btn: oklch(42.7% 0.1087 283.8);
+    --color-btn-hover: oklch(55.7% 0.1573 300.6);
+    --color-btn-active: oklch(66.5% 0.1176 302.5);
+    --color-error: oklch(67.4% 0.1117 20.4);
+    --color-error-bg: oklch(38.6% 0.1082 23.7);
+    --color-success: theme('colors.emerald.400');
+    --color-link: oklch(80% 0.1 259);
+
+    /* shadows */
+    --shadow-input-expand: 0 0 3px 0 rgba(255, 255, 255, 0.5);
+    --shadow-input-hover: 0 0 3px 3px var(--color-input-bg-hover);
+}

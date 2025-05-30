@@ -15,7 +15,7 @@ const permissions = ['identity', 'storage', 'alarms', 'notifications', 'unlimite
 function browserSpecific() {
     const manifest: Partial<ExtManifest> = {};
     if (target === 'chrome') {
-        manifest.minimum_chrome_version = '109';
+        manifest.minimum_chrome_version = '116';
         manifest.key = key;
         manifest.background = {
             service_worker: bgScript,
@@ -25,7 +25,7 @@ function browserSpecific() {
     if (target === 'firefox') {
         manifest.browser_specific_settings = {
             gecko: {
-                strict_min_version: '109.0',
+                strict_min_version: '113.0',
                 id: 'reddit-post-notifier@flytaly',
             },
         };
