@@ -1,5 +1,10 @@
 # Release Notes
 
+## v7.0.1 (2025-05-31)
+
+- Fixed automatic opening of a subreddit input block with a custom feed and an empty subreddit
+- Fixed broken hover input styles
+
 ## v7.0.0 (2025-05-30)
 
 - Added support for custom feeds
