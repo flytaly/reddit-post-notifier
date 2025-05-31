@@ -31,7 +31,7 @@
     let showPosts = $state(false);
     let isLoading = $state(false);
 
-    let showEditBlock = $state(!subState.state[index].subreddit);
+    let showEditBlock = $state(!subState.state[index].subreddit && !subState.state[index].customFeed);
     let subredditInputRef = $state<HTMLInputElement | null>(null);
     let customFeedInputRef = $state<HTMLInputElement | null>(null);
 
