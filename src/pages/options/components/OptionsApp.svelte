@@ -52,7 +52,7 @@
 </script>
 
 <svelte:head>
-    <title>{page.name}</title>
+    <title>{page.name} | Reddit Post Notifier</title>
 </svelte:head>
 
 <div
