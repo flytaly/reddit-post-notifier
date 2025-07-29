@@ -1,5 +1,9 @@
 # Release Notes
 
+## v7.1.0 (2025-07-29)
+
+- Improved update logic by checking the dates of all items, not just the top one.
+
 ## v7.0.1 (2025-05-31)
 
 - Fixed automatic opening of a subreddit input block with a custom feed and an empty subreddit
