@@ -42,7 +42,9 @@
 }
 
 :focus-visible {
-    @apply outline-skin-outline;
+    @apply ring-1 ring-offset-1 ring-skin-outline ring-offset-transparent;
+
+    outline: none;
 }
 
 html {

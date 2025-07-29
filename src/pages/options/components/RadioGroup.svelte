@@ -31,6 +31,7 @@
                     peer-focus-visible:ring
                     peer-focus-visible:ring-skin-outline
                     peer-focus-visible:ring-offset-1
+                    peer-focus-visible:ring-offset-transparent
                 '
                 for={id}>{label}</label
             >

@@ -37,12 +37,7 @@
             px-2 py-1
             text-sm text-skin-text
             hover:bg-skin-input-hover
-            hover:shadow-input
-            focus:outline-none
-            focus-visible:border-skin-outline
-            focus-visible:ring-1
-            focus-visible:ring-skin-outline
-            focus-visible:ring-offset-0;
+            hover:shadow-input;
     }
 
     input:invalid {
