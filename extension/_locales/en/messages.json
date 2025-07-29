@@ -108,7 +108,7 @@
         "message": "Shortcuts"
     },
     "optionUpdateInterval": {
-        "message": "Update interval (in minutes)",
+        "message": "Update interval",
         "description": "Name of option: update interval"
     },
     "optionUpdateIntervalDescription": {
