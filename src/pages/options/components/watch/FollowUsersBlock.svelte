@@ -16,9 +16,6 @@
         return $storageData.options.updateInterval;
     });
 
-    /** save number of inputs to restore them after rerender caused by saving in the storage */
-    let prevLen = $state($storageData.usersList?.length || 0);
-
     const addUsers = (num = 1) => {
         const newUsers = Array.from({ length: num }).map(() => ({
             username: '',
@@ -29,13 +26,7 @@
         usersList = usersList?.length ? [...usersList, ...newUsers] : newUsers;
 
         $storageData.usersList = usersList;
-        prevLen = $storageData.usersList.length;
     };
-
-    $effect(() => {
-        if (!usersList.length || usersList.length < prevLen)
-            addUsers(Math.max(prevLen - usersList.length, 1));
-    });
 
     const saveInputs = () => {
         const saved = new Set<string>();
@@ -52,7 +43,6 @@
 
     const removeUser = (index: number) => {
         usersList = usersList.filter((_, idx) => index !== idx);
-        prevLen = usersList.length;
         saveInputs();
     };
 
@@ -95,21 +85,23 @@
         {/snippet}
     </OptionsItem>
 
-    <div class='user-input-grid grid grid-cols-[repeat(4,max-content)_1fr] items-center gap-x-5 text-sm font-medium'>
-        <div>Username</div>
-        <div class='text-center'>
-            <span>Comments</span>
+    {#if usersList?.length}
+        <div class='user-input-grid grid grid-cols-[repeat(4,max-content)_1fr] items-center gap-x-5 text-sm font-medium'>
+            <div>Username</div>
+            <div class='text-center'>
+                <span>Comments</span>
+            </div>
+            <div class='text-center'>
+                <span>Posts</span>
+            </div>
+            <div class='text-center'>Notification</div>
+            <div class='ml-auto'>Delete</div>
+            <div class='col-span-full my-2'></div>
+            <!-- eslint-disable-next-line @typescript-eslint/no-unused-vars -->
+            {#each usersList || [] as _, index (index)}
+                <FollowUserInput bind:userInfo={usersList[index]} commitChanges={saveInputs} onDelete={() => removeUser(index)} />
+            {/each}
         </div>
-        <div class='text-center'>
-            <span>Posts</span>
-        </div>
-        <div class='text-center'>Notification</div>
-        <div class='ml-auto'>Delete</div>
-        <div class='col-span-full my-2'></div>
-        <!-- eslint-disable-next-line @typescript-eslint/no-unused-vars -->
-        {#each usersList || [] as _, index (index)}
-            <FollowUserInput bind:userInfo={usersList[index]} commitChanges={saveInputs} onDelete={() => removeUser(index)} />
-        {/each}
-    </div>
+    {/if}
     <AddButton clickHandler={() => addUsers()}>{getMsg('optionsFollowUserAdd')}</AddButton>
 </div>
