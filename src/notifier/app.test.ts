@@ -353,8 +353,8 @@ describe('update reddit search', () => {
         await new NotifierApp().update();
 
         expect(mockStorage.saveQueryData.mock.calls).toEqual([
-            [q1.id, { error: null, posts: newPosts }],
-            [q2.id, { error: null, posts: newPosts.slice(0, 1) }],
+            [q1.id, { error: null, posts: newPosts, lastPostCreated: ts + 2000 }],
+            [q2.id, { error: null, posts: newPosts.slice(0, 1), lastPostCreated: ts + 2000 }],
         ]);
 
         const ntf: PostNotification = {

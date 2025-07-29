@@ -1,3 +1,22 @@
+import auth from '@/reddit-api/auth';
+import type { RateLimits } from '@/reddit-api/client';
+import RedditApiClient from '@/reddit-api/client';
+import { AuthError, isAuthError } from '@/reddit-api/errors';
+import { RedditObjectKind } from '@/reddit-api/reddit-types';
+import type { RedditScope } from '@/reddit-api/scopes';
+import redditScopes from '@/reddit-api/scopes';
+import storage from '@/storage';
+import { postFilter } from '@/text-search/post-filter';
+import type { ExtensionOptions } from '@/types/extension-options';
+import {
+    filterPostDataProperties,
+    getAccountByScope,
+    getCustomFeedUrl,
+    getSearchQueryUrl,
+    getSubredditUrl,
+    getUserProfileUrl,
+} from '@/utils/index';
+import { wait } from '@/utils/wait';
 import type {
     RedditAccount,
     RedditError,
@@ -20,40 +39,9 @@ import type {
 } from '../storage/storage-types';
 import type { MessageNotification, PostNotification, UserNotification } from './notifications';
 import notify, { NotificationId } from './notifications';
-import auth from '@/reddit-api/auth';
-import type { RateLimits } from '@/reddit-api/client';
-import RedditApiClient from '@/reddit-api/client';
-import { AuthError, isAuthError } from '@/reddit-api/errors';
-import { RedditObjectKind } from '@/reddit-api/reddit-types';
-import type { RedditScope } from '@/reddit-api/scopes';
-import redditScopes from '@/reddit-api/scopes';
-import storage from '@/storage';
-import { postFilter } from '@/text-search/post-filter';
-import type { ExtensionOptions } from '@/types/extension-options';
-import {
-    filterPostDataProperties,
-    getAccountByScope,
-    getCustomFeedUrl,
-    getSearchQueryUrl,
-    getSubredditUrl,
-    getUserProfileUrl,
-} from '@/utils/index';
-import { wait } from '@/utils/wait';
 
 interface ItemWithDate {
     data: { created: number };
-}
-
-export function filterNewItems<T extends ItemWithDate>(timestamp: number, items: T[]) {
-    const newPosts: T[] = [];
-    for (const item of items) {
-        if (item.data.created > timestamp)
-            newPosts.push(item);
-        else
-            return newPosts;
-    }
-
-    return newPosts;
 }
 
 function extractNewItems<T extends ItemWithDate>(
@@ -61,12 +49,18 @@ function extractNewItems<T extends ItemWithDate>(
     info: { lastPostCreated?: number | null },
 ): T[] | null {
     const items = response.data.children;
-    const newItems = info.lastPostCreated ? filterNewItems(info.lastPostCreated, items) : items;
+    const newItems = !info.lastPostCreated
+        ? items
+        : items.filter(item => item.data.created > info.lastPostCreated!);
 
     if (newItems.length !== 0)
         return newItems;
 
     return null;
+}
+
+function getLatestItemDate(items: ItemWithDate[]): number {
+    return Math.max(...items.map(item => item.data.created));
 }
 
 interface UpdateSubredditProps {
@@ -130,9 +124,8 @@ export default class NotifierApp {
         }
 
         let newPosts = extractNewItems(response, info) || [];
-        let lastPostCreated: number | null = null;
+        const lastPostCreated = newPosts.length ? getLatestItemDate(newPosts) : null;
         if (newPosts.length && filterOpts?.enabled && filterOpts?.rules?.length) {
-            lastPostCreated = newPosts[0].data?.created;
             newPosts = postFilter(newPosts, filterOpts.rules, filterOpts.fields);
         }
         await storage.saveSubredditData(id, { posts: newPosts, lastPostCreated });
@@ -167,9 +160,9 @@ export default class NotifierApp {
             await storage.saveQueryData(query.id, { error: response });
             return null;
         }
-
         const newPosts: RedditPostExtended[] = extractNewItems(response, data) || [];
-        await storage.saveQueryData(query.id, { posts: newPosts, error: null });
+        const lastPostCreated = newPosts.length ? getLatestItemDate(newPosts) : null;
+        await storage.saveQueryData(query.id, { posts: newPosts, error: null, lastPostCreated });
         return newPosts;
     }
 
@@ -258,8 +251,16 @@ export default class NotifierApp {
             return { user };
         const itemsToSave = newItems.map(p => (p.kind === RedditObjectKind.link ? filterPostDataProperties(p) : p));
 
-        user.data = [...itemsToSave, ...(user.data || [])].slice(0, 50);
-        user.lastPostCreated = itemsToSave[0].data.created;
+        itemsToSave.push(...(user.data || []));
+        user.data = [];
+        const seen = new Set<string>();
+        itemsToSave.forEach((item) => {
+            if (seen.has(item.data.id)) return;
+            seen.add(item.data.id);
+            user.data!.push(item);
+        });
+        user.data = user.data.slice(0, 50);
+        user.lastPostCreated = getLatestItemDate(itemsToSave);
         return { user, newItemsLen: itemsToSave.length };
     }
 
