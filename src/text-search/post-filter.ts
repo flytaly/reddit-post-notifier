@@ -59,16 +59,43 @@ export function postFilter<T extends SearchableRedditPost>(
         if (!qList)
             continue;
 
-        const positiveRules = getPositives(qList);
-        const filteredIDs = positiveRules?.length
-            ? doc.search(getPositives(qList))
+        // Separate regex queries (e.g. /pattern/i) from standard ones
+        const regexRules = qList.filter(r => r.query && /^\/.+\/[gimsuy]*$/.test(r.query));
+        const standardRules = qList.filter(r => r.query && !/^\/.+\/[gimsuy]*$/.test(r.query));
+
+        // Process standard text filters via the built-in Document index
+        const positiveRules = getPositives(standardRules);
+        let filteredIDs = positiveRules.length
+            ? doc.search(positiveRules)
             : idList;
 
-        const excludeIDs = getNegatives(qList).flatMap(r => doc.search([r]));
+        const excludeIDs = getNegatives(standardRules).flatMap(r => doc.search([r]));
+        filteredIDs = filteredIDs.filter(id => !excludeIDs.includes(id));
 
+        // Apply custom Regex rules manually for precise phrase/order matching
         filteredIDs.forEach((id) => {
-            if (!excludeIDs.includes(id))
-                return result.add(id);
+            const post = posts.find(p => p.data.id === id);
+            if (!post) return;
+
+            let passesRegex = true;
+            for (const rule of regexRules) {
+                const match = rule.query.match(/^\/(.+)\/([gimsuy]*)$/);
+                if (match) {
+                    try {
+                        const regex = new RegExp(match[1], match[2] || 'i');
+                        const isMatch = regex.test(post.data[rule.field] || '');
+                        
+                        if (rule.queryType === 'negative' && isMatch) passesRegex = false;
+                        if (rule.queryType !== 'negative' && !isMatch) passesRegex = false;
+                    } catch (e) {
+                        console.error('Invalid Regex', rule.query);
+                    }
+                }
+            }
+
+            if (passesRegex) {
+                result.add(id);
+            }
         });
     }
     return posts.filter(p => result.has(p.data.id));
